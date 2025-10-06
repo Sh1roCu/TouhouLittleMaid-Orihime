@@ -59,6 +59,7 @@ public class SetTankCountFunction extends LootItemConditionalFunction {
         FluidVariant fluidStack = FluidVariant.of(BuiltInRegistries.FLUID.get(this.fluidId), DataComponentPatch.EMPTY);
         try (Transaction transaction = Transaction.openOuter()) {
             tank.insert(fluidStack, count, transaction);
+            transaction.commit();
             tank.writeNbt(tags, context.getLevel().registryAccess());
             stack.set(InitDataComponent.TANK_BACKPACK_TAG, tags);
             return stack;
