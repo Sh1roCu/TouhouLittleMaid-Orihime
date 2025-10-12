@@ -263,6 +263,7 @@ dependencies {
 
     // 纯为了一个IPlant判定
     modImplementation(include("io.github.fabricators_of_create.Porting-Lib:common:2.3.8+1.20.1"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:base:2.3.8+1.20.1"))
 
     // Pat Pat
     modImplementation "maven.modrinth:patpat:1.2.1+1.20.1"
