@@ -13,8 +13,11 @@ import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -107,7 +110,12 @@ public class TaskFeedAnimal implements IAttackTask {
     @Override
     public MenuProvider getTaskConfigGuiProvider(EntityMaid maid) {
         final int entityId = maid.getId();
-        return new MenuProvider() {
+        return new ExtendedScreenHandlerFactory() {
+            @Override
+            public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                buf.writeInt(entityId);
+            }
+
             @Override
             public Component getDisplayName() {
                 return Component.literal("Maid Task Config Container");
@@ -116,6 +124,11 @@ public class TaskFeedAnimal implements IAttackTask {
             @Override
             public AbstractMaidContainer createMenu(int index, Inventory playerInventory, Player player) {
                 return new DefaultMaidTaskConfigContainer(index, playerInventory, entityId);
+            }
+
+            @Override
+            public boolean shouldCloseCurrentScreen() {
+                return false;
             }
         };
     }
