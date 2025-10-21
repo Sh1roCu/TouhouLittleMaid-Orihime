@@ -67,7 +67,7 @@ public class MaidShearTask extends MaidCheckRateTask {
             ((Shearable) shearableEntity).shear(SoundSource.BLOCKS);
 
             maid.swing(InteractionHand.MAIN_HAND);
-            maid.hurtAndBreak(mainHandItem, 1);
+            mainHandItem.hurtAndBreak(1, maid, (entityMaid) -> entityMaid.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             shearableEntity = null;
         }
     }

@@ -33,7 +33,7 @@ public class NimbleFabricBauble implements IMaidBauble {
             if (slot >= 0) {
                 event.setCanceled(true);
                 ItemStack stack = maid.getMaidBauble().getStackInSlot(slot);
-                maid.hurtAndBreak(stack, 1);
+                stack.hurtAndBreak(1, maid, m -> maid.sendItemBreakMessage(stack));
                 maid.getMaidBauble().setStackInSlot(slot, stack);
                 for (int i = 0; i < MAX_RETRY; ++i) {
                     if (TeleportHelper.teleport(maid)) {

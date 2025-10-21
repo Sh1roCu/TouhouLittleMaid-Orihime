@@ -1,6 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task.meal;
 
 import com.github.tartaricacid.touhoulittlemaid.api.task.meal.IMaidMeal;
+import com.github.tartaricacid.touhoulittlemaid.api.task.meal.MaidMealType;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.event.MaidMealRegConfigEvent;
@@ -21,9 +22,14 @@ public class DefaultMaidHealSelfMeal implements IMaidMeal {
 
     @Override
     public void onMaidEat(EntityMaid maid, ItemStack stack, InteractionHand hand) {
-        // FoodProperties foodProperties = stack.getFoodProperties(maid);
         FoodProperties foodProperties = stack.getItem().getFoodProperties();
         if (foodProperties != null) {
+            // 调用饰品
+            maid.getMaidBauble().fireEvent((b, s) -> {
+                b.onMaidEat(maid, s, stack, MaidMealType.HEAL_MEAL);
+                return false;
+            });
+
             maid.startUsingItem(hand);
             int nutrition = foodProperties.getNutrition();
             float saturationModifier = foodProperties.getSaturationModifier();

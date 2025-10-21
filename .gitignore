@@ -26,3 +26,4 @@ run
 src/test
 
 /src/generated/.cache/
+/src/main/generated/.cache/

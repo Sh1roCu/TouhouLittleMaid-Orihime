@@ -46,7 +46,7 @@ public class MaidExtinguishingTask extends MaidCheckRateTask {
                 brain.eraseMemory(MemoryModuleType.PATH);
                 brain.eraseMemory(MemoryModuleType.WALK_TARGET);
                 world.addFreshEntity(new EntityExtinguishingAgent(worldIn, owner.position()));
-                maid.hurtAndBreak(mainhandItem, 1);
+                mainhandItem.hurtAndBreak(1, maid, (m) -> m.broadcastBreakEvent(InteractionHand.MAIN_HAND));
                 maid.swing(InteractionHand.MAIN_HAND);
             } else {
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, owner, speed, 2);
@@ -55,14 +55,14 @@ public class MaidExtinguishingTask extends MaidCheckRateTask {
 
         if (maid.isOnFire() && isExtinguisher(mainhandItem)) {
             world.addFreshEntity(new EntityExtinguishingAgent(worldIn, maid.position()));
-            maid.hurtAndBreak(mainhandItem, 1);
+            mainhandItem.hurtAndBreak(1, maid, (m) -> m.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             maid.swing(InteractionHand.MAIN_HAND);
         }
 
         List<TamableAnimal> tameableEntities = world.getEntitiesOfClass(TamableAnimal.class, maid.getBoundingBox().inflate(2, 1, 2), Entity::isOnFire);
         if (!tameableEntities.isEmpty() && isExtinguisher(mainhandItem)) {
             world.addFreshEntity(new EntityExtinguishingAgent(worldIn, maid.position()));
-            maid.hurtAndBreak(mainhandItem, 1);
+            mainhandItem.hurtAndBreak(1, maid, (m) -> m.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             maid.swing(InteractionHand.MAIN_HAND);
         }
     }

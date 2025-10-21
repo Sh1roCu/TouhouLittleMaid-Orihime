@@ -423,7 +423,7 @@ public class MaidFishingHook extends Projectile {
     }
 
     protected void hurtRod(EntityMaid maid, ItemStack rodItem, int rodDamage) {
-        maid.hurtAndBreak(rodItem, rodDamage);
+        rodItem.hurtAndBreak(rodDamage, maid, m -> maid.sendItemBreakMessage(rodItem));
     }
 
     private boolean calculateOpenWater(BlockPos pos) {

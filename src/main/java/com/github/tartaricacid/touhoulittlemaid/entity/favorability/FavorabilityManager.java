@@ -1,6 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.favorability;
 
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
+import com.github.tartaricacid.touhoulittlemaid.api.event.MaidFavorabilityLevelChangeEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
@@ -9,7 +10,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -18,6 +18,9 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
+/**
+ * FIXME：这个好感度机制太落伍了，未来需要重新设计一个更合理的好感度系统
+ */
 public class FavorabilityManager {
     public static final Map<String, Type> TYPES = Maps.newHashMap();
 
@@ -229,12 +232,15 @@ public class FavorabilityManager {
         int result = Mth.clamp(favorability + addPoint, 0, LEVEL_3_POINT);
         maid.setFavorability(result);
         int levelAfter = getLevel();
+
         if (levelBefore < levelAfter) {
             AttributeInstance attack = maid.getAttribute(Attributes.ATTACK_DAMAGE);
             AttributeInstance health = maid.getAttribute(Attributes.MAX_HEALTH);
+
             if (attack != null) {
                 attack.setBaseValue(this.getAttackByLevel(levelAfter));
             }
+
             if (health != null) {
                 if (maid.isStruckByLightning()) {
                     health.setBaseValue(this.getHealthByLevel(levelAfter) + 20);
@@ -248,13 +254,16 @@ public class FavorabilityManager {
                     InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.MAID_100_HEALTHY);
                 }
             }
+
             if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
                 InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.FAVORABILITY_INCREASED);
                 if (levelAfter == LEVEL_3) {
                     InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.FAVORABILITY_INCREASED_MAX);
                 }
             }
-            maid.playSound(SoundEvents.PLAYER_LEVELUP, 0.5F, maid.getRandom().nextFloat() * 0.1F + 0.9F);
+
+            // 最后触发事件和饰品
+            this.onFavorabilityLevelChange(levelBefore, levelAfter);
         }
         NetworkHandler.sendToNearby(maid, SpawnParticleMessage.ID, SpawnParticleMessage.encode(maid.getId(), SpawnParticleMessage.Type.HEART));
     }
@@ -272,12 +281,15 @@ public class FavorabilityManager {
         int result = Mth.clamp(favorability - reducePoint, 0, LEVEL_3_POINT);
         maid.setFavorability(result);
         int levelAfter = getLevel();
+
         if (levelBefore > levelAfter) {
             AttributeInstance attack = maid.getAttribute(Attributes.ATTACK_DAMAGE);
             AttributeInstance health = maid.getAttribute(Attributes.MAX_HEALTH);
+
             if (attack != null) {
                 attack.setBaseValue(this.getAttackByLevel(levelAfter));
             }
+
             if (health != null) {
                 if (maid.isStruckByLightning()) {
                     health.setBaseValue(this.getHealthByLevel(levelAfter) + 20);
@@ -288,7 +300,20 @@ public class FavorabilityManager {
                     maid.setHealth(maid.getMaxHealth());
                 }
             }
+
+            // 最后触发事件和饰品
+            this.onFavorabilityLevelChange(levelBefore, levelAfter);
         }
+    }
+
+    public void onFavorabilityLevelChange(int oldLevel, int newLevel) {
+        // 最后触发事件和饰品
+        this.maid.getMaidBauble().fireEvent((b, s) -> {
+            b.onFavorabilityLevelChange(this.maid, s, oldLevel, newLevel);
+            return false;
+        });
+        var event = new MaidFavorabilityLevelChangeEvent(maid, oldLevel, newLevel);
+        MaidFavorabilityLevelChangeEvent.CALLBACK.invoker().post(event);
     }
 
     public void max() {

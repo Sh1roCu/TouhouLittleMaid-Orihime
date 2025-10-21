@@ -13,19 +13,14 @@ public class MuteBauble implements IMaidBauble {
     public MuteBauble() {
         MaidPlaySoundEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
         MaidPlaySoundEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
-        MaidPlaySoundEvent.CALLBACK.register(HIGH, this::onLivingDamage);
+        MaidPlaySoundEvent.CALLBACK.register(HIGH, this::onMaidPlaySound);
     }
 
-    public void onLivingDamage(MaidPlaySoundEvent event) {
+    public void onMaidPlaySound(MaidPlaySoundEvent event) {
         EntityMaid maid = event.getMaid();
         int slot = ItemsUtil.getBaubleSlotInMaid(maid, this);
         if (slot >= 0) {
             event.setCanceled(true);
         }
-    }
-
-    @Override
-    public String getChatBubbleId() {
-        return "mute";
     }
 }

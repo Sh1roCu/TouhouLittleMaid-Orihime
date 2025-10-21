@@ -24,6 +24,7 @@ public final class InitContainerGui {
         MenuScreens.register(InitContainer.MAID_FURNACE_CONTAINER, FurnaceBackpackContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_TANK_CONTAINER, TankBackpackContainerScreen::new);
 
+        MenuScreens.register(InitContainer.MAID_BAUBLE_CONTAINER, BaubleContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_CONFIG_CONTAINER, MaidConfigContainerGui::new);
         MenuScreens.register(InitContainer.MAID_AI_CHAT_CONFIG_CONTAINER, MaidAIChatConfigContainerGui::new);
         MenuScreens.register(InitContainer.WIRELESS_IO_CONTAINER, WirelessIOContainerGui::new);

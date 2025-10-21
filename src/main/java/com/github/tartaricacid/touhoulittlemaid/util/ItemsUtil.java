@@ -116,13 +116,7 @@ public final class ItemsUtil {
      */
     public static int getBaubleSlotInMaid(EntityMaid maid, IMaidBauble bauble) {
         BaubleItemHandler handler = maid.getMaidBauble();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            IMaidBauble baubleIn = handler.getBaubleInSlot(i);
-            if (baubleIn == bauble) {
-                return i;
-            }
-        }
-        return -1;
+        return handler.getBaubleSlot(bauble);
     }
 
     /**
@@ -144,6 +138,11 @@ public final class ItemsUtil {
     public static ItemStack getItemStack(String itemId) {
         ResourceLocation resourceLocation = new ResourceLocation(itemId);
         Item value = BuiltInRegistries.ITEM.get(resourceLocation);
+        Preconditions.checkNotNull(value);
+        // key不会返回null, 手动检测并抛出NPE
+        if (resourceLocation == BuiltInRegistries.ITEM.getDefaultKey())
+            throw new NullPointerException("item can't be default key");
+
         return new ItemStack(value);
     }
 
