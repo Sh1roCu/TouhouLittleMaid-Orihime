@@ -2,10 +2,7 @@ package cn.sh1rocu.touhoulittlemaid;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
+import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.config.GeneralConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.debug.event.DebugStickClickEvent;
@@ -105,6 +102,7 @@ public class TouhouLittleMaidFabric implements ModInitializer {
         MaidDamageEvent.CALLBACK.register(LOWEST, RandomEmoji::addHurtChatText);
         LivingHurtEvent.CALLBACK.register(MaidLivingEntityEvent::onLivingHurt);
         LivingDamageEvent.CALLBACK.register(MaidLivingEntityEvent::onLivingDamage);
+        MaidFavorabilityLevelChangeEvent.CALLBACK.register(MaidDropBaubleEvent::onFavorabilityLevelChange);
     }
 
     private static void subscribeDebugEvents() {
