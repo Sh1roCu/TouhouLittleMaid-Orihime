@@ -14,6 +14,7 @@ import com.github.tartaricacid.touhoulittlemaid.event.food.DefaultEatenEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.maid.*;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CommonRegistry;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
+import com.github.tartaricacid.touhoulittlemaid.init.registry.DatapackRegistry;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.MobSpawnInfoRegistry;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemSubstituteJizo;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
@@ -43,6 +44,8 @@ public class TouhouLittleMaidFabric implements ModInitializer {
         CommonRegistry.onSetupEvent();
         TouhouLittleMaid.commonSetup();
         CompatRegistry.onEnqueue();
+        DatapackRegistry.onAddReloadListenerEvent();
+
         subscribeEvents();
         subscribeDebugEvents();
     }
