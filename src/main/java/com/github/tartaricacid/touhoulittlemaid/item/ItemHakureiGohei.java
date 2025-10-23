@@ -105,10 +105,10 @@ public class ItemHakureiGohei extends ProjectileWeaponItem implements IEnchantme
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean tlm$canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.QUICK_CHARGE
                 || enchantment == Enchantments.MULTISHOT
-                || IEnchantment.super.canApplyAtEnchantingTable(stack, enchantment);
+                || IEnchantment.super.tlm$canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override

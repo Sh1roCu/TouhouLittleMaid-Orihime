@@ -13,14 +13,14 @@ import net.minecraft.world.phys.HitResult;
 
 public interface IBlock {
     @Environment(EnvType.CLIENT)
-    boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager);
+    boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager);
 
     @Environment(EnvType.CLIENT)
-    default boolean addDestroyEffects(BlockState state, Level Level, BlockPos pos, ParticleEngine engine) {
+    default boolean tlm$addDestroyEffects(BlockState state, Level Level, BlockPos pos, ParticleEngine engine) {
         return !state.shouldSpawnParticlesOnBreak();
     }
 
-    default void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    default void tlm$onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         ((Block) this).wasExploded(world, pos, explosion);
     }

@@ -62,7 +62,7 @@ public abstract class MinecraftMixin {
     private boolean tlm$addHitEffects(ParticleEngine engine, BlockPos pos, Direction side) {
         BlockState state = this.level.getBlockState(pos);
         if (state.getBlock() instanceof IBlock block)
-            return !block.addHitEffects(state, level, this.hitResult, engine);
+            return !block.tlm$addHitEffects(state, level, this.hitResult, engine);
         return true;
     }
 

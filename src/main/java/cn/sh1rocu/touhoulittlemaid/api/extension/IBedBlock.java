@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public interface IBedBlock {
-    default boolean isBed(BlockState state, BlockGetter world, BlockPos pos, @Nullable Entity entity) {
+    default boolean tlm$isBed(BlockState state, BlockGetter world, BlockPos pos, @Nullable Entity entity) {
         return this instanceof BedBlock;
     }
 }

@@ -92,7 +92,7 @@ public abstract class LivingEntityMixin extends Entity {
     )
     private void tlm$startSleeping(BlockPos pos, CallbackInfo ci, @Local BlockState state) {
         if (!(state.getBlock() instanceof BedBlock) && state.getBlock() instanceof IBedBlock bedBlock) {
-            if (bedBlock.isBed(state, this.level(), pos, (LivingEntity) (Object) this))
+            if (bedBlock.tlm$isBed(state, this.level(), pos, (LivingEntity) (Object) this))
                 this.level().setBlock(pos, state.setValue(BedBlock.OCCUPIED, true), 3);
         }
     }
@@ -107,7 +107,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (blockPos.isPresent()) {
             BlockState state = this.level().getBlockState(blockPos.get());
             if (state.getBlock() instanceof IBedBlock bedBlock)
-                cir.setReturnValue(bedBlock.isBed(state, this.level(), blockPos.get(), (LivingEntity) (Object) this));
+                cir.setReturnValue(bedBlock.tlm$isBed(state, this.level(), blockPos.get(), (LivingEntity) (Object) this));
             else cir.setReturnValue(state.getBlock() instanceof BedBlock);
         }
     }
@@ -124,7 +124,7 @@ public abstract class LivingEntityMixin extends Entity {
         sleepingPos.filter(this.level()::hasChunkAt).ifPresent((blockPos) -> {
             BlockState blockState = this.level().getBlockState(blockPos);
             if (!(blockState.getBlock() instanceof BedBlock) && blockState.getBlock() instanceof IBedBlock bedBlock) {
-                if (bedBlock.isBed(blockState, this.level(), blockPos, (LivingEntity) (Object) this)) {
+                if (bedBlock.tlm$isBed(blockState, this.level(), blockPos, (LivingEntity) (Object) this)) {
                     Direction direction = blockState.getValue(BedBlock.FACING);
                     this.level().setBlock(blockPos, blockState.setValue(BedBlock.OCCUPIED, false), 3);
                     Vec3 vec3 = BedBlock.findStandUpPosition(this.getType(), this.level(), blockPos, direction, this.getYRot()).orElseGet(() -> {
@@ -151,7 +151,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (blockPos == null) return;
         BlockState state = this.level().getBlockState(blockPos);
         if (state.getBlock() instanceof IBedBlock bedBlock)
-            cir.setReturnValue(!bedBlock.isBed(state, this.level(), blockPos, (LivingEntity) (Object) this) ? Direction.UP : state.getValue(HorizontalDirectionalBlock.FACING));
+            cir.setReturnValue(!bedBlock.tlm$isBed(state, this.level(), blockPos, (LivingEntity) (Object) this) ? Direction.UP : state.getValue(HorizontalDirectionalBlock.FACING));
     }
 
     @WrapOperation(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;"))

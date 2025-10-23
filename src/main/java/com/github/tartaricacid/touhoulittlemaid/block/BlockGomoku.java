@@ -196,14 +196,14 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock, IBlock {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
+    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
         return false;
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void tlm$onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         handleGomokuRemove(world, pos, state);
-        IBlock.super.onBlockExploded(state, world, pos, explosion);
+        IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Nullable

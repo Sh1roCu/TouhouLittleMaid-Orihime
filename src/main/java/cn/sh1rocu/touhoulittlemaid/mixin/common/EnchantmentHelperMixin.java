@@ -45,7 +45,7 @@ public class EnchantmentHelperMixin {
     ) {
         Enchantment enchantment = tlm$currentEnchantment;
         if (enchantment != null && stack.getItem() instanceof IEnchantment ex) {
-            return ex.canApplyAtEnchantingTable(stack, enchantment);
+            return ex.tlm$canApplyAtEnchantingTable(stack, enchantment);
         }
         return original.call(category, item);
     }

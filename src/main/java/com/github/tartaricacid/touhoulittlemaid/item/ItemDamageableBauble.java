@@ -18,13 +18,13 @@ public class ItemDamageableBauble extends Item implements IEnchantment {
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean tlm$canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment == Enchantments.MENDING && stack.is(TagItem.MAID_MENDING_BLOCKLIST_ITEM)) {
             return false;
         }
         if (enchantment == Enchantments.VANISHING_CURSE && stack.is(TagItem.MAID_VANISHING_BLOCKLIST_ITEM)) {
             return false;
         }
-        return IEnchantment.super.canApplyAtEnchantingTable(stack, enchantment);
+        return IEnchantment.super.tlm$canApplyAtEnchantingTable(stack, enchantment);
     }
 }

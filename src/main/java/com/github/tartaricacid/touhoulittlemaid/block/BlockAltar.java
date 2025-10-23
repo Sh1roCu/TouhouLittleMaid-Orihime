@@ -57,7 +57,7 @@ import static com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble.RA
 public class BlockAltar extends Block implements EntityBlock, IBlock {
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
+    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
         if (target instanceof BlockHitResult blockTarget && world instanceof ClientLevel clientLevel) {
             BlockPos pos = blockTarget.getBlockPos();
             this.getAltar(world, pos).ifPresent(altar -> this.crack(clientLevel, pos, altar.getStorageState(), blockTarget.getDirection()));
@@ -67,7 +67,7 @@ public class BlockAltar extends Block implements EntityBlock, IBlock {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
+    public boolean tlm$addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
         this.getAltar(world, pos).ifPresent(altar -> Minecraft.getInstance().particleEngine.destroy(pos, altar.getStorageState()));
         return true;
     }
@@ -150,11 +150,11 @@ public class BlockAltar extends Block implements EntityBlock, IBlock {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void tlm$onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         if (!world.isClientSide) {
             this.getAltar(world, pos).ifPresent(altar -> this.restoreStorageBlock(world, pos, altar.getBlockPosList()));
         }
-        IBlock.super.onBlockExploded(state, world, pos, explosion);
+        IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Override

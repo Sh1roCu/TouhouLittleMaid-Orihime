@@ -36,7 +36,7 @@ public abstract class AbstractStoreMaidItem extends Item implements IItemEntity 
     }
 
     @Override
-    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+    public boolean tlm$onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (!entity.isCurrentlyGlowing()) {
             entity.setGlowingTag(true);
         }
@@ -50,7 +50,7 @@ public abstract class AbstractStoreMaidItem extends Item implements IItemEntity 
             entity.setDeltaMovement(Vec3.ZERO);
             entity.setPos(position.x, minY, position.z);
         }
-        return IItemEntity.super.onEntityItemUpdate(stack, entity);
+        return IItemEntity.super.tlm$onEntityItemUpdate(stack, entity);
     }
 
     @Override

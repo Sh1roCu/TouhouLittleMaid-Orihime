@@ -24,7 +24,7 @@ public class RedStoneWireBlockMixin {
             // Passing null for world and pos here just for extra upstream compat, not properly implementing it because
             // 1. world and pos are never used in Create
             // 2. extra work :help_me:
-            cir.setReturnValue(connect.canConnectRedstone(state, null, null, side));
+            cir.setReturnValue(connect.tlm$canConnectRedstone(state, null, null, side));
         }
     }
 }

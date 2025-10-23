@@ -39,7 +39,7 @@ public class BlockStatue extends Block implements EntityBlock, IBlock {
     public static final BooleanProperty IS_TINY = BooleanProperty.create("is_tiny");
 
     @Override
-    public boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
+    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
         if (target instanceof BlockHitResult blockTarget && world instanceof ClientLevel clientWorld) {
             BlockPos pos = blockTarget.getBlockPos();
             this.crack(clientWorld, pos, Blocks.CLAY.defaultBlockState(), blockTarget.getDirection());
@@ -49,7 +49,7 @@ public class BlockStatue extends Block implements EntityBlock, IBlock {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
+    public boolean tlm$addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
         Minecraft.getInstance().particleEngine.destroy(pos, Blocks.CLAY.defaultBlockState());
         return true;
     }
@@ -106,11 +106,11 @@ public class BlockStatue extends Block implements EntityBlock, IBlock {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void tlm$onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         if (!world.isClientSide) {
             this.getStatue(world, pos).ifPresent(statue -> this.restoreClayBlock(world, pos, statue));
         }
-        IBlock.super.onBlockExploded(state, world, pos, explosion);
+        IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Override

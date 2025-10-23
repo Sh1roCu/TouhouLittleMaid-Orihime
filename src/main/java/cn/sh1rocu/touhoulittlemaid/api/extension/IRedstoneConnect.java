@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public interface IRedstoneConnect {
-    default boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
+    default boolean tlm$canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         if (state.is(Blocks.REDSTONE_WIRE)) {
             return true;
         } else if (state.is(Blocks.REPEATER)) {

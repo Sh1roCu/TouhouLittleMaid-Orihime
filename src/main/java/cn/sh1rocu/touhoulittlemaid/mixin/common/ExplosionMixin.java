@@ -34,7 +34,7 @@ public class ExplosionMixin {
     )
     private void tlm$onBlockExploded(boolean spawnParticles, CallbackInfo ci, @Local(ordinal = 0) BlockPos pos, @Local(ordinal = 0) BlockState state) {
         if (state.getBlock() instanceof IBlock block) {
-            block.onBlockExploded(state, this.level, pos, (Explosion) (Object) this);
+            block.tlm$onBlockExploded(state, this.level, pos, (Explosion) (Object) this);
         }
     }
 

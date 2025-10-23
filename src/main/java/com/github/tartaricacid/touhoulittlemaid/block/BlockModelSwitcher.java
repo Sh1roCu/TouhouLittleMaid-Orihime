@@ -41,7 +41,7 @@ public class BlockModelSwitcher extends BaseEntityBlock implements IRedstoneConn
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
+    public boolean tlm$canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         Direction value = state.getValue(FACING);
         if (direction != null) {
             return direction == value.getClockWise() || direction == value.getCounterClockWise();
