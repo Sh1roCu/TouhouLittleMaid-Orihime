@@ -18,7 +18,7 @@ public abstract class ItemEntityMixin {
     public void tlm$tick(CallbackInfo ci) {
         ItemStack stack = this.getItem();
         if (stack.getItem() instanceof IItemEntity item) {
-            if (item.onEntityItemUpdate(stack, (ItemEntity) (Object) this))
+            if (item.tlm$onEntityItemUpdate(stack, (ItemEntity) (Object) this))
                 ci.cancel();
         }
     }

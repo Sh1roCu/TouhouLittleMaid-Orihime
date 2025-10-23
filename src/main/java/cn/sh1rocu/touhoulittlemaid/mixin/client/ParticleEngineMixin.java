@@ -27,7 +27,7 @@ public class ParticleEngineMixin {
     )
     private boolean tlm$addDestroyEffects(boolean original, BlockPos blockPos, BlockState blockState) {
         if (blockState.getBlock() instanceof IBlock block) {
-            if (block.addDestroyEffects(blockState, this.level, blockPos, (ParticleEngine) (Object) this)) {
+            if (block.tlm$addDestroyEffects(blockState, this.level, blockPos, (ParticleEngine) (Object) this)) {
                 return false;
             }
         }

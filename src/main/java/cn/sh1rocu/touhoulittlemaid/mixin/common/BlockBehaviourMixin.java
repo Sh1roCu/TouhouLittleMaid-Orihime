@@ -25,7 +25,7 @@ public class BlockBehaviourMixin {
     )
     private void tlm$onBlockExploded(Block instance, Level level, BlockPos blockPos, Explosion explosion, Operation<Void> original, @Local(argsOnly = true) BlockState state) {
         if (state.getBlock() instanceof IBlock block) {
-            block.onBlockExploded(state, level, blockPos, explosion);
+            block.tlm$onBlockExploded(state, level, blockPos, explosion);
         } else {
             original.call(instance, level, blockPos, explosion);
         }

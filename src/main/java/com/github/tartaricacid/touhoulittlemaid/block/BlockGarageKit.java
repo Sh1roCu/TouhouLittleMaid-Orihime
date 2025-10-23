@@ -53,7 +53,7 @@ public class BlockGarageKit extends Block implements EntityBlock, IBlock {
     public static final VoxelShape BLOCK_AABB = Block.box(4, 0, 4, 12, 16, 12);
 
     @Override
-    public boolean addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
+    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
         if (target instanceof BlockHitResult blockTarget && world instanceof ClientLevel clientWorld) {
             BlockPos pos = blockTarget.getBlockPos();
             this.crack(clientWorld, pos, Blocks.CLAY.defaultBlockState(), blockTarget.getDirection());
@@ -63,7 +63,7 @@ public class BlockGarageKit extends Block implements EntityBlock, IBlock {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
+    public boolean tlm$addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine manager) {
         Minecraft.getInstance().particleEngine.destroy(pos, Blocks.CLAY.defaultBlockState());
         return true;
     }

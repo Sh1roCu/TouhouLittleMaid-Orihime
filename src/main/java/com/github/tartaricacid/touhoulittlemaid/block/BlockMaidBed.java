@@ -189,12 +189,12 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    public boolean isBed(BlockState state, BlockGetter world, BlockPos pos, @Nullable LivingEntity entity) {
+    public boolean tlm$isBed(BlockState state, BlockGetter world, BlockPos pos, @Nullable LivingEntity entity) {
         if (entity instanceof EntityMaid) {
             return true;
         }
         assert entity != null;
-        return IBedBlock.super.isBed(state, world, pos, entity);
+        return IBedBlock.super.tlm$isBed(state, world, pos, entity);
     }
 
     private Direction getNeighbourDirection(BedPart part, Direction direction) {
