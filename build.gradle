@@ -203,8 +203,8 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:11.0.3")
 
     // Simple Hats
-    modImplementation "maven.modrinth:simple-hats:nV0q5j3l"
-    modImplementation "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
+    modCompileOnly "maven.modrinth:simple-hats:nV0q5j3l"
+    modCompileOnly "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
 
     // Immersive Melodies
     modImplementation "immersive_melodies:immersive_melodies-fabric:0.6.2+1.21.1"
@@ -226,7 +226,7 @@ dependencies {
     modImplementation "maven.modrinth:tenshilib:1.21.1-2.1.1-fabric"
 
     // TACZ
-    modImplementation("libs:TACZ-Refabricated:1.21.1-0.0.2.1")
+    modImplementation("libs:TACZ-Refabricated:1.21.1-0.0.7")
     implementation(minecraftLibraries('org.apache.commons:commons-math3:3.6.1'))
     implementation('com.github.FiguraMC.luaj:luaj-core:3.0.8-figura') {
         exclude group: 'org.apache.commons', module: 'commons-lang3'

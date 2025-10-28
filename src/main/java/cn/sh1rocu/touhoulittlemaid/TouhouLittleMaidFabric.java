@@ -2,10 +2,7 @@ package cn.sh1rocu.touhoulittlemaid;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
+import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.config.GeneralConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.debug.event.DebugStickClickEvent;
@@ -17,6 +14,7 @@ import com.github.tartaricacid.touhoulittlemaid.event.food.RemainFoodEatenEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.maid.*;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CommonRegistry;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
+import com.github.tartaricacid.touhoulittlemaid.init.registry.DatapackRegistry;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.MobSpawnInfoRegistry;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemSubstituteJizo;
 import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
@@ -46,6 +44,8 @@ public class TouhouLittleMaidFabric implements ModInitializer {
         CommonRegistry.onSetupEvent();
         TouhouLittleMaid.commonSetup();
         CompatRegistry.onEnqueue();
+        DatapackRegistry.onAddReloadListenerEvent();
+
         subscribeEvents();
         subscribeDebugEvents();
     }
@@ -103,7 +103,9 @@ public class TouhouLittleMaidFabric implements ModInitializer {
         }
         InteractMaidEvent.CALLBACK.register(ItemSubstituteJizo::onEntityInteract);
 
-        MaidDamageEvent.CALLBACK.register(RandomEmoji::addHurtChatText);
+        MaidDamageEvent.CALLBACK.register(LOWEST, RandomEmoji::addHurtChatText);
+
+        MaidFavorabilityLevelChangeEvent.CALLBACK.register(MaidDropBaubleEvent::onFavorabilityLevelChange);
     }
 
     private static void subscribeDebugEvents() {

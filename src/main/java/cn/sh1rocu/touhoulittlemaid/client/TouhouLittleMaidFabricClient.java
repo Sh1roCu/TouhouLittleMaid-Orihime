@@ -82,6 +82,7 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(WirelessIORenderEvent::onRender);
         ClientSetupEvent.onClientSetup();
         ClientSetupEvent.onRegisterGuiLayers();
+        ClientSetupEvent.onRegisterClientReloadListeners();
         TooltipComponentCallback.EVENT.register(InitClientTooltip::onRegisterClientTooltip);
         InitContainerGui.clientSetup();
         InitEntitiesRender.onEntityRenderers();

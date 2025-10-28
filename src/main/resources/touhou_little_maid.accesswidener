@@ -46,3 +46,6 @@ extendable method net/minecraft/world/level/pathfinder/PathFinder findPath (Lnet
 accessible field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
 mutable field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
 accessible method net/minecraft/world/level/pathfinder/Path setDebug ([Lnet/minecraft/world/level/pathfinder/Node;[Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)V
+
+accessible method net/minecraft/world/entity/LivingEntity setLastArmorItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V
+accessible method net/minecraft/world/entity/LivingEntity setLastHandItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V

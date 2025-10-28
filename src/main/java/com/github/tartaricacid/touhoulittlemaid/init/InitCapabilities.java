@@ -23,6 +23,6 @@ public class InitCapabilities implements EntityComponentInitializer {
         registry.registerFor(EntityMaid.class, MAID_HAND, MaidHandsInvWrapper::new);
         registry.registerFor(EntityMaid.class, MAID_ARMOR, EntityArmorInvWrapper::new);
         registry.registerFor(EntityMaid.class, MAID_INV, maid -> new MaidBackpackHandler(36, maid));
-        registry.registerFor(EntityMaid.class, MAID_BAUBLE, maid -> new BaubleItemHandler(9));
+        registry.registerFor(EntityMaid.class, MAID_BAUBLE, maid -> new BaubleItemHandler(EntityMaid.BAUBLE_INV_SIZE));
     }
 }
