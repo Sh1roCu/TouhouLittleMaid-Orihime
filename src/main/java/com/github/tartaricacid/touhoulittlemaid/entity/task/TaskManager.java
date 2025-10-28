@@ -4,10 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.compat.gun.common.GunCommonUtil;
-import com.github.tartaricacid.touhoulittlemaid.compat.gun.common.task.TaskGunAttack;
-import com.github.tartaricacid.touhoulittlemaid.compat.gun.swarfare.SWarfareCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.gun.tacz.TacCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.kubejs.ModKubeJSCompat;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -86,6 +84,19 @@ public final class TaskManager {
 
     public static List<IMaidTask> getTaskIndex() {
         return TASK_INDEX;
+    }
+
+    /**
+     * 获取非隐藏 Task 列表
+     */
+    public static List<IMaidTask> getNotHiddenTaskList(EntityMaid maid) {
+        List<IMaidTask> result = Lists.newArrayList();
+        for (IMaidTask task : TASK_INDEX) {
+            if (!task.isHidden(maid)) {
+                result.add(task);
+            }
+        }
+        return result;
     }
 
     /**

@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -79,6 +80,17 @@ public interface IMaidTask {
      */
     default boolean isEnable(EntityMaid maid) {
         return true;
+    }
+
+    /**
+     * 当前 Task 是否在切换界面隐藏，这不会阻断任务的使用
+     *
+     * @param maid 女仆对象
+     * @return 当前 Task 是否在切换界面隐藏
+     */
+    @ApiStatus.AvailableSince("1.4.2")
+    default boolean isHidden(EntityMaid maid) {
+        return false;
     }
 
     /**
