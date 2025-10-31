@@ -20,14 +20,19 @@ public class EmojiReloadListener implements ResourceManagerReloadListener, Ident
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 256;
 
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID,"emoji_reload");
+    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "emoji_reload");
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        var paths = resourceManager.listResources(EMOJI_PATH, res -> res.getPath().endsWith(".png")).keySet();
+        var paths = resourceManager.listResources(EMOJI_PATH, EmojiReloadListener::filterEmojiResource).keySet();
         // 遍历获知道有哪些表情资源被加载进来了，但是不需要加载（在需要时再加载）
         EMOJI_RESOURCES.clear();
         paths.forEach(res -> EMOJI_RESOURCES.add(EmojiResource.parse(res)));
+    }
+
+    public static boolean filterEmojiResource(ResourceLocation res) {
+        String path = res.getPath();
+        return path.endsWith(".png") || path.endsWith(".gif");
     }
 
     public static Optional<EmojiResource> getRandomEmojis() {
@@ -43,22 +48,33 @@ public class EmojiReloadListener implements ResourceManagerReloadListener, Ident
         return ID;
     }
 
-    public record EmojiResource(ResourceLocation location, int width, int height) {
-        private static final Pattern SIZE_PATTERN = Pattern.compile("^.*?-(\\d+)x(\\d+)\\.png$");
+    public record EmojiResource(ResourceLocation location, Format format, int width, int height) {
+        private static final Pattern SIZE_PATTERN = Pattern.compile("^.*?-(\\d+)x(\\d+)\\.(png|gif)$");
 
         public static EmojiResource parse(ResourceLocation res) {
             String path = res.getPath();
             var matcher = SIZE_PATTERN.matcher(path);
+            Format format = path.endsWith(".gif") ? Format.GIF : Format.PNG;
+
             if (matcher.matches()) {
                 int width = Integer.parseInt(matcher.group(1));
                 int height = Integer.parseInt(matcher.group(2));
                 width = Mth.clamp(width, MIN_SIZE, MAX_SIZE);
                 height = Mth.clamp(height, MIN_SIZE, MAX_SIZE);
-                return new EmojiResource(res, width, height);
+                return new EmojiResource(res, format, width, height);
             } else {
                 // 默认大小 24x24
-                return new EmojiResource(res, 24, 24);
+                return new EmojiResource(res, format, 24, 24);
             }
         }
+
+        public boolean isGif() {
+            return this.format == Format.GIF;
+        }
+    }
+
+    enum Format {
+        PNG,
+        GIF
     }
 }
