@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.loot;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.ILootContext;
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.LootContextParamSetsAccessor;
-import com.github.tartaricacid.touhoulittlemaid.init.InitLootCondition;
+import com.github.tartaricacid.touhoulittlemaid.init.InitLootModifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
@@ -52,6 +52,6 @@ public record LootTableTypeCondition(ResourceLocation lootTableType,
 
     @Override
     public @NotNull LootItemConditionType getType() {
-        return InitLootCondition.LOOT_TABLE_TYPE;
+        return InitLootModifier.LOOT_TABLE_TYPE;
     }
 }

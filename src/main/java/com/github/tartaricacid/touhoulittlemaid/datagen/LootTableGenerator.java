@@ -6,6 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.block.BlockScarecrow;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
 import com.github.tartaricacid.touhoulittlemaid.loot.SetTankCountFunction;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -59,6 +60,8 @@ public class LootTableGenerator {
 
     public static final ResourceKey<LootTable> STRUCTURE_SPAWN_MAID_GIFT = getLootTableKey("chest/structure_spawn_maid_gift");
     public static final ResourceKey<LootTable> MAID_BURIED_TREASURE = getLootTableKey("chest/maid_buried_treasure");
+
+    public static final ResourceKey<LootTable> RANDOM_BOARD_STATE = getLootTableKey("chest/random_board_state");
 
     public static ResourceKey<LootTable> getLootTableKey(String name) {
         return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name));
@@ -184,6 +187,14 @@ public class LootTableGenerator {
                             .setRolls(ConstantValue.exactly(1))
                             .add(LootItem.lootTableItem(InitItems.SHRINE))
                             .add(EmptyLootItem.emptyItem())));
+
+            var library = RandomBoardStateFunction.create().addTag("library");
+            consumer.accept(RANDOM_BOARD_STATE, LootTable.lootTable()
+                    .withPool(LootPool.lootPool()
+                            .setRolls(ConstantValue.exactly(1))
+                            .add(LootItem.lootTableItem(InitItems.GOMOKU_BOARD_STATE).apply(library))
+                            .add(LootItem.lootTableItem(InitItems.CCHESS_BOARD_STATE).apply(library))
+                            .add(LootItem.lootTableItem(InitItems.WCHESS_BOARD_STATE).apply(library))));
         }
     }
 

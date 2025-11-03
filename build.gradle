@@ -219,7 +219,7 @@ dependencies {
     modCompileOnly(files("libs/compile_only/transfer-3.1.0-beta.47+1.21.1.jar"))
 
     // 森罗物语：烹饪
-    modImplementation "maven.modrinth:kaleidoscope-cookery:1.0.1-fabric+mc1.21.1"
+    modCompileOnly "maven.modrinth:kaleidoscope-cookery:1.0.1-fabric+mc1.21.1"
 
     // Improved Mobs
     modImplementation "maven.modrinth:improved-mobs:1.21.1-1.14.2-fabric"

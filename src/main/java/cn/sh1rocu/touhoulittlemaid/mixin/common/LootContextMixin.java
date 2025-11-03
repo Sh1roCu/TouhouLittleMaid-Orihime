@@ -1,7 +1,7 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.ILootContext;
-import com.github.tartaricacid.touhoulittlemaid.init.InitLootCondition;
+import com.github.tartaricacid.touhoulittlemaid.init.InitLootModifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootContext;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +20,6 @@ public abstract class LootContextMixin implements ILootContext {
 
     @Override
     public ResourceLocation tlm$getQueriedLootTableId() {
-        return this.tlm$queriedLootTableId == null ? InitLootCondition.UNKNOWN_LOOT_TABLE : this.tlm$queriedLootTableId;
+        return this.tlm$queriedLootTableId == null ? InitLootModifier.UNKNOWN_LOOT_TABLE : this.tlm$queriedLootTableId;
     }
 }

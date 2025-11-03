@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.world.item.Item;
 
 public class ItemModelGenerator extends FabricModelProvider {
     public ItemModelGenerator(FabricDataOutput output) {
@@ -13,12 +14,19 @@ public class ItemModelGenerator extends FabricModelProvider {
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
+    public void generateBlockStateModels(BlockModelGenerators generators) {
 
     }
 
     @Override
-    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.generateFlatItem(InitItems.OWNER_CONVERSION_TOOL, ModelTemplates.FLAT_ITEM);
+    public void generateItemModels(ItemModelGenerators generators) {
+        basicItem(InitItems.OWNER_CONVERSION_TOOL, generators);
+        basicItem(InitItems.GOMOKU_BOARD_STATE, generators);
+        basicItem(InitItems.CCHESS_BOARD_STATE, generators);
+        basicItem(InitItems.WCHESS_BOARD_STATE, generators);
+    }
+
+    private static void basicItem(Item item, ItemModelGenerators generators) {
+        generators.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
     }
 }

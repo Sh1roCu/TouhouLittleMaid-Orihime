@@ -40,8 +40,7 @@ public final class TouhouLittleMaid {
         InitTrigger.init();
         InitDataAttachment.init();
         InitDataComponent.init();
-        InitLootCondition.init();
-        InitLootModifiers.init();
+        InitLootModifier.init();
 
         NetworkHandler.registerPackets();
         // CCA init by Entrypoint
