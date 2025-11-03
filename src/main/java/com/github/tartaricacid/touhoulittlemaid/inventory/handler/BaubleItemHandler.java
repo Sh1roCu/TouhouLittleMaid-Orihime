@@ -171,7 +171,7 @@ public class BaubleItemHandler extends ItemStackHandler {
                     baubleTag.putInt("Size", EntityMaid.BAUBLE_INV_SIZE);
                 }
             }
-            this.deserializeNBT(provider, tag.getCompound(TAG_INVENTORY));
+            this.deserializeNBT(provider, baubleTag);
         }
     }
 }
