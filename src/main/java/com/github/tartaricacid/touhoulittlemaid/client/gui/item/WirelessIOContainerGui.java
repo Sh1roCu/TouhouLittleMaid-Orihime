@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.item;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.WirelessIOButton;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
@@ -10,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -49,7 +49,7 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
                 }, (m, x, y) -> m.renderTooltip(font, Component.translatable("gui.touhou_little_maid.wireless_io.filter_mode"), x, y));
         filterModeToggle.initTextureValues(176, 0, 16, 16, MAIN);
 
-        TouhouImageButton configButton = new TouhouImageButton(leftPos + 136, topPos + 44, 16, 16, 208, 0, 16,
+        ImageButton configButton = new ImageButton(leftPos + 136, topPos + 44, 16, 16, 208, 0, 16,
                 MAIN, 256, 256, buttons -> Screens.getClient(this).setScreen(new WirelessIOConfigSlotGui(menu.getWirelessIO())));
         configButton.setTooltip(Tooltip.create(Component.translatable("gui.touhou_little_maid.wireless_io.config_slot")));
 

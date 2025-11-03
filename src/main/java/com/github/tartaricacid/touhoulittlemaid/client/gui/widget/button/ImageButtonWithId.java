@@ -2,11 +2,12 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class ImageButtonWithId extends TouhouImageButton {
+public class ImageButtonWithId extends ImageButton {
     private final int index;
 
     public ImageButtonWithId(int index, int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn, int yDiffTextIn, ResourceLocation resourceLocationIn, OnPress onPressIn) {

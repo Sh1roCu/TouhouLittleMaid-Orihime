@@ -2,7 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.MonsterListButton;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
 import com.github.tartaricacid.touhoulittlemaid.entity.data.inner.AttackListData;
 import com.github.tartaricacid.touhoulittlemaid.entity.misc.MonsterType;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTaskData;
@@ -15,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -91,12 +91,12 @@ public class AttackTaskConfigGui extends MaidTaskConfigGui<TaskConfigContainer> 
         this.addRenderableWidget(Button.builder(Component.translatable("gui.touhou_little_maid.monster_type.add"), b -> addMonsterType())
                 .pos(startLeft + 119, startTop - 1).size(44, 18).build());
 
-        this.addRenderableWidget(new TouhouImageButton(startLeft + 121, startTop + 20, 5, 9, 0, 176, 9, BG, b -> {
+        this.addRenderableWidget(new ImageButton(startLeft + 121, startTop + 20, 5, 9, 0, 176, 9, BG, b -> {
             this.page = this.page - 1;
             this.page = Mth.clamp(this.page, 0, (this.attackGroupsKey.size() - 1) / 7);
             this.init();
         }));
-        this.addRenderableWidget(new TouhouImageButton(startLeft + 156, startTop + 20, 5, 9, 5, 176, 9, BG, b -> {
+        this.addRenderableWidget(new ImageButton(startLeft + 156, startTop + 20, 5, 9, 5, 176, 9, BG, b -> {
             this.page = this.page + 1;
             this.page = Mth.clamp(this.page, 0, (this.attackGroupsKey.size() - 1) / 7);
             this.init();

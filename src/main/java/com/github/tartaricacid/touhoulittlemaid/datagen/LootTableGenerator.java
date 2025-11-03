@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.datagen;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -48,6 +49,8 @@ public class LootTableGenerator {
 
     public static final ResourceLocation STRUCTURE_SPAWN_MAID_GIFT = getLootTableKey("chest/structure_spawn_maid_gift");
     public static final ResourceLocation MAID_BURIED_TREASURE = getLootTableKey("chest/maid_buried_treasure");
+
+    public static final ResourceLocation RANDOM_BOARD_STATE = getLootTableKey("chest/random_board_state");
 
     public static ResourceLocation getLootTableKey(String name) {
         return new ResourceLocation(TouhouLittleMaid.MOD_ID, name);
@@ -170,6 +173,14 @@ public class LootTableGenerator {
                             .setRolls(ConstantValue.exactly(1))
                             .add(LootItem.lootTableItem(InitItems.SHRINE))
                             .add(EmptyLootItem.emptyItem())));
+
+            var library = RandomBoardStateFunction.create().addTag("library");
+            consumer.accept(RANDOM_BOARD_STATE, LootTable.lootTable()
+                    .withPool(LootPool.lootPool()
+                            .setRolls(ConstantValue.exactly(1))
+                            .add(LootItem.lootTableItem(InitItems.GOMOKU_BOARD_STATE).apply(library))
+                            .add(LootItem.lootTableItem(InitItems.CCHESS_BOARD_STATE).apply(library))
+                            .add(LootItem.lootTableItem(InitItems.WCHESS_BOARD_STATE).apply(library))));
         }
 
         @NotNull

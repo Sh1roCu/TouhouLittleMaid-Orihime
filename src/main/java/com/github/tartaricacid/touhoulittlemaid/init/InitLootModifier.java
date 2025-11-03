@@ -3,15 +3,25 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 import cn.sh1rocu.touhoulittlemaid.api.extension.ILootTableBuilder;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.datagen.LootTableGenerator;
+import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
-public class InitLootModifiers {
+public class InitLootModifier {
     private static final ResourceLocation LAST = new ResourceLocation(TouhouLittleMaid.MOD_ID, "last");
+
+    public static LootItemFunctionType BOARD_STATE_RANDOMLY = registerFunction("board_state_randomly", new LootItemFunctionType(new RandomBoardStateFunction.Serializer()));
+
+    private static LootItemFunctionType registerFunction(String name, LootItemFunctionType function) {
+        return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, new ResourceLocation(TouhouLittleMaid.MOD_ID, name), function);
+    }
 
     public static void init() {
         // Global Modifier
@@ -23,6 +33,8 @@ public class InitLootModifiers {
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.SPAWN_BONUS)));
                     if (key == BuiltInLootTables.VILLAGE_TEMPLE)
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.NORMAL_BAUBLE)));
+                    if (key == BuiltInLootTables.VILLAGE_CARTOGRAPHER)
+                        builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE)));
                     if (key == BuiltInLootTables.DESERT_PYRAMID)
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.RARE_BAUBLE)));
                     if (key == BuiltInLootTables.JUNGLE_TEMPLE)
@@ -38,7 +50,9 @@ public class InitLootModifiers {
                     if (key == BuiltInLootTables.STRONGHOLD_CORRIDOR)
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.ENDER_CHEST_BACKPACK)));
                     if (key == BuiltInLootTables.STRONGHOLD_LIBRARY)
-                        builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.SHRINE_LESS)));
+                        builder.withPool(LootPool.lootPool()
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.SHRINE_LESS))
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE)));
                     if (key == BuiltInLootTables.ANCIENT_CITY)
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.SHRINE_LESS)));
                     if (key == BuiltInLootTables.BASTION_TREASURE)

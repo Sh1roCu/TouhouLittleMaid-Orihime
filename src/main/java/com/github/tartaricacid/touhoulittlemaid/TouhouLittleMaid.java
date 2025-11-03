@@ -41,7 +41,7 @@ public final class TouhouLittleMaid {
         InitPaintingVariants.init();
         InitTrigger.init();
         InitDataAttachment.init();
-        InitLootModifiers.init();
+        InitLootModifier.init();
 
         NetworkHandler.registerC2SPackets();
         // CCA init by Entrypoint

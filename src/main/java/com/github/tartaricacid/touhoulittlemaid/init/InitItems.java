@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.*;
+import io.github.fabricators_of_create.porting_lib.util.RegistryObject;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -74,6 +75,9 @@ public final class InitItems {
     public static Item SERVANT_BELL = register("servant_bell", new ItemServantBell());
     public static Item ENTITY_ID_COPY = register("entity_id_copy", new ItemEntityIdCopy());
     public static Item OWNER_CONVERSION_TOOL = register("owner_conversion_tool", new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static Item GOMOKU_BOARD_STATE = register("gomoku_board_state", new ItemBoardState());
+    public static Item CCHESS_BOARD_STATE = register("cchess_board_state", new ItemBoardState());
+    public static Item WCHESS_BOARD_STATE = register("wchess_board_state", new ItemBoardState());
     @SuppressWarnings("deprecation")
     public static Item MONSTER_LIST = register("monster_list", new ItemMonsterList());
 

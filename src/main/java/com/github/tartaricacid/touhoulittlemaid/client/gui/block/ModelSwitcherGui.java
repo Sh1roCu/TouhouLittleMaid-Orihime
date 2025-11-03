@@ -4,7 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.cache.CacheIconManager;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.DirectButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.ImageButtonWithId;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -17,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.BlockPos;
@@ -115,13 +115,13 @@ public class ModelSwitcherGui extends Screen {
     }
 
     private void addPageButton() {
-        this.addRenderableWidget(new TouhouImageButton(leftPos + 141, topPos + 7, 13, 16, 0, 204, 16, BG, b -> {
+        this.addRenderableWidget(new ImageButton(leftPos + 141, topPos + 7, 13, 16, 0, 204, 16, BG, b -> {
             if (page > 0) {
                 page = page - 1;
                 this.init();
             }
         }));
-        this.addRenderableWidget(new TouhouImageButton(leftPos + 236, topPos + 7, 13, 16, 13, 204, 16, BG, b -> {
+        this.addRenderableWidget(new ImageButton(leftPos + 236, topPos + 7, 13, 16, 13, 204, 16, BG, b -> {
             if ((page + 1) <= (infoList.size() - 1) / maxRow) {
                 page = page + 1;
                 this.init();
