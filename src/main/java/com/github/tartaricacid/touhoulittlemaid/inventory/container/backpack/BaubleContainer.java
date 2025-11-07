@@ -1,7 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
+import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
+import com.github.tartaricacid.touhoulittlemaid.api.event.MaidBaubleChangeEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
@@ -16,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class BaubleContainer extends MaidMainContainer {
     public static final MenuType<BaubleContainer> TYPE = new ExtendedScreenHandlerType<>((windowId, inv, data) -> new BaubleContainer(windowId, inv, data.readInt()));
@@ -60,6 +63,8 @@ public class BaubleContainer extends MaidMainContainer {
         // 2 级，前四层
         // 3 级及以上，全部开放
         int level = this.maid.getFavorabilityManager().getLevel();
+        // 以防万一，检测是否越界
+        int maxSize = maid.getMaidBauble().getSlots();
 
         for (int y = 0; y < 6; y++) {
             if (level <= 1 && y >= 2) {
@@ -70,12 +75,15 @@ public class BaubleContainer extends MaidMainContainer {
             }
             for (int x = 0; x < 5; x++) {
                 int index = x + y * 5;
+                if (index >= maxSize) {
+                    return;
+                }
                 addSlot(new BaubleSlot(maid, index, 152 + 18 * x, 45 + 18 * y));
             }
         }
     }
 
-    public static class BaubleSlot extends SlotItemHandler {
+    public static class BaubleSlot extends SlotItemHandler implements ITriggerSlotChange {
         private final EntityMaid maid;
 
         public BaubleSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
@@ -84,14 +92,20 @@ public class BaubleContainer extends MaidMainContainer {
         }
 
         @Override
-        public void onTake(Player player, ItemStack stack) {
-            super.onTake(player, stack);
+        public void onShiftTakeoff(@Nullable Player player, ItemStack stack) {
             if (!maid.level.isClientSide && !stack.isEmpty()) {
                 IMaidBauble bauble = BaubleManager.getBauble(stack);
                 if (bauble != null) {
                     bauble.onTakeOff(maid, stack);
+                    MaidBaubleChangeEvent.TAKE_OFF.invoker().takeOff(new MaidBaubleChangeEvent.TakeOff(maid, stack));
                 }
             }
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
+            super.onTake(player, stack);
+            this.onShiftTakeoff(player, stack);
         }
 
         @Override
@@ -101,6 +115,7 @@ public class BaubleContainer extends MaidMainContainer {
                 IMaidBauble bauble = BaubleManager.getBauble(stack);
                 if (bauble != null) {
                     bauble.onPutOn(maid, stack);
+                    MaidBaubleChangeEvent.PUT_ON.invoker().putOn(new MaidBaubleChangeEvent.PutOn(maid, stack));
                 }
             }
         }

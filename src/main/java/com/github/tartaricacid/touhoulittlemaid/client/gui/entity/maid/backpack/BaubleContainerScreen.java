@@ -6,7 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.BaubleB
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.TabIndex;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BaubleContainer;
-import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenMaidGuiMessage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -41,7 +40,7 @@ public class BaubleContainerScreen extends AbstractMaidContainerGui<BaubleContai
     @Override
     protected void initAdditionWidgets() {
         BaubleButton baubleButton = new BaubleButton(leftPos, topPos, true, btn ->
-                ClientPlayNetworking.send(OpenMaidGuiMessage.ID,OpenMaidGuiMessage.encode(maid.getId(), TabIndex.MAIN)));
+                ClientPlayNetworking.send(OpenMaidGuiMessage.ID, OpenMaidGuiMessage.encode(maid.getId(), TabIndex.MAIN)));
         this.addRenderableWidget(baubleButton);
     }
 

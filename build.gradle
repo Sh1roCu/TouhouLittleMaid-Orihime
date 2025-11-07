@@ -248,7 +248,7 @@ dependencies {
     modImplementation "maven.modrinth:tenshilib:1.20.1-1.7.6-fabric"
 
     // TACZ
-    modImplementation "libs:TACZ-Refabricated-1.20.1:0.0.1-forge1.1.6-hotfix"
+    modImplementation "libs:TACZ-Refabricated-1.20.1:0.0.7-forge1.1.6-hotfix"
     modImplementation "maven.modrinth:modernkeybinding:OFIAZVy7"
     implementation(minecraftLibraries('org.apache.commons:commons-math3:3.6.1'))
     implementation('com.github.FiguraMC.luaj:luaj-core:3.0.8-figura') {

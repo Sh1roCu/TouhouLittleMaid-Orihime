@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,7 +17,7 @@ public class SmallBackpackContainer extends MaidMainContainer {
     @Override
     protected void addBackpackInv(Inventory inventory) {
         for (int i = 0; i < 6; i++) {
-            addSlot(new SlotItemHandler(maid.getMaidInv(), 6 + i, 143 + 18 * i, 59));
+            addSlot(new BackpackSlot(maid, 6 + i, 143 + 18 * i, 59));
         }
     }
 }

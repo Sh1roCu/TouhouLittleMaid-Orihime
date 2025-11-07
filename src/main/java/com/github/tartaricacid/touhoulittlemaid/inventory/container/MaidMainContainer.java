@@ -1,9 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container;
 
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
+import com.github.tartaricacid.touhoulittlemaid.api.event.MaidBackpackChangeEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
@@ -17,6 +19,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -41,7 +44,6 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidHandInv() {
-        //IItemHandler handler = maid.getCapability(InitCapabilities.HAND_ITEM, Direction.DOWN);
         IItemHandler handler = InitCapabilities.MAID_HAND.getNullable(maid);
         if (handler == null) {
             return;
@@ -63,7 +65,6 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidArmorInv() {
-        //IItemHandler handler = maid.getCapability(InitCapabilities.ARMOR_ITEM, Direction.DOWN);
         IItemHandler handler = InitCapabilities.MAID_ARMOR.getNullable(maid);
         if (handler != null) {
             for (int i = 0; i < 2; ++i) {
@@ -77,7 +78,6 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
 
                         @Override
                         public boolean mayPlace(@Nonnull ItemStack stack) {
-                            //return stack.canEquip(equipmentSlot, maid) && stack.getItem().canFitInsideContainerItems();
                             return maid != null && LivingEntity.getEquipmentSlotForItem(stack) == equipmentSlot && stack.getItem().canFitInsideContainerItems();
                         }
 
@@ -100,13 +100,12 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMainDefaultInv() {
-        ItemStackHandler inv = maid.getMaidInv();
         // 默认背包
         for (int i = 0; i < 6; i++) {
-            addSlot(new SlotItemHandler(inv, i, 143 + 18 * i, 37));
+            addSlot(new BackpackSlot(maid, i, 143 + 18 * i, 37));
             // 最后一格给予特殊图标
             if (i == 5) {
-                addSlot(new SlotItemHandler(inv, i, 143 + 18 * i, 37) {
+                addSlot(new BackpackSlot(maid, i, 143 + 18 * i, 37) {
                     @Override
                     public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
                         return Pair.of(BLOCK_ATLAS, EMPTY_BACK_SHOW_SLOT);
@@ -145,6 +144,10 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
             }
 
             slot.onTake(player, stack2);
+            // 触发 Shift 点击取出事件
+            if (slot instanceof ITriggerSlotChange slotChange) {
+                slotChange.onShiftTakeoff(player, stack1);
+            }
 
             // 用来修正护甲值不变化的问题
             if (PLAYER_INVENTORY_SIZE <= index && index < PLAYER_INVENTORY_SIZE + 4) {
@@ -159,5 +162,35 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
             }
         }
         return stack1;
+    }
+
+    public static class BackpackSlot extends SlotItemHandler implements ITriggerSlotChange {
+        private final EntityMaid maid;
+
+        public BackpackSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
+            super(maid.getMaidInv(), index, xPosition, yPosition);
+            this.maid = maid;
+        }
+
+        @Override
+        public void onShiftTakeoff(@Nullable Player player, ItemStack stack) {
+            if (!maid.level.isClientSide && !stack.isEmpty()) {
+                MaidBackpackChangeEvent.TAKE_OFF.invoker().takeOff(new MaidBackpackChangeEvent.TakeOff(maid, stack));
+            }
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
+            super.onTake(player, stack);
+            this.onShiftTakeoff(player, stack);
+        }
+
+        @Override
+        public void setByPlayer(ItemStack stack) {
+            super.setByPlayer(stack);
+            if (!maid.level.isClientSide && !stack.isEmpty()) {
+                MaidBackpackChangeEvent.PUT_ON.invoker().putOn(new MaidBackpackChangeEvent.PutOn(maid, stack));
+            }
+        }
     }
 }
