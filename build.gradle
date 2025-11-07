@@ -22,6 +22,11 @@ loom {
     mixin {
         defaultRefmapName = "touhou_little_maid.refmap.json"
     }
+    runs {
+        datagen {
+            property "fabric-api.datagen.modid", "touhou_little_maid"
+        }
+    }
 }
 
 repositories {

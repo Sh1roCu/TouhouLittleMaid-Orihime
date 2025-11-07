@@ -1,7 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.FurnaceBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
@@ -43,17 +41,15 @@ public class FurnaceBackpackContainer extends MaidMainContainer {
 
     @Override
     protected void addBackpackInv(Inventory inventory) {
-        IItemHandler itemHandler = maid.getMaidInv();
         for (int i = 0; i < 6; i++) {
-            addSlot(new SlotItemHandler(itemHandler, 6 + i, 143 + 18 * i, 57));
+            addSlot(new BackpackSlot(maid, 6 + i, 143 + 18 * i, 57));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new SlotItemHandler(itemHandler, 12 + i, 143 + 18 * i, 75));
+            addSlot(new BackpackSlot(maid, 12 + i, 143 + 18 * i, 75));
         }
     }
 
     private boolean isFuel(ItemStack stack) {
-        //return stack.getBurnTime(RecipeType.SMELTING) > 0;
         Integer burnTime = FuelRegistry.INSTANCE.get(stack.getItem());
         return burnTime != null && burnTime > 0;
     }
@@ -84,10 +80,12 @@ public class FurnaceBackpackContainer extends MaidMainContainer {
             this.furnaceBackpackContainer = furnaceBackpackContainer;
         }
 
+        @Override
         public boolean mayPlace(ItemStack stack) {
             return this.furnaceBackpackContainer.isFuel(stack) || isBucket(stack);
         }
 
+        @Override
         public int getMaxStackSize(ItemStack stack) {
             return isBucket(stack) ? 1 : super.getMaxStackSize(stack);
         }
