@@ -37,7 +37,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidBrain;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.control.MaidMoveControl;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation.MaidPathNavigation;
-import com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation.NodeNeighborCache;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleDataCollection;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
@@ -150,6 +149,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableFloat;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -289,8 +289,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     public boolean rouletteAnimDirty = false;
     public int roamingVarsUpdateFlag = 0;
     public Object2FloatOpenHashMap<String> roamingVars = new Object2FloatOpenHashMap<>();
-
-    public NodeNeighborCache nodeNeighborCache = null;
 
     /**
      * 用于方便特殊动画播放的变量，目前仅支持捡雪球
@@ -1893,17 +1891,51 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     @Override
     @Environment(EnvType.CLIENT)
     public Vec3 getLeashOffset() {
-        Optional<BedrockModel<Mob>> modelOptional = CustomPackLoader.MAID_MODELS.getModel(this.getModelId());
-        Optional<MaidModelInfo> infoOptional = CustomPackLoader.MAID_MODELS.getInfo(this.getModelId());
+        String modelId = this.getModelId();
+        Vec3 pose = getLegacyLeashOffset(modelId);
+        if (pose != null) {
+            return pose;
+        }
+        return super.getLeashOffset();
+    }
+
+    @Nullable
+    @Environment(EnvType.CLIENT)
+    private Vec3 getLegacyLeashOffset(String modelId) {
+        Optional<BedrockModel<Mob>> modelOptional = CustomPackLoader.MAID_MODELS.getModel(modelId);
+        Optional<MaidModelInfo> infoOptional = CustomPackLoader.MAID_MODELS.getInfo(modelId);
         if (modelOptional.isPresent() && infoOptional.isPresent()) {
             BedrockModel<Mob> model = modelOptional.get();
             float renderEntityScale = infoOptional.get().getRenderEntityScale();
+
+            BedrockPart arm = null;
+            HumanoidArm armSide = HumanoidArm.RIGHT;
+            if (model.hasRightArm()) {
+                arm = model.getRightArm();
+            } else if (model.hasLeftArm()) {
+                arm = model.getLeftArm();
+                armSide = HumanoidArm.LEFT;
+            }
+
+            if (arm != null) {
+                BedrockPart positioningModel = model.getArmPositioningModel(armSide);
+                Vector3f positionVec;
+                if (positioningModel != null) {
+                    positionVec = positioningModel.getTranslateAndRotateVector3f();
+                } else {
+                    positionVec = new Vector3f(0, 0.5f, 0);
+                }
+                Vector3f armVec = arm.getTranslateAndRotateVector3f();
+                Vector3f pose = armVec.add(positionVec);
+                return new Vec3(pose.x() * renderEntityScale, (1.5 - pose.y) * renderEntityScale, pose.z() * renderEntityScale);
+            }
+
             if (model.hasHead()) {
                 BedrockPart head = model.getHead();
                 return new Vec3(head.x * renderEntityScale, (1.5 - head.y / 16) * renderEntityScale, head.z * renderEntityScale);
             }
         }
-        return super.getLeashOffset();
+        return null;
     }
 
     @Override
