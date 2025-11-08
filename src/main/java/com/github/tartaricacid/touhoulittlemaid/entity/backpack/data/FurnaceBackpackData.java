@@ -110,13 +110,13 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
                 // 如果此时点燃了
                 if (this.isLit()) {
                     // 如果燃料有残留物，比如熔岩桶燃烧后残留一个桶
-                    if (fuelItem.getItem().getCraftingRemainingItem() != null) {
-                        this.setItem(FUEL_INDEX, new ItemStack(fuelItem.getItem().getCraftingRemainingItem()));
+                    if (fuelItem.getItem().hasCraftingRemainingItem()) {
+                        this.setItem(FUEL_INDEX, fuelItem.getRecipeRemainder());
                     } else if (fuelNotEmpty) {
                         // 普通燃料减一
                         fuelItem.shrink(1);
                         if (fuelItem.isEmpty()) {
-                            this.setItem(FUEL_INDEX, new ItemStack(fuelItem.getItem().getCraftingRemainingItem()));
+                            this.setItem(FUEL_INDEX, fuelItem.getItem().getRecipeRemainder(fuelItem));
                         }
                     }
                 }
@@ -149,7 +149,7 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
     @Override
     public void setItem(int index, ItemStack stack) {
         ItemStack slotItem = this.getItem(index);
-        boolean isSameItem = !stack.isEmpty() && ItemStack.isSameItemSameComponents(slotItem, stack);
+        boolean isSameItem = !stack.isEmpty() && net.minecraft.world.item.ItemStack.isSameItemSameComponents(slotItem, stack);
         super.setItem(index, stack);
         if (index == 0 && !isSameItem) {
             this.cookingTotalTime = getTotalCookTime(this.level);
