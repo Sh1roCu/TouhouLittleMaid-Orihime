@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack.data;
 
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -114,13 +115,13 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
                 // 如果此时点燃了
                 if (this.isLit()) {
                     // 如果燃料有残留物，比如熔岩桶燃烧后残留一个桶
-                    if (fuelItem.getItem().getCraftingRemainingItem() != null) {
-                        this.setItem(FUEL_INDEX, new ItemStack(fuelItem.getItem().getCraftingRemainingItem()));
+                    if (fuelItem.getItem().hasCraftingRemainingItem()) {
+                        this.setItem(FUEL_INDEX, fuelItem.getRecipeRemainder());
                     } else if (fuelNotEmpty) {
                         // 普通燃料减一
                         fuelItem.shrink(1);
                         if (fuelItem.isEmpty()) {
-                            this.setItem(FUEL_INDEX, new ItemStack(fuelItem.getItem().getCraftingRemainingItem()));
+                            this.setItem(FUEL_INDEX, fuelItem.getRecipeRemainder());
                         }
                     }
                 }

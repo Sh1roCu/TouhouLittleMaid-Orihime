@@ -322,7 +322,7 @@ jar {
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
+            artifactId = "${project.archives_base_name}-${project.minecraft_version}"
             from components.java
         }
     }
