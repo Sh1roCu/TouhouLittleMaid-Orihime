@@ -37,8 +37,7 @@ public class ItemEntityPlaceholder extends Item implements IItemRenderer {
     @Environment(EnvType.CLIENT)
     @Override
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return new TileEntityEntityPlaceholderRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        return TileEntityEntityPlaceholderRenderer.INSTANCE.get();
     }
 
     public ItemEntityPlaceholder() {
@@ -83,8 +82,7 @@ public class ItemEntityPlaceholder extends Item implements IItemRenderer {
             Level world = context.getLevel();
             if (id != null && world instanceof ServerLevel) {
                 Recipe<AltarRecipeInventory> recipe = ((RecipeManagerAccessor) context.getLevel().getRecipeManager()).tlm$byType(InitRecipes.ALTAR_CRAFTING).get(id);
-                if (recipe instanceof AltarRecipe) {
-                    AltarRecipe altarRecipe = (AltarRecipe) recipe;
+                if (recipe instanceof AltarRecipe altarRecipe) {
                     altarRecipe.spawnOutputEntity((ServerLevel) world, context.getClickedPos().above(), null);
                     context.getItemInHand().shrink(1);
                 }

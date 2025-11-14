@@ -4,8 +4,10 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.model.EntityPlaceholderModel;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,11 +18,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Supplier;
+
 public class PicnicBasketRender extends BlockEntityWithoutLevelRenderer {
     private static final ResourceLocation TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/picnic_basket.png");
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/item/picnic_basket.png");
     private static final EntityPlaceholderModel GUI_MODEL = new EntityPlaceholderModel();
     private final SimpleBedrockModel<Entity> model;
+
+    public static final Supplier<PicnicBasketRender> INSTANCE = Suppliers.memoize(() -> {
+        Minecraft minecraft = Minecraft.getInstance();
+        return new PicnicBasketRender(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+    });
 
     public PicnicBasketRender(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);

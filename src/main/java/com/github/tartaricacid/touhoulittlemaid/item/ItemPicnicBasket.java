@@ -9,7 +9,6 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemContainerT
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -34,8 +33,7 @@ public class ItemPicnicBasket extends BlockItem implements ExtendedScreenHandler
     @Environment(EnvType.CLIENT)
     @Override
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return new PicnicBasketRender(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        return PicnicBasketRender.INSTANCE.get();
     }
 
     private static final int PICNIC_BASKET_SIZE = 9;

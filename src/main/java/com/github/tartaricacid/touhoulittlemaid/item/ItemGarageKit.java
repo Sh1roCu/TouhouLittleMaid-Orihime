@@ -12,7 +12,6 @@ import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -99,7 +98,6 @@ public class ItemGarageKit extends BlockItem implements IItemRenderer {
     @Override
     @Environment(EnvType.CLIENT)
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return new TileEntityItemStackGarageKitRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        return TileEntityItemStackGarageKitRenderer.INSTANCE.get();
     }
 }
