@@ -4,6 +4,7 @@ import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ItemRendererAccessor;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.model.EntityPlaceholderModel;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemEntityPlaceholder;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -26,6 +27,7 @@ import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class TileEntityEntityPlaceholderRenderer extends BlockEntityWithoutLevelRenderer {
     private static final EntityPlaceholderModel BASE_MODEL = new EntityPlaceholderModel();
@@ -41,6 +43,11 @@ public class TileEntityEntityPlaceholderRenderer extends BlockEntityWithoutLevel
         Path path = Paths.get(recipeId.getPath());
         String namespace = recipeId.getNamespace();
         return ResourceLocation.fromNamespaceAndPath(namespace, String.format("textures/item/%s.png", path.getFileName().toString()));
+    });
+
+    public static final Supplier<TileEntityEntityPlaceholderRenderer> INSTANCE = Suppliers.memoize(() -> {
+        Minecraft minecraft = Minecraft.getInstance();
+        return new TileEntityEntityPlaceholderRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
     });
 
     public TileEntityEntityPlaceholderRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {

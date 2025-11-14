@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemChair;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
@@ -22,9 +23,15 @@ import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class TileEntityItemStackChairRenderer extends BlockEntityWithoutLevelRenderer {
+    public static final Supplier<TileEntityItemStackChairRenderer> INSTANCE = Suppliers.memoize(() -> {
+        Minecraft minecraft = Minecraft.getInstance();
+        return new TileEntityItemStackChairRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+    });
+
     public TileEntityItemStackChairRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);
     }

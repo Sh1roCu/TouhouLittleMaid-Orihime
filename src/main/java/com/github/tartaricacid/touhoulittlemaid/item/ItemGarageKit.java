@@ -36,8 +36,7 @@ public class ItemGarageKit extends BlockItem implements IItemRenderer {
     @Environment(EnvType.CLIENT)
     @Override
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return new TileEntityItemStackGarageKitRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        return TileEntityItemStackGarageKitRenderer.INSTANCE.get();
     }
 
     private static final String DEFAULT_ENTITY_ID = "touhou_little_maid:maid";

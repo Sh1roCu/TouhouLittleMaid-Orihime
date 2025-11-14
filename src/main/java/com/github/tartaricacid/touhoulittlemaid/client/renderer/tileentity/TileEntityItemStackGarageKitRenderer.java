@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemGarageKit;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.ENTITY_ID_TAG_NAME;
 import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clearMaidDataResidue;
@@ -40,6 +42,11 @@ import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clea
 public class TileEntityItemStackGarageKitRenderer extends BlockEntityWithoutLevelRenderer {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/bedrock/block/statue_base.png");
     private static SimpleBedrockModel<Entity> BASE_MODEL;
+
+    public static final Supplier<TileEntityItemStackGarageKitRenderer> INSTANCE = Suppliers.memoize(() -> {
+        Minecraft minecraft = Minecraft.getInstance();
+        return new TileEntityItemStackGarageKitRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+    });
 
     public TileEntityItemStackGarageKitRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);

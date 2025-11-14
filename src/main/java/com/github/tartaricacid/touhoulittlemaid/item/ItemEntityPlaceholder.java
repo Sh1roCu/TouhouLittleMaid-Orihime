@@ -35,8 +35,7 @@ public class ItemEntityPlaceholder extends Item implements IItemRenderer {
     @Environment(EnvType.CLIENT)
     @Override
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return new TileEntityEntityPlaceholderRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        return TileEntityEntityPlaceholderRenderer.INSTANCE.get();
     }
 
     public ItemEntityPlaceholder() {

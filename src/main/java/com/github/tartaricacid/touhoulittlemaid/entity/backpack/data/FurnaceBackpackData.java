@@ -149,7 +149,7 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
     @Override
     public void setItem(int index, ItemStack stack) {
         ItemStack slotItem = this.getItem(index);
-        boolean isSameItem = !stack.isEmpty() && net.minecraft.world.item.ItemStack.isSameItemSameComponents(slotItem, stack);
+        boolean isSameItem = !stack.isEmpty() && ItemStack.isSameItemSameComponents(slotItem, stack);
         super.setItem(index, stack);
         if (index == 0 && !isSameItem) {
             this.cookingTotalTime = getTotalCookTime(this.level);
