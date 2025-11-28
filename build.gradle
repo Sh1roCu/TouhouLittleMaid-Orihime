@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
+    id 'com.gradleup.shadow' version '8.3.6'
 }
 
 version = project.mod_version
@@ -144,6 +145,18 @@ repositories {
     }
 }
 
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+
+    mcLib
+    implementation {
+        extendsFrom mcLib
+    }
+    additionalRuntimeClasspath {
+        extendsFrom mcLib
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     //mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -158,22 +171,22 @@ dependencies {
     modImplementation(include("com.jamieswhiteshirt:reach-entity-attributes:2.4.0"))
 
     // JS
-    modImplementation(include("org.openjdk.nashorn:nashorn-core:15.4"))
+    implementation(include("org.openjdk.nashorn:nashorn-core:15.4"))
 
     modCompileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
 
     // MP3 音频解码库，暂时不需要
-    // minecraftLibraries "com.googlecode.soundlibs:mp3spi:1.9.5.4"
-    // minecraftLibraries "com.googlecode.soundlibs:jlayer:1.0.1.4"
-    // minecraftLibraries "com.googlecode.soundlibs:tritonus-share:0.3.7.4"
+    // mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
+    // mcLib "com.googlecode.soundlibs:jlayer:1.0.1.4"
+    // mcLib "com.googlecode.soundlibs:tritonus-share:0.3.7.4"
 
     // Opus 音频解码库
-    minecraftLibraries(modImplementation(include("org.gagravarr:vorbis-java-core:0.8")))
-    minecraftLibraries(modImplementation(include("io.github.jaredmdobson:concentus:1.0.2")))
+    mcLib("org.gagravarr:vorbis-java-core:0.8")
+    mcLib("io.github.jaredmdobson:concentus:1.0.2")
 
     // YAML 库
-    minecraftLibraries(modImplementation(include("org.yaml:snakeyaml:2.4")))
+    mcLib("org.yaml:snakeyaml:2.4")
 
     // 拆分出来的基岩版模型加载库
     // 又合并回来了
@@ -281,6 +294,32 @@ dependencies {
     // 不加就无法run的各种前置
     modImplementation "io.github.cottonmc:LibGui:8.1.1+1.20.1"
     modImplementation "me.zeroeightsix:fiber:0.23.0-SNAPSHOT"
+}
+
+shadowJar {
+    configurations = [project.configurations.mcLib]
+
+    dependencies {
+        exclude(dependency('junit:junit'))
+    }
+
+    archiveClassifier.set("shadow")
+
+    relocationPrefix = "com.github.tartaricacid.touhoulittlemaid.libs"
+    enableRelocation = true
+
+    exclude 'META-INF/maven/**/*'
+    exclude 'META-INF/versions/**/*'
+    exclude 'META-INF/LICENSE'
+    exclude '.cache/**'
+
+    mergeServiceFiles()
+    minimize()
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    inputFile = shadowJar.archiveFile
 }
 
 processResources {
