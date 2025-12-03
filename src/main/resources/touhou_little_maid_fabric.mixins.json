@@ -15,6 +15,7 @@
     "common.AbstractArrowMixin",
     "common.BlockBehaviourMixin",
     "common.BlockEntityMixin",
+    "common.BlockPlaceContextMixin",
     "common.BundlePacketMixin",
     "common.EntityMixin",
     "common.ExplosionMixin",
