@@ -16,6 +16,7 @@
     "common.AbstractArrowMixin",
     "common.AbstractHurtingProjectileMixin",
     "common.BlockEntityMixin",
+    "common.BlockPlaceContextMixin",
     "common.BundlePacketMixin",
     "common.EnchantmentHelperMixin",
     "common.EnchantmentMixin",
