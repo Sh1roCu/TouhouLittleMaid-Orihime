@@ -57,7 +57,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": [
-      "1.20",
       "1.20.1"
     ],
     "forgeconfigapiport": "*"
