@@ -7,7 +7,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface IRangedAttackTask extends IAttackTask {

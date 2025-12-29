@@ -16,7 +16,7 @@ public interface IMaidMeal {
             return true;
         }
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(food.getItem());
-        return key == BuiltInRegistries.ITEM.getDefaultKey()|| blockList.contains(key.toString());
+        return key == BuiltInRegistries.ITEM.getDefaultKey() || blockList.contains(key.toString());
     }
 
     /**
