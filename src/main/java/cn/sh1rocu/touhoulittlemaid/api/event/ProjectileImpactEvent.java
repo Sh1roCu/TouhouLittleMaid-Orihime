@@ -37,10 +37,10 @@ public class ProjectileImpactEvent extends CancellableEvent {
         void post(ProjectileImpactEvent event);
     }
 
-    public static enum ImpactResult {
+    public enum ImpactResult {
         DEFAULT,
         SKIP_ENTITY,
         STOP_AT_CURRENT,
-        STOP_AT_CURRENT_NO_DAMAGE;
+        STOP_AT_CURRENT_NO_DAMAGE
     }
 }
