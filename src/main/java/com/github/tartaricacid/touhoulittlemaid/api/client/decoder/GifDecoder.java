@@ -337,7 +337,7 @@ public class GifDecoder {
         try {
             name = name.trim().toLowerCase();
             if ((name.indexOf("file:") >= 0) ||
-                (name.indexOf(":/") > 0)) {
+                    (name.indexOf(":/") > 0)) {
                 URL url = new URL(name);
                 in = new BufferedInputStream(url.openStream());
             } else {
@@ -465,7 +465,7 @@ public class GifDecoder {
                 suffix[available] = (byte) first;
                 available++;
                 if (((available & code_mask) == 0)
-                    && (available < MaxStackSize)) {
+                        && (available < MaxStackSize)) {
                     code_size++;
                     code_mask += available;
                 }

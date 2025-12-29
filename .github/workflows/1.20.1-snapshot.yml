@@ -1,4 +1,4 @@
-name: Snapshot
+name: 1.20.1-Snapshot
 
 on:
   workflow_dispatch:

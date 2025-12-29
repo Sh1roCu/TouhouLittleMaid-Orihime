@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.init;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.AddPackFindersEvent;
-import cn.sh1rocu.touhoulittlemaid.api.event.RegisterClientReloadListenersEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.AnimationRegister;
 import com.github.tartaricacid.touhoulittlemaid.client.event.ShowOptifineScreen;

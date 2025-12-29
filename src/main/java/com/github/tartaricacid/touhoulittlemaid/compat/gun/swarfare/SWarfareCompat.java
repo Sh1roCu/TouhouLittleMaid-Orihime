@@ -2,7 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.compat.gun.swarfare;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.ExplosionEvents;
 import cn.sh1rocu.touhoulittlemaid.api.event.LivingAttackEvent;
-import com.atsuishio.superbwarfare.api.event.PreKillEvent;
 import com.atsuishio.superbwarfare.api.event.ProjectileHitEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.entity.IMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidHurtEvent;
