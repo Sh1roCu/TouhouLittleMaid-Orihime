@@ -8,6 +8,9 @@ on:
     paths:
       - 'src/main/**'
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build:
     runs-on: ubuntu-latest
