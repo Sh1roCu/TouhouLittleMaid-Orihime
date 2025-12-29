@@ -52,7 +52,7 @@ public final class EntityCraftingHelper {
             }
             throw new JsonParseException("Entity Type Tag Not Found");
         } catch (CommandSyntaxException e) {
-            throw new JsonSyntaxException("Invalid NBT Entry: " + e.toString());
+            throw new JsonSyntaxException("Invalid NBT Entry: " + e);
         }
     }
 
