@@ -150,10 +150,9 @@ public class BlockGarageKit extends Block implements EntityBlock, IBlock {
             return InteractionResult.PASS;
         }
         BlockEntity tile = worldIn.getBlockEntity(pos);
-        if (!(tile instanceof TileEntityGarageKit)) {
+        if (!(tile instanceof TileEntityGarageKit garageKit)) {
             return InteractionResult.PASS;
         }
-        TileEntityGarageKit garageKit = (TileEntityGarageKit) tile;
         EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
         ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         if (key == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
@@ -165,8 +164,7 @@ public class BlockGarageKit extends Block implements EntityBlock, IBlock {
         data.putString("id", id);
 
         Entity entity = type.create(worldIn);
-        if (entity instanceof Mob) {
-            Mob mobEntity = (Mob) entity;
+        if (entity instanceof Mob mobEntity) {
             mobEntity.finalizeSpawn((ServerLevel) worldIn, worldIn.getCurrentDifficultyAt(pos), MobSpawnType.SPAWN_EGG, null, data);
             mobEntity.addAdditionalSaveData(data);
         }

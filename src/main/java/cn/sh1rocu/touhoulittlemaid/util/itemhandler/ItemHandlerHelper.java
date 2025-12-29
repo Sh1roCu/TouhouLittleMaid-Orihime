@@ -113,13 +113,13 @@ public class ItemHandlerHelper {
             }
 
             if (remainder.isEmpty() || remainder.getCount() != stack.getCount()) {
-                level.playSound((Player) null, player.getX(), player.getY() + (double) 0.5F, player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                level.playSound(null, player.getX(), player.getY() + (double) 0.5F, player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             }
 
             if (!remainder.isEmpty() && !level.isClientSide) {
                 ItemEntity entityitem = new ItemEntity(level, player.getX(), player.getY() + (double) 0.5F, player.getZ(), remainder);
                 entityitem.setPickUpDelay(40);
-                entityitem.setDeltaMovement(entityitem.getDeltaMovement().multiply((double) 0.0F, (double) 1.0F, (double) 0.0F));
+                entityitem.setDeltaMovement(entityitem.getDeltaMovement().multiply(0.0F, 1.0F, 0.0F));
                 level.addFreshEntity(entityitem);
             }
 

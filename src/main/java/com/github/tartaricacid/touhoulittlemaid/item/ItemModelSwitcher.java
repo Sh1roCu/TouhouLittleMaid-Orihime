@@ -46,8 +46,7 @@ public class ItemModelSwitcher extends BlockItem {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
-        if (pInteractionTarget instanceof EntityMaid) {
-            EntityMaid maid = (EntityMaid) pInteractionTarget;
+        if (pInteractionTarget instanceof EntityMaid maid) {
             CompoundTag tag = pStack.getOrCreateTagElement(STORAGE_DATA_TAG);
             CompoundTag forgeData;
             if (tag.contains(FORGE_DATA_TAG, Tag.TAG_COMPOUND)) {
