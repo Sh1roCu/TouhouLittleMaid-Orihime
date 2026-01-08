@@ -1,11 +1,13 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.ride.MaidRideFindWaterTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidFindSitTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
@@ -60,5 +62,16 @@ public class TaskFishing implements IMaidTask {
     @Override
     public boolean workPointTask(EntityMaid maid) {
         return true;
+    }
+
+    @Override
+    public FunctionCallSwitchResult onFunctionCallSwitch(EntityMaid maid) {
+        if (maid.getMainHandItem()/*.canPerformAction(ItemAbilities.FISHING_ROD_CAST)*/.is(ConventionalItemTags.FISHING_ROD_TOOLS) || maid.getMainHandItem().getItem() instanceof FishingRodItem) {
+            return FunctionCallSwitchResult.NO_CHANGE;
+        }
+        if (TaskEquipUtil.tryEquipFromBackpack(maid, item -> item.is(ConventionalItemTags.FISHING_ROD_TOOLS) || item.getItem() instanceof FishingRodItem /*item.canPerformAction(ItemAbilities.FISHING_ROD_CAST))*/)) {
+            return FunctionCallSwitchResult.OK;
+        }
+        return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;
     }
 }
