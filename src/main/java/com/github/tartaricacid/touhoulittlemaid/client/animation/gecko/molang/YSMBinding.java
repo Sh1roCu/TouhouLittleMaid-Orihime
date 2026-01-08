@@ -32,6 +32,9 @@ public class YSMBinding extends ContextBinding {
         function("bone_pos", new BonePosition());
         function("bone_scale", new BoneScale());
 
+        function("first_order", new FirstOrderFunction());
+        function("second_order", new SecondOrderFunction());
+
         var("head_yaw", ctx -> ctx.data().netHeadYaw);
         var("head_pitch", ctx -> ctx.data().headPitch);
         var("weather", ctx -> getWeather(ctx.level()));
@@ -69,12 +72,12 @@ public class YSMBinding extends ContextBinding {
         livingEntityVar("knockback_resistance", ctx -> ctx.entity().getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
         livingEntityVar("luck", ctx -> ctx.entity().getAttributeValue(Attributes.LUCK));
 
-        livingEntityVar("block_reach", ctx -> ctx.entity().getAttributeValue(ReachEntityAttributes.REACH));
-        livingEntityVar("entity_reach", ctx -> ctx.entity().getAttributeValue(ReachEntityAttributes.REACH));
-        // livingEntityVar("swim_speed", ctx -> ctx.entity().getAttributeValue(NeoForgeMod.SWIM_SPEED));
-        // livingEntityVar("entity_gravity", ctx -> ctx.entity().getAttributeValue(Attributes.GRAVITY));
-        // livingEntityVar("step_height_addition", ctx -> ctx.entity().getAttributeValue(Attributes.STEP_HEIGHT) - 0.6);
-        // livingEntityVar("nametag_distance", ctx -> ctx.entity().getAttributeValue(NeoForgeMod.NAMETAG_DISTANCE));
+        livingEntityVar("block_reach", ctx -> ctx.entity().getAttributeValue(ReachEntityAttributes.REACH) + 4.5);
+        livingEntityVar("entity_reach", ctx -> ctx.entity().getAttributeValue(ReachEntityAttributes.REACH) + 3);
+        livingEntityVar("swim_speed", ctx -> 1 /*ctx.entity().getAttributeValue(NeoForgeMod.SWIM_SPEED)*/);
+        livingEntityVar("entity_gravity", ctx -> 0.08 /*ctx.entity().getAttributeValue(Attributes.GRAVITY)*/);
+        livingEntityVar("step_height_addition", ctx -> 0 /*ctx.entity().getAttributeValue(Attributes.STEP_HEIGHT) - 0.6*/);
+        livingEntityVar("nametag_distance", ctx -> 64 /*ctx.entity().getAttributeValue(NeoForgeMod.NAMETAG_DISTANCE)*/);
 
 
         // 女仆和 YSM 之间不一致的 molang，仅保留防止报错

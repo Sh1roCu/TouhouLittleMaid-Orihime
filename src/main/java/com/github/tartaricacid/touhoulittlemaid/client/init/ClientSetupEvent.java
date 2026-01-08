@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.init;
 import cn.sh1rocu.touhoulittlemaid.api.event.AddPackFindersEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.AnimationRegister;
+import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.magic.MagicCastingAnimationManager;
 import com.github.tartaricacid.touhoulittlemaid.client.event.ShowOptifineScreen;
 import com.github.tartaricacid.touhoulittlemaid.client.input.DismountBroomKey;
 import com.github.tartaricacid.touhoulittlemaid.client.input.STTChatKey;
@@ -34,6 +35,7 @@ public class ClientSetupEvent {
         MaidTipsOverlay.init();
         ShowOptifineScreen.checkOptifineIsLoaded();
         HardcodedAnimationManger.init();
+        MagicCastingAnimationManager.init();
         resisterKeyMappings();
         AddPackFindersEvent.CALLBACK.register(ClientSetupEvent::onAddPackFinders);
 

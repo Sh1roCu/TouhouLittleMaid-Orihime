@@ -1,12 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidExtinguishingTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -55,5 +57,16 @@ public class TaskExtinguishing implements IMaidTask {
 
     private boolean hasExtinguisher(EntityMaid maid) {
         return maid.getMainHandItem().getItem() == InitItems.EXTINGUISHER;
+    }
+
+    @Override
+    public FunctionCallSwitchResult onFunctionCallSwitch(EntityMaid maid) {
+        if (hasExtinguisher(maid)) {
+            return FunctionCallSwitchResult.NO_CHANGE;
+        }
+        if (TaskEquipUtil.tryEquipFromBackpack(maid, item -> item.getItem() == InitItems.EXTINGUISHER)) {
+            return FunctionCallSwitchResult.OK;
+        }
+        return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;
     }
 }
