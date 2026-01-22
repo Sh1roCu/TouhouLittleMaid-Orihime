@@ -59,7 +59,7 @@ public final class AltarOutputJS {
         maid.putString("id", key.toString());
         passengers.add(maid);
         data.put("Passengers", passengers);
-        return new EntityCraftingHelper.Output(InitEntities.MAID, data);
+        return new EntityCraftingHelper.Output(InitEntities.BOX, data);
     }
 
     @Info("Reborn the maid from film, the ingredient must have a film")

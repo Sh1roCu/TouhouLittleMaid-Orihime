@@ -1,0 +1,17 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "potionring"
+      ]
+    }
+  ],
+  "entities": [
+    "touhou_little_maid:maid"
+  ],
+  "slots": [
+    "hand/ring",
+    "offhand/ring"
+  ]
+}

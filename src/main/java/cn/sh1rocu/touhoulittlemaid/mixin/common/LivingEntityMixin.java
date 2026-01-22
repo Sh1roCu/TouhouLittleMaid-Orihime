@@ -8,7 +8,6 @@ import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.core.BlockPos;
@@ -90,7 +89,8 @@ public abstract class LivingEntityMixin extends Entity {
                     target = "Lnet/minecraft/world/entity/LivingEntity;setPose(Lnet/minecraft/world/entity/Pose;)V"
             )
     )
-    private void tlm$startSleeping(BlockPos pos, CallbackInfo ci, @Local BlockState state) {
+    private void tlm$startSleeping(BlockPos pos, CallbackInfo ci) {
+        BlockState state = this.level().getBlockState(pos);
         if (!(state.getBlock() instanceof BedBlock) && state.getBlock() instanceof IBedBlock bedBlock) {
             if (bedBlock.tlm$isBed(state, this.level(), pos, (LivingEntity) (Object) this))
                 this.level().setBlock(pos, state.setValue(BedBlock.OCCUPIED, true), 3);

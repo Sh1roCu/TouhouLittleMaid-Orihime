@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen;
 
-import com.github.tartaricacid.touhoulittlemaid.datagen.tag.DamageTypeGenerator;
-import com.github.tartaricacid.touhoulittlemaid.datagen.tag.EntityTypeGenerator;
+import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagDamage;
+import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagEntity;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDamage;
@@ -30,8 +30,8 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         // pack.addProvider(packOutput -> new GlobalLootModifier(packOutput, registries, TouhouLittleMaid.MOD_ID));
 
         // Tags
-        pack.addProvider(DamageTypeGenerator::new);
-        pack.addProvider(EntityTypeGenerator::new);
+        pack.addProvider(TagDamage::new);
+        pack.addProvider(TagEntity::new);
         pack.addProvider(TagBlock::new);
         pack.addProvider(TagItem::new);
     }

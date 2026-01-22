@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidHostilesSensor;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidNearestLivingEntitySensor;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidPickupEntitiesSensor;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockAction;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegister;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
@@ -59,9 +60,11 @@ public final class InitEntities {
 
     public static MemoryModuleType<List<Entity>> VISIBLE_PICKUP_ENTITIES = registerMemoryModuleType("visible_pickup_entities", new MemoryModuleType<>(Optional.empty()));
     public static MemoryModuleType<PositionTracker> TARGET_POS = registerMemoryModuleType("target_pos", new MemoryModuleType<>(Optional.empty()));
+    public static MemoryModuleType<MaidEdibleBlockAction> MAID_EDIBLE_BLOCK_ACTION = registerMemoryModuleType("maid_edible_block_action", new MemoryModuleType<>(Optional.empty()));
     public static SensorType<MaidNearestLivingEntitySensor> MAID_NEAREST_LIVING_ENTITY_SENSOR = registerSensorType("maid_nearest_living_entity", new SensorType<>(MaidNearestLivingEntitySensor::new));
     public static SensorType<MaidHostilesSensor> MAID_HOSTILES_SENSOR = registerSensorType("maid_hostiles", new SensorType<>(MaidHostilesSensor::new));
     public static SensorType<MaidPickupEntitiesSensor> MAID_PICKUP_ENTITIES_SENSOR = registerSensorType("maid_pickup_entities", new SensorType<>(MaidPickupEntitiesSensor::new));
+
     public static Schedule MAID_DAY_SHIFT_SCHEDULES = registerSchedule("maid_day_shift_schedules",
             // 06:00 ~ 18:00 工作
             // 18:00 ~ 22:00 娱乐
@@ -82,6 +85,7 @@ public final class InitEntities {
                     .changeActivityAt(12000, Activity.WORK)
                     .build()
     );
+
     public static Schedule MAID_ALL_DAY_SCHEDULES = registerSchedule("maid_all_day_schedules",
             new ScheduleBuilder(new Schedule()).changeActivityAt(0, Activity.WORK).build());
 

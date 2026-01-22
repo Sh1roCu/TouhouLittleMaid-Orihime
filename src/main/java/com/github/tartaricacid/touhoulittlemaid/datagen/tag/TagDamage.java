@@ -9,8 +9,8 @@ import net.minecraft.tags.DamageTypeTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DamageTypeGenerator extends DamageTypeTagsProvider {
-    public DamageTypeGenerator(FabricDataOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
+public class TagDamage extends DamageTypeTagsProvider {
+    public TagDamage(FabricDataOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
         super(pOutput, pLookupProvider);
     }
 

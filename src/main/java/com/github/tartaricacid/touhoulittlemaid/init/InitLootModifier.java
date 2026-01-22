@@ -4,6 +4,7 @@ import cn.sh1rocu.touhoulittlemaid.api.extension.ILootTableBuilder;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.datagen.LootTableGenerator;
 import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
+import com.github.tartaricacid.touhoulittlemaid.loot.SetInitMaidOwnerFunction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.core.Registry;
@@ -17,7 +18,8 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 public class InitLootModifier {
     private static final ResourceLocation LAST = new ResourceLocation(TouhouLittleMaid.MOD_ID, "last");
 
-    public static LootItemFunctionType BOARD_STATE_RANDOMLY = registerFunction("board_state_randomly", new LootItemFunctionType(new RandomBoardStateFunction.Serializer()));
+    public static final LootItemFunctionType BOARD_STATE_RANDOMLY = registerFunction("board_state_randomly", new LootItemFunctionType(new RandomBoardStateFunction.Serializer()));
+    public static final LootItemFunctionType SET_INIT_MAID_OWNER = registerFunction("set_init_maid_owner", new LootItemFunctionType(new SetInitMaidOwnerFunction.Serializer()));
 
     private static LootItemFunctionType registerFunction(String name, LootItemFunctionType function) {
         return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, new ResourceLocation(TouhouLittleMaid.MOD_ID, name), function);

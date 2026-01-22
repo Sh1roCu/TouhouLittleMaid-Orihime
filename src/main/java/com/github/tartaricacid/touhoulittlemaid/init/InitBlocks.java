@@ -29,6 +29,7 @@ public final class InitBlocks {
     public static Block COMPUTER = registerBlock("computer", new BlockComputer());
     public static Block SHRINE = registerBlock("shrine", new BlockShrine());
     public static Block SCARECROW = registerBlock("scarecrow", new BlockScarecrow());
+    public static Block SNACK_CABINET = registerBlock("snack_cabinet", new BlockSnackCabinet());
 
     public static BlockEntityType<TileEntityAltar> ALTAR_TE = registerBlockEntityType("altar", TileEntityAltar.TYPE);
     public static BlockEntityType<TileEntityStatue> STATUE_TE = registerBlockEntityType("statue", TileEntityStatue.TYPE);
@@ -44,6 +45,7 @@ public final class InitBlocks {
     public static BlockEntityType<TileEntityShrine> SHRINE_TE = registerBlockEntityType("shrine", TileEntityShrine.TYPE);
     public static BlockEntityType<TileEntityPicnicMat> PICNIC_MAT_TE = registerBlockEntityType("picnic_mat", TileEntityPicnicMat.TYPE);
     public static BlockEntityType<TileEntityMaidBed> MAID_BED_TE = registerBlockEntityType("maid_bed", TileEntityMaidBed.TYPE);
+    public static BlockEntityType<TileEntitySnackCabinet> SNACK_CABINET_TE = registerBlockEntityType("snack_cabinet", TileEntitySnackCabinet.TYPE);
 
     private static Block registerBlock(String id, Block block) {
         return Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(TouhouLittleMaid.MOD_ID, id), block);

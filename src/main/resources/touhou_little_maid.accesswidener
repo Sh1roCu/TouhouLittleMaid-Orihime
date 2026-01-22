@@ -46,3 +46,12 @@ accessible method net/minecraft/world/level/pathfinder/Path setDebug ([Lnet/mine
 
 accessible method net/minecraft/world/entity/LivingEntity setLastArmorItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V
 accessible method net/minecraft/world/entity/LivingEntity setLastHandItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V
+
+accessible class net/minecraft/world/entity/ai/behavior/CrossbowAttack$CrossbowState
+accessible field net/minecraft/world/entity/ai/behavior/CrossbowAttack attackDelay I
+accessible field net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowState Lnet/minecraft/world/entity/ai/behavior/CrossbowAttack$CrossbowState;
+accessible method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowAttack (Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/LivingEntity;)V
+extendable method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowAttack (Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/LivingEntity;)V
+
+accessible method net/minecraft/world/entity/LivingEntity spawnItemParticles (Lnet/minecraft/world/item/ItemStack;I)V
+extendable method net/minecraft/world/entity/LivingEntity spawnItemParticles (Lnet/minecraft/world/item/ItemStack;I)V

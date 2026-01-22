@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation;
 
 import cn.sh1rocu.touhoulittlemaid.util.block.BlockUtil;
 import cn.sh1rocu.touhoulittlemaid.util.forge.ForgeHooks;
+import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -111,7 +112,13 @@ public class MaidNodeEvaluator extends WalkNodeEvaluator {
         if (this.mob instanceof EntityMaid maid && maid.isWithinRestriction() && !maid.isWithinRestriction(pos)) {
             return BlockPathTypes.BLOCKED;
         }
+
         BlockState blockState = level.getBlockState(pos);
+        // 先检查方块是否在黑名单中
+        if (blockState.is(TagBlock.MAID_AVOID_BLOCK)) {
+            return BlockPathTypes.DAMAGE_OTHER;
+        }
+
         BlockPathTypes pathType = BlockUtil.getBlockPathType(blockState, level, pos, null);
         if (pathType != null) {
             return pathType;

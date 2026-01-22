@@ -6,7 +6,9 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "cn.sh1rocu.touhoulittlemaid.util.MixinPlugin",
   "mixins": [
+    "accessor.AbstractContainerMenuAccessor",
     "accessor.DimensionDataStorageAccessor",
+    "accessor.EntityAccessor",
     "accessor.ExperienceOrbAccessor",
     "accessor.LootContextParamSetsAccessor",
     "accessor.MobAccessor",
@@ -48,9 +50,11 @@
     "compat.tacz.AbstractGunItemMixin",
     "compat.tacz.GunAnimationStateContextMixin",
     "compat.tacz.LivingEntityShootMixin",
-    "compat.tacz.ModernKineticGunScriptAPIMixin"
+    "compat.tacz.ModernKineticGunScriptAPIMixin",
+    "compat.trinkets.TrinketInventoryMixin"
   ],
   "client": [
+    "accessor.AbstractContainerScreenAccessor",
     "accessor.ItemRendererAccessor",
     "accessor.LevelRendererAccessor",
     "accessor.MinecraftAccessor",

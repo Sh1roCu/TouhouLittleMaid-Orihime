@@ -65,6 +65,9 @@ public class NetworkHandler {
         registerS2CPacket(SyncFluidAmountMessage.ID, SyncFluidAmountMessage::handle);
         registerS2CPacket(OpenPlayerInventoryMessage.ID, OpenPlayerInventoryMessage::handle);
         registerS2CPacket(MaidAnimationMessage.ID, MaidAnimationMessage::handle);
+
+        registerS2CPacket(SyncBaubleMessage.ID,SyncBaubleMessage::handle);
+        registerS2CPacket(CuriosS2CUpdateMessage.ID,CuriosS2CUpdateMessage::handle);
     }
 
     public static void registerC2SPackets() {

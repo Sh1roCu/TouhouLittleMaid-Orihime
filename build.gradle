@@ -143,6 +143,12 @@ repositories {
             includeGroup("com.eliotlash.mclib")
         }
     }
+    maven { url 'https://maven.wispforest.io/releases' }
+    maven { url 'https://maven.su5ed.dev/releases' }
+    maven {
+        name = "Greenhouse Maven"
+        url = 'https://maven.greenhouse.lgbt/releases/'
+    }
 }
 
 configurations {
@@ -254,7 +260,7 @@ dependencies {
     modCompileOnly("maven.modrinth:sophisticated-core-(unofficial-fabric-port):T8bJQfWs")
 
     // 森罗物语：烹饪
-    modImplementation "maven.modrinth:kaleidoscope-cookery:1.0.1-fabric+mc1.20.1"
+    modImplementation "maven.modrinth:kaleidoscope-cookery-refabricated:1.2.0-fabric+mc1.20.1"
 
     // Improved Mobs
     modImplementation "maven.modrinth:improved-mobs:1.20.1-1.13.6-fabric"
@@ -290,6 +296,14 @@ dependencies {
     // 地图相关模组兼容
     modRuntimeOnly("maven.modrinth:xaeros-minimap:25.2.10_Fabric_1.20")
     modRuntimeOnly("maven.modrinth:xaeros-world-map:1.39.12_Fabric_1.20")
+
+    // 农夫乐事
+    modImplementation("vectorwing:FarmersDelight:1.20.1-2.4.1+refabricated") {
+        exclude(group: "net.fabricmc")
+    }
+    // 更多蛋糕
+    modImplementation("maven.modrinth:common-network:1.0.5-1.20.1-fabric")
+    modImplementation("maven.modrinth:just-more-cakes:1.18.1-fabric,1.20.1")
 
     // 不加就无法run的各种前置
     modImplementation "io.github.cottonmc:LibGui:8.1.1+1.20.1"

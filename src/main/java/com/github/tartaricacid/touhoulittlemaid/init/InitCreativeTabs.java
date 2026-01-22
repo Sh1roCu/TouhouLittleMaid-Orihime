@@ -83,6 +83,7 @@ public class InitCreativeTabs {
                 output.accept(MAID_BED);
                 output.accept(PICNIC_BASKET);
                 output.accept(MAID_BEACON);
+                output.accept(SNACK_CABINET);
                 output.accept(SHRINE);
                 output.accept(MODEL_SWITCHER);
                 output.accept(CHAIR_SHOW);
