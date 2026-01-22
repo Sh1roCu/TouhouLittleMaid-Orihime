@@ -19,9 +19,29 @@ import java.util.concurrent.CompletableFuture;
 public class TagItem extends FabricTagProvider<Item> {
     public static final TagKey<Item> GOHEI_ENCHANTABLE = createTagKey("gohei_enchantable");
     public static final TagKey<Item> MAID_PLANTABLE_SEEDS = createTagKey("maid_plantable_seeds");
+
+    /**
+     * 能够驯服女仆的物品
+     * <p>
+     * 默认已经把所有带有 <code>#forge:cakes</code> 和 <code>#c:cakes</code> 标签的物品加入其中了
+     */
     public static final TagKey<Item> MAID_TAMED_ITEM = createTagKey("maid_tamed_item");
+
+    /**
+     * 物品拥有经验修补后，女仆在吸收经验或者 P 点时能够进行修复；
+     * <p>
+     * 但是部分物品不能这么做，可将其加入此 tag 下
+     */
     public static final TagKey<Item> MAID_MENDING_BLOCKLIST_ITEM = createTagKey("maid_mending_blocklist_item");
+
+
+    /**
+     * 女仆和玩家类似，在穿戴拥有消失诅咒附魔的装备（或者饰品）后死亡，其对应的物品会直接消失；
+     * <p>
+     * 但是部分物品不能这么做，可将其加入此 tag 下
+     */
     public static final TagKey<Item> MAID_VANISHING_BLOCKLIST_ITEM = createTagKey("maid_vanishing_blocklist_item");
+
     /**
      * /**
      * 女仆进食黑名单，与配置文件协同作用，方便拓展兼容
@@ -35,8 +55,12 @@ public class TagItem extends FabricTagProvider<Item> {
     }
 
 
-    private static TagKey<Item> createTagKey(String name) {
+    public static TagKey<Item> createTagKey(String name) {
         return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name));
+    }
+
+    public static TagKey<Item> createTagKey(ResourceLocation resourceLocation) {
+        return TagKey.create(Registries.ITEM, resourceLocation);
     }
 
     @Override

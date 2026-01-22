@@ -59,6 +59,8 @@ public class NetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(OpenPlayerInventoryPackage.TYPE, OpenPlayerInventoryPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(MaidAnimationPackage.TYPE, MaidAnimationPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage::handle);
+        ClientPlayNetworking.registerGlobalReceiver(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(SyncBaublePackage.TYPE, SyncBaublePackage::handle);
     }
 
     public static void registerS2CPackets() {
@@ -87,6 +89,8 @@ public class NetworkHandler {
         registerS2CPacket(OpenPlayerInventoryPackage.TYPE, OpenPlayerInventoryPackage.STREAM_CODEC);
         registerS2CPacket(MaidAnimationPackage.TYPE, MaidAnimationPackage.STREAM_CODEC);
         registerS2CPacket(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage.STREAM_CODEC);
+        registerS2CPacket(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket.STREAM_CODEC);
+        registerS2CPacket(SyncBaublePackage.TYPE, SyncBaublePackage.STREAM_CODEC);
     }
 
     public static void registerC2SPackets() {

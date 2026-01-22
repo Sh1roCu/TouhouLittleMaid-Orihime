@@ -67,6 +67,7 @@ public final class InitSpecialItemRender implements ModelLoadingPlugin {
         addInHandModel(InitItems.EXTINGUISHER);
         addInHandModel(InitItems.CAMERA);
         addInHandModel(InitItems.MAID_BEACON);
+        addInHandModel(InitItems.SNACK_CABINET);
 
         addReplaceableModel(Items.TOTEM_OF_UNDYING, LIFE_POINT, () -> VanillaConfig.REPLACE_TOTEM_TEXTURE.get());
         addReplaceableModel(Items.EXPERIENCE_BOTTLE, POINT_ITEM, () -> VanillaConfig.REPLACE_XP_BOTTLE_TEXTURE.get());

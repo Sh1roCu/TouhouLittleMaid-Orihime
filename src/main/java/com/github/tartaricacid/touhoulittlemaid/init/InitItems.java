@@ -77,6 +77,7 @@ public final class InitItems {
     public static Item GOMOKU_BOARD_STATE = register("gomoku_board_state", new ItemBoardState());
     public static Item CCHESS_BOARD_STATE = register("cchess_board_state", new ItemBoardState());
     public static Item WCHESS_BOARD_STATE = register("wchess_board_state", new ItemBoardState());
+    public static Item SNACK_CABINET = register("snack_cabinet", new BlockItem(InitBlocks.SNACK_CABINET, new Item.Properties()));
     @SuppressWarnings("deprecation")
     public static Item MONSTER_LIST = register("monster_list", new ItemMonsterList());
 

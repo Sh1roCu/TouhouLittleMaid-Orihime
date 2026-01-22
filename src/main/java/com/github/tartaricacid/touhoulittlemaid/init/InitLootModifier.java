@@ -5,6 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.datagen.LootTableGenerator;
 import com.github.tartaricacid.touhoulittlemaid.loot.LootTableTypeCondition;
 import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
+import com.github.tartaricacid.touhoulittlemaid.loot.SetInitMaidOwnerFunction;
 import com.github.tartaricacid.touhoulittlemaid.loot.SetTankCountFunction;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -30,6 +31,9 @@ public class InitLootModifier {
 
     public static final LootItemFunctionType<? extends LootItemConditionalFunction> BOARD_STATE_RANDOMLY =
             registerFunction("board_state_randomly", new LootItemFunctionType<>(RandomBoardStateFunction.CODEC));
+
+    public static final LootItemFunctionType<? extends LootItemConditionalFunction> SET_INIT_MAID_OWNER_FUNCTION =
+            registerFunction("set_init_maid_owner", new LootItemFunctionType<>(SetInitMaidOwnerFunction.CODEC));
 
     private static LootItemConditionType registerCondition(String id, LootItemConditionType condition) {
         return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), condition);

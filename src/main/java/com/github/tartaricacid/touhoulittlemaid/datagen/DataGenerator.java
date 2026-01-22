@@ -32,8 +32,8 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(RecipeGenerator::new);
 
         // Tags
-        pack.addProvider(DamageTypeGenerator::new);
-        pack.addProvider(EntityTypeGenerator::new);
+        pack.addProvider(TagDamage::new);
+        pack.addProvider(TagEntity::new);
         pack.addProvider(TagBlock::new);
         pack.addProvider(TagEnchantment::new);
         pack.addProvider(TagItem::new);

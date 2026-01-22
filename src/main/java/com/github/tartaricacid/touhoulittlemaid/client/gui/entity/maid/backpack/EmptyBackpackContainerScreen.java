@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.backpack
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.BaubleButton;
+import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.EmptyBackpackContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -36,6 +37,11 @@ public class EmptyBackpackContainerScreen extends AbstractMaidContainerGui<Empty
     protected void initAdditionWidgets() {
         BaubleButton button = this.getBaubleButton(maid, leftPos, topPos);
         this.addRenderableWidget(button);
+
+        // 添加 trinkets 兼容按钮
+        if (TrinketsCompat.isLoadedOrEnable()) {
+            this.addRenderableWidget(this.getCuriosButton(maid, leftPos, topPos));
+        }
     }
 
     @Override

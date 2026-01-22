@@ -60,7 +60,8 @@ public abstract class LivingEntityMixin extends Entity {
                     target = "Lnet/minecraft/world/entity/LivingEntity;setPose(Lnet/minecraft/world/entity/Pose;)V"
             )
     )
-    private void tlm$startSleeping(BlockPos pos, CallbackInfo ci, @Local BlockState state) {
+    private void tlm$startSleeping(BlockPos pos, CallbackInfo ci) {
+        BlockState state = this.level().getBlockState(pos);
         if (!(state.getBlock() instanceof BedBlock) && state.getBlock() instanceof IBedBlock bedBlock) {
             if (bedBlock.tlm$isBed(state, this.level(), pos, (LivingEntity) (Object) this))
                 this.level().setBlock(pos, state.setValue(BedBlock.OCCUPIED, true), 3);

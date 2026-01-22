@@ -172,6 +172,18 @@ public class InitDataComponent {
                     .networkSynchronized(ItemBoardState.BoardStateInfo.STREAM_CODEC)
                     .build());
 
+    /**
+     * 有初始主人锁定标记时，会进行 UUID 判断，避免其他玩家释放他人的初始女仆。
+     * <p>
+     * 默认为 Util.NIL_UUID。
+     */
+    private static final String INIT_MAID_OWNER = "init_maid_owner";
+    public static final DataComponentType<UUID> INIT_MAID_OWNER_TAG =
+            register(INIT_MAID_OWNER, DataComponentType.<UUID>builder()
+                    .persistent(UUIDUtil.CODEC)
+                    .networkSynchronized(UUIDUtil.STREAM_CODEC)
+                    .build());
+
     private static <T extends DataComponentType<?>> T register(String id, T type) {
         return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), type);
     }

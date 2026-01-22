@@ -54,7 +54,6 @@
   ],
   "accessWidener": "touhou_little_maid.accesswidener",
   "depends": {
-    "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": [
       "1.21.1"

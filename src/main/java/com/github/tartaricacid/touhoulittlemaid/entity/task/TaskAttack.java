@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IAttackTask;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidMeleeAttack;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidUseShieldTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityExtinguishingAgent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -51,7 +52,7 @@ public class TaskAttack implements IAttackTask {
         BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(this::hasAssaultWeapon, IAttackTask::findFirstValidAttackTarget);
         BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create(target -> !hasAssaultWeapon(maid) || farAway(target, maid));
         BehaviorControl<Mob> moveToTargetTask = SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(0.6f);
-        BehaviorControl<Mob> attackTargetTask = MeleeAttack.create(20);
+        BehaviorControl<EntityMaid> attackTargetTask = MaidMeleeAttack.create(20);
         MaidUseShieldTask maidUseShieldTask = new MaidUseShieldTask();
 
         return Lists.newArrayList(
@@ -67,7 +68,7 @@ public class TaskAttack implements IAttackTask {
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
         BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(this::hasAssaultWeapon, IAttackTask::findFirstValidAttackTarget);
         BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create(target -> !hasAssaultWeapon(maid) || farAway(target, maid));
-        BehaviorControl<Mob> attackTargetTask = MeleeAttack.create(20);
+        BehaviorControl<EntityMaid> attackTargetTask = MaidMeleeAttack.create(20);
         MaidUseShieldTask maidUseShieldTask = new MaidUseShieldTask();
 
         return Lists.newArrayList(

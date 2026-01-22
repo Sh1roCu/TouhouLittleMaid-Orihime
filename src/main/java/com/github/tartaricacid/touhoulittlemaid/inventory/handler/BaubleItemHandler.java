@@ -196,6 +196,29 @@ public class BaubleItemHandler extends ItemStackHandler {
         return baubleItemsCache.contains(item);
     }
 
+    @ApiStatus.AvailableSince("1.4.7")
+    public void clearAll() {
+        this.stacks.clear();
+        this.baubles.clear();
+        this.baubleItemsCache.clear();
+    }
+
+    /**
+     * 获取需要同步到客户端饰品
+     */
+    @ApiStatus.AvailableSince("1.4.7")
+    public Int2ObjectSortedMap<ItemStack> getSyncClientBauble(EntityMaid maid) {
+        Int2ObjectSortedMap<ItemStack> sync = new Int2ObjectRBTreeMap<>();
+        for (var entry : baubles.int2ObjectEntrySet()) {
+            int index = entry.getIntKey();
+            ItemStack stack = getStackInSlot(index);
+            if (entry.getValue().syncClient(maid, stack)) {
+                sync.put(index, stack);
+            }
+        }
+        return sync;
+    }
+
     @Override
     public void readFromNbt(CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         if (tag.contains(TAG_INVENTORY)) {

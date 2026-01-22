@@ -16,6 +16,9 @@ import static com.github.tartaricacid.touhoulittlemaid.client.resource.GeckoMode
 
 /**
  * 在客户端加载额外的默认 Gecko 动画文件。
+ * <p>
+ * 注意：此事件执行的时间很早，甚至早于 LittleMaidExtension 注解的识别加载的时间点。<br>
+ * 故需要在模组初始化时，尽早监听此事件。
  */
 public class DefaultGeckoAnimationEvent {
     private final EnumMap<AnimationType, AnimationFile> animationFiles;

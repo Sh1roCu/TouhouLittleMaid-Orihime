@@ -1,0 +1,24 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "moonstone"
+      ]
+    }
+  ],
+  "entities": [
+    "touhou_little_maid:maid"
+  ],
+  "slots": [
+    "nightmare",
+    "medicine",
+    "necora",
+    "nanos",
+    "ncrdna",
+    "dna",
+    "crystal",
+    "stone",
+    "man"
+  ]
+}

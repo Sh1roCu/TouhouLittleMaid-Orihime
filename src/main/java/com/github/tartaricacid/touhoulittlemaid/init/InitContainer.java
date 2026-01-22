@@ -1,6 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.menu.CuriosContainer;
+import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.*;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidAIChatConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;
@@ -8,6 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.Picnic
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.task.AttackTaskConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.task.DefaultMaidTaskConfigContainer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +18,9 @@ import net.minecraft.world.inventory.MenuType;
 
 public final class InitContainer {
     public static void init() {
-
+        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.TRINKETS)) {
+            register("curios_container", CuriosContainer.TYPE);
+        }
     }
 
     public static final MenuType<EmptyBackpackContainer> MAID_EMPTY_BACKPACK_CONTAINER = register("maid_empty_backpack_container", EmptyBackpackContainer.TYPE);

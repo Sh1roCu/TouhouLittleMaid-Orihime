@@ -51,6 +51,8 @@ public final class InitEntitiesRender {
         BlockEntityRenderers.register(TileEntityShrine.TYPE, TileEntityShrineRenderer::new);
         BlockEntityRenderers.register(TileEntityPicnicMat.TYPE, PicnicMatRender::new);
         BlockEntityRenderers.register(TileEntityMaidBed.TYPE, TileEntityMaidBedRenderer::new);
+
+        BlockEntityRenderers.register(TileEntitySnackCabinet.TYPE, TileEntitySnackCabinetRenderer::new);
     }
 
     public static void onRegisterLayers() {

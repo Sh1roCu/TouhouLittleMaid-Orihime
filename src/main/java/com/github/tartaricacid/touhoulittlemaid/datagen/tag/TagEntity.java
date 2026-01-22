@@ -13,13 +13,31 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-public class EntityTypeGenerator extends FabricTagProvider<EntityType<?>> {
-    public static TagKey<EntityType<?>> MAID_FAIRY_ATTACK_GOAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "maid_fairy_attack_goal"));
-    public static TagKey<EntityType<?>> MAID_VEHICLE_ROTATE_BLOCKLIST = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "maid_vehicle_rotate_blocklist"));
+public class TagEntity extends FabricTagProvider<EntityType<?>> {
+    /**
+     * 女仆妖精的攻击目标，默认仅攻击铁傀儡和玩家
+     */
+    public static TagKey<EntityType<?>> MAID_FAIRY_ATTACK_GOAL = createTagKey("maid_fairy_attack_goal");
+
+    /**
+     * 女仆在骑乘时，为了朝向一致，会强制同步女仆朝向和当前骑乘实体朝向；
+     * <p>
+     * 但是部分模组（如机械动力）这么做反而会导致女仆异常旋转，故添加此标签
+     */
+    public static TagKey<EntityType<?>> MAID_VEHICLE_ROTATE_BLOCKLIST = createTagKey("maid_vehicle_rotate_blocklist");
+
     public static TagKey<EntityType<?>> CARRYON_ENTITY_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("carryon", "entity_blacklist"));
 
-    public EntityTypeGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public TagEntity(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.ENTITY_TYPE, lookupProvider);
+    }
+
+    private static TagKey<EntityType<?>> createTagKey(String name) {
+        return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name));
+    }
+
+    private static TagKey<EntityType<?>> createTagKey(ResourceLocation id) {
+        return TagKey.create(Registries.ENTITY_TYPE, id);
     }
 
     @Override
