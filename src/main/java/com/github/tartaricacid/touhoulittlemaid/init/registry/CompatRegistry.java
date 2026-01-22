@@ -20,7 +20,8 @@ public final class CompatRegistry {
         checkModLoad(PATCHOULI, PatchouliCompat::init);
         checkModLoad(CARRY_ON, BlackList::addBlackList);
         checkModLoad(SBACKPACK, SBackpackCompat::init);
-        checkModLoad(TRINKETS, TrinketsCompat::init);
+        // TODO: FIXME
+        // checkModLoad(TRINKETS, TrinketsCompat::init);
     }
 
     private static void checkModLoad(String modId, Runnable runnable) {

@@ -44,7 +44,15 @@ public class CuriosContainer extends MaidMainContainer {
     public CuriosContainer(int id, Inventory inventory, int entityId) {
         super(TYPE, id, inventory, entityId);
         this.curiosHandler = TrinketsApi.getTrinketComponent(this.maid);
-        int curiosSlotsCount = curiosHandler.map(cap -> cap.getInventory().values().stream().toList().size()).orElse(0);
+        int curiosSlotsCount = curiosHandler.map(cap -> {
+            int slots = 0;
+            for (var map : cap.getInventory().values()) {
+                for (var trinketsInv : map.values()) {
+                    slots += trinketsInv.getSlotType().getAmount();
+                }
+            }
+            return slots;
+        }).orElse(0);
         this.maxPages = (curiosSlotsCount - 1) / SLOTS_PER_PAGE;
         this.page = Math.min(page, this.maxPages);
         // 延迟添加 Curios 物品栏
