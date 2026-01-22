@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.getResourceLocation;
 
 public class CuriosS2CUpdateMessage {
-    public static final ResourceLocation ID = getResourceLocation("curios_s2c_update");
+    public static final ResourceLocation ID = getResourceLocation("curios_update");
 
     public static FriendlyByteBuf encode(int page) {
         FriendlyByteBuf buf = PacketByteBufs.create();
