@@ -24,8 +24,8 @@ import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
-import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.slashblade.SlashBladeCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.event.YsmMaidClientTickEvent;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
@@ -932,7 +932,8 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     @Override
     public boolean isWithinMeleeAttackRange(LivingEntity target) {
         int attackPlusDistance = this.favorabilityManager.getAttackDistancePlusByPoint(this.getFavorability());
-        double attackDistance = this.getAttributeValue(ReachEntityAttributes.REACH) + attackPlusDistance;
+        // Forge的属性默认值为3，这个mod的默认值为0，需要+3
+        double attackDistance = this.getAttributeValue(ReachEntityAttributes.REACH) + 3 + attackPlusDistance;
         return this.distanceTo(target) < attackDistance;
     }
 
