@@ -125,7 +125,7 @@ public class JmcEdible implements IMaidEdibleBlock {
             level.removeBlock(pos, false);
         }
 
-        maid.spawnItemParticles(stack, 8);
+        maid.spawnFoodParticles(stack, 8);
         maid.playSound(SoundEvents.GENERIC_EAT);
     }
 

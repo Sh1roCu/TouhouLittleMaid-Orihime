@@ -2005,7 +2005,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
 
     @Override
     protected void updateUsingItem(ItemStack usingItem) {
-
         // 处理问题 https://github.com/TartaricAcid/TouhouLittleMaid/issues/1003
         // 检测女仆是否处于异常的进食状态：正在使用物品但手中物品不是可正常使用状态下的物品
         if (this.isUsingItem()) {
@@ -2857,8 +2856,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         this.entityData.set(DATA_IS_AIMING, aiming);
     }
 
-    @Override
-    public void spawnItemParticles(ItemStack stack, int amount) {
+    public void spawnFoodParticles(ItemStack stack, int amount) {
         for (int i = 0; i < amount; ++i) {
             Vec3 speed = new Vec3((this.random.nextFloat() - 0.5) * 0.1, Math.random() * 0.1 + 0.1, 0.0);
             speed = speed.xRot(-this.getXRot() * Mth.DEG_TO_RAD);

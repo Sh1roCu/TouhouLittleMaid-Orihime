@@ -60,7 +60,7 @@ public class FarmersDelightEdible implements IMaidEdibleBlock {
                 maid.destroyBlock(pos);
             }
         }
-        maid.spawnItemParticles(stack, 8);
+        maid.spawnFoodParticles(stack, 8);
         maid.playSound(SoundEvents.GENERIC_EAT);
         return true;
     }
