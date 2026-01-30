@@ -2836,8 +2836,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         this.entityData.set(DATA_IS_AIMING, aiming);
     }
 
-    @Override
-    public void spawnItemParticles(ItemStack stack, int amount) {
+    public void spawnFoodParticles(ItemStack stack, int amount) {
         for (int i = 0; i < amount; ++i) {
             Vec3 speed = new Vec3((this.random.nextFloat() - 0.5) * 0.1, Math.random() * 0.1 + 0.1, 0.0);
             speed = speed.xRot(-this.getXRot() * Mth.DEG_TO_RAD);
