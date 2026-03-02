@@ -45,7 +45,8 @@ public class InitLootModifier {
                     else if (key.equals(BuiltInLootTables.WOODLAND_MANSION))
                         builder.withPool(LootPool.lootPool()
                                 .add(LootTableReference.lootTableReference(LootTableGenerator.VERY_RARE_BAUBLE))
-                                .add(LootTableReference.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT))
+                        );
                     else if (key.equals(BuiltInLootTables.SIMPLE_DUNGEON))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.FURNACE_OR_CRAFTING_TABLE_BACKPACK)));
                     else if (key.equals(BuiltInLootTables.ABANDONED_MINESHAFT))
@@ -57,7 +58,8 @@ public class InitLootModifier {
                     else if (key.equals(BuiltInLootTables.STRONGHOLD_LIBRARY))
                         builder.withPool(LootPool.lootPool()
                                 .add(LootTableReference.lootTableReference(LootTableGenerator.SHRINE_LESS))
-                                .add(LootTableReference.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE)));
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE))
+                        );
                     else if (key.equals(BuiltInLootTables.ANCIENT_CITY))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.SHRINE_LESS)));
                     else if (key.equals(BuiltInLootTables.BASTION_TREASURE))
