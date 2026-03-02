@@ -46,50 +46,52 @@ public class InitLootModifier {
     public static void init() {
         // Global Modifier
         LootTableEvents.MODIFY.register((key, builder, source, provider) -> {
+                    // all chests
                     if (key.location().toString().startsWith("minecraft:chests"))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.CHEST_POWER_POINT)));
 
-                    if (key == BuiltInLootTables.SPAWN_BONUS_CHEST)
+                    if (key.equals(BuiltInLootTables.SPAWN_BONUS_CHEST))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.SPAWN_BONUS)));
-                    if (key == BuiltInLootTables.VILLAGE_TEMPLE)
+                    else if (key.equals(BuiltInLootTables.VILLAGE_TEMPLE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.NORMAL_BAUBLE)));
-                    if (key == BuiltInLootTables.VILLAGE_CARTOGRAPHER)
+                    else if (key.equals(BuiltInLootTables.VILLAGE_CARTOGRAPHER))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE)));
-                    if (key == BuiltInLootTables.DESERT_PYRAMID)
+                    else if (key.equals(BuiltInLootTables.DESERT_PYRAMID))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.RARE_BAUBLE)));
-                    if (key == BuiltInLootTables.JUNGLE_TEMPLE)
+                    else if (key.equals(BuiltInLootTables.JUNGLE_TEMPLE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.RARE_BAUBLE)));
-                    if (key == BuiltInLootTables.WOODLAND_MANSION)
-                        builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.VERY_RARE_BAUBLE)));
-                    if (key == BuiltInLootTables.SIMPLE_DUNGEON)
+                    else if (key.equals(BuiltInLootTables.WOODLAND_MANSION))
+                        builder.withPool(LootPool.lootPool()
+                                .add(NestedLootTable.lootTableReference(LootTableGenerator.VERY_RARE_BAUBLE))
+                                .add(NestedLootTable.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT))
+                        );
+                    else if (key.equals(BuiltInLootTables.SIMPLE_DUNGEON))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.FURNACE_OR_CRAFTING_TABLE_BACKPACK)));
-                    if (key == BuiltInLootTables.ABANDONED_MINESHAFT)
+                    else if (key.equals(BuiltInLootTables.ABANDONED_MINESHAFT))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.NORMAL_BACKPACK)));
-                    if (key == BuiltInLootTables.NETHER_BRIDGE)
+                    else if (key.equals(BuiltInLootTables.NETHER_BRIDGE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.TANK_BACKPACK)));
-                    if (key == BuiltInLootTables.STRONGHOLD_CORRIDOR)
+                    else if (key.equals(BuiltInLootTables.STRONGHOLD_CORRIDOR))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.ENDER_CHEST_BACKPACK)));
-                    if (key == BuiltInLootTables.STRONGHOLD_LIBRARY)
+                    else if (key.equals(BuiltInLootTables.STRONGHOLD_LIBRARY))
                         builder.withPool(LootPool.lootPool()
                                 .add(NestedLootTable.lootTableReference(LootTableGenerator.SHRINE_LESS))
                                 .add(NestedLootTable.lootTableReference(LootTableGenerator.RANDOM_BOARD_STATE))
                         );
-                    if (key == BuiltInLootTables.ANCIENT_CITY)
+                    else if (key.equals(BuiltInLootTables.ANCIENT_CITY))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.SHRINE_LESS)));
-                    if (key == BuiltInLootTables.BASTION_TREASURE)
+                    else if (key.equals(BuiltInLootTables.BASTION_TREASURE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.SHRINE_LESS)));
-                    if (key == BuiltInLootTables.END_CITY_TREASURE)
+                    else if (key.equals(BuiltInLootTables.END_CITY_TREASURE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.SHRINE_MORE)));
 
-                    if (key == BuiltInLootTables.BURIED_TREASURE)
+                    else if (key.equals(BuiltInLootTables.BURIED_TREASURE))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.MAID_BURIED_TREASURE)));
 
-                    if (key == BuiltInLootTables.PILLAGER_OUTPOST)
-                        builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
-                    if (key == BuiltInLootTables.WOODLAND_MANSION)
+                    else if (key.equals(BuiltInLootTables.PILLAGER_OUTPOST))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
 
-                    if (key == BuiltInLootTables.FISHING_JUNK)
+                    else if (key.equals(BuiltInLootTables.FISHING_JUNK))
                         builder.withPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(LootTableGenerator.FISHING_POWER_POINT)));
                 }
         );
