@@ -43,8 +43,10 @@ public class InitLootModifier {
                     else if (key.equals(BuiltInLootTables.JUNGLE_TEMPLE))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.RARE_BAUBLE)));
                     else if (key.equals(BuiltInLootTables.WOODLAND_MANSION))
-                        builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.VERY_RARE_BAUBLE)));
-                    if (key.equals(BuiltInLootTables.SIMPLE_DUNGEON))
+                        builder.withPool(LootPool.lootPool()
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.VERY_RARE_BAUBLE))
+                                .add(LootTableReference.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
+                    else if (key.equals(BuiltInLootTables.SIMPLE_DUNGEON))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.FURNACE_OR_CRAFTING_TABLE_BACKPACK)));
                     else if (key.equals(BuiltInLootTables.ABANDONED_MINESHAFT))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.NORMAL_BACKPACK)));
@@ -67,8 +69,6 @@ public class InitLootModifier {
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.MAID_BURIED_TREASURE)));
 
                     else if (key.equals(BuiltInLootTables.PILLAGER_OUTPOST))
-                        builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
-                    else if (key.equals(BuiltInLootTables.WOODLAND_MANSION))
                         builder.withPool(LootPool.lootPool().add(LootTableReference.lootTableReference(LootTableGenerator.STRUCTURE_SPAWN_MAID_GIFT)));
 
                     else if (key.equals(BuiltInLootTables.FISHING_JUNK))
