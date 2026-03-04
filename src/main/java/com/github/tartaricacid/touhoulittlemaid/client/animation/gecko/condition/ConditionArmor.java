@@ -91,7 +91,7 @@ public class ConditionArmor {
         List<ResourceLocation> idListTest = idTest.get(slot);
         ItemStack item = maid.asEntity().getItemBySlot(slot);
         ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(item.getItem());
-        if (registryName == BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (registryName.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return EMPTY;
         }
         if (idListTest.contains(registryName)) {

@@ -59,7 +59,7 @@ public class ConditionalVehicle {
             return EMPTY;
         }
         ResourceLocation registryName = BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType());
-        if (registryName == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (registryName.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             return EMPTY;
         }
         if (idTest.contains(registryName)) {

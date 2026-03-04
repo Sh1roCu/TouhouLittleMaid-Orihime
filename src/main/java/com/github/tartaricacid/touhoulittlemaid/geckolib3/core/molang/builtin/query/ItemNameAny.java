@@ -25,7 +25,7 @@ public class ItemNameAny extends LivingEntityFunction {
         }
 
         ResourceLocation actualId = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-        if (actualId == BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (actualId.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return false;
         }
 

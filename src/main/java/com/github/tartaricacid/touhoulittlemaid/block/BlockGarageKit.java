@@ -166,7 +166,7 @@ public class BlockGarageKit extends Block implements EntityBlock, IBlock {
         }
         EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack);
         ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
-        if (key == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (key.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 

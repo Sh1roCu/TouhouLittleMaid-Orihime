@@ -87,7 +87,7 @@ public class ConditionalUse {
         }
         ItemStack itemInHand = maid.asEntity().getItemInHand(hand);
         ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(itemInHand.getItem());
-        if (registryName == BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (registryName.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return EMPTY;
         }
         if (idTest.contains(registryName)) {

@@ -25,7 +25,7 @@ public class GunBaseAnimation {
             return false;
         }
         ResourceLocation gunId = BuiltInRegistries.ITEM.getKey(handItem.getItem());
-        if (gunId == BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (gunId.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return false;
         }
 
