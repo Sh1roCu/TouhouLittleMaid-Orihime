@@ -59,7 +59,7 @@ public final class EntityCraftingHelper {
     public static JsonObject writeEntityData(Output output) {
         JsonObject json = new JsonObject();
         ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(output.type);
-        if (key == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (key.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             throw new JsonParseException("Entity Type Not Found: " + output.type);
         }
         json.addProperty(TYPE_TAG, key.toString());

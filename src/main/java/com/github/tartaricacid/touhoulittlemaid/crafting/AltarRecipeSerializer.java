@@ -55,7 +55,7 @@ public class AltarRecipeSerializer implements RecipeSerializer<AltarRecipe> {
     @Override
     public void toNetwork(FriendlyByteBuf buffer, AltarRecipe recipe) {
         ResourceLocation name = BuiltInRegistries.ENTITY_TYPE.getKey(recipe.getEntityType());
-        if (name == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (name.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             throw new JsonParseException("Entity Type Tag Not Found");
         }
         buffer.writeUtf(name.toString());

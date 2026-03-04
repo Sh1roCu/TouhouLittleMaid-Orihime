@@ -387,7 +387,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
 
     public static boolean canInsertItem(ItemStack stack) {
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (key != BuiltInRegistries.ITEM.getDefaultKey() && MaidConfig.MAID_BACKPACK_BLACKLIST.get().contains(key.toString())) {
+        if (!key.equals(BuiltInRegistries.ITEM.getDefaultKey()) && MaidConfig.MAID_BACKPACK_BLACKLIST.get().contains(key.toString())) {
             return false;
         }
         return stack.getItem().canFitInsideContainerItems();

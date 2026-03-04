@@ -31,7 +31,7 @@ public final class CopyEntityIdEvent {
     @Environment(EnvType.CLIENT)
     private static void copyEntityId(Player player, Entity target) {
         ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
-        if (key == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (key.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             return;
         }
         Minecraft.getInstance().keyboardHandler.setClipboard(key.toString());

@@ -50,7 +50,7 @@ public final class AltarOutputJS {
     @Info("Spawn a new maid with a cake box")
     public static EntityCraftingHelper.Output spawnMaidWithBox() {
         ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(InitEntities.MAID);
-        if (key == BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) {
+        if (key.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
             throw new JsonParseException("Maid Entity Type Not Found");
         }
         CompoundTag data = new CompoundTag();

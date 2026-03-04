@@ -92,7 +92,7 @@ public class EntityDanmaku extends ThrowableProjectile {
                 return;
             }
             ResourceLocation registryName = BuiltInRegistries.ENTITY_TYPE.getKey(hit.getType());
-            if (registryName != BuiltInRegistries.ENTITY_TYPE.getDefaultKey() && MaidConfig.MAID_RANGED_ATTACK_IGNORE.get().contains(registryName.toString())) {
+            if (!registryName.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey()) && MaidConfig.MAID_RANGED_ATTACK_IGNORE.get().contains(registryName.toString())) {
                 this.discard();
                 return;
             }

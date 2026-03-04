@@ -48,7 +48,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getHelmet() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getItemBySlot(EquipmentSlot.HEAD).getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";
@@ -62,7 +62,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getChestPlate() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getItemBySlot(EquipmentSlot.CHEST).getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";
@@ -76,7 +76,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getLeggings() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getItemBySlot(EquipmentSlot.LEGS).getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";
@@ -90,7 +90,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getBoots() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getItemBySlot(EquipmentSlot.FEET).getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";
@@ -104,7 +104,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getItemMainhand() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getMainHandItem().getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";
@@ -118,7 +118,7 @@ public final class EntityMaidWrapper implements IMaidData {
     @Override
     public String getItemOffhand() {
         ResourceLocation res = BuiltInRegistries.ITEM.getKey(maid.asEntity().getOffhandItem().getItem());
-        if (res != BuiltInRegistries.ITEM.getDefaultKey()) {
+        if (!res.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             return res.toString();
         }
         return "";

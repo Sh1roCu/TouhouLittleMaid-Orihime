@@ -150,7 +150,7 @@ public final class ItemsUtil {
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
         Preconditions.checkNotNull(key);
         // key不会返回null, 手动检测并抛出NPE
-        if (key == BuiltInRegistries.ITEM.getDefaultKey())
+        if (key.equals(BuiltInRegistries.ITEM.getDefaultKey()))
             throw new NullPointerException("item can't be default key");
         return key.toString();
     }
@@ -164,7 +164,7 @@ public final class ItemsUtil {
         Item value = BuiltInRegistries.ITEM.get(resourceLocation);
         Preconditions.checkNotNull(value);
         // key不会返回null, 手动检测并抛出NPE
-        if (resourceLocation == BuiltInRegistries.ITEM.getDefaultKey())
+        if (resourceLocation.equals(BuiltInRegistries.ITEM.getDefaultKey()))
             throw new NullPointerException("item can't be default key");
 
         return new ItemStack(value);
