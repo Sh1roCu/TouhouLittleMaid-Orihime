@@ -101,7 +101,7 @@ repositories {
     }
     maven {
         name = "CottonMC"
-        url = "https://server.bbkr.space/artifactory/libs-release"
+        url = "https://alexiil.uk/mirrors/server.bbkr.space/maven/"
     }
     maven {
         url = "https://maven.modmuss50.me/"
@@ -306,7 +306,7 @@ dependencies {
     modImplementation("maven.modrinth:just-more-cakes:1.18.1-fabric,1.20.1")
 
     // 不加就无法run的各种前置
-    modImplementation "io.github.cottonmc:LibGui:8.1.1+1.20.1"
+    modImplementation "io.github.cottonmc:LibGui:8.0.2+1.20"
     modImplementation "me.zeroeightsix:fiber:0.23.0-SNAPSHOT"
 }
 
