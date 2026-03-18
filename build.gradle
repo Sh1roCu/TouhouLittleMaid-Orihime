@@ -291,7 +291,8 @@ dependencies {
     modImplementation("maven.modrinth:just-more-cakes:1.19.2-fabric,1.21.1")
 
     // 不加就无法run的各种前置
-    modImplementation "io.github.cottonmc:LibGui:11.1.0+1.21"
+    modImplementation "libs:LibGui:11.1.0+1.21"
+    modImplementation "libs:Jankson-Fabric:8.0.0+j1.2.3"
     modImplementation "me.zeroeightsix:fiber:0.23.0-SNAPSHOT"
 }
 
