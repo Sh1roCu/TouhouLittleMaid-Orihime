@@ -1,6 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
-import cn.sh1rocu.touhoulittlemaid.api.event.ProjectileImpactEvent;
+import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -52,10 +52,8 @@ public abstract class AbstractArrowMixin extends Entity {
         // note: Forge additionally checks that the result != MISS before running any logic.
         // this is likely left over from an earlier version.
         // this behavior is intentionally not replicated because 1. compat and 2. it probably doesn't matter.
-        ProjectileImpactEvent event = new ProjectileImpactEvent(arrow, result);
-        ProjectileImpactEvent.CALLBACK.invoker().post(event);
 
-        boolean canceled = switch (event.getResult()) {
+        boolean canceled = switch (EventHooks.onProjectileImpactResult(arrow, result)) {
             case SKIP_ENTITY -> {
                 if (result.getType() != HitResult.Type.ENTITY) {
                     // didn't hit an entity, do vanilla logic

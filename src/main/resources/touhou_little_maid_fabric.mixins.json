@@ -44,6 +44,7 @@
     "common.ServerLevelMixin$EntityCallbacksMixin",
     "common.ServerPacksSourceMixin",
     "common.ShapedRecipeMixin",
+    "common.ShulkerBulletMixin",
     "common.ThrowableProjectileMixin",
     "compat.carryon.ListHandlerMixin",
     "compat.improvedmobs.EventHandlerMixin",

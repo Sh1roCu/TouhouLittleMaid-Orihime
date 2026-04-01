@@ -8,7 +8,7 @@ import net.minecraft.world.phys.HitResult;
 public class ProjectileImpactEvent extends CancellableEvent {
     private final HitResult ray;
     private final Projectile projectile;
-    private ImpactResult result;
+    private ImpactResult result = ImpactResult.DEFAULT;
 
     public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
         for (final Callback callback : callbacks)
@@ -18,7 +18,6 @@ public class ProjectileImpactEvent extends CancellableEvent {
     public ProjectileImpactEvent(Projectile projectile, HitResult ray) {
         this.ray = ray;
         this.projectile = projectile;
-        this.result = ImpactResult.DEFAULT;
     }
 
     public HitResult getRayTraceResult() {
@@ -29,8 +28,12 @@ public class ProjectileImpactEvent extends CancellableEvent {
         return projectile;
     }
 
-    public ImpactResult getResult() {
+    public ImpactResult getImpactResult() {
         return result;
+    }
+
+    public void setImpactResult(ImpactResult result) {
+        this.result = result;
     }
 
     public interface Callback {

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ShulkerBullet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -51,8 +52,15 @@ public class EventHooks {
     }
 
     public static boolean onProjectileImpact(Projectile projectile, HitResult ray) {
+        return onProjectileImpactResult(projectile, ray) != ProjectileImpactEvent.ImpactResult.DEFAULT;
+    }
+
+    public static ProjectileImpactEvent.ImpactResult onProjectileImpactResult(Projectile projectile, HitResult ray) {
         ProjectileImpactEvent event = new ProjectileImpactEvent(projectile, ray);
         ProjectileImpactEvent.CALLBACK.invoker().post(event);
-        return event.isCanceled();
+        if (event.isCanceled())
+            return ProjectileImpactEvent.ImpactResult.SKIP_ENTITY;
+
+        return event.getImpactResult();
     }
 }
