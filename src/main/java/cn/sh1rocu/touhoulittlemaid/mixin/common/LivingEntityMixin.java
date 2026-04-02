@@ -73,7 +73,7 @@ public abstract class LivingEntityMixin extends Entity {
             ci.cancel();
     }
 
-    @ModifyVariable(method = "actuallyHurt", at = @At(value = "LOAD", ordinal = 5), index = 2)
+    @ModifyVariable(method = "actuallyHurt", at = @At(value = "LOAD", ordinal = 6), index = 2)
     private float tlm$livingDamageEvent(float value, DamageSource pDamageSource) {
         LivingDamageEvent event = new LivingDamageEvent((LivingEntity) (Object) this, pDamageSource, value);
         LivingDamageEvent.CALLBACK.invoker().onLivingDamage(event);
