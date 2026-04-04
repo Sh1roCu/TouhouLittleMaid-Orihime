@@ -1,8 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen;
 
+import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagDamage;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagEntity;
-import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDamage;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -34,6 +34,10 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(TagEntity::new);
         pack.addProvider(TagBlock::new);
         pack.addProvider(TagItem::new);
+
+        // Dynamic data
+        // DamageType etc.
+        pack.addProvider(RegistryDataGenerator::new);
     }
 
     @Override
