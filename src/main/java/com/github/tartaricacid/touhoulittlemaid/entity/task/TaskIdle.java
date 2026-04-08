@@ -69,7 +69,8 @@ public class TaskIdle implements IMaidTask {
         if (maid.isOwnedBy(entity)) {
             return true;
         }
-        if (entity instanceof EntityMaid maidOther && maid.getOwner() != null) {
+        if (entity instanceof EntityMaid && maid.getOwner() != null) {
+            EntityMaid maidOther = (EntityMaid) entity;
             return maid.getOwner().equals(maidOther.getOwner());
         }
         return false;
@@ -79,5 +80,10 @@ public class TaskIdle implements IMaidTask {
     public FunctionCallSwitchResult onFunctionCallSwitch(EntityMaid maid) {
         boolean moved = TaskEquipUtil.putMainHandBack(maid);
         return moved ? FunctionCallSwitchResult.OK : FunctionCallSwitchResult.NO_CHANGE;
+    }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Stay idle and do not perform any work";
     }
 }

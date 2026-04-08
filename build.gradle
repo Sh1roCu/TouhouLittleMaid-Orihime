@@ -182,14 +182,12 @@ dependencies {
     modCompileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
 
-    // MP3 音频解码库，暂时不需要
-    // mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
-    // mcLib "com.googlecode.soundlibs:jlayer:1.0.1.4"
-    // mcLib "com.googlecode.soundlibs:tritonus-share:0.3.7.4"
-
     // Opus 音频解码库
     mcLib("org.gagravarr:vorbis-java-core:0.8")
     mcLib("io.github.jaredmdobson:concentus:1.0.2")
+
+    // MP3 音频解码库
+    mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
 
     // YAML 库
     mcLib("org.yaml:snakeyaml:2.4")
@@ -241,8 +239,11 @@ dependencies {
 
     // Simple Hats
     modImplementation("maven.modrinth:simple-hats:SDPZOmWZ")
-    // trinkets3.7.2在dev环境会出现refmap映射错误，回退版本
-    modImplementation "dev.emi:trinkets:3.7.1"
+    modImplementation("maven.modrinth:accessories-tc-layer:3.8.1+beta.14")
+    modRuntimeOnly("maven.modrinth:potion-ring-reforged:SXRMS0Le")
+
+    // Accessories
+    modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
 
     // KubeJS
     modImplementation("dev.latvian.mods:kubejs-fabric:2001.6.5-build.16")
@@ -356,6 +357,16 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         it.options.release.set(targetJavaVersion)
     }
+}
+
+tasks.withType(Jar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Zip).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Copy).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 java {

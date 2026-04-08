@@ -47,4 +47,9 @@ public class TaskBoardGames implements IMaidTask {
     public boolean canSitInJoy(EntityMaid maid, String joyType) {
         return Type.GOMOKU.getTypeName().equals(joyType);
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Play gomuku/Chess/Xiangqi with user";
+    }
 }

@@ -61,6 +61,7 @@ public class CacheScreen<T extends LivingEntity, E extends IModelInfo> extends S
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
 
         if (modelInfos.isEmpty()) {

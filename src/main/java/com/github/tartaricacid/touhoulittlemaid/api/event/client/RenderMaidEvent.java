@@ -8,6 +8,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 @Environment(EnvType.CLIENT)
 public class RenderMaidEvent extends CancellableEvent {
     private final IMaid maid;
@@ -26,11 +28,11 @@ public class RenderMaidEvent extends CancellableEvent {
         return modelData;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(RenderMaidEvent e);

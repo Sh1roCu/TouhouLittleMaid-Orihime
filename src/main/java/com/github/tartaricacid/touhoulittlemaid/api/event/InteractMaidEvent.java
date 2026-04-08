@@ -8,6 +8,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 这个事件会在玩家主手右击女仆时进行触发。<br>
  * 这个事件是 {@link #isCanceled() canceled}，如果取消，那么后续的所有右击事件判定都会被取消。<br>
@@ -43,12 +45,12 @@ public class InteractMaidEvent extends CancellableEvent {
         return world;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
                 for (Callback callback : callbacks) {
                     callback.post(event);
                 }
             }
-    );
+            , HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(InteractMaidEvent event);

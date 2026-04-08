@@ -80,7 +80,6 @@ public class LanguageLoader {
             readLanguages(langData, stream, newFormat);
         } catch (IOException ioe) {
             TouhouLittleMaid.LOGGER.warn("Failed to load language file: {}", filePath);
-            ioe.printStackTrace();
         }
     }
 

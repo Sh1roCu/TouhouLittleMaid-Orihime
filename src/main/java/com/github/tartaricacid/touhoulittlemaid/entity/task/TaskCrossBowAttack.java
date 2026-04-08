@@ -140,4 +140,9 @@ public class TaskCrossBowAttack implements IRangedAttackTask {
     private boolean farAway(LivingEntity target, EntityMaid maid) {
         return maid.distanceTo(target) > this.searchRadius(maid);
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Use crossbow attack entities";
+    }
 }

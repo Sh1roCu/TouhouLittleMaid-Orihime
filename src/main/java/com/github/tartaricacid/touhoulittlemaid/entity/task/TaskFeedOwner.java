@@ -121,4 +121,9 @@ public class TaskFeedOwner implements IFeedTask {
     private boolean isHarmfulEffect(MobEffectInstance effect) {
         return effect.getEffect().getCategory() == MobEffectCategory.HARMFUL;
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Feed the user when they are hungry";
+    }
 }

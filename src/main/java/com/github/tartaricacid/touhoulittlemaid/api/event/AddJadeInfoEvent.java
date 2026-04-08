@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 public class AddJadeInfoEvent {
     private final EntityMaid maid;
     private final ITooltip tooltip;
@@ -29,11 +31,11 @@ public class AddJadeInfoEvent {
         return pluginConfig;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(AddJadeInfoEvent event);

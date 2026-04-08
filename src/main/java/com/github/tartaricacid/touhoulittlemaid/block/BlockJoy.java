@@ -13,10 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -85,11 +82,13 @@ public abstract class BlockJoy extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof TileEntityJoy joy && worldIn instanceof ServerLevel serverLevel) {
-            Entity entity = serverLevel.getEntity(joy.getSitId());
-            if (entity instanceof EntitySit) {
-                entity.discard();
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+            if (blockEntity instanceof TileEntityJoy joy && worldIn instanceof ServerLevel serverLevel) {
+                Entity entity = serverLevel.getEntity(joy.getSitId());
+                if (entity instanceof EntitySit) {
+                    entity.discard();
+                }
             }
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
@@ -108,5 +107,15 @@ public abstract class BlockJoy extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
 }

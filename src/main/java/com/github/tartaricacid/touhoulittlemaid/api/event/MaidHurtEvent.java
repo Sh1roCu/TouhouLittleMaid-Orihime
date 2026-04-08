@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.damagesource.DamageSource;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 女仆受到攻击时的事件，此时已经进行了敌我类型判断，但是还没有进行护甲、药水效果吸收后的伤害计算，等同于 LivingHurtEvent
  * <p>
@@ -41,11 +43,11 @@ public class MaidHurtEvent extends CancellableEvent {
         this.amount = amount;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(MaidHurtEvent event);

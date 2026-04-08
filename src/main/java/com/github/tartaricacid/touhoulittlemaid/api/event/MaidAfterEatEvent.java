@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.item.ItemStack;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 public class MaidAfterEatEvent {
     private final EntityMaid maid;
     private final ItemStack foodAfterEat;
@@ -22,11 +24,11 @@ public class MaidAfterEatEvent {
         return foodAfterEat;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(MaidAfterEatEvent event);

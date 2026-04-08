@@ -19,7 +19,6 @@ import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -33,7 +32,6 @@ public class ModKubeJSPlugin extends KubeJSPlugin {
 
         InteractMaidEvent.CALLBACK.register(LOW, commonEventsPostJS::interactMaid);
 
-        MaidAfterEatEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidAfterEatEvent.CALLBACK.register(LOW, commonEventsPostJS::maidAfterEat);
 
         MaidAttackEvent.CALLBACK.register(LOW, commonEventsPostJS::maidAttack);
@@ -42,50 +40,37 @@ public class ModKubeJSPlugin extends KubeJSPlugin {
 
         MaidDeathEvent.CALLBACK.register(LOW, commonEventsPostJS::maidDeath);
 
-        MaidEquipEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidEquipEvent.CALLBACK.register(LOW, commonEventsPostJS::maidEquip);
 
-        MaidFishedEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidFishedEvent.CALLBACK.register(LOW, commonEventsPostJS::maidFish);
 
-        MaidHurtEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidHurtEvent.CALLBACK.register(LOW, commonEventsPostJS::maidHurt);
 
-        MaidPickupEvent.ITEM_RESULT_PRE.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPickupEvent.ITEM_RESULT_PRE.register(LOW, commonEventsPostJS::maidPickupItemResultPre);
 
-        MaidPickupEvent.ITEM_RESULT_POST.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPickupEvent.ITEM_RESULT_POST.register(LOW, commonEventsPostJS::maidPickupItemResultPost);
 
-        MaidPickupEvent.EXPERIENCE_RESULT.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPickupEvent.EXPERIENCE_RESULT.register(LOW, commonEventsPostJS::maidPickupExperienceResult);
 
-        MaidPickupEvent.ARROW_RESULT.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPickupEvent.ARROW_RESULT.register(LOW, commonEventsPostJS::maidPickupArrowResult);
 
-        MaidPickupEvent.POWERPOINT_RESULT.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPickupEvent.POWERPOINT_RESULT.register(LOW, commonEventsPostJS::maidPickupPowerPointResult);
 
         MaidPlaySoundEvent.CALLBACK.register(LOW, commonEventsPostJS::maidPlaySound);
 
-        MaidTickEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidTickEvent.CALLBACK.register(LOW, commonEventsPostJS::maidTick);
 
-        MaidTaskEnableEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidTaskEnableEvent.CALLBACK.register(LOW, commonEventsPostJS::maidTaskEnable);
 
-        MaidTamedEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidTamedEvent.CALLBACK.register(LOW, commonEventsPostJS::maidTamed);
 
         if (FabricLoader.getInstance().isModLoaded("jade")) {
             JadeEventsPostJS jadeEventsPostJS = new JadeEventsPostJS();
-            AddJadeInfoEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
             AddJadeInfoEvent.CALLBACK.register(jadeEventsPostJS::addJadeInfo);
         }
         if (FabricLoader.getInstance().isModLoaded("theoneprobe")) {
             TopEventsPostJS topEventsPostJS = new TopEventsPostJS();
             // TODO fabric暂无TOP
-            AddTopInfoEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
             AddTopInfoEvent.CALLBACK.register(topEventsPostJS::addTopInfo);
         }
     }

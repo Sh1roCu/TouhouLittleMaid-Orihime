@@ -11,6 +11,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 用来修改默认女仆 Task 的启用条件，该事件优先级高于 IMaidTask#isEnable 方法
  * <p>
@@ -23,11 +25,11 @@ public class MaidTaskEnableEvent extends CancellableEvent {
     private final EntityMaid entityMaid;
     private final List<Pair<String, Predicate<EntityMaid>>> enableConditionDesc;
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> (event) -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> (event) -> {
         for (Callback callback : callbacks) {
             callback.onMaidTaskEnable(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void onMaidTaskEnable(MaidTaskEnableEvent event);

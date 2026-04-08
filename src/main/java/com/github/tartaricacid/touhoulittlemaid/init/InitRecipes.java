@@ -3,6 +3,8 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipe;
 import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipeSerializer;
+import com.github.tartaricacid.touhoulittlemaid.crafting.FallbackIngredient;
+import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 public final class InitRecipes {
     public static void init() {
-
+        CustomIngredientSerializer.register(FallbackIngredient.Serializer.INSTANCE);
     }
 
     public static final RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_crafting", new AltarRecipeSerializer());

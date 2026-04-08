@@ -10,6 +10,7 @@
     "ConduitBlockEntityMixin",
     "EntityMixin",
     "FishingHookPredicateMixin",
+    "MobInteractMixin",
     "NavigationMixin",
     "NodeEvaluatorBurningCacher",
     "PersistentEntitySectionManagerMixin",

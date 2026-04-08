@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.item;
 
-import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.FlatColorButton;
 import com.github.tartaricacid.touhoulittlemaid.network.message.FoxScrollMessage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SetScrollData;
@@ -8,7 +7,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -99,9 +97,7 @@ public class FoxScrollScreen extends Screen {
             return;
         }
         this.renderMain(graphics);
-        for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.render(graphics, pMouseX, pMouseY, pPartialTick);
-        }
+        super.render(graphics, pMouseX, pMouseY, pPartialTick);
     }
 
     private void renderMain(GuiGraphics graphics) {

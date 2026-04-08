@@ -68,10 +68,6 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ScrollRenderEvent::onRenderWorldLastEvent);
         ScreenEvents.AFTER_INIT.register(ShowOptifineScreen::showOptifineWarning);
 
-        RenderMaidEvent.CALLBACK.addPhaseOrdering(HIGHEST, HIGH);
-        RenderMaidEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        RenderMaidEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
-        RenderMaidEvent.CALLBACK.addPhaseOrdering(LOW, LOWEST);
         RenderMaidEvent.CALLBACK.register(HIGHEST, SpecialMaidRenderEvent::onRenderPlayerNamedMaid);
         RenderMaidEvent.CALLBACK.register(Event.DEFAULT_PHASE, SpecialMaidRenderEvent::onRenderEncryptNamedMaid);
         RenderMaidEvent.CALLBACK.register(LOW, SpecialMaidRenderEvent::onRenderNormalNamedMaid);

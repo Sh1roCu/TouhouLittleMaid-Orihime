@@ -157,4 +157,9 @@ public class TaskTridentAttack implements IRangedAttackTask {
     private boolean hasTrident(EntityMaid maid) {
         return maid.getMainHandItem().getItem() instanceof TridentItem;
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Throw trident to attack entities";
+    }
 }

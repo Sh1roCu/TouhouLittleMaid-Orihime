@@ -139,4 +139,9 @@ public class TaskGunAttack implements IRangedAttackTask {
     @Override
     public void performRangedAttack(EntityMaid shooter, LivingEntity target, float distanceFactor) {
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Use gun attack entities";
+    }
 }

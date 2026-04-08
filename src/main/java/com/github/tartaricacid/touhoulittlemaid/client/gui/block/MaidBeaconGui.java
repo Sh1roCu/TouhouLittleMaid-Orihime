@@ -91,7 +91,7 @@ public class MaidBeaconGui extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderBackground(graphics);
         graphics.blit(BG, leftPos, topPos + 2, 0, 0, 142, 111);
         graphics.blit(BG, leftPos + 118, topPos + 1, 44, 111, 154, 15);
 
@@ -110,6 +110,8 @@ public class MaidBeaconGui extends Screen {
         } else {
             this.drawCenteredString(graphics, font, Component.translatable("gui.touhou_little_maid.maid_beacon.cost_power", DECIMAL_FORMAT.format(beacon.getEffectCost() * 900)).withStyle(ChatFormatting.RED), leftPos + 195, topPos + 5, 0xffffff);
         }
+
+        super.render(graphics, mouseX, mouseY, partialTicks);
         ((ScreenAccessor) this).tlm$getRenderables().stream().filter(b -> b instanceof BeaconEffectButton).forEach(b -> ((BeaconEffectButton) b).renderToolTip(graphics, this, mouseX, mouseY));
     }
 

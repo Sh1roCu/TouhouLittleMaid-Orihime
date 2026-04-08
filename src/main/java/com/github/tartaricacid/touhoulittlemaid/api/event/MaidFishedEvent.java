@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnegative;
 import java.util.List;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 public class MaidFishedEvent extends CancellableEvent {
     private final EntityMaid maid;
     private final NonNullList<ItemStack> drops = NonNullList.create();
@@ -44,11 +46,11 @@ public class MaidFishedEvent extends CancellableEvent {
         return rodDamage;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(MaidFishedEvent event);

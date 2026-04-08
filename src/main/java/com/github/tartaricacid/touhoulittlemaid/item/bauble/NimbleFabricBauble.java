@@ -7,21 +7,17 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.TeleportHelper;
-import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.HIGH;
-import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.LOW;
 
 public class NimbleFabricBauble implements IMaidBauble {
     private static final int MAX_RETRY = 16;
 
     public NimbleFabricBauble() {
-        MaidAttackEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        MaidAttackEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidAttackEvent.CALLBACK.register(HIGH, this::onLivingDamage);
     }
 

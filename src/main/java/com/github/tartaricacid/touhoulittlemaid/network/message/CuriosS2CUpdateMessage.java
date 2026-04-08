@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -21,6 +21,6 @@ public class CuriosS2CUpdateMessage {
 
     public static void handle(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         var page = buf.readVarInt();
-        client.execute(() -> TrinketsCompat.clientUpdatePage(page));
+        client.execute(() -> AccessoriesCompat.clientUpdatePage(page));
     }
 }

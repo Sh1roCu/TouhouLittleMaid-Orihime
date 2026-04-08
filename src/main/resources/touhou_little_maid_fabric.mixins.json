@@ -51,8 +51,7 @@
     "compat.tacz.AbstractGunItemMixin",
     "compat.tacz.GunAnimationStateContextMixin",
     "compat.tacz.LivingEntityShootMixin",
-    "compat.tacz.ModernKineticGunScriptAPIMixin",
-    "compat.trinkets.TrinketInventoryMixin"
+    "compat.tacz.ModernKineticGunScriptAPIMixin"
   ],
   "client": [
     "accessor.AbstractContainerScreenAccessor",

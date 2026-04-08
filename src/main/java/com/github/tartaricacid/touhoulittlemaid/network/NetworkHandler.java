@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.network;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IEntityAdditionalSpawnData;
 import com.github.tartaricacid.touhoulittlemaid.network.message.*;
+import com.github.tartaricacid.touhoulittlemaid.network.message.ai.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -66,8 +67,12 @@ public class NetworkHandler {
         registerS2CPacket(OpenPlayerInventoryMessage.ID, OpenPlayerInventoryMessage::handle);
         registerS2CPacket(MaidAnimationMessage.ID, MaidAnimationMessage::handle);
 
-        registerS2CPacket(SyncBaubleMessage.ID,SyncBaubleMessage::handle);
-        registerS2CPacket(CuriosS2CUpdateMessage.ID,CuriosS2CUpdateMessage::handle);
+        registerS2CPacket(SyncBaubleMessage.ID, SyncBaubleMessage::handle);
+        registerS2CPacket(CuriosS2CUpdateMessage.ID, CuriosS2CUpdateMessage::handle);
+
+        registerS2CPacket(SyncMaidAIDataMessage.ID, SyncMaidAIDataMessage::handle);
+        registerS2CPacket(SyncAISitesMessage.ID, SyncAISitesMessage::handle);
+
     }
 
     public static void registerC2SPackets() {
@@ -100,6 +105,11 @@ public class NetworkHandler {
         registerC2SPacket(ClearMaidAIDataMessage.ID, ClearMaidAIDataMessage::handle);
         registerC2SPacket(OpenMaidGuiMessage.ID, OpenMaidGuiMessage::handle);
         registerC2SPacket(DismountMessage.ID, DismountMessage::handle);
+
+        registerC2SPacket(OpenMaidAIChatMessage.ID, OpenMaidAIChatMessage::handle);
+        registerC2SPacket(OpenAIConfigMessage.ID, OpenAIConfigMessage::handle);
+        registerC2SPacket(SaveLLMSiteMessage.ID, SaveLLMSiteMessage::handle);
+        registerC2SPacket(SaveTTSSiteMessage.ID, SaveTTSSiteMessage::handle);
     }
 
     public static void sendToTrackingEntity(Entity entity, ResourceLocation channelName, FriendlyByteBuf buf) {

@@ -1,0 +1,19 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "anvilcraft_curios"
+      ]
+    }
+  ],
+  "replace": false,
+  "entities": [
+    "touhou_little_maid:maid"
+  ],
+  "slots": [
+    "ionocraft_backpack",
+    "goggles",
+    "charms"
+  ]
+}
