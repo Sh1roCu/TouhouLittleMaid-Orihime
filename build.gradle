@@ -126,10 +126,6 @@ repositories {
             includeGroup "com.github.rtyley"
         }
     }
-    maven {
-        name "reposiliteRepositoryArtifacts"
-        url "https://maven.conczin.net/Artifacts"
-    }
     maven { url = "https://maven.createmod.net" }
     maven { url = "https://mvn.devos.one/releases/" }
     maven {
