@@ -119,12 +119,17 @@ repositories {
             includeGroup "dev.latvian.apps"
         }
     }
-
+    maven { url 'https://maven.wispforest.io/releases' }
+    maven { url 'https://maven.su5ed.dev/releases' }
     maven {
         url 'https://jitpack.io'
         content {
             includeGroup "com.github.rtyley"
         }
+    }
+    maven {
+        name "reposiliteRepositoryArtifacts"
+        url "https://maven.conczin.net/Artifacts"
     }
     maven { url = "https://maven.createmod.net" }
     maven { url = "https://mvn.devos.one/releases/" }
@@ -139,8 +144,6 @@ repositories {
             includeGroup("com.eliotlash.mclib")
         }
     }
-    maven { url 'https://maven.wispforest.io/releases' }
-    maven { url 'https://maven.su5ed.dev/releases' }
     maven {
         name = "Greenhouse Maven"
         url = 'https://maven.greenhouse.lgbt/releases/'
