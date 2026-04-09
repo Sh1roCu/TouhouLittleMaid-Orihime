@@ -36,7 +36,7 @@ import org.anti_ad.mc.ipn.api.IPNPlayerSideOnly;
 @IPNGuiHint(button = IPNButton.SORT_ROWS, horizontalOffset = -12, bottom = -36)
 @IPNGuiHint(button = IPNButton.SHOW_EDITOR, horizontalOffset = -5)
 @IPNGuiHint(button = IPNButton.SETTINGS, horizontalOffset = -5)
-public class CuriosContainerContainerScreen extends AbstractMaidContainerGui<CuriosContainer> implements IBackpackContainerScreen {
+public class CuriosContainerScreen extends AbstractMaidContainerGui<CuriosContainer> implements IBackpackContainerScreen {
     private static final ResourceLocation CURIOS_BG = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/gui/maid_gui_curios.png");
 
     private static final int PREV = 0;
@@ -49,7 +49,7 @@ public class CuriosContainerContainerScreen extends AbstractMaidContainerGui<Cur
     private int page;
     private int slotCount;
 
-    public CuriosContainerContainerScreen(CuriosContainer container, Inventory inv, Component titleIn) {
+    public CuriosContainerScreen(CuriosContainer container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         this.imageHeight = 256;
         this.imageWidth = 256;

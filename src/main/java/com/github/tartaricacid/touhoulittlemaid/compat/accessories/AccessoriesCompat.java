@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.compat.accessories;
 
 import cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTombstoneEvent;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.client.CuriosContainerContainerScreen;
+import com.github.tartaricacid.touhoulittlemaid.compat.accessories.client.CuriosContainerScreen;
 import com.github.tartaricacid.touhoulittlemaid.compat.accessories.menu.CuriosContainer;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -40,14 +40,14 @@ public class AccessoriesCompat {
 
     @Environment(EnvType.CLIENT)
     public static void registerScreen() {
-        MenuScreens.register(CuriosContainer.TYPE, CuriosContainerContainerScreen::new);
+        MenuScreens.register(CuriosContainer.TYPE, CuriosContainerScreen::new);
     }
 
     @Environment(EnvType.CLIENT)
     public static void clientUpdatePage(int page) {
         if (isLoadedOrEnable()) {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.screen instanceof CuriosContainerContainerScreen screen) {
+            if (mc.screen instanceof CuriosContainerScreen screen) {
                 screen.updatePage(page);
             }
         }
@@ -57,7 +57,7 @@ public class AccessoriesCompat {
     public static void clientResetPage() {
         if (isLoadedOrEnable()) {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.screen instanceof CuriosContainerContainerScreen screen) {
+            if (mc.screen instanceof CuriosContainerScreen screen) {
                 screen.updatePage(screen.getPage());
             }
         }

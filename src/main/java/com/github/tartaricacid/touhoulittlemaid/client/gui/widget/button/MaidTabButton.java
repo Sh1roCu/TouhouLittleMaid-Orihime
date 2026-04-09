@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
+// Accessories的loom注入导致的错误，不用管
 public class MaidTabButton extends Button implements ITooltipButton {
     private static final ResourceLocation SIDE = new ResourceLocation(TouhouLittleMaid.MOD_ID, "textures/gui/maid_gui_side.png");
     private final int left;

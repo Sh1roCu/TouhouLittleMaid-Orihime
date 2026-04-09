@@ -154,7 +154,7 @@ public final class ServerCustomPackLoader {
         } catch (IOException e) {
             LOGGER.warn(MARKER, "Failed to load maid model pack in domain {}", domain, e);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain);
+            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain, e);
         }
         LOGGER.debug(MARKER, "Touhou little maid mod's model is loaded");
     }
@@ -185,7 +185,7 @@ public final class ServerCustomPackLoader {
         } catch (IOException e) {
             LOGGER.warn(MARKER, "Failed to load maid model pack in domain {}", domain, e);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain);
+            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain, e);
         }
         LOGGER.debug(MARKER, "Touhou little maid mod's model is loaded");
     }
@@ -214,7 +214,7 @@ public final class ServerCustomPackLoader {
         } catch (IOException e) {
             LOGGER.warn(MARKER, "Failed to load chair model pack in domain {}", domain, e);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain);
+            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain, e);
         }
         LOGGER.debug(MARKER, "Touhou little maid mod's model is loaded");
     }
@@ -238,7 +238,7 @@ public final class ServerCustomPackLoader {
         } catch (IOException e) {
             LOGGER.warn(MARKER, "Failed to load chair model pack in domain {}", domain, e);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain);
+            LOGGER.warn(MARKER, "Fail to parse model pack in domain {}", domain, e);
         }
         LOGGER.debug(MARKER, "Touhou little maid mod's model is loaded");
     }
