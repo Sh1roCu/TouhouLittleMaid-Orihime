@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.network;
 
 import cn.sh1rocu.touhoulittlemaid.util.forge.network.AdvancedAddEntityPayload;
 import com.github.tartaricacid.touhoulittlemaid.network.message.*;
+import com.github.tartaricacid.touhoulittlemaid.network.message.ai.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -61,6 +62,9 @@ public class NetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncBaublePackage.TYPE, SyncBaublePackage::handle);
+
+        ClientPlayNetworking.registerGlobalReceiver(SyncAISitesPacket.TYPE, SyncAISitesPacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(SyncMaidAIDataPacket.TYPE, SyncMaidAIDataPacket::handle);
     }
 
     public static void registerS2CPackets() {
@@ -91,6 +95,9 @@ public class NetworkHandler {
         registerS2CPacket(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage.STREAM_CODEC);
         registerS2CPacket(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket.STREAM_CODEC);
         registerS2CPacket(SyncBaublePackage.TYPE, SyncBaublePackage.STREAM_CODEC);
+
+        registerS2CPacket(SyncAISitesPacket.TYPE, SyncAISitesPacket.STREAM_CODEC);
+        registerS2CPacket(SyncMaidAIDataPacket.TYPE, SyncMaidAIDataPacket.STREAM_CODEC);
     }
 
     public static void registerC2SPackets() {
@@ -123,6 +130,11 @@ public class NetworkHandler {
         registerC2SPacket(ClearMaidAIDataPacket.TYPE, ClearMaidAIDataPacket.STREAM_CODEC, ClearMaidAIDataPacket::handle);
         registerC2SPacket(OpenMaidGuiPackage.TYPE, OpenMaidGuiPackage.STREAM_CODEC, OpenMaidGuiPackage::handle);
         registerC2SPacket(DismountPackage.TYPE, DismountPackage.STREAM_CODEC, DismountPackage::handle);
+
+        registerC2SPacket(OpenAIConfigPacket.TYPE, OpenAIConfigPacket.STREAM_CODEC, OpenAIConfigPacket::handle);
+        registerC2SPacket(OpenMaidAIChatPacket.TYPE, OpenMaidAIChatPacket.STREAM_CODEC, OpenMaidAIChatPacket::handle);
+        registerC2SPacket(SaveLLMSitePacket.TYPE, SaveLLMSitePacket.STREAM_CODEC, SaveLLMSitePacket::handle);
+        registerC2SPacket(SaveTTSSitePacket.TYPE, SaveTTSSitePacket.STREAM_CODEC, SaveTTSSitePacket::handle);
     }
 
     public static void sendToNearby(Entity entity, CustomPacketPayload toSend) {

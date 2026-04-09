@@ -217,11 +217,6 @@ public interface IMaidTask {
             public boolean shouldCloseCurrentScreen() {
                 return false;
             }
-
-/*            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                return false;
-            }*/
         };
     }
 
@@ -274,5 +269,16 @@ public interface IMaidTask {
     @ApiStatus.AvailableSince("1.4.7")
     default FunctionCallSwitchResult onFunctionCallSwitch(EntityMaid maid) {
         return FunctionCallSwitchResult.OK;
+    }
+
+    /**
+     * 提供给 AI 的任务摘要说明，用于构建 maid_action skill 的任务列表。
+     * <p>
+     * 该文本应当是适合大模型理解的英文硬编码描述，强调任务用途与关键前置条件。
+     * 若未覆写，则默认返回 task id 的 path 部分，作为最低保底摘要。
+     */
+    @ApiStatus.AvailableSince("1.5.1")
+    default String getMaidActionSummary() {
+        return getUid().getPath();
     }
 }

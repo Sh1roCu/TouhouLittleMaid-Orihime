@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.damagesource.DamageSource;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 女仆受到攻击时的事件，此时还没有进行任何伤害类型、敌友类型判断，是最早触发的事件，等同于 LivingAttackEvent
  * <p>
@@ -39,11 +41,11 @@ public class MaidAttackEvent extends CancellableEvent {
         return amount;
     }
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(MaidAttackEvent event);

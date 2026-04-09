@@ -69,4 +69,9 @@ public class TaskExtinguishing implements IMaidTask {
         }
         return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;
     }
+
+    @Override
+    public String getMaidActionSummary() {
+        return "Extinguish fire on the entities";
+    }
 }

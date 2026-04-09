@@ -11,8 +11,6 @@ import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.LOW;
 
 public class MuteBauble implements IMaidBauble {
     public MuteBauble() {
-        MaidPlaySoundEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        MaidPlaySoundEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidPlaySoundEvent.CALLBACK.register(HIGH, this::onMaidPlaySound);
     }
 

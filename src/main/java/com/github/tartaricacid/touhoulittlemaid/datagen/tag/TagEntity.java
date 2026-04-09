@@ -28,6 +28,13 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
 
     public static TagKey<EntityType<?>> CARRYON_ENTITY_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("carryon", "entity_blacklist"));
 
+    /**
+     * 冰与火的石化效果免疫标签
+     */
+    public static final TagKey<EntityType<?>> IMMUNE_TO_GORGON_STONE = createTagKey(
+            ResourceLocation.parse("iceandfire:immune_to_gorgon_stone")
+    );
+
     public TagEntity(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.ENTITY_TYPE, lookupProvider);
     }
@@ -46,7 +53,6 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
         getOrCreateTagBuilder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(InitEntities.FAIRY);
         getOrCreateTagBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(InitEntities.FAIRY);
         getOrCreateTagBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(InitEntities.FAIRY);
-        getOrCreateTagBuilder(TagKey.create(Registries.ENTITY_TYPE, id("iceandfire:immune_to_gorgon_stone"))).add(InitEntities.MAID);
 
         getOrCreateTagBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityType.IRON_GOLEM)
                 .addOptional(id("guardvillagers:guard"))
@@ -56,11 +62,18 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
                 .addOptional(id("alexscaves:gingerbread_man"))
                 .addOptional(id("alexsmobs:bunfungus"));
 
-        getOrCreateTagBuilder(MAID_VEHICLE_ROTATE_BLOCKLIST).addOptional(id("create:carriage_contraption"));
+        getOrCreateTagBuilder(MAID_VEHICLE_ROTATE_BLOCKLIST)
+                .addOptional(id("create:carriage_contraption"))
+                .addOptional(id("create:seat"));
+
         getOrCreateTagBuilder(CARRYON_ENTITY_BLACKLIST).add(
                 InitEntities.TOMBSTONE,
                 InitEntities.SIT,
                 InitEntities.BROOM);
+
+        // 让女仆免疫冰与火的石化效果，避免石化带来的各种问题
+        getOrCreateTagBuilder(IMMUNE_TO_GORGON_STONE).add(InitEntities.MAID);
+
     }
 
     private ResourceLocation id(String name) {

@@ -56,19 +56,6 @@ public class TouhouLittleMaidFabric implements ModInitializer {
     }
 
     private void subscribeEvents() {
-        InteractMaidEvent.CALLBACK.addPhaseOrdering(HIGHEST, HIGH);
-        InteractMaidEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        InteractMaidEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
-        InteractMaidEvent.CALLBACK.addPhaseOrdering(LOW, LOWEST);
-
-        MaidDeathEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        MaidDeathEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
-
-        MaidDamageEvent.CALLBACK.addPhaseOrdering(HIGHEST, HIGH);
-        MaidDamageEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        MaidDamageEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
-        MaidDamageEvent.CALLBACK.addPhaseOrdering(LOW, LOWEST);
-
         EntityDeathEvent.onEntityDeath();
         EntityDeathEvent.onPlayerCloned();
         PotentialSpawnsEvent.CALLBACK.register(MobSpawnInfoRegistry::addMobSpawnInfo);

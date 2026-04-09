@@ -1,16 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.client.init;
 
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.backpack.*;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.config.MaidAIChatConfigContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.config.MaidConfigContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.AttackTaskConfigGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.DefaultMaidTaskConfigGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.PicnicBasketContainerScreen;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.WirelessIOContainerGui;
-import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
 import com.github.tartaricacid.touhoulittlemaid.init.InitContainer;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
-import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BaubleContainer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -28,18 +26,17 @@ public final class InitContainerGui {
         MenuScreens.register(InitContainer.MAID_FURNACE_CONTAINER, FurnaceBackpackContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_TANK_CONTAINER, TankBackpackContainerScreen::new);
 
-        MenuScreens.register(BaubleContainer.TYPE, BaubleContainerScreen::new);
+        MenuScreens.register(InitContainer.MAID_BAUBLE_CONTAINER, BaubleContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_CONFIG_CONTAINER, MaidConfigContainerGui::new);
-        MenuScreens.register(InitContainer.MAID_AI_CHAT_CONFIG_CONTAINER, MaidAIChatConfigContainerGui::new);
         MenuScreens.register(InitContainer.WIRELESS_IO_CONTAINER, WirelessIOContainerGui::new);
         MenuScreens.register(InitContainer.PICNIC_BASKET_CONTAINER, PicnicBasketContainerScreen::new);
 
         MenuScreens.register(InitContainer.DEFAULT_MAIK_TASK_CONFIG, DefaultMaidTaskConfigGui::new);
         MenuScreens.register(InitContainer.ATTACK_TASK_CONFIG, AttackTaskConfigGui::new);
 
-        // Trinkets 兼容
-        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.TRINKETS)) {
-            TrinketsCompat.registerScreen();
+        // accessories 兼容
+        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.ACCESSORIES)) {
+            AccessoriesCompat.registerScreen();
         }
     }
 }

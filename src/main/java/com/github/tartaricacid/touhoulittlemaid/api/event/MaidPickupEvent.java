@@ -10,36 +10,38 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 public abstract class MaidPickupEvent extends CancellableEvent {
     private final EntityMaid maid;
     private final boolean simulate;
     private boolean canPickup = false;
 
-    public static final Event<ItemResultPre.Callback> ITEM_RESULT_PRE = EventFactory.createArrayBacked(ItemResultPre.Callback.class, callbacks -> event -> {
+    public static final Event<ItemResultPre.Callback> ITEM_RESULT_PRE = EventFactory.createWithPhases(ItemResultPre.Callback.class, callbacks -> event -> {
         for (ItemResultPre.Callback callback : callbacks) {
             callback.onItemResultPre(event);
         }
-    });
-    public static final Event<ItemResultPost.Callback> ITEM_RESULT_POST = EventFactory.createArrayBacked(ItemResultPost.Callback.class, callbacks -> event -> {
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
+    public static final Event<ItemResultPost.Callback> ITEM_RESULT_POST = EventFactory.createWithPhases(ItemResultPost.Callback.class, callbacks -> event -> {
         for (ItemResultPost.Callback callback : callbacks) {
             callback.onItemResultPost(event);
         }
-    });
-    public static final Event<ExperienceResult.Callback> EXPERIENCE_RESULT = EventFactory.createArrayBacked(ExperienceResult.Callback.class, callbacks -> event -> {
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
+    public static final Event<ExperienceResult.Callback> EXPERIENCE_RESULT = EventFactory.createWithPhases(ExperienceResult.Callback.class, callbacks -> event -> {
         for (ExperienceResult.Callback callback : callbacks) {
             callback.onExperienceResult(event);
         }
-    });
-    public static final Event<ArrowResult.Callback> ARROW_RESULT = EventFactory.createArrayBacked(ArrowResult.Callback.class, callbacks -> event -> {
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
+    public static final Event<ArrowResult.Callback> ARROW_RESULT = EventFactory.createWithPhases(ArrowResult.Callback.class, callbacks -> event -> {
         for (ArrowResult.Callback callback : callbacks) {
             callback.onArrowResult(event);
         }
-    });
-    public static final Event<PowerPointResult.Callback> POWERPOINT_RESULT = EventFactory.createArrayBacked(PowerPointResult.Callback.class, callbacks -> event -> {
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
+    public static final Event<PowerPointResult.Callback> POWERPOINT_RESULT = EventFactory.createWithPhases(PowerPointResult.Callback.class, callbacks -> event -> {
         for (PowerPointResult.Callback callback : callbacks) {
             callback.onPowerPointResult(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public MaidPickupEvent(EntityMaid maid, boolean simulate) {
         this.maid = maid;

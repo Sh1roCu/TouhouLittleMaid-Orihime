@@ -5,6 +5,8 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 这个事件会在女仆播放音效时进行触发。<br>
  * 这个事件是 {@link #isCanceled() canceled}，如果取消，那么女仆播放音效会被取消。<br>
@@ -22,11 +24,11 @@ public class MaidPlaySoundEvent extends CancellableEvent {
         return maid;
     }
 
-    public static Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> (event) -> {
+    public static Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> (event) -> {
         for (Callback callback : callbacks) {
             callback.post(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     public interface Callback {
         void post(MaidPlaySoundEvent e);

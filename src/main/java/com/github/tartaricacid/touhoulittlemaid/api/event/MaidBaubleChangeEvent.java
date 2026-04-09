@@ -15,11 +15,6 @@ public abstract class MaidBaubleChangeEvent {
     private final EntityMaid maid;
     private final ItemStack baubleItem;
 
-    public MaidBaubleChangeEvent(EntityMaid maid, ItemStack baubleItem) {
-        this.maid = maid;
-        this.baubleItem = baubleItem;
-    }
-
     public static final Event<PutOnCallback> PUT_ON = EventFactory.createArrayBacked(PutOnCallback.class, callbacks -> event -> {
         for (PutOnCallback callback : callbacks) {
             callback.putOn(event);
@@ -37,6 +32,11 @@ public abstract class MaidBaubleChangeEvent {
 
     public interface TakeOffCallback {
         void takeOff(TakeOff event);
+    }
+
+    public MaidBaubleChangeEvent(EntityMaid maid, ItemStack baubleItem) {
+        this.maid = maid;
+        this.baubleItem = baubleItem;
     }
 
     public EntityMaid getMaid() {

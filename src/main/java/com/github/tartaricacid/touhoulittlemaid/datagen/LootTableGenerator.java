@@ -254,6 +254,7 @@ public class LootTableGenerator {
             dropSelf(InitBlocks.BOOKSHELF);
             dropSelf(InitBlocks.COMPUTER);
             dropSelf(InitBlocks.SHRINE);
+            dropSelf(InitBlocks.SNACK_CABINET);
         }
 
         @Override

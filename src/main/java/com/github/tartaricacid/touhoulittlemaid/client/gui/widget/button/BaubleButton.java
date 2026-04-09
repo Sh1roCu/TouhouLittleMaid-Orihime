@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
-import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+// Accessories的loom注入导致的错误，不用管
 public class BaubleButton extends Button implements ITooltipButton {
     private static final ResourceLocation BAUBLE_BUTTON = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/bauble_button.png");
     private final int vStart;
@@ -17,9 +18,9 @@ public class BaubleButton extends Button implements ITooltipButton {
     private final Component tooltip;
 
     public BaubleButton(int x, int y, boolean isOpen, OnPress onPress) {
-        super(x + 85, y + 97, 54, TrinketsCompat.isLoadedOrEnable() ? 31 : 63, Component.empty(), onPress, DEFAULT_NARRATION);
+        super(x + 85, y + 97, 54, AccessoriesCompat.isLoadedOrEnable() ? 31 : 63, Component.empty(), onPress, DEFAULT_NARRATION);
         this.vStart = isOpen ? this.getHeight() : 0;
-        this.uStart = TrinketsCompat.isLoadedOrEnable() ? 54 : 0;
+        this.uStart = AccessoriesCompat.isLoadedOrEnable() ? 54 : 0;
         if (isOpen) {
             this.tooltip = Component.translatable("gui.touhou_little_maid.bauble_button.close.desc");
         } else {

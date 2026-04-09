@@ -125,17 +125,14 @@ public class BlockMaidBeacon extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te instanceof TileEntityMaidBeacon) {
-            popResource(worldIn, pos, ItemMaidBeacon.tileEntityToItemStack(worldIn.registryAccess(), (TileEntityMaidBeacon) te));
+        if (!state.is(newState.getBlock()) && !isMoving) {
+            BlockEntity te = worldIn.getBlockEntity(pos);
+            if (te instanceof TileEntityMaidBeacon) {
+                popResource(worldIn, pos, ItemMaidBeacon.tileEntityToItemStack(worldIn.registryAccess(), (TileEntityMaidBeacon) te));
+            }
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
-
-/*    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
-    }*/
 
     @Override
     //public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {

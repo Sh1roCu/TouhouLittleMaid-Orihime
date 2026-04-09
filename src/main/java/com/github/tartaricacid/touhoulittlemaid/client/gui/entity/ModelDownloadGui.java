@@ -328,7 +328,7 @@ public class ModelDownloadGui extends Screen {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            TouhouLittleMaid.LOGGER.error("Failed to scan custom pack CRC32 info", e);
         }
     }
 
@@ -410,7 +410,7 @@ public class ModelDownloadGui extends Screen {
                     Files.delete(file);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                TouhouLittleMaid.LOGGER.error("Failed to delete custom pack file {}", fileName, e);
             }
         }
     }

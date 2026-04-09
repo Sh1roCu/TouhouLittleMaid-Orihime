@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
+// Accessories的loom注入导致的错误，不用管
 public class TaskButton extends Button implements ITooltipButton {
     private final IMaidTask task;
     private final boolean enable;

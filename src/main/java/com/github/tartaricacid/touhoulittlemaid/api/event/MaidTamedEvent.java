@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.entity.player.Player;
 
+import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
+
 /**
  * 这个事件在女仆被驯服时触发。
  * 事件的触发时机在 EntityMaid#tameMaid 方法中。
@@ -14,11 +16,11 @@ public class MaidTamedEvent {
     private final EntityMaid maid;
     private final Player player;
 
-    public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
+    public static final Event<Callback> CALLBACK = EventFactory.createWithPhases(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks) {
             callback.onMaidTamed(event);
         }
-    });
+    }, HIGHEST, HIGH, Event.DEFAULT_PHASE, LOW, LOWEST);
 
     /**
      * 当女仆是通过主人转换工具强制转换主人时，此值为 true

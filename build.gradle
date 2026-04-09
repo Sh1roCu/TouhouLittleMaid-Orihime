@@ -100,12 +100,10 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     }
     maven {
-        name = "CottonMC"
-        url = "https://server.bbkr.space/artifactory/libs-release"
-    }
-    maven {
         url = "https://maven.modmuss50.me/"
     }
+    maven { url 'https://maven.wispforest.io/releases' }
+    maven { url 'https://maven.su5ed.dev/releases' }
     maven {
         name "reposiliteRepositoryArtifacts"
         url "https://maven.conczin.net/Artifacts"
@@ -138,8 +136,6 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven { url 'https://maven.wispforest.io/releases' }
-    maven { url 'https://maven.su5ed.dev/releases' }
     maven {
         name = "Greenhouse Maven"
         url = 'https://maven.greenhouse.lgbt/releases/'
@@ -174,14 +170,12 @@ dependencies {
     modCompileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
 
-    // MP3 音频解码库，暂时不需要
-    // mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
-    // mcLib "com.googlecode.soundlibs:jlayer:1.0.1.4"
-    // mcLib "com.googlecode.soundlibs:tritonus-share:0.3.7.4"
-
     // Opus 音频解码库
     mcLib("org.gagravarr:vorbis-java-core:0.8")
     mcLib("io.github.jaredmdobson:concentus:1.0.2")
+
+    // MP3 音频解码库
+    mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
 
     // YAML 库
     mcLib("org.yaml:snakeyaml:2.4")
@@ -199,7 +193,7 @@ dependencies {
         exclude group: 'net.fabricmc.fabric-api'
     }
     // EMI
-    modCompileOnly "maven.modrinth:emi:${emi_version}"
+    modImplementation "maven.modrinth:emi:${emi_version}"
 
     modImplementation "maven.modrinth:jade:${jade_version}"
     modImplementation "maven.modrinth:cyberanner-ironchest:${iron_chests_version}"
@@ -228,9 +222,11 @@ dependencies {
 
     // Simple Hats
     modCompileOnly "maven.modrinth:simple-hats:nV0q5j3l"
-    modCompileOnly "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
 
-    modImplementation "dev.emi:trinkets:3.10.0"
+    // Accessories
+    modImplementation "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
+    modRuntimeOnly("maven.modrinth:potion-ring-reforged:LpwbSRNh")
+    modRuntimeOnly("maven.modrinth:accessories-tc-layer:3.10.0+beta.28")
 
     // Immersive Melodies
     modImplementation "immersive_melodies:immersive_melodies-fabric:0.6.2+1.21.1"
@@ -293,6 +289,7 @@ dependencies {
     // 不加就无法run的各种前置
     modImplementation "libs:LibGui:11.1.0+1.21"
     modImplementation "libs:Jankson-Fabric:8.0.0+j1.2.3"
+    modImplementation name: "libninepatch-1.2.0"
     modImplementation "me.zeroeightsix:fiber:0.23.0-SNAPSHOT"
 }
 

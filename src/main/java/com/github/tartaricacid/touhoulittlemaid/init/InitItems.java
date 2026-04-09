@@ -82,7 +82,7 @@ public final class InitItems {
     public static Item MONSTER_LIST = register("monster_list", new ItemMonsterList());
 
     public static Item MAID_SPAWN_EGG = register("maid_spawn_egg", new SpawnEggItem(EntityMaid.TYPE, 0xffffff, 0xffffff, new Item.Properties()));
-    public static Item FAIRY_SPAWN_EGG = register("fairy_spawn_egg", new SpawnEggItem(EntityFairy.TYPE, 0xffffff, 0xffffff, new Item.Properties()));
+    public static Item FAIRY_SPAWN_EGG = register("fairy_spawn_egg",new ItemFairySpawnEgg());
 
     public static final ResourceLocation MEMORIZABLE_GENSOKYO_LOCATION = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "memorizable_gensokyo");
 

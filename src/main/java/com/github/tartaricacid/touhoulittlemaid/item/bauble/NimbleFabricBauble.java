@@ -20,8 +20,6 @@ public class NimbleFabricBauble implements IMaidBauble {
     private static final int MAX_RETRY = 16;
 
     public NimbleFabricBauble() {
-        MaidAttackEvent.CALLBACK.addPhaseOrdering(HIGH, Event.DEFAULT_PHASE);
-        MaidAttackEvent.CALLBACK.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         MaidAttackEvent.CALLBACK.register(HIGH, this::onLivingDamage);
     }
 

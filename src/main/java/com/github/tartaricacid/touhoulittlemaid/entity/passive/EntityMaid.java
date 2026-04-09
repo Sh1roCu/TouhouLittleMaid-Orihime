@@ -24,8 +24,8 @@ import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
+import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.slashblade.SlashBladeCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.trinkets.TrinketsCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.event.YsmMaidClientTickEvent;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
@@ -54,10 +54,10 @@ import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskIdle;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.init.*;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BaubleContainer;
-import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidAIChatConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
@@ -354,19 +354,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         this(TYPE, worldIn);
     }
 
-    /**
-     * 如果其他模组想要给女仆添加额外属性
-     * <p>
-     * 可使用MixinExtras的@ModifyReturnValue修改这个方法：
-     * <pre>{@code
-     * @ModifyReturnValue(remap = false, method = "createLivingAttributes", at = @At("RETURN"))
-     * private static AttributeSupplier.Builder modid$createLivingAttributes(AttributeSupplier.Builder original) {
-     *     original.add(Your_Attribute);
-     *     return original;
-     * }
-     * }</pre>
-     * </p>
-     */
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
                 // 目前仅用于寻路，女仆最大可寻路 64 格
@@ -778,15 +765,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
             if (!simulate) {
                 // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
                 this.take(entityItem, count - itemstack.getCount());
-                MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-                MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-                if (!event.isCanceled()) {
-                    pickupSoundCount--;
-                    if (pickupSoundCount == 0) {
-                        this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
-                        pickupSoundCount = 5;
-                    }
-                }
+                this.tryPlayMaidPickupSound();
                 ItemStack copy = new ItemStack(itemstack.getItem(), count - itemstack.getCount());
                 // 如果遍历塞完后发现为空了
                 if (itemstack.isEmpty()) {
@@ -812,15 +791,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         if (!this.level.isClientSide && entityXPOrb.isAlive() && entityXPOrb.tickCount > 2) {
             // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
             this.take(entityXPOrb, 1);
-            MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-            MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-            if (!event.isCanceled()) {
-                pickupSoundCount--;
-                if (pickupSoundCount == 0) {
-                    this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
-                    pickupSoundCount = 5;
-                }
-            }
+            this.tryPlayMaidPickupSound();
 
             // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
             IItemHandler allItems = new CombinedInvWrapper(armorInvWrapper, handsInvWrapper, maidBauble);
@@ -846,15 +817,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         if (!this.level.isClientSide && powerPoint.isAlive() && powerPoint.throwTime == 0) {
             // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
             powerPoint.take(this, 1);
-            MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-            MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-            if (!event.isCanceled()) {
-                pickupSoundCount--;
-                if (pickupSoundCount == 0) {
-                    this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
-                    pickupSoundCount = 5;
-                }
-            }
+            this.tryPlayMaidPickupSound();
 
             // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
             CombinedInvWrapper allItems = this.getAllInv();
@@ -908,20 +871,24 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
             if (!simulate) {
                 // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
                 this.take(arrow, 1);
-                MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-                MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-                if (!event.isCanceled()) {
-                    pickupSoundCount--;
-                    if (pickupSoundCount == 0) {
-                        this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
-                        pickupSoundCount = 5;
-                    }
-                }
+                this.tryPlayMaidPickupSound();
                 arrow.discard();
             }
             return true;
         }
         return false;
+    }
+
+    public void tryPlayMaidPickupSound() {
+        var event = new MaidPlaySoundEvent(this);
+        MaidPlaySoundEvent.CALLBACK.invoker().post(event);
+        if (!event.isCanceled()) {
+            pickupSoundCount--;
+            if (pickupSoundCount == 0) {
+                this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
+                pickupSoundCount = 5;
+            }
+        }
     }
 
     private ItemStack getArrowFromEntity(AbstractArrow entity) {
@@ -1578,9 +1545,8 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         return switch (tabIndex) {
             case TabIndex.TASK_CONFIG -> task.getTaskConfigGuiProvider(this);
             case TabIndex.MAID_CONFIG -> MaidConfigContainer.create(getId());
-            case TabIndex.MAID_AI_CHAT_CONFIG -> MaidAIChatConfigContainer.create(this);
             case TabIndex.BAUBLE -> BaubleContainer.create(this);
-            case TabIndex.CURIOS -> TrinketsCompat.create(this);
+            case TabIndex.CURIOS -> AccessoriesCompat.create(this);
             default -> this.getMaidBackpackType().getGuiProvider(getId());
         };
     }
@@ -2341,13 +2307,23 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
         return maidInv;
     }
 
+    /**
+     * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
+     */
     public CombinedInvWrapper getAvailableInv(boolean handsFirst) {
-        RangedWrapper combinedInvWrapper = this.getAvailableBackpackInv();
-        return handsFirst ? new CombinedInvWrapper(handsInvWrapper, combinedInvWrapper) : new CombinedInvWrapper(combinedInvWrapper, handsInvWrapper);
+        int maxContainerIndex = getMaidBackpackType().getAvailableMaxContainerIndex();
+        RangedWrapper combinedInvWrapper = new RangedWrapper(maidInv, 0, maxContainerIndex);
+        return handsFirst ? new MaidInvWrapper(this, handsInvWrapper, combinedInvWrapper)
+                : new MaidInvWrapper(this, combinedInvWrapper, handsInvWrapper);
     }
 
-    public RangedWrapper getAvailableBackpackInv() {
-        return new RangedWrapper(maidInv, 0, getMaidBackpackType().getAvailableMaxContainerIndex());
+    /**
+     * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
+     */
+    public CombinedInvWrapper getAvailableBackpackInv() {
+        int maxContainerIndex = getMaidBackpackType().getAvailableMaxContainerIndex();
+        RangedWrapper rangedWrapper = new RangedWrapper(maidInv, 0, maxContainerIndex);
+        return new MaidInvWrapper(this, rangedWrapper);
     }
 
     public EntityHandsInvWrapper getHandsInvWrapper() {
@@ -2875,5 +2851,24 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
                 this.level.addParticle(option, pos.x, pos.y, pos.z, speed.x, speed.y + 0.05, speed.z);
             }
         }
+    }
+
+
+    /**
+     * 因为部分 idea 插件会检查 Map 类里，这些对象做 key 时，是否重写了 equals 和 hashCode 方法，
+     * 故这里必须重写这两个方法，但实际上并不需要修改默认父类的实现
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    /**
+     * 因为部分 idea 插件会检查 Map 类里，这些对象做 key 时，是否重写了 equals 和 hashCode 方法，
+     * 故这里必须重写这两个方法，但实际上并不需要修改默认父类的实现
+     */
+    @Override
+    public boolean equals(Object pObject) {
+        return super.equals(pObject);
     }
 }

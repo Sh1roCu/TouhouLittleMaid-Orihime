@@ -1,0 +1,54 @@
+package com.github.tartaricacid.touhoulittlemaid.network.message.ai;
+
+import com.github.tartaricacid.touhoulittlemaid.ai.manager.site.AvailableSites;
+import com.github.tartaricacid.touhoulittlemaid.util.GameModeUtil;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+
+public record OpenAIConfigPacket() implements CustomPacketPayload {
+    public static final Type<OpenAIConfigPacket> TYPE = new Type<>(getResourceLocation("open_ai_config"));
+
+    public static final OpenAIConfigPacket INSTANCE = new OpenAIConfigPacket();
+    public static final StreamCodec<ByteBuf, OpenAIConfigPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    @Environment(EnvType.CLIENT)
+    public static void sendToServer() {
+        ClientPlayNetworking.send(new OpenAIConfigPacket());
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    public static void handle(OpenAIConfigPacket message, ServerPlayNetworking.Context context) {
+        context.server().execute(() -> onHandle(context.player()));
+    }
+
+    private static void onHandle(@Nullable ServerPlayer player) {
+        if (player == null) {
+            return;
+        }
+
+        // 是否发送站点数据
+        if (GameModeUtil.canEditSite(player)) {
+            SyncAISitesPacket msg = new SyncAISitesPacket(AvailableSites.LLM_SITES, AvailableSites.TTS_SITES, false);
+            ServerPlayNetworking.send(player, msg);
+        } else {
+            // 否则发送一个空的站点数据
+            SyncAISitesPacket msg = new SyncAISitesPacket(Collections.emptyMap(), Collections.emptyMap(), true);
+            ServerPlayNetworking.send(player, msg);
+        }
+    }
+}

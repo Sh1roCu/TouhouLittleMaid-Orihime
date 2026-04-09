@@ -23,10 +23,6 @@ public class MaidFavorabilityLevelChangeEvent {
         }
     });
 
-    public interface Callback {
-        void post(MaidFavorabilityLevelChangeEvent event);
-    }
-
     public MaidFavorabilityLevelChangeEvent(EntityMaid maid, int oldLevel, int newLevel) {
         this.maid = maid;
         this.oldLevel = oldLevel;
@@ -43,5 +39,9 @@ public class MaidFavorabilityLevelChangeEvent {
 
     public int getNewLevel() {
         return newLevel;
+    }
+
+    public interface Callback {
+        void post(MaidFavorabilityLevelChangeEvent event);
     }
 }

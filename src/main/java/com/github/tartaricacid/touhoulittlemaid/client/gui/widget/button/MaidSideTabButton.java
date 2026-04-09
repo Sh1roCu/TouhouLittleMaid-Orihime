@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * 女仆界面侧边栏按钮
  */
+// Accessories的loom注入导致的错误，不用管
 public class MaidSideTabButton extends Button implements ITooltipButton {
     private static final ResourceLocation SIDE = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/maid_gui_side.png");
     private static final int V_OFFSET = 107;

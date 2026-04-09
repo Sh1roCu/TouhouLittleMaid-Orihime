@@ -1,0 +1,17 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ars_nouveau"
+      ]
+    }
+  ],
+  "replace": false,
+  "entities": [
+    "touhou_little_maid:maid"
+  ],
+  "slots": [
+    "an_focus"
+  ]
+}
