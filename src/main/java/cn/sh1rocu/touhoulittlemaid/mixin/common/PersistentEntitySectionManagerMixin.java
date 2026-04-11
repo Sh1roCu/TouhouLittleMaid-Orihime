@@ -27,7 +27,7 @@ public class PersistentEntitySectionManagerMixin<T extends EntityAccess> {
     // method_31863: addWorldGenChunkEntities.1
     // method_31864: addLegacyChunkEntities.0
     @Inject(method = {"method_31857", "method_31863", "method_31864"}, at = @At("TAIL"))
-    private static void tlm$addedToWorld(EntityAccess entityAccess, CallbackInfo ci) {
+    private void tlm$addedToWorld(EntityAccess entityAccess, CallbackInfo ci) {
         if (entityAccess instanceof IEntity entity)
             entity.onAddedToWorld();
     }
