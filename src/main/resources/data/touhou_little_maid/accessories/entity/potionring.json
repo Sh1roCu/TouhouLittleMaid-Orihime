@@ -12,7 +12,6 @@
     "touhou_little_maid:maid"
   ],
   "slots": [
-    "hand/ring",
-    "offhand/ring"
+    "ring"
   ]
 }
