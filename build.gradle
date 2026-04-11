@@ -8,7 +8,7 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-    archivesName = "${archives_base_name}-${minecraft_version}"
+    archivesName = "${archives_base_name}"
 }
 
 
@@ -371,7 +371,7 @@ jar {
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
-            artifactId = "${project.archives_base_name}-${project.minecraft_version}"
+            artifactId = "${project.archives_base_name}"
             from components.java
         }
     }
