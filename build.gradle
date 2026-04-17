@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.15.5'
     id 'maven-publish'
     id 'com.gradleup.shadow' version '8.3.6'
 }
@@ -287,7 +287,7 @@ dependencies {
     modImplementation("maven.modrinth:just-more-cakes:1.19.2-fabric,1.21.1")
 
     // 旅行者背包
-    modImplementation("maven.modrinth:travelersbackpack:85PLLyUF")
+    modCompileOnly("maven.modrinth:travelersbackpack:85PLLyUF")
 
     // 不加就无法run的各种前置
     modImplementation "libs:LibGui:11.1.0+1.21"
