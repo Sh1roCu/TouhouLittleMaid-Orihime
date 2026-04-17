@@ -1,38 +1,32 @@
-package com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories;
+package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories;
 
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
-import com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories.ref.BackpackSlotRef;
-import com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories.ref.ContainerRef;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ContainerRef;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
 import net.minecraft.world.item.ItemStack;
-import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.BackpackWrapper;
-import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
-import net.p3pp3rf1y.sophisticatedcore.inventory.ITrackedContentsItemHandler;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public class BackpackRequestItemEventHandler {
+public class ExtraContainerRequestHandler {
     public static void onMaidRequestItem(MaidRequestItemEvent event) {
         EntityMaid maid = event.getMaid();
         Predicate<ItemStack> filter = event.getItemFilter();
         int maxCount = event.getMaxCount();
 
-        var containers = MaidBackpackCache.getContainers(maid);
+        var containers = MaidContainerCache.getContainers(maid);
         if (containers.size() <= 1) {
             return;
         }
 
         for (int i = 1; i < containers.size(); i++) {
             ContainerRef ref = containers.get(i);
-            if (!(ref instanceof BackpackSlotRef backpackRef)) {
-                continue;
-            }
 
-            ItemStack extracted = extractItemsFromBackpack(backpackRef, filter, maxCount);
+            ItemStack extracted = ref.extract(maid, filter, maxCount);
             if (extracted.isEmpty()) {
                 continue;
             }
@@ -49,51 +43,16 @@ public class BackpackRequestItemEventHandler {
                 ItemStack result = extracted.copyWithCount(insertedCount);
 
                 if (!remaining.isEmpty()) {
-                    backpackRef.insert(remaining, false);
+                    ref.insert(maid, remaining, false);
                 }
 
                 event.setRequestedItem(result);
                 event.setCanceled(true);
                 return;
             } else {
-                backpackRef.insert(extracted, false);
+                ref.insert(maid, extracted, false);
             }
         }
-    }
-
-    /**
-     * 尝试从背包中提取符合条件的物品
-     *
-     * @param backpackRef 背包引用
-     * @param filter      物品筛选条件
-     * @param maxCount    最大提取数量，-1 表示自动根据物品堆叠上限确定
-     * @return 提取的物品，如果没找到则返回 {@link ItemStack#EMPTY}
-     */
-    private static ItemStack extractItemsFromBackpack(BackpackSlotRef backpackRef,
-                                                      Predicate<ItemStack> filter, int maxCount) {
-        ItemStack backpackStack = backpackRef.getBackpackStack();
-        if (backpackStack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-
-        IBackpackWrapper wrapper = BackpackWrapper.fromStack(backpackStack);
-        ITrackedContentsItemHandler inv = wrapper.getInventoryForUpgradeProcessing();
-
-        for (int slot = 0; slot < inv.getSlotCount(); slot++) {
-            ItemStack stackInSlot = inv.getStackInSlot(slot);
-            if (stackInSlot.isEmpty() || !filter.test(stackInSlot)) {
-                continue;
-            }
-
-            int itemMaxStack = stackInSlot.getMaxStackSize();
-            int effectiveMaxCount = (maxCount == -1)
-                    ? itemMaxStack
-                    : Math.min(maxCount, itemMaxStack);
-            int extractCount = Math.min(effectiveMaxCount, stackInSlot.getCount());
-            return inv.extractItem(slot, extractCount, false);
-        }
-
-        return ItemStack.EMPTY;
     }
 
     private static ItemStack transferToMaidInv(EntityMaid maid, ItemStack stack) {
@@ -136,14 +95,10 @@ public class BackpackRequestItemEventHandler {
 
         for (int i = 1; i < containers.size(); i++) {
             ContainerRef ref = containers.get(i);
-            if (!(ref instanceof BackpackSlotRef backpackRef)) {
+            if (!ref.containing(maid, remaining)) {
                 continue;
             }
-
-            if (!backpackRef.containing(remaining)) {
-                continue;
-            }
-            remaining = backpackRef.insert(remaining, false);
+            remaining = ref.insert(maid, remaining, false);
             if (remaining.isEmpty()) {
                 break;
             }
@@ -152,11 +107,7 @@ public class BackpackRequestItemEventHandler {
         if (!remaining.isEmpty()) {
             for (int i = 1; i < containers.size(); i++) {
                 ContainerRef ref = containers.get(i);
-                if (!(ref instanceof BackpackSlotRef backpackRef)) {
-                    continue;
-                }
-
-                remaining = backpackRef.insert(remaining, false);
+                remaining = ref.insert(maid, remaining, false);
                 if (remaining.isEmpty()) {
                     break;
                 }

@@ -1,18 +1,19 @@
-package com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories;
+package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidPickupEvent;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * 允许女仆在拾取物品时放入 Curios 槽位中的背包
+ * 允许女仆在拾取物品时放入 Accessories 槽位中的背包
  * <p>
  * 拾取优先级：
  * 1. 优先放入已有相同物品的容器（物品栏 > back背包 > 其他背包，按优先级排序）
  * 2. 如果没有已有该物品的容器能放下，则按默认顺序依次尝试
  */
-public class BackpackPickupEventHandler {
+public class ExtraContainerPickupHandler {
     public static void onMaidPickupPre(MaidPickupEvent.ItemResultPre event) {
         EntityMaid maid = event.getMaid();
         ItemEntity itemEntity = event.getEntityItem();
@@ -36,14 +37,14 @@ public class BackpackPickupEventHandler {
         }
 
         int originCount = itemStack.getCount();
-        var containers = MaidBackpackCache.getContainers(maid);
+        var containers = MaidContainerCache.getContainers(maid);
 
         // 先尝试放入已有相同物品的容器
         for (var container : containers) {
-            if (!container.containing(itemStack)) {
+            if (!container.containing(maid, itemStack)) {
                 continue;
             }
-            itemStack = container.insert(itemStack, simulate);
+            itemStack = container.insert(maid, itemStack, simulate);
             if (itemStack.isEmpty()) {
                 break;
             }
@@ -52,7 +53,7 @@ public class BackpackPickupEventHandler {
         // 如果还有剩余，再按默认顺序尝试放入
         if (!itemStack.isEmpty()) {
             for (var container : containers) {
-                itemStack = container.insert(itemStack, simulate);
+                itemStack = container.insert(maid, itemStack, simulate);
                 if (itemStack.isEmpty()) {
                     break;
                 }
