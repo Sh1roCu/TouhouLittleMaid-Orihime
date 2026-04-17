@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.tbackpack;
 
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.minecraft.world.item.ItemStack;
 
 public class TBackpackCompatInner {

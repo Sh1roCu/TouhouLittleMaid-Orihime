@@ -18,11 +18,12 @@ public class LivingEntityShootMixin {
     @Final
     private LivingEntity shooter;
 
-    @Inject(method = "consumeAmmoFromPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tacz$getItemHandler(Lnet/minecraft/core/Direction;)Lcn/sh1rocu/tacz/util/forge/LazyOptional;"))
+    @Inject(method = "consumeAmmoFromPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tacz$getItemHandler(Lnet/minecraft/core/Direction;)Lcn/sh1rocu/tacz/util/forge/LazyOptional;"), cancellable = true)
     private void tlm$consumeAmmoFromPlayer(int neededAmount, ItemStack itemStack, boolean needCheckAmmo, CallbackInfo ci) {
         if (this.shooter instanceof EntityMaid maid) {
             var cap = maid.getAllInv();
             ItemHandlerUtil.findAndExtractInventoryAmmo(cap, itemStack, neededAmount);
+            ci.cancel();
         }
     }
 }

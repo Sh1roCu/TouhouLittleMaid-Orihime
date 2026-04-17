@@ -1,7 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.15.5'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '8.3.6'
+    id 'com.gradleup.shadow' version '9.4.1'
 }
 
 version = project.mod_version
@@ -305,8 +305,8 @@ shadowJar {
 
     archiveClassifier.set("shadow")
 
+    enableAutoRelocation = true
     relocationPrefix = "com.github.tartaricacid.touhoulittlemaid.libs"
-    enableRelocation = true
 
     exclude 'META-INF/maven/**/*'
     exclude 'META-INF/versions/**/*'
@@ -364,10 +364,10 @@ java {
 
 jar {
     from("LICENSE-MIT") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archives_base_name}" }
     }
     from("LICENSE-CC") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archives_base_name}" }
     }
 }
 
