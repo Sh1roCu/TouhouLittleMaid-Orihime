@@ -3,7 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.compat.accessories;
 
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTombstoneEvent;
 import com.github.tartaricacid.touhoulittlemaid.compat.accessories.menu.CuriosContainer;
-import com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories.MaidBackpackCache;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import io.wispforest.accessories.api.AccessoriesCapability;
@@ -20,7 +20,7 @@ public class AccessoriesEvent {
      */
     public static void onSlotUpdate(LivingEntity entity, AccessoriesCapability capability, Map<AccessoriesContainer, Boolean> changedContainers) {
         if (entity instanceof EntityMaid maid && maid.getOwner() instanceof Player player) {
-            MaidBackpackCache.invalidate(maid);
+            MaidContainerCache.invalidate(maid);
             if (player.containerMenu instanceof CuriosContainer container) {
                 container.resetPage(player);
 
