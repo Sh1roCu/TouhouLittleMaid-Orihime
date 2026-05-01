@@ -43,6 +43,7 @@
     "common.ServerPacksSourceMixin",
     "common.ShulkerBulletMixin",
     "common.ThrowableProjectileMixin",
+    "compat.expandedstorage.ChestManagerMixin",
     "compat.improvedmobs.EventHandlerMixin",
     "compat.tacz.AbstractGunItemMixin",
     "compat.tacz.GunAnimationStateContextMixin",
