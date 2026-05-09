@@ -157,6 +157,9 @@ public class LLMOpenAIClient implements LLMClient {
             if (usage != null) {
                 // TOKEN 计数
                 int totalTokens = usage.getTotalTokens();
+                if (totalTokens > 0 && callback.shouldCacheTokenUsage()) {
+                    callback.getMaid().getAiChatManager().setLastChatTokenUsage(totalTokens);
+                }
                 if (totalTokens > 0 && callback.getMaid().getOwner() instanceof ServerPlayer serverPlayer) {
                     var tokens = serverPlayer.getAttachedOrCreate(InitDataAttachment.CHAT_TOKENS);
                     tokens.add(totalTokens);
