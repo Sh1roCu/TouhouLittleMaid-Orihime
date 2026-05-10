@@ -2,6 +2,8 @@ plugins {
     id 'fabric-loom' version '1.15.5'
     id 'maven-publish'
     id 'com.gradleup.shadow' version '9.4.1'
+    // OpenRewrite 插件，用于自动化处理 Minecraft 或者 NeoForge/Fabric 更新时的代码修改
+    id "org.openrewrite.rewrite" version "7.32.2"
 }
 
 version = project.mod_version
@@ -360,6 +362,10 @@ java {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
     withSourcesJar()
+}
+
+rewrite {
+    activeRecipe("com.github.tartaricacid.Upgrade")
 }
 
 jar {
