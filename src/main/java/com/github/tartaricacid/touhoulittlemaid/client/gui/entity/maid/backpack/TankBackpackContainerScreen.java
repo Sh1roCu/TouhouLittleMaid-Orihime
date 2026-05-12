@@ -57,7 +57,7 @@ public class TankBackpackContainerScreen extends AbstractMaidContainerGui<TankBa
         graphics.blit(BACKPACK, leftPos + 85, topPos + 36, 0, 0, 165, 128);
 
         RenderSystem.enableBlend();
-        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getFluidCount(), (int) TankBackpackData.CAPACITY);
+        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getFluidCount(), TankBackpackData.CAPACITY);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
         graphics.blit(BACKPACK, leftPos + 197, topPos + 104, 165, 0, 34, 50);
