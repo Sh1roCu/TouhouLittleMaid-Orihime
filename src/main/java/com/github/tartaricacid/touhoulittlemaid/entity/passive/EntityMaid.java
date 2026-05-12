@@ -40,6 +40,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.control.MaidMoveControl;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation.MaidPathNavigation;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.*;
+import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.TankBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleDataCollection;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegister;
@@ -61,10 +62,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
-import com.github.tartaricacid.touhoulittlemaid.network.message.ItemBreakPackage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundPackage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SendEffectPackage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SyncYsmMaidDataPackage;
+import com.github.tartaricacid.touhoulittlemaid.network.message.*;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import com.github.tartaricacid.touhoulittlemaid.util.TeleportHelper;
@@ -77,6 +75,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -1537,6 +1536,10 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
             this.navigation.stop();
             MenuProvider guiProvider = getGuiProvider(tabIndex);
             serverPlayer.openMenu(guiProvider);
+            // 打开GUI时发包同步客户端流体amount
+            if (getBackpackData() instanceof TankBackpackData tankBackpackData) {
+                ServerPlayNetworking.send(serverPlayer, new SyncFluidAmountPackage(tankBackpackData.getTank().amount));
+            }
         }
         return true;
     }

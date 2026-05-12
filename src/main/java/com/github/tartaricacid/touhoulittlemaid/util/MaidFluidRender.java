@@ -37,7 +37,7 @@ public final class MaidFluidRender {
         return FluidVariantAttributes.getName(FluidVariant.of(fluid));
     }
 
-    public static void drawFluid(GuiGraphics graphics, int x, int y, int width, int height, String fluidId, int amount, int capacity) {
+    public static void drawFluid(GuiGraphics graphics, int x, int y, int width, int height, String fluidId, long amount, long capacity) {
         Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluidId));
         if (amount <= 0 || fluid == null || fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -45,7 +45,7 @@ public final class MaidFluidRender {
         FluidVariant fluidStack = FluidVariant.of(fluid);
         getStillFluidSprite(fluidStack).ifPresent(fluidStillSprite -> {
             int fluidColor = getColorTint(fluidStack);
-            int scaledAmount = (amount * height) / capacity;
+            long scaledAmount = (amount * height) / capacity;
             if (scaledAmount < 1) {
                 // 至少渲染一行像素，让人知道里面有东西
                 scaledAmount = 1;
