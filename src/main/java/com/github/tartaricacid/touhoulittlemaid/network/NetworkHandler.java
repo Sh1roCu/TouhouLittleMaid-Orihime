@@ -63,6 +63,7 @@ public class NetworkHandler {
         registerS2CPacket(SyncYsmMaidDataMessage.ID, SyncYsmMaidDataMessage::handle);
         registerS2CPacket(TTSSystemAudioToClientMessage.ID, TTSSystemAudioToClientMessage::handle);
 
+        registerS2CPacket(SyncFluidAmountMessage.ID, SyncFluidAmountMessage::handle);
         registerS2CPacket(OpenPlayerInventoryMessage.ID, OpenPlayerInventoryMessage::handle);
         registerS2CPacket(MaidAnimationMessage.ID, MaidAnimationMessage::handle);
 

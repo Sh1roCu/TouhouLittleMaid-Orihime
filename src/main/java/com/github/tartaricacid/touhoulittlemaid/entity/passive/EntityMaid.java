@@ -40,6 +40,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.control.MaidMoveControl;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation.MaidPathNavigation;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.*;
+import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.TankBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleDataCollection;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegister;
@@ -61,10 +62,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
-import com.github.tartaricacid.touhoulittlemaid.network.message.ItemBreakMessage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundMessage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SendEffectMessage;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SyncYsmMaidDataMessage;
+import com.github.tartaricacid.touhoulittlemaid.network.message.*;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import com.github.tartaricacid.touhoulittlemaid.util.TeleportHelper;
@@ -1514,9 +1512,12 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     public boolean openMaidGui(Player player, int tabIndex) {
         if (player instanceof ServerPlayer serverPlayer && !this.isSleeping()) {
             this.navigation.stop();
-            final int id = getId();
             MenuProvider guiProvider = getGuiProvider(tabIndex);
             serverPlayer.openMenu(guiProvider);
+            // 打开GUI时发包同步客户端流体amount
+            if (getBackpackData() instanceof TankBackpackData tankBackpackData) {
+                ServerPlayNetworking.send(serverPlayer, SyncFluidAmountMessage.ID, SyncFluidAmountMessage.encode(tankBackpackData.getTank().amount));
+            }
         }
         return true;
     }
