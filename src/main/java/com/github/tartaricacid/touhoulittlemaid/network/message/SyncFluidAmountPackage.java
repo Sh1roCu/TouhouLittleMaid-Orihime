@@ -2,6 +2,8 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.TankBackpackContainer;
 import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,11 +19,11 @@ public record SyncFluidAmountPackage(long amount) implements CustomPacketPayload
             SyncFluidAmountPackage::new
     );
 
+    @Environment(EnvType.CLIENT)
     public static void handle(SyncFluidAmountPackage message, ClientPlayNetworking.Context context) {
         context.client().execute(() -> {
-            var player = context.player();
-            if (player != null && player.containerMenu instanceof TankBackpackContainer tankBackpackContainer) {
-                tankBackpackContainer.setData(0, (int) message.amount);
+            if (context.player().containerMenu instanceof TankBackpackContainer tankBackpackContainer) {
+                tankBackpackContainer.setClientFluidCount(message.amount);
             }
         });
     }

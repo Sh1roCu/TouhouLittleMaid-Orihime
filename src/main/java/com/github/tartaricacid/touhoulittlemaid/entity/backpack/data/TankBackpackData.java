@@ -24,6 +24,10 @@ public class TankBackpackData extends SimpleContainer implements IBackpackData {
     private static final int OUTPUT_INDEX = 1;
     private final EntityMaid maid;
     private final SingleFluidStorage tank = SingleFluidStorage.withFixedCapacity(CAPACITY, () -> {
+        // amount改变时发包同步客户端流体amount
+        if (TankBackpackData.this.maid.getOwner() instanceof ServerPlayer serverPlayer) {
+            ServerPlayNetworking.send(serverPlayer, new SyncFluidAmountPackage(this.getTank().amount));
+        }
     });
     private final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -64,10 +68,6 @@ public class TankBackpackData extends SimpleContainer implements IBackpackData {
                 MaidFluidUtil.tankToBucket(stack, tank, availableInv);
             }
             this.tankFluidCount = tank.amount;
-            // amount改变时发包同步客户端流体amount
-            if (TankBackpackData.this.maid.getOwner() instanceof ServerPlayer serverPlayer) {
-                ServerPlayNetworking.send(serverPlayer, new SyncFluidAmountPackage(this.tankFluidCount));
-            }
             ResourceLocation key = BuiltInRegistries.FLUID.getKey(tank.getResource().getFluid());
             maid.setBackpackFluid(key.toString());
         }

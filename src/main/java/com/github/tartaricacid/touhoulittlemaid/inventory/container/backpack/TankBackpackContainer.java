@@ -25,6 +25,7 @@ public class TankBackpackContainer extends MaidMainContainer {
     private static final ResourceLocation INPUT_SLOT = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_input_slot");
     private static final ResourceLocation OUTPUT_SLOT = ResourceLocation.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_output_slot");
     private final ContainerData data;
+    private long clientFluidCount;
 
     public TankBackpackContainer(int id, Inventory inventory, int entityId) {
         super(TYPE, id, inventory, entityId);
@@ -35,6 +36,7 @@ public class TankBackpackContainer extends MaidMainContainer {
             tankData = new TankBackpackData(this.getMaid());
         }
         this.data = tankData.getDataAccess();
+        this.clientFluidCount = data.get(0);
         this.addSlot(new TankInputSlot(tankData, 0, 161, 101));
         this.addSlot(new TankOutputSlot(tankData, 1, 161, 140));
         this.addDataSlots(this.data);
@@ -52,6 +54,16 @@ public class TankBackpackContainer extends MaidMainContainer {
 
     public int getFluidCount() {
         return this.data.get(0);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public long getClientFluidCount() {
+        return this.clientFluidCount;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void setClientFluidCount(long amount) {
+        this.clientFluidCount = amount;
     }
 
     public static class TankInputSlot extends Slot {
