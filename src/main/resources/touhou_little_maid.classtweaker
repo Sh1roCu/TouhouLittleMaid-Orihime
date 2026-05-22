@@ -1,0 +1,57 @@
+classTweaker v2 official
+
+accessible class net/minecraft/world/item/crafting/Ingredient$Value
+
+extendable method net/minecraft/world/entity/LivingEntity handleOnClimbable (Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;
+
+accessible field net/minecraft/world/item/crafting/Ingredient values [Lnet/minecraft/world/item/crafting/Ingredient$Value;
+accessible method net/minecraft/world/item/crafting/Ingredient fromValues (Ljava/util/stream/Stream;)Lnet/minecraft/world/item/crafting/Ingredient;
+
+accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate palettes Ljava/util/List;# palettes
+accessible method net/minecraft/world/entity/LivingEntity breakItem (Lnet/minecraft/world/item/ItemStack;)V # breakItem
+accessible field net/minecraft/client/Minecraft fps I # fps
+accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;)F # getTemperature
+extendable method net/minecraft/world/entity/ai/behavior/GateBehavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z # tryStart
+accessible field net/minecraft/world/entity/Entity level Lnet/minecraft/world/level/Level; # level
+
+accessible field net/minecraft/world/entity/ai/goal/TemptGoal mob Lnet/minecraft/world/entity/Mob;
+accessible field net/minecraft/world/entity/ai/goal/TemptGoal speedModifier D # speedModifier
+accessible field net/minecraft/world/entity/ai/goal/TemptGoal items Ljava/util/function/Predicate; # items
+accessible field net/minecraft/world/entity/ai/goal/TemptGoal canScare Z # canScare
+
+accessible field net/minecraft/world/entity/ai/Brain lastScheduleUpdate J # lastScheduleUpdate
+
+accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource fixedBuffers Ljava/util/SequencedMap; # fixedBuffers
+
+accessible method net/minecraft/world/entity/SpawnPlacements register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V # register
+extendable method net/minecraft/world/entity/Entity getGravity ()D # getGravity
+extendable method net/minecraft/world/entity/LivingEntity eat (Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack; # eat
+extendable method net/minecraft/world/entity/Entity getEyeHeight (Lnet/minecraft/world/entity/Pose;)F # getEyeHeight
+
+accessible field com/mojang/blaze3d/platform/NativeImage pixels J # pixels
+accessible field net/minecraft/client/renderer/texture/TextureManager byPath Ljava/util/Map; # byPath
+
+accessible method net/minecraft/world/entity/LivingEntity getFrictionInfluencedSpeed (F)F
+accessible method net/minecraft/world/entity/LivingEntity handleOnClimbable (Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;
+accessible method net/minecraft/world/level/pathfinder/PathFinder getBestH (Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)F # getBestH
+extendable method net/minecraft/world/level/pathfinder/PathFinder getBestH (Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)F
+
+
+accessible field net/minecraft/client/GameNarrator narrator Lcom/mojang/text2speech/Narrator;
+
+accessible method net/minecraft/util/thread/BlockableEventLoop submitAsync (Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;
+
+accessible method net/minecraft/world/level/pathfinder/PathFinder findPath (Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Map;FIF)Lnet/minecraft/world/level/pathfinder/Path; # findPath
+extendable method net/minecraft/world/level/pathfinder/PathFinder findPath (Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Map;FIF)Lnet/minecraft/world/level/pathfinder/Path; # findPath
+accessible field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
+mutable field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
+accessible method net/minecraft/world/level/pathfinder/Path setDebug ([Lnet/minecraft/world/level/pathfinder/Node;[Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)V
+
+accessible method net/minecraft/world/entity/LivingEntity setLastArmorItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V
+accessible method net/minecraft/world/entity/LivingEntity setLastHandItem (Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/item/ItemStack;)V
+
+accessible class net/minecraft/world/entity/ai/behavior/CrossbowAttack$CrossbowState
+accessible field net/minecraft/world/entity/ai/behavior/CrossbowAttack attackDelay I
+accessible field net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowState Lnet/minecraft/world/entity/ai/behavior/CrossbowAttack$CrossbowState;
+accessible method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowAttack (Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/LivingEntity;)V
+extendable method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowAttack (Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/LivingEntity;)V

@@ -1,0 +1,44 @@
+package com.github.tartaricacid.touhoulittlemaid.network.message;
+
+import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
+import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.other.CheckSchedulePosGui;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+
+public record CheckSchedulePosPacket(String tips) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<CheckSchedulePosPacket> TYPE = new CustomPacketPayload.Type<>(getIdentifier("check_schedule_pos"));
+    public static final StreamCodec<ByteBuf, CheckSchedulePosPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            CheckSchedulePosPacket::tips,
+            CheckSchedulePosPacket::new
+    );
+
+    public static void handle(CheckSchedulePosPacket message, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> onHandle(message));
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void onHandle(CheckSchedulePosPacket message) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
+        if (mc.screen instanceof AbstractMaidContainerGui<?> parent) {
+            mc.setScreen(new CheckSchedulePosGui(parent, Component.translatable(message.tips)));
+        }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+}

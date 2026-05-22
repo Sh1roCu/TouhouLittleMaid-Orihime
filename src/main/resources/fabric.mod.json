@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "touhou_little_maid",
+  "version": "${version}",
+  "name": "Touhou Little Maid: Orihime",
+  "description": "Touhou Little Maid Unofficial Fabric port",
+  "authors": [
+    "Sh1roCu"
+  ],
+  "contact": {},
+  "license": "MIT / CC BY-NC-SA 4.0",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.github.tartaricacid.touhoulittlemaid.datagen.DataGenerator"
+    ],
+    "client": [
+      "cn.sh1rocu.touhoulittlemaid.client.TouhouLittleMaidFabricClient"
+    ],
+    "main": [
+      "cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric"
+    ],
+    "cardinal-components-entity": [
+      "com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities"
+    ],
+    "modmenu": [
+      "cn.sh1rocu.touhoulittlemaid.compat.modmenu.ModMenuApiImpl"
+    ],
+    "emi": [
+      "com.github.tartaricacid.touhoulittlemaid.compat.emi.MaidEmiPlugin"
+    ],
+    "jade": [
+      "com.github.tartaricacid.touhoulittlemaid.compat.jade.JadePlugin"
+    ],
+    "jei_mod_plugin": [
+      "com.github.tartaricacid.touhoulittlemaid.compat.jei.MaidPlugin"
+    ],
+    "rei_client": [
+      "com.github.tartaricacid.touhoulittlemaid.compat.rei.MaidREIClientPlugin"
+    ]
+  },
+  "custom": {
+    "cardinal-components": [
+      "touhou_little_maid:maid_hand",
+      "touhou_little_maid:maid_armor",
+      "touhou_little_maid:maid_inv",
+      "touhou_little_maid:maid_bauble"
+    ]
+  },
+  "mixins": [
+    "touhou_little_maid.mixins.json",
+    "touhou_little_maid_fabric.mixins.json"
+  ],
+  "accessWidener": "touhou_little_maid.classtweaker",
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=26.1",
+    "forgeconfigapiport": "*"
+  }
+}

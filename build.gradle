@@ -1,0 +1,389 @@
+plugins {
+    id 'idea'
+    id 'net.fabricmc.fabric-loom' version '1.16-SNAPSHOT'
+    id 'maven-publish'
+    id 'com.gradleup.shadow' version '9.4.1'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = "${archives_base_name}"
+}
+
+
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/touhou_little_maid.classtweaker")
+    mixin {
+        defaultRefmapName = "touhou_little_maid.refmap.json"
+    }
+    runs {
+        datagen {
+            property "fabric-api.datagen.modid", "touhou_little_maid"
+        }
+    }
+}
+
+repositories {
+    // ./libs 目录为库
+    flatDir {
+        dir "libs"
+    }
+    // mavenLocal 为本机仓库
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+    maven {
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
+        }
+    }
+    maven {
+        url "https://maven2.bai.lol"
+        content {
+            includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
+        }
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+        content {
+            includeGroup "dev.emi"
+        }
+    }
+    maven {
+        name 'cursemaven'
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { // for TOP
+        url "https://maven.k-4u.nl/"
+        content {
+            includeGroup "mcjty.theoneprobe"
+        }
+    }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+    maven {// CCA
+        name = "Ladysnake Mods"
+        url = 'https://maven.ladysnake.org/releases'
+    }
+    maven {// Forge Config API Port
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+    maven {// ModMenu
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        url = "https://maven.modmuss50.me/"
+    }
+    maven { url 'https://maven.wispforest.io/releases' }
+    maven { url 'https://maven.su5ed.dev/releases' }
+    maven {
+        name "reposiliteRepositoryArtifacts"
+        url "https://maven.conczin.net/Artifacts"
+    }
+    maven { url = "https://maven.createmod.net" }
+    maven { url 'https://maven.wispforest.io/releases' }
+    maven { url 'https://maven.su5ed.dev/releases' }
+    maven { url = "https://mvn.devos.one/releases/" }
+    maven { url = "https://mvn.devos.one/snapshots/" }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+            includeGroup("com.eliotlash.mclib")
+        }
+    }
+    maven {
+        url = "https://raw.github.com/Sh1roCu/Sh1roCu_MCRepo/master/repository"
+    }
+    maven {
+        name "KosmX's maven"
+        url 'https://maven.kosmx.dev/'
+    }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        name = "Greenhouse Maven"
+        url = 'https://maven.greenhouse.lgbt/releases/'
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+
+    mcLib
+    implementation {
+        extendsFrom mcLib
+    }
+    additionalRuntimeClasspath {
+        extendsFrom mcLib
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // Opus 音频解码库
+    mcLib("org.gagravarr:vorbis-java-core:0.8")
+    mcLib("io.github.jaredmdobson:concentus:1.0.2")
+
+    // MP3 音频解码库
+    mcLib "com.googlecode.soundlibs:mp3spi:1.9.5.4"
+
+    // YAML 库
+    mcLib("org.yaml:snakeyaml:2.4")
+
+    // Nashorn JavaScript 引擎，目前仅用于女仆的旧版 JS 动画
+    mcLib "org.openjdk.nashorn:nashorn-core:15.4"
+
+    // 拆分出来的基岩版模型加载库
+    // 又合并回来了
+    // implementation(include("libs:simplebedrockmodel:1.3.0-fabric+mc1.21.1"))
+
+    // JEI
+    implementation "maven.modrinth:jei:${jei_version}"
+    // REI
+//    compileOnly "maven.modrinth:architectury-api:${architectury_api_version}"
+//    compileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}"
+    implementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
+        exclude group: 'net.fabricmc.fabric-api'
+    }
+    // EMI
+    // compileOnly "maven.modrinth:emi:${emi_version}"
+
+    implementation "maven.modrinth:jade:${jade_version}"
+//    compileOnly "maven.modrinth:cyberanner-ironchest:${iron_chests_version}"
+//    compileOnly "maven.modrinth:carry-on:${carry_on_version}"
+//    compileOnly "maven.modrinth:patchouli:${patchouli_version}"
+
+    // IPN
+    implementation "net.fabricmc:fabric-language-kotlin:1.13.11+kotlin.2.3.21"
+    implementation "maven.modrinth:libipn:fabric-26.1-6.7.2"
+    implementation "maven.modrinth:inventory-profiles-next:fabric-26.1-2.3.2"
+
+    compileOnly "maven.modrinth:sodium:mc26.1.2-0.8.12-beta.1-fabric"
+    compileOnly "maven.modrinth:iris:1.10.9+26.1-fabric"
+
+    // CCA
+    implementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+    implementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+
+    // Forge Config API Port
+    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:26.1.4"
+
+    // ModMenu
+    implementation("com.terraformersmc:modmenu:18.0.0-beta.1")
+
+    // Simple Hats
+//    compileOnly "maven.modrinth:simple-hats:nV0q5j3l"
+
+    // Accessories
+//    compileOnly "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
+//    runtimeOnly("maven.modrinth:potion-ring-reforged:LpwbSRNh")
+//    runtimeOnly("maven.modrinth:accessories-tc-layer:3.10.0+beta.28")
+
+    // Immersive Melodies
+//    compileOnly "immersive_melodies:immersive_melodies-fabric:0.6.2+1.21.1"
+
+    // Ponder
+//    compileOnly("net.createmod.ponder:Ponder-Fabric-1.21.1:1.0.61")
+
+    // 精妙背包
+//    compileOnly files("libs/sophisticatedbackpacks-1.21.1-3.23.4.3.106.jar")
+//    compileOnly files("libs/sophisticatedcore-1.21.1-1.2.9.17.157.jar")
+//    compileOnly fileTree(dir: 'libs/compile_only', include: ['*.jar'])
+
+    // 森罗物语：烹饪
+    compileOnly "maven.modrinth:kaleidoscope-cookery-refabricated:1.3.0.6-fabric+mc26.1.2"
+
+    // Improved Mobs
+//    compileOnly "maven.modrinth:improved-mobs:1.21.1-1.14.2-fabric"
+//    compileOnly "maven.modrinth:tenshilib:1.21.1-2.1.1-fabric"
+
+    // TACZ
+//    compileOnly("maven.modrinth:TACZ-Refabricated:1.21.1-0.6.0-forge1.1.8")
+//    implementation(minecraftLibraries('org.apache.commons:commons-math3:3.6.1'))
+//    implementation('com.github.FiguraMC.luaj:luaj-core:3.0.8-figura') {
+//        exclude group: 'org.apache.commons', module: 'commons-lang3'
+//    }
+//    implementation('com.github.FiguraMC.luaj:luaj-jse:3.0.8-figura') {
+//        exclude group: 'org.apache.commons', module: 'commons-lang3'
+//    }
+//    implementation('org.apache.bcel:bcel:6.6.1') {
+//        exclude group: 'org.apache.commons', module: 'commons-lang3'
+//    }
+//    implementation "curse.maven:nonconflictkeys-fabric-865546:4572953"
+
+    // PatPat
+//    compileOnly "maven.modrinth:patpat:1.2.1+1.21.1"
+//    compileOnly "maven.modrinth:proxlib:0.2.4+1.21"
+//    compileOnly "maven.modrinth:fabric-permissions-api:0.3.1"
+
+    // 卓越前线
+//    compileOnly "software.bernie.geckolib:geckolib-fabric-1.21.1:4.7.5"
+//    // TODO: 1.21没移植完，暂时用1.20通过编译
+//    compileOnly(files("libs/compile_only/superbwarfare-fabric-0.0.1-forge0.8.7.jar"))
+
+    // 地图相关模组兼容
+    runtimeOnly "maven.modrinth:xaeros-minimap:fabric-26.1.2-25.3.12"
+    runtimeOnly "maven.modrinth:xaeros-world-map:fabric-26.1.2-1.40.16"
+
+    // 拔刀剑
+//    compileOnly "cn.sh1rocu:slashblade-refabricated:1.21.1-1.0.1-Resharped-1.7.55"
+
+    // 农夫乐事
+    compileOnly("maven.modrinth:farmers-delight-refabricated:26.1-3.6.4") {
+        exclude(group: "net.fabricmc")
+    }
+    // 更多蛋糕
+//    compileOnly("maven.modrinth:common-network:1.0.21-1.21.1-fabric")
+//    compileOnly("maven.modrinth:just-more-cakes:1.19.2-fabric,1.21.1")
+
+    // 旅行者背包
+    compileOnly("maven.modrinth:travelersbackpack:CoCSwzdR")
+
+//    // 不加就无法run的各种前置
+//    implementation files("libs/LibGui-11.1.0+1.21.jar")
+//    implementation files("libs/Jankson-Fabric-8.0.0+j1.2.3.jar")
+//    implementation name: "libninepatch-1.2.0"
+//    implementation "me.zeroeightsix:fiber:0.23.0-SNAPSHOT"
+}
+
+shadowJar {
+    configurations = [project.configurations.mcLib]
+
+    dependencies {
+        exclude(dependency('junit:junit'))
+    }
+
+    archiveClassifier.set("shadow")
+
+    enableAutoRelocation = true
+    relocationPrefix = "com.github.tartaricacid.touhoulittlemaid.libs"
+
+    exclude 'META-INF/maven/**/*'
+    exclude 'META-INF/versions/**/*'
+    exclude 'META-INF/LICENSE'
+    exclude '.cache/**'
+
+    mergeServiceFiles()
+    minimize()
+}
+
+assemble {
+    dependsOn shadowJar
+}
+
+tasks.compileJava {
+    // dsx137: 强制重新编译和生成 refmap.json 文件，避免偶发情况下该文件丢失问题
+    outputs.upToDateWhen { false }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+    filteringCharset "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version
+    }
+}
+
+def targetJavaVersion = 25
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+tasks.withType(Jar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Zip).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+tasks.withType(Copy).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+    from("LICENSE-MIT") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+    from("LICENSE-CC") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+    }
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = "${project.archives_base_name}"
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file:///D:/github_maven/Sh1roCu_MCRepo/repository"
+        }
+    }
+}

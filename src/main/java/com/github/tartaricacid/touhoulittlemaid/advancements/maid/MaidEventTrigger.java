@@ -1,0 +1,38 @@
+package com.github.tartaricacid.touhoulittlemaid.advancements.maid;
+
+import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Optional;
+
+public class MaidEventTrigger extends SimpleCriterionTrigger<MaidEventTrigger.Instance> {
+    public static Criterion<Instance> create(String eventName) {
+        return InitTrigger.MAID_EVENT.createCriterion(new Instance(Optional.empty(), eventName));
+    }
+
+    public void trigger(ServerPlayer serverPlayer, String eventName) {
+        super.trigger(serverPlayer, instance -> instance.matches(eventName));
+    }
+
+    @Override
+    public Codec<Instance> codec() {
+        return Instance.CODEC;
+    }
+
+    public record Instance(Optional<ContextAwarePredicate> player, String eventName) implements SimpleInstance {
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+                        Codec.STRING.fieldOf("event").forGetter(Instance::eventName))
+                .apply(instance, Instance::new));
+
+        public boolean matches(String eventNameIn) {
+            return this.eventName.equals(eventNameIn);
+        }
+    }
+}

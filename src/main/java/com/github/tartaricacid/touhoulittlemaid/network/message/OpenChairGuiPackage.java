@@ -1,0 +1,46 @@
+package com.github.tartaricacid.touhoulittlemaid.network.message;
+
+import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.cache.CacheIconManager;
+import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+
+public record OpenChairGuiPackage(int id) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<OpenChairGuiPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("open_chair_gui"));
+    public static final StreamCodec<ByteBuf, OpenChairGuiPackage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT,
+            OpenChairGuiPackage::id,
+            OpenChairGuiPackage::new
+    );
+
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    public static void handle(OpenChairGuiPackage message, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> handleOpenGui(message));
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void handleOpenGui(OpenChairGuiPackage message) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return;
+        }
+        Entity e = mc.level.getEntity(message.id);
+        if (mc.player != null && mc.player.isAlive() && e instanceof EntityChair chair && e.isAlive()) {
+            CacheIconManager.openChairModelGui(chair);
+        }
+    }
+}

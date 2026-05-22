@@ -1,0 +1,46 @@
+package com.github.tartaricacid.touhoulittlemaid.network.message;
+
+import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
+import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
+import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import org.jetbrains.annotations.NotNull;
+
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+
+public record SyncDataPackage(float power, int maidNum) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncDataPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("sync_data"));
+    public static final StreamCodec<ByteBuf, SyncDataPackage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT,
+            SyncDataPackage::power,
+            ByteBufCodecs.VAR_INT,
+            SyncDataPackage::maidNum,
+            SyncDataPackage::new
+    );
+
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    public static void handle(SyncDataPackage message, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> handleData(message));
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void handleData(SyncDataPackage message) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) {
+            return;
+        }
+        mc.player.setAttached(InitDataAttachment.POWER_NUM, new PowerAttachment(message.power));
+        mc.player.setAttached(InitDataAttachment.MAID_NUM, new MaidNumAttachment(message.maidNum));
+    }
+}

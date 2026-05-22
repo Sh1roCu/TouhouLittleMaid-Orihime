@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "touhou_little_maid:item/maid_beacon"
+  },
+  "gui_light": "front"
+}

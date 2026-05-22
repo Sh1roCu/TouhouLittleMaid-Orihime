@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "touhou_little_maid:item/hakurei_gohei"
+  },
+  "gui_light": "front"
+}
