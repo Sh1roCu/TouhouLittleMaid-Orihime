@@ -1,7 +1,7 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.LivingAttackEvent;
-import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.EventHooks;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

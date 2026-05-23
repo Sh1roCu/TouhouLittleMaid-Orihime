@@ -1,8 +1,10 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -14,25 +16,29 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class TileEntityPicnicMat extends BlockEntity implements IBlockEntityPersistentData {
-    public static final BlockEntityType<TileEntityPicnicMat> TYPE = BlockEntityType.Builder.of(TileEntityPicnicMat::new, InitBlocks.PICNIC_MAT).build(null);
+    public static final BlockEntityType<TileEntityPicnicMat> TYPE = new BlockEntityType<>(TileEntityPicnicMat::new, InitBlocks.PICNIC_MAT.get());
     private static final String CENTER_POS_NAME = "CenterPos";
     private static final String STORAGE_ITEM = "StorageItem";
     private static final String SIT_IDS = "SitIds";
-    private final ItemStackHandler handler = new ItemStackHandler(9) {
+    private final ItemStacksResourceHandler handler = new ItemStacksResourceHandler(9) {
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return /*stack.getFoodProperties(null)*/stack.get(DataComponents.FOOD) != null;
+        public int insert(int index, ItemVariant resource, int amount, TransactionContext transaction) {
+            if (!resource.toStack().has(DataComponents.FOOD))
+                return 0;
+            return super.insert(index, resource, amount, transaction);
         }
     };
     private final UUID[] sitIds = new UUID[]{Util.NIL_UUID, Util.NIL_UUID, Util.NIL_UUID, Util.NIL_UUID};
@@ -64,15 +70,15 @@ public class TileEntityPicnicMat extends BlockEntity implements IBlockEntityPers
     }
 
     public ItemStack getStorageItem(int slotId) {
-        return handler.getStackInSlot(slotId);
+        return handler.getResource(slotId).toStack(handler.getAmountAsInt(slotId));
     }
 
     public boolean isEmpty(int slotId) {
-        return handler.getStackInSlot(slotId).isEmpty();
+        return handler.getResource(slotId).isBlank();
     }
 
-    public void setHandler(ItemStackHandler stackHandler) {
-        for (int i = 0; i < stackHandler.getSlots(); i++) {
+    public void setHandler(ItemStacksResourceHandler stackHandler) {
+        for (int i = 0; i < stackHandler.getSlotCount(); i++) {
             ItemStack stack = stackHandler.getStackInSlot(i);
             if (i >= this.handler.getSlots()) {
                 return;
@@ -82,12 +88,12 @@ public class TileEntityPicnicMat extends BlockEntity implements IBlockEntityPers
         this.refresh();
     }
 
-    public ItemStackHandler getHandler() {
+    public ItemStacksResourceHandler getHandler() {
         return handler;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(ValueOutput output) {
         tlm$getPersistentData().put(CENTER_POS_NAME, NbtUtils.writeBlockPos(centerPos));
         tlm$getPersistentData().put(STORAGE_ITEM, handler.serializeNBT(pRegistries));
         ListTag listTag = new ListTag();
@@ -99,7 +105,7 @@ public class TileEntityPicnicMat extends BlockEntity implements IBlockEntityPers
     }
 
     @Override
-    public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    public void loadAdditional(ValueInput input) {
         super.loadAdditional(pTag, pRegistries);
         NbtUtils.readBlockPos(tlm$getPersistentData(), CENTER_POS_NAME).ifPresent(pos -> centerPos = pos);
         this.handler.deserializeNBT(pRegistries, tlm$getPersistentData().getCompound(STORAGE_ITEM));

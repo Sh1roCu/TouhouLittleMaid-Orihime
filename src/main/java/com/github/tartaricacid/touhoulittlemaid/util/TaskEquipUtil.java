@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.util;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.RangedWrapper;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;

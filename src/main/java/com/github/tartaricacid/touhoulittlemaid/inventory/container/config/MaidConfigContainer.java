@@ -1,8 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.config;
 
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +24,7 @@ public class MaidConfigContainer extends AbstractMaidContainer {
     }
 
     public static MenuProvider create(int entityId) {
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer player) {
                 return entityId;

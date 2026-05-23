@@ -10,7 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitTaskData;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.task.AttackTaskConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -133,7 +133,7 @@ public interface IAttackTask extends IMaidTask {
     @Override
     default MenuProvider getTaskConfigGuiProvider(EntityMaid maid) {
         final int entityId = maid.getId();
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer player) {
                 return entityId;

@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFeedTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -18,6 +17,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MaidFeedOwnerTask extends MaidCheckRateTask {
     private static final int MAX_DELAY_TIME = 20;
@@ -37,7 +37,7 @@ public class MaidFeedOwnerTask extends MaidCheckRateTask {
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (super.checkExtraStartConditions(worldIn, maid)) {
             LivingEntity owner = maid.getOwner();
-            if (owner instanceof Player && owner.isAlive() && maid.isWithinRestriction(owner.blockPosition())) {
+            if (owner instanceof Player && owner.isAlive() && maid.isWithinHome(owner.blockPosition())) {
                 if (owner.closerThan(maid, closeEnoughDist)) {
                     return true;
                 }
@@ -62,8 +62,9 @@ public class MaidFeedOwnerTask extends MaidCheckRateTask {
             // 若没有食物则借助此调用触发 MaidRequestItemEvent 来尝试获取食物
             ItemsUtil.findStackSlot(inv, stack -> task.isFood(stack, player));
 
-            for (int i = 0; i < inv.getSlots(); ++i) {
-                ItemStack stack = inv.getStackInSlot(i);
+
+            for (int i = 0; i < inv.size(); ++i) {
+                ItemStack stack = inv.getResource(i).toStack();
                 if (task.isFood(stack, player)) {
                     IFeedTask.Priority priority = task.getPriority(stack, player);
                     if (priority == IFeedTask.Priority.HIGH) {
@@ -87,7 +88,10 @@ public class MaidFeedOwnerTask extends MaidCheckRateTask {
 
             IntList map = !highFoods.isEmpty() ? highFoods : !lowFoods.isEmpty() ? lowFoods : lowestFoods;
             map.intStream().skip(maid.getRandom().nextInt(map.size())).findFirst().ifPresent(slot -> {
-                inv.setStackInSlot(slot, task.feed(inv.getStackInSlot(slot), player));
+                ItemStack stack = inv.getResource(slot).toStack(inv.getAmountAsInt(slot));
+                ItemStack feedResult = task.feed(stack, player);
+                //Fixme 替换可变的ItemStack
+                ItemsUtil.extractItem(inv, slot, stack.getCount() - feedResult.getCount(), false, null);
                 maid.swing(InteractionHand.MAIN_HAND);
                 this.setNextCheckTickCount(5);
                 if (maid.getOwner() instanceof ServerPlayer serverPlayer) {

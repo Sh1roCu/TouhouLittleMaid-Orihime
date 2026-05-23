@@ -1,8 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlock;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.PicnicMatPart;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntitySit;
@@ -147,7 +146,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     }
 
     private static ItemInteractionResult takeFood(Player playerIn, TileEntityPicnicMat picnicMatCenter) {
-        ItemStackHandler handler = picnicMatCenter.getHandler();
+        ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
         int size = handler.getSlots() - 1;
         for (int i = size; i >= 0; i--) {
             ItemStack stack = handler.getStackInSlot(i);

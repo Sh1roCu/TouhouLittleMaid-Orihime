@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.api.event;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.CancellableEvent;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

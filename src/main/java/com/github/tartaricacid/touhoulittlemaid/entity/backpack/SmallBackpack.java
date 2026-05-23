@@ -12,7 +12,7 @@ import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.network.chat.Component;
@@ -46,7 +46,7 @@ public class SmallBackpack extends IMaidBackpack {
 
     @Override
     public MenuProvider getGuiProvider(int entityId) {
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer player) {
                 return entityId;

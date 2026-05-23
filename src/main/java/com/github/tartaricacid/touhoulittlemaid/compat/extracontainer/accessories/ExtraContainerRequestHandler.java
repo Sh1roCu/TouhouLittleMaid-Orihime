@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ContainerRef;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;

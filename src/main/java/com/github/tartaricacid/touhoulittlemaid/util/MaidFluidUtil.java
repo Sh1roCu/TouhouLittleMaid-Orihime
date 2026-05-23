@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.util;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

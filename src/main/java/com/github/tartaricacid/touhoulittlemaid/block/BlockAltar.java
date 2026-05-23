@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlock;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
 import cn.sh1rocu.touhoulittlemaid.util.particle.ParticleUtil;
 import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipe;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;

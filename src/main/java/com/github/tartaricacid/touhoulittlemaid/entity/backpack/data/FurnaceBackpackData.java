@@ -14,6 +14,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
@@ -67,7 +69,7 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
     }
 
     @Override
-    public void load(CompoundTag tag, EntityMaid maid) {
+    public void load(ValueInput tag, EntityMaid maid) {
         this.litTime = tag.getInt("BurnTime");
         this.cookingProgress = tag.getInt("CookTime");
         this.cookingTotalTime = tag.getInt("CookTimeTotal");
@@ -76,11 +78,11 @@ public class FurnaceBackpackData extends SimpleContainer implements IBackpackDat
     }
 
     @Override
-    public void save(CompoundTag tag, EntityMaid maid) {
+    public void save(ValueOutput tag, EntityMaid maid) {
         tag.putInt("BurnTime", this.litTime);
         tag.putInt("CookTime", this.cookingProgress);
         tag.putInt("CookTimeTotal", this.cookingTotalTime);
-        tag.put("Items", this.createTag(this.level.registryAccess()));
+        tag.store("Items", this.createTag(this.level.registryAccess()));
     }
 
     @Override

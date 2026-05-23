@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.InvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
@@ -16,7 +15,8 @@ import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.network.chat.Component;
@@ -43,8 +43,8 @@ public class FurnaceBackpack extends IMaidBackpack {
     public void onTakeOff(ItemStack stack, Player player, EntityMaid maid) {
         IBackpackData backpackData = maid.getBackpackData();
         if (backpackData instanceof FurnaceBackpackData furnaceBackpackData) {
-            InvWrapper inv = new InvWrapper(furnaceBackpackData);
-            ItemsUtil.dropEntityItems(maid, inv);
+            ContainerStorage inv = ContainerStorage.of(furnaceBackpackData, null);
+            ItemsUtil.dropEntityItems(maid, inv, null);
         }
         dropRelativeItems(stack, maid);
     }
@@ -53,17 +53,15 @@ public class FurnaceBackpack extends IMaidBackpack {
     public void onSpawnTombstone(EntityMaid maid, EntityTombstone tombstone) {
         IBackpackData backpackData = maid.getBackpackData();
         if (backpackData instanceof FurnaceBackpackData furnaceBackpackData) {
-            InvWrapper inv = new InvWrapper(furnaceBackpackData);
-            for (int i = 0; i < inv.getSlots(); i++) {
-                int size = inv.getSlotLimit(i);
-                tombstone.insertItem(inv.extractItem(i, size, false));
+            for (int i = 0; i < furnaceBackpackData.getContainerSize(); i++) {
+                tombstone.insertItem(furnaceBackpackData.getItem(i).copy());
             }
         }
     }
 
     @Override
     public MenuProvider getGuiProvider(int entityId) {
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer player) {
                 return entityId;

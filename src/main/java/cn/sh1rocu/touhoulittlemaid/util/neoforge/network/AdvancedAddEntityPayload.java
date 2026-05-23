@@ -1,4 +1,4 @@
-package cn.sh1rocu.touhoulittlemaid.util.forge.network;
+package cn.sh1rocu.touhoulittlemaid.util.neoforge.network;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import io.netty.buffer.Unpooled;
@@ -44,7 +44,10 @@ public record AdvancedAddEntityPayload(int entityId, byte[] customPayload) imple
         final RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), entity.registryAccess());
         try {
             additionalSpawnData.writeSpawnData(buf);
-            return buf.array();
+            buf.readerIndex(0);
+            final byte[] data = new byte[buf.readableBytes()];
+            buf.readBytes(data);
+            return data;
         } finally {
             buf.release();
         }

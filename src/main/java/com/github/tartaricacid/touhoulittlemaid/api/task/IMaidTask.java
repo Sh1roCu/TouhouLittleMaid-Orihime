@@ -5,7 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaid
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.task.DefaultMaidTaskConfigContainer;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -197,7 +197,7 @@ public interface IMaidTask {
      */
     default MenuProvider getTaskConfigGuiProvider(EntityMaid maid) {
         final int entityId = maid.getId();
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Component getDisplayName() {
                 return Component.literal("Maid Task Config Container");

@@ -72,14 +72,15 @@ public class MaidWorkMealTask extends MaidCheckRateTask {
         ItemsUtil.findStackSlot(backpackInv, DefaultMaidWorkMeal::isWorkMeal);
 
         swapItemCheck:
-        for (int i = 0; i < backpackInv.getSlots(); i++) {
-            ItemStack stack = backpackInv.getStackInSlot(i);
+        for (int i = 0; i < backpackInv.size(); i++) {
+            int cnt = backpackInv.getAmountAsInt(i);
+            ItemStack stack = backpackInv.getResource(i).toStack(cnt);
             if (stack.isEmpty()) {
                 continue;
             }
             for (IMaidMeal maidMeal : maidMeals) {
                 if (maidMeal.canMaidEat(maid, stack, eanHand)) {
-                    ItemStack foodStack = backpackInv.extractItem(i, backpackInv.getStackInSlot(i).getCount(), false);
+                    ItemStack foodStack = ItemsUtil.extractItem(backpackInv, i, cnt, false, null);
                     ItemStack handStack = itemInHand.copy();
                     maid.setItemInHand(eanHand, foodStack);
                     maid.memoryHandItemStack(handStack);

@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.backpack.data;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SyncFluidAmountPackage;
@@ -56,7 +56,7 @@ public class TankBackpackData extends SimpleContainer implements IBackpackData {
     @Override
     public void setItem(int index, @NotNull ItemStack stack) {
         if (!this.maid.level.isClientSide) {
-            CombinedInvWrapper availableInv = this.maid.getAvailableInv(false);
+            CombinedResourceHandler availableInv = this.maid.getAvailableInv(false);
             if (index == INPUT_INDEX) {
                 MaidFluidUtil.bucketToTank(stack, tank, availableInv);
             }

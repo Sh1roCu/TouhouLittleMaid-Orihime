@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
 
@@ -45,7 +44,7 @@ public record PlayMaidSoundPackage(Identifier soundEvent, String id,
         if (!(entity instanceof EntityMaid maid)) {
             return;
         }
-        SoundEvent event = BuiltInRegistries.SOUND_EVENT.get(message.soundEvent);
+        SoundEvent event = BuiltInRegistries.SOUND_EVENT.getValue(message.soundEvent);
         if (event == null) {
             return;
         }
@@ -53,7 +52,7 @@ public record PlayMaidSoundPackage(Identifier soundEvent, String id,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

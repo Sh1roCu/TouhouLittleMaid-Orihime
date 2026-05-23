@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.tooltip;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemContainerTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;

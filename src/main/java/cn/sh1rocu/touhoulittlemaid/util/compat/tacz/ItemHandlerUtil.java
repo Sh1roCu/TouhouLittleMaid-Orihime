@@ -1,6 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.util.compat.tacz;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import com.tacz.guns.api.DefaultAssets;
 import com.tacz.guns.api.item.IAmmo;
 import com.tacz.guns.api.item.IAmmoBox;

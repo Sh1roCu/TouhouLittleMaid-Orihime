@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.event.food;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +19,7 @@ public class ConvertFoodEatenEvent {
         if (!foodAfterEat.isEmpty() && foodProperties != null) {
             Optional<ItemStack> convertedStack = foodProperties.usingConvertsTo();
             if (convertedStack.isPresent() && !convertedStack.get().isEmpty()) {
-                CombinedInvWrapper availableInv = maid.getAvailableInv(false);
+                CombinedResourceHandler availableInv = maid.getAvailableInv(false);
                 ItemStack result = ItemHandlerHelper.insertItemStacked(availableInv, convertedStack.get(), false);
                 // 如果女仆背包满了，掉落在地上
                 if (!result.isEmpty()) {

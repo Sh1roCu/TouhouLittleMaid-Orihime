@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.jade.provider;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.google.common.collect.Lists;
@@ -26,7 +26,7 @@ public enum PicnicMatProvider implements IServerExtensionProvider<ItemStack>, IC
     public @Nullable List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
         if (accessor.getTarget() instanceof TileEntityPicnicMat picnicMat) {
             if (accessor.getLevel().getBlockEntity(picnicMat.getCenterPos()) instanceof TileEntityPicnicMat picnicMatCenter) {
-                ItemStackHandler handler = picnicMatCenter.getHandler();
+                ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
                 List<ItemStack> list = Lists.newArrayList();
                 for (int i = 0; i < handler.getSlots(); i++) {
                     ItemStack stack = handler.getStackInSlot(i);

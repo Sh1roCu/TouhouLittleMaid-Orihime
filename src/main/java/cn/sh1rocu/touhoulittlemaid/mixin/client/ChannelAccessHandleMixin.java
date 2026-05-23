@@ -45,7 +45,7 @@ public abstract class ChannelAccessHandleMixin implements ChannelAccessHandleInj
         this.tlm$soundInstance = instance;
     }
 
-    @Inject(method = "method_19737", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER))
+    @Inject(remap = false, method = "lambda$execute$0", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER))
     private void tlm$callPlaySoundEvents(Consumer<Channel> consumer, CallbackInfo ci) {
         if (this.channel != null && tlm$soundEngine != null && tlm$soundInstance != null && SoundConsumerStorage.soundConsumerChannels.remove(consumer)) {
             if (tlm$pool == Library.Pool.STATIC) {

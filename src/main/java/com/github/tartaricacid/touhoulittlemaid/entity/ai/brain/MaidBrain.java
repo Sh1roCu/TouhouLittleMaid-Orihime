@@ -72,18 +72,7 @@ public final class MaidBrain {
     }
 
     private static void registerSchedule(Brain<EntityMaid> brain, EntityMaid maid) {
-        switch (maid.getSchedule()) {
-            case ALL:
-                brain.setSchedule(InitEntities.MAID_ALL_DAY_SCHEDULES);
-                break;
-            case NIGHT:
-                brain.setSchedule(InitEntities.MAID_NIGHT_SHIFT_SCHEDULES);
-                break;
-            case DAY:
-            default:
-                brain.setSchedule(InitEntities.MAID_DAY_SHIFT_SCHEDULES);
-                break;
-        }
+        brain.setSchedule(maid.getSchedule().getEnvironmentAttribute());
     }
 
     private static void registerCoreGoals(Brain<EntityMaid> brain) {
@@ -105,7 +94,8 @@ public final class MaidBrain {
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(swimJump, climb, breathAir, breathAirStop,
                 look, maidPanic, maidAwait, interactWithDoor, walkToTarget, followOwner, followOwnerVehicle, healSelf, pickupItem, clearSleep);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getCoreBehaviors()));
-        brain.addActivity(Activity.CORE, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(Activity.CORE, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerIdleGoals(Brain<EntityMaid> brain) {
@@ -122,7 +112,8 @@ public final class MaidBrain {
 
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(beg, homeMeal, joy, stealEdibleMove, stealEdibleUse, supplemented, updateActivity);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getIdleBehaviors()));
-        brain.addActivity(Activity.IDLE, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(Activity.IDLE, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerWorkGoals(Brain<EntityMaid> brain, EntityMaid maid) {
@@ -147,7 +138,8 @@ public final class MaidBrain {
         for (IExtraMaidBrain extra : ExtraMaidBrainManager.EXTRA_MAID_BRAINS) {
             pairMaidList.addAll(extra.getWorkBehaviors());
         }
-        brain.addActivity(Activity.WORK, ImmutableList.copyOf(pairMaidList));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(Activity.WORK, ImmutableList.copyOf(pairMaidList), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerRestGoals(Brain<EntityMaid> brain) {
@@ -157,7 +149,8 @@ public final class MaidBrain {
 
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(bed, supplemented, updateActivity);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getRestBehaviors()));
-        brain.addActivity(Activity.REST, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(Activity.REST, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerPanicGoals(Brain<EntityMaid> brain) {
@@ -166,7 +159,8 @@ public final class MaidBrain {
 
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(clearHurt, runAway);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getPanicBehaviors()));
-        brain.addActivity(Activity.PANIC, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(Activity.PANIC, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerRideIdleGoals(Brain<EntityMaid> brain) {
@@ -177,7 +171,8 @@ public final class MaidBrain {
 
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(beg, homeMeal, look, updateActivity);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getRideIdleBehaviors()));
-        brain.addActivity(InitEntities.RIDE_IDLE, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(InitEntities.RIDE_IDLE, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerRideWorkGoals(Brain<EntityMaid> brain, EntityMaid maid) {
@@ -196,14 +191,16 @@ public final class MaidBrain {
         for (IExtraMaidBrain extra : ExtraMaidBrainManager.EXTRA_MAID_BRAINS) {
             pairMaidList.addAll(extra.getRideWorkBehaviors());
         }
-        brain.addActivity(InitEntities.RIDE_WORK, ImmutableList.copyOf(pairMaidList));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(InitEntities.RIDE_WORK, ImmutableList.copyOf(pairMaidList), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static void registerRideRestGoals(Brain<EntityMaid> brain) {
         Pair<Integer, BehaviorControl<? super EntityMaid>> updateActivity = Pair.of(99, new MaidUpdateActivityFromSchedule());
         List<Pair<Integer, BehaviorControl<? super EntityMaid>>> behaviors = Lists.newArrayList(updateActivity);
         ExtraMaidBrainManager.EXTRA_MAID_BRAINS.forEach(extra -> behaviors.addAll(extra.getRideRestBehaviors()));
-        brain.addActivity(InitEntities.RIDE_REST, ImmutableList.copyOf(behaviors));
+        //TODO 需要新的Condition和MemoryToEarse是否可以使用？
+        brain.addActivity(InitEntities.RIDE_REST, ImmutableList.copyOf(behaviors), ImmutableSet.of(), ImmutableSet.of());
     }
 
     private static MaidRunOne getLookAndRandomWalk(Predicate<EntityMaid> enableCondition) {

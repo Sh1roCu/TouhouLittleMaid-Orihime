@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
@@ -156,7 +156,7 @@ public class TaskBowAttack implements IRangedAttackTask {
     private int findArrow(EntityMaid maid) {
         ItemStack mainHandItem = maid.getMainHandItem();
         if (mainHandItem.getItem() instanceof BowItem) {
-            CombinedInvWrapper handler = maid.getAvailableInv(true);
+            CombinedResourceHandler handler = maid.getAvailableInv(true);
             return ItemsUtil.findStackSlot(handler, ((BowItem) mainHandItem.getItem()).getAllSupportedProjectiles());
         }
         return -1;
@@ -169,7 +169,7 @@ public class TaskBowAttack implements IRangedAttackTask {
             return null;
         }
 
-        CombinedInvWrapper handler = maid.getAvailableInv(true);
+        CombinedResourceHandler handler = maid.getAvailableInv(true);
         ItemStack arrowStack = handler.getStackInSlot(slot);
         ItemStack mainHandItem = maid.getMainHandItem();
         RegistryAccess access = maid.level.registryAccess();

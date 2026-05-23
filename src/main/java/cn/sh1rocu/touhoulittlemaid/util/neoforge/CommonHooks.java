@@ -1,4 +1,4 @@
-package cn.sh1rocu.touhoulittlemaid.util.forge;
+package cn.sh1rocu.touhoulittlemaid.util.neoforge;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.FarmlandTrampleEvent;
 import net.minecraft.core.BlockPos;

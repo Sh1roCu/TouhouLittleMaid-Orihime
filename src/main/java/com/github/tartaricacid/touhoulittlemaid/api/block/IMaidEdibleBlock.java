@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.api.block;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
@@ -116,7 +116,7 @@ public interface IMaidEdibleBlock {
      * @return 若放置成功返回 {@code true}，女仆将播放挥动手臂的动画；否则返回 {@code false}
      */
     default boolean placeAsFood(EntityMaid maid, BlockPos pos, ItemStack stack, int slotIndex) {
-        CombinedInvWrapper availableInv = maid.getAvailableInv(true);
+        CombinedResourceHandler availableInv = maid.getAvailableInv(true);
         ItemStack stackExtra = availableInv.extractItem(slotIndex, 1, false);
         if (stackExtra.isEmpty()) {
             return false;

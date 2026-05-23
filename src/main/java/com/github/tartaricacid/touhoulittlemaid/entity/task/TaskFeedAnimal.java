@@ -14,7 +14,7 @@ import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -111,7 +111,7 @@ public class TaskFeedAnimal implements IAttackTask {
     @Override
     public MenuProvider getTaskConfigGuiProvider(EntityMaid maid) {
         final int entityId = maid.getId();
-        return new ExtendedScreenHandlerFactory<>() {
+        return new ExtendedMenuProvider<>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer serverPlayer) {
                 return entityId;

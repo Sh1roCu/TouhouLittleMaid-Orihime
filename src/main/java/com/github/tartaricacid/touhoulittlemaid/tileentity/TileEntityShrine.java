@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import net.minecraft.core.BlockPos;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 public class TileEntityShrine extends BlockEntity implements IBlockEntityPersistentData {
     public static final BlockEntityType<TileEntityShrine> TYPE = BlockEntityType.Builder.of(TileEntityShrine::new, InitBlocks.SHRINE).build(null);
     private static final String STORAGE_ITEM = "StorageItem";
-    private final ItemStackHandler handler = new ItemStackHandler() {
+    private final ItemStacksResourceHandler handler = new ItemStacksResourceHandler() {
         @Override
         protected void onContentsChanged(int slot) {
             // 当物品栏内容发生变化时，这个方法会被调用

@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFarmTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -8,6 +8,8 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,6 +22,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,22 +67,28 @@ public class MaidFarmPlantTask extends Behavior<EntityMaid> {
                 }
             }
 
-            CombinedInvWrapper availableInv = maid.getAvailableInv(true);
+            CombinedResourceHandler<ItemVariant> availableInv = maid.getAvailableInv(true);
             List<Integer> slots = ItemsUtil.getFilterStackSlots(availableInv, task::isSeed);
             if (!slots.isEmpty()) {
                 for (int slot : slots) {
-                    ItemStack seed = availableInv.getStackInSlot(slot);
-                    BlockState baseState = world.getBlockState(basePos);
-                    if (task.canPlant(maid, basePos, baseState, seed)) {
-                        ItemStack remain = task.plant(maid, basePos, baseState, seed);
-                        availableInv.setStackInSlot(slot, remain);
-                        maid.swing(InteractionHand.MAIN_HAND);
-                        maid.getBrain().eraseMemory(InitEntities.TARGET_POS);
-                        maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-                        if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
-                            InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.MAID_FARM);
+                    try (Transaction tx = Transaction.openOuter()) {
+                        @NotNull ItemVariant res = availableInv.getResource(slot);
+                        int seedCount = availableInv.extract(slot, res, res.toStack().getMaxStackSize(), tx);
+                        if (seedCount == 0) continue;
+                        ItemStack seed = res.toStack(seedCount);
+                        BlockState baseState = world.getBlockState(basePos);
+                        if (task.canPlant(maid, basePos, baseState, seed)) {
+                            ItemStack remain = task.plant(maid, basePos, baseState, seed);
+                            availableInv.insert(slot, res, remain.getCount(), tx);
+                            maid.swing(InteractionHand.MAIN_HAND);
+                            maid.getBrain().eraseMemory(InitEntities.TARGET_POS);
+                            maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                            if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
+                                InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.MAID_FARM);
+                            }
+                            tx.commit();
+                            return;
                         }
-                        return;
                     }
                 }
             }

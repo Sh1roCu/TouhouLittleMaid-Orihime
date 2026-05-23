@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.world.item.ItemStack;
 

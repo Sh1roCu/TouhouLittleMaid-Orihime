@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidBackpackChangeEvent;
@@ -48,14 +48,14 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
         if (handler == null) {
             return;
         }
-        addSlot(new SlotItemHandler(handler, 0, 87, 77) {
+        addSlot(new ResourceHandlerSlot(handler, 0, 87, 77) {
             @Override
             @Environment(EnvType.CLIENT)
             public Pair<Identifier, Identifier> getNoItemIcon() {
                 return Pair.of(BLOCK_ATLAS, EMPTY_MAINHAND_SLOT);
             }
         });
-        addSlot(new SlotItemHandler(handler, 1, 121, 77) {
+        addSlot(new ResourceHandlerSlot(handler, 1, 121, 77) {
             @Override
             @Environment(EnvType.CLIENT)
             public Pair<Identifier, Identifier> getNoItemIcon() {
@@ -70,7 +70,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
             for (int i = 0; i < 2; ++i) {
                 for (int j = 0; j < 2; j++) {
                     final EquipmentSlot equipmentSlot = SLOT_IDS[2 * i + j];
-                    addSlot(new SlotItemHandler(handler, 3 - 2 * i - j, 94 + 20 * j, 37 + 20 * i) {
+                    addSlot(new ResourceHandlerSlot(handler, 3 - 2 * i - j, 94 + 20 * j, 37 + 20 * i) {
                         @Override
                         public int getMaxStackSize() {
                             return 1;
@@ -103,10 +103,10 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     protected void addMainDefaultInv() {
         // 默认背包
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlot(maid, i, 143 + 18 * i, 37));
+            addSlot(new BackpackSlotSlot(maid, i, 143 + 18 * i, 37));
             // 最后一格给予特殊图标
             if (i == 5) {
-                addSlot(new BackpackSlot(maid, i, 143 + 18 * i, 37) {
+                addSlot(new BackpackSlotSlot(maid, i, 143 + 18 * i, 37) {
                     @Override
                     public Pair<Identifier, Identifier> getNoItemIcon() {
                         return Pair.of(BLOCK_ATLAS, EMPTY_BACK_SHOW_SLOT);
@@ -165,10 +165,10 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
         return stack1;
     }
 
-    public static class BackpackSlot extends SlotItemHandler implements ITriggerSlotChange {
+    public static class BackpackSlotSlot extends ResourceHandlerSlot implements ITriggerSlotChange {
         private final EntityMaid maid;
 
-        public BackpackSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
+        public BackpackSlotSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
             super(maid.getMaidInv(), index, xPosition, yPosition);
             this.maid = maid;
         }

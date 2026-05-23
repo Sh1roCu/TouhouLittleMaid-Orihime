@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.handler;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.IntStream;
 
-public class BaubleItemHandler extends ItemStackHandler {
+public class BaubleItemHandler extends ItemStacksResourceHandler {
     /**
      * 存储 IMaidBauble 对象的数组，该数组和饰品栏不同等大小
      */

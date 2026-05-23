@@ -1,11 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.item;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IChestType;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -32,7 +32,7 @@ import java.util.Objects;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.*;
 
-public class ItemWirelessIO extends Item implements ExtendedScreenHandlerFactory<ItemStack> {
+public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemStack> {
     private static final int FILTER_LIST_SIZE = 9;
     private static final String TOOLTIPS_PREFIX = "§a▍ §7";
 
@@ -66,7 +66,7 @@ public class ItemWirelessIO extends Item implements ExtendedScreenHandlerFactory
         return false;
     }
 
-    public static ItemStackHandler getFilterList(HolderLookup.Provider provider, ItemStack stack) {
+    public static ItemStacksResourceHandler getFilterList(HolderLookup.Provider provider, ItemStack stack) {
         WirelessIOHandler handler = new WirelessIOHandler(FILTER_LIST_SIZE);
         if (stack.getItem() == InitItems.WIRELESS_IO) {
             CompoundTag tag = stack.get(FILTER_LIST_TAG);
@@ -77,9 +77,9 @@ public class ItemWirelessIO extends Item implements ExtendedScreenHandlerFactory
         return handler;
     }
 
-    public static void setFilterList(HolderLookup.Provider provider, ItemStack stack, ItemStackHandler itemStackHandler) {
+    public static void setFilterList(HolderLookup.Provider provider, ItemStack stack, ItemStacksResourceHandler itemStacksResourceHandler) {
         if (stack.getItem() == InitItems.WIRELESS_IO) {
-            stack.set(FILTER_LIST_TAG, itemStackHandler.serializeNBT(provider));
+            stack.set(FILTER_LIST_TAG, itemStacksResourceHandler.serializeNBT(provider));
         }
     }
 
@@ -190,7 +190,7 @@ public class ItemWirelessIO extends Item implements ExtendedScreenHandlerFactory
     }
 
 
-    private static class WirelessIOHandler extends ItemStackHandler {
+    private static class WirelessIOHandler extends ItemStacksResourceHandler {
         private WirelessIOHandler(int size) {
             super(size);
         }

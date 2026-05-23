@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.util.ByteBufUtils;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import net.fabricmc.api.EnvType;
@@ -15,7 +16,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
 
@@ -49,7 +49,7 @@ public record SyncBaublePackage(boolean isFull, int entityId,
     }
 
     @Override
-    public @NotNull CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
@@ -70,7 +70,7 @@ public record SyncBaublePackage(boolean isFull, int entityId,
             if (message.isFull) {
                 maidBauble.clearAll();
             }
-            message.baubles.forEach(maidBauble::setStackInSlot);
+            message.baubles.forEach((slot, itemStack) -> ItemsUtil.setStackInSlot(maidBauble, slot, itemStack));
         }
     }
 }

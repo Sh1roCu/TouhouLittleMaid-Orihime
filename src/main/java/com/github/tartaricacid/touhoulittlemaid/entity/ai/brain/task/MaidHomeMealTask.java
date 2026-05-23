@@ -1,8 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandlerModifiable;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.task.meal.IMaidMeal;
 import com.github.tartaricacid.touhoulittlemaid.api.task.meal.MaidMealType;
@@ -13,9 +12,11 @@ import com.github.tartaricacid.touhoulittlemaid.entity.task.meal.MaidMealManager
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.util.HandUtils;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -73,24 +74,24 @@ public class MaidHomeMealTask extends MaidCheckRateTask {
 
         // 先对把手上的物品放入背包做预处理：如果放入背包后，手上还有剩余，那就不执行后续吃的逻辑并添加气泡提示
         ItemStack itemInHand = maid.getItemInHand(eanHand);
-        IItemHandlerModifiable availableInv = maid.getAvailableBackpackInv();
+        CombinedResourceHandler<ItemVariant> availableInv = maid.getAvailableBackpackInv();
         ItemStack handItemCopy = itemInHand.copy();
-        ItemStack leftoverStack = ItemHandlerHelper.insertItemStacked(availableInv, handItemCopy, true);
+        ItemStack leftoverStack = ItemsUtil.insertItemStacked(availableInv, handItemCopy, true, null);
         if (!leftoverStack.isEmpty()) {
             this.handFullBubbleKey = maid.getChatBubbleManager().addTextChatBubbleIfTimeout("chat_bubble.touhou_little_maid.inner.home_meal.two_hand_is_full", handFullBubbleKey);
             return;
         }
 
         // 先搜索所有的格子，检查一下能否吃，并记录 slot
-        ItemStackHandler handler = this.tmpPicnicMat.getHandler();
+        ItemStacksResourceHandler handler = this.tmpPicnicMat.getHandler();
         IntList candidateFood = new IntArrayList();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (stack.isEmpty()) {
+        for (int i = 0; i < handler.size(); i++) {
+            ItemVariant stack = handler.getResource(i);
+            if (stack.isBlank()) {
                 continue;
             }
             for (IMaidMeal maidMeal : maidMeals) {
-                if (maidMeal.canMaidEat(maid, stack, eanHand)) {
+                if (maidMeal.canMaidEat(maid, stack.toStack(), eanHand)) {
                     candidateFood.add(i);
                 }
             }
@@ -107,7 +108,7 @@ public class MaidHomeMealTask extends MaidCheckRateTask {
         int skipCount = maid.getRandom().nextInt(size);
         InteractionHand hand = eanHand;
         candidateFood.intStream().skip(skipCount).findFirst().ifPresent(slotIndex -> {
-            ItemStack outputStack = handler.extractItem(slotIndex, 1, false);
+            ItemStack outputStack = ItemsUtil.extractItem(handler, slotIndex, 1, false, null);
             this.tmpPicnicMat.refresh();
             maid.setItemInHand(hand, outputStack);
             ItemStack refreshItemInHand = maid.getItemInHand(hand);

@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.CommonHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,7 @@ public class MaidClimbTask extends Behavior<EntityMaid> {
         // 将女仆定格在楼梯中心，取消掉 x、z 轴的动量，避免爬楼梯过程中摔死
         BlockPos currentPosition = maid.blockPosition().mutable();
         Vec3 centerPos = Vec3.atCenterOf(currentPosition);
-        maid.moveTo(centerPos.x, currentPosition.getY(), centerPos.z);
+        maid.moveOrInterpolateTo(new Vec3(centerPos.x, currentPosition.getY(), centerPos.z));
         maid.setDeltaMovement(0, maid.getDeltaMovement().y(), 0);
     }
 

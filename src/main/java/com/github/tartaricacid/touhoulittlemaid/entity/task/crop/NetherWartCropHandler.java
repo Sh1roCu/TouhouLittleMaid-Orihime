@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task.crop;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.task.ISpecialCropHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
@@ -26,7 +25,7 @@ public class NetherWartCropHandler implements ISpecialCropHandler {
         if (isDestroyMode) {
             maid.destroyBlock(cropPos);
         } else {
-            CombinedInvWrapper availableInv = maid.getAvailableInv(false);
+            CombinedResourceHandler availableInv = maid.getAvailableInv(false);
 
             ItemStack dropItemStack = new ItemStack(Items.NETHER_WART);
             ItemStack remindItemStack = ItemHandlerHelper.insertItemStacked(availableInv, dropItemStack, false);

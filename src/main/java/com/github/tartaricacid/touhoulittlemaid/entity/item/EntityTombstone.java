@@ -1,16 +1,15 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidWorldData;
-import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -35,7 +34,7 @@ public class EntityTombstone extends Entity {
     private static final String MAID_NAME_TAG = "MaidName";
     private static final EntityDataAccessor<Component> MAID_NAME = SynchedEntityData.defineId(EntityTombstone.class, EntityDataSerializers.COMPONENT);
     // 考虑其他模组会添加额外的存储内容，加之饰品模组拓展了数量，故将墓碑存储上限修改为 256 组
-    private final ItemStackHandler items = new ItemStackHandler(256);
+    private final ItemStacksResourceHandler items = new ItemStacksResourceHandler(256);
     private UUID ownerId = Util.NIL_UUID;
 
     public EntityTombstone(EntityType<?> entityTypeIn, Level worldIn) {
@@ -65,7 +64,7 @@ public class EntityTombstone extends Entity {
             // 第一步：预检查所有物品是否能被玩家容纳（不实际提取物品）
             // 如果玩家按下了 Shift 键，则强制取出
             if (!player.isSecondaryUseActive()) {
-                for (int i = 0; i < this.items.getSlots(); i++) {
+                for (int i = 0; i < this.items.getSlotCount(); i++) {
                     ItemStack stack = this.items.getStackInSlot(i);
                     if (stack.isEmpty() || canItemInsert(player, stack)) {
                         continue;
@@ -205,7 +204,7 @@ public class EntityTombstone extends Entity {
         return this.entityData.get(MAID_NAME);
     }
 
-    public ItemStackHandler getItems() {
+    public ItemStacksResourceHandler getItems() {
         return items;
     }
 }

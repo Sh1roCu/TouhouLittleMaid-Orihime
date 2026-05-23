@@ -1,10 +1,10 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.other;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemPicnicBasket;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,14 +18,14 @@ import org.jetbrains.annotations.NotNull;
 public class PicnicBasketContainer extends AbstractContainerMenu {
     public static final MenuType<PicnicBasketContainer> TYPE = new ExtendedScreenHandlerType<>(PicnicBasketContainer::new, ItemStack.STREAM_CODEC);
     private final ItemStack picnicBasket;
-    private final ItemStackHandler container;
+    private final ItemStacksResourceHandler container;
 
     public PicnicBasketContainer(int id, Inventory inventory, ItemStack picnicBasket) {
         super(TYPE, id);
         this.picnicBasket = picnicBasket;
         this.container = ItemPicnicBasket.getContainer(picnicBasket);
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new SlotItemHandler(container, i, 8 + i * 18, 18) {
+            this.addSlot(new ResourceHandlerSlot(container, i, 8 + i * 18, 18) {
                 @Override
                 public boolean mayPlace(@NotNull ItemStack stack) {
                     //return stack.getFoodProperties(null) != null;

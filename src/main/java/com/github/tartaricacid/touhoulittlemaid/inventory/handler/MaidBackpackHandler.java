@@ -1,12 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.handler;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class MaidBackpackHandler extends ItemStackHandler {
+public class MaidBackpackHandler extends ItemStacksResourceHandler {
     public static final int BACKPACK_ITEM_SLOT = 5;
     private final EntityMaid maid;
 
@@ -16,14 +18,14 @@ public class MaidBackpackHandler extends ItemStackHandler {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return EntityMaid.canInsertItem(stack);
+    public boolean isValid(int slot, @Nonnull ItemVariant variant) {
+        return EntityMaid.canInsertItem(variant.toStack());
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, @Nonnull ItemStack previousStack) {
         if (slot == BACKPACK_ITEM_SLOT) {
-            maid.setBackpackShowItem(this.getStackInSlot(slot));
+            maid.setBackpackShowItem(ItemUtil.getStack(this, slot));
         }
     }
 }

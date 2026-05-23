@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.jade.provider;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.google.common.collect.Lists;
@@ -27,7 +27,7 @@ public enum TombstoneProvider implements IServerExtensionProvider<ItemStack>, IC
     public @Nullable List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
         if (accessor.getTarget() instanceof EntityTombstone tombstone) {
             List<ItemStack> list = Lists.newArrayList();
-            ItemStackHandler items = tombstone.getItems();
+            ItemStacksResourceHandler items = tombstone.getItems();
             for (int i = 0; i < items.getSlots(); i++) {
                 ItemStack stack = items.getStackInSlot(i);
                 if (stack.isEmpty()) {

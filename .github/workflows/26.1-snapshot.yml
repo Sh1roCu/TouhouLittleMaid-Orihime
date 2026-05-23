@@ -20,7 +20,7 @@ jobs:
         with:
           ref: "26.1"
 
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
           java-version: '25'

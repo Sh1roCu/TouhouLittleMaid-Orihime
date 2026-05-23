@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.InvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
@@ -19,8 +18,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.network.chat.Component;
@@ -61,8 +61,8 @@ public class TankBackpack extends IMaidBackpack {
     public void onTakeOff(ItemStack stack, Player player, EntityMaid maid) {
         IBackpackData backpackData = maid.getBackpackData();
         if (backpackData instanceof TankBackpackData tankBackpackData) {
-            InvWrapper inv = new InvWrapper(tankBackpackData);
-            ItemsUtil.dropEntityItems(maid, inv);
+            ContainerStorage inv = ContainerStorage.of(tankBackpackData, null);
+            ItemsUtil.dropEntityItems(maid, inv, null);
         }
         dropRelativeItems(stack, maid);
     }
@@ -80,10 +80,8 @@ public class TankBackpack extends IMaidBackpack {
     public void onSpawnTombstone(EntityMaid maid, EntityTombstone tombstone) {
         IBackpackData backpackData = maid.getBackpackData();
         if (backpackData instanceof TankBackpackData tankBackpackData) {
-            InvWrapper inv = new InvWrapper(tankBackpackData);
-            for (int i = 0; i < inv.getSlots(); i++) {
-                int size = inv.getSlotLimit(i);
-                tombstone.insertItem(inv.extractItem(i, size, false));
+            for (int i = 0; i < tankBackpackData.getContainerSize(); i++) {
+                tombstone.insertItem(tankBackpackData.getItem(i).copy());
             }
         }
     }
@@ -101,7 +99,7 @@ public class TankBackpack extends IMaidBackpack {
 
     @Override
     public MenuProvider getGuiProvider(int entityId) {
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer player) {
                 return entityId;

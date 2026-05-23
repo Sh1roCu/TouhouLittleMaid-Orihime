@@ -1,14 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.item;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IItemRenderer;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity.PicnicBasketRender;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.PicnicBasketContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemContainerTooltip;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemPicnicBasket extends BlockItem implements ExtendedScreenHandlerFactory<ItemStack>, IItemRenderer {
+public class ItemPicnicBasket extends BlockItem implements ExtendedMenuProvider<ItemStack>, IItemRenderer {
     @Environment(EnvType.CLIENT)
     @Override
     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
@@ -43,8 +43,8 @@ public class ItemPicnicBasket extends BlockItem implements ExtendedScreenHandler
         super(block, (new Properties()).stacksTo(1));
     }
 
-    public static ItemStackHandler getContainer(ItemStack stack) {
-        ItemStackHandler handler = new ItemStackHandler(PICNIC_BASKET_SIZE);
+    public static ItemStacksResourceHandler getContainer(ItemStack stack) {
+        ItemStacksResourceHandler handler = new ItemStacksResourceHandler(PICNIC_BASKET_SIZE);
         if (stack.getItem() == InitItems.PICNIC_BASKET) {
             ItemContainerContents container = stack.get(DataComponents.CONTAINER);
             if (container != null) {
@@ -57,11 +57,11 @@ public class ItemPicnicBasket extends BlockItem implements ExtendedScreenHandler
         return handler;
     }
 
-    public static void setContainer(ItemStack stack, ItemStackHandler itemStackHandler) {
+    public static void setContainer(ItemStack stack, ItemStacksResourceHandler itemStacksResourceHandler) {
         if (stack.getItem() == InitItems.PICNIC_BASKET) {
             NonNullList<ItemStack> items = NonNullList.withSize(PICNIC_BASKET_SIZE, ItemStack.EMPTY);
-            for (int i = 0; i < itemStackHandler.getSlots(); i++) {
-                items.set(i, itemStackHandler.getStackInSlot(i));
+            for (int i = 0; i < itemStacksResourceHandler.getSlots(); i++) {
+                items.set(i, itemStacksResourceHandler.getStackInSlot(i));
             }
             ItemContainerContents container = ItemContainerContents.fromItems(items);
             stack.set(DataComponents.CONTAINER, container);
@@ -79,7 +79,7 @@ public class ItemPicnicBasket extends BlockItem implements ExtendedScreenHandler
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        ItemStackHandler container = getContainer(stack);
+        ItemStacksResourceHandler container = getContainer(stack);
         return Optional.of(new ItemContainerTooltip(container));
     }
 

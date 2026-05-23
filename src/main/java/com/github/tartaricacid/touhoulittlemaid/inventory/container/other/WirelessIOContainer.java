@@ -1,12 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.other;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,7 +21,7 @@ public class WirelessIOContainer extends AbstractContainerMenu {
             WirelessIOContainer::new, ItemStack.STREAM_CODEC
     );
     private final ItemStack wirelessIO;
-    private final ItemStackHandler filterListInv;
+    private final ItemStacksResourceHandler filterListInv;
 
     public WirelessIOContainer(int id, Inventory inventory, ItemStack wirelessIO) {
         super(TYPE, id);
@@ -52,7 +52,7 @@ public class WirelessIOContainer extends AbstractContainerMenu {
     private void addWirelessIOSlots() {
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 3; ++col) {
-                this.addSlot(new WirelessIOSlotItemHandler(filterListInv, col + row * 3, 62 + col * 18, 17 + row * 18));
+                this.addSlot(new WirelessIOResourceHandlerSlot(filterListInv, col + row * 3, 62 + col * 18, 17 + row * 18));
             }
         }
     }
@@ -96,8 +96,8 @@ public class WirelessIOContainer extends AbstractContainerMenu {
         return wirelessIO;
     }
 
-    private class WirelessIOSlotItemHandler extends SlotItemHandler {
-        private WirelessIOSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    private class WirelessIOResourceHandlerSlot extends ResourceHandlerSlot {
+        private WirelessIOResourceHandlerSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
             super(itemHandler, index, xPosition, yPosition);
         }
 

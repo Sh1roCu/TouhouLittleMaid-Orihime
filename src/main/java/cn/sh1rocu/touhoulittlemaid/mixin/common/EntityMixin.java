@@ -1,7 +1,7 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IEntity;
-import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.EventHooks;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemStackHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.AltarItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.util.PosListData;
@@ -31,7 +31,7 @@ public class TileEntityAltar extends BlockEntity implements IBlockEntityPersiste
     private static final String DIRECTION = "Direction";
     private static final String STORAGE_BLOCK_LIST = "StorageBlockList";
     private static final String CAN_PLACE_ITEM_POS_LIST = "CanPlaceItemPosList";
-    public final ItemStackHandler handler = new AltarItemHandler();
+    public final ItemStacksResourceHandler handler = new AltarItemHandler();
     private boolean isRender = false;
     private boolean canPlaceItem = false;
     private BlockState storageState = Blocks.AIR.defaultBlockState();

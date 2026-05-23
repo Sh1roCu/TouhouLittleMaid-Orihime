@@ -1,8 +1,10 @@
 package com.github.tartaricacid.touhoulittlemaid.util;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.PlayerMainInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.NonNullListUtil;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerUtil;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.StacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -11,31 +13,88 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class ItemsUtil {
     private ItemsUtil() {
+    }
+    /**
+     * 直接设置对应槽位的物品堆
+     */
+    public static void setStackInSlot(SlottedStorage<ItemVariant> itemHandler, int slot, ItemStack stack) {
+        if (itemHandler instanceof StacksResourceHandler<?, ItemVariant> stacksResourceHandler) {
+            stacksResourceHandler.set(slot, ItemVariant.of(stack), stack.getCount());
+        } else {
+            extractItem(itemHandler, slot, (int) itemHandler.getSlot(slot).getAmount(), false, null);
+            ItemUtil.insertItemReturnRemaining(itemHandler, slot, stack, false, null);
+        }
+    }
+
+    /**
+     * 旧版ItemHandlerHelper#insertItemStacked的新实现
+     */
+    public static ItemStack insertItemStacked(SlottedStorage<ItemVariant> itemHandler, ItemStack stack, boolean simulate, @Nullable TransactionContext parent) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        try (Transaction tx = Transaction.openNested(parent)) {
+            int inserted = (int) ResourceHandlerUtil.insertStacking(itemHandler, ItemVariant.of(stack), stack.getCount(), tx);
+            if (!simulate) {
+                tx.commit();
+            }
+            int leftover = stack.getCount() - inserted;
+            return leftover == 0 ? ItemStack.EMPTY : stack.copyWithCount(leftover);
+        }
+    }
+
+    /**
+     * 旧版ItemStackHandler#extractItem的新实现
+     */
+    public static ItemStack extractItem(SlottedStorage<ItemVariant> itemHandler, int index, int amount, boolean simulate, @Nullable TransactionContext parent) {
+        try (Transaction tx = Transaction.openNested(parent)) {
+            ItemVariant resource = itemHandler.getSlot(index).getResource();
+            long extracted = itemHandler.getSlot(index).extract(resource, amount, tx);
+            if (!simulate) {
+                tx.commit();
+            }
+            return extracted == 0 ? ItemStack.EMPTY : resource.toStack((int) extracted);
+        }
     }
 
     /**
      * 掉落指定起始、结束槽位的物品
      */
-    public static void dropEntityItems(Entity entity, IItemHandler itemHandler, int startIndex, int endIndex) {
+    public static void dropEntityItems(Entity entity, SlottedStorage<ItemVariant> itemHandler, int startIndex, int endIndex, @Nullable TransactionContext parent) {
         for (int i = startIndex; i < endIndex; i++) {
-            ItemStack stackInSlot = itemHandler.getStackInSlot(i);
-            ItemStack extractItem = itemHandler.extractItem(i, stackInSlot.getCount(), false);
-            if (!extractItem.isEmpty()) {
-                entity.spawnAtLocation(extractItem);
+            ItemStack stackInSlot = ItemUtil.getStack(itemHandler, i);
+            ItemStack extractItem = extractItem(itemHandler, i, stackInSlot.getCount(), false, parent);
+            if (!extractItem.isEmpty() && entity.level() instanceof ServerLevel serverLevel) {
+                entity.spawnAtLocation(serverLevel, extractItem);
             }
         }
     }
@@ -43,15 +102,15 @@ public final class ItemsUtil {
     /**
      * 掉落指定起始的物品
      */
-    public static void dropEntityItems(Entity entity, IItemHandler itemHandler, int startIndex) {
-        dropEntityItems(entity, itemHandler, startIndex, itemHandler.getSlots());
+    public static void dropEntityItems(Entity entity, SlottedStorage<ItemVariant> itemHandler, int startIndex, @Nullable TransactionContext parent) {
+        dropEntityItems(entity, itemHandler, startIndex, itemHandler.getSlotCount(), parent);
     }
 
     /**
      * 掉落全部物品
      */
-    public static void dropEntityItems(Entity entity, IItemHandler itemHandler) {
-        dropEntityItems(entity, itemHandler, 0, itemHandler.getSlots());
+    public static void dropEntityItems(Entity entity, SlottedStorage<ItemVariant> itemHandler, @Nullable TransactionContext parent) {
+        dropEntityItems(entity, itemHandler, 0, itemHandler.getSlotCount(), parent);
     }
 
     /**
@@ -59,7 +118,7 @@ public final class ItemsUtil {
      *
      * @return 如果没找到，返回 -1
      */
-    public static int findStackSlot(IItemHandler handler, Predicate<ItemStack> filter) {
+    public static int findStackSlot(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter) {
         return findStackSlot(handler, filter, -1);
     }
 
@@ -69,22 +128,22 @@ public final class ItemsUtil {
      *
      * @return 如果没找到，返回 -1
      */
-    public static int findStackSlot(IItemHandler handler, Predicate<ItemStack> filter, int maxCount) {
+    public static int findStackSlot(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter, int maxCount) {
         // 先正常在普通物品栏中查找
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
+        for (int i = 0; i < handler.getSlotCount(); i++) {
+            ItemStack stack = ItemUtil.getStack(handler, i);
             if (filter.test(stack)) {
                 return i;
             }
         }
 
         // 如果没找到，并且 handler 是 MaidInvWrapper，就触发事件请求物品后再找一次
-        if (!(handler instanceof MaidInvWrapper maidInv) || maidInv.getMaid().level.isClientSide) {
+        if (!(handler instanceof MaidInvWrapper maidInv) || maidInv.getMaid().level.isClientSide()) {
             return -1;
         }
 
         // 触发事件请求物品，让外部存储（如精妙背包等）把物品放到物品栏里
-        var event = new MaidRequestItemEvent(maidInv.getMaid(), filter, maxCount);
+        MaidRequestItemEvent event = new MaidRequestItemEvent(maidInv.getMaid(), filter, maxCount);
         MaidRequestItemEvent.EVENT.invoker().post(event);
         ItemStack requested = event.getRequestedItem();
         // 如果请求的物品为空，说明没有外部存储提供物品，直接返回 -1
@@ -93,8 +152,8 @@ public final class ItemsUtil {
         }
 
         // 再次查找物品栏，找到该物品
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
+        for (int i = 0; i < handler.getSlotCount(); i++) {
+            ItemStack stack = ItemUtil.getStack(handler, i);
             if (filter.test(stack)) {
                 return i;
             }
@@ -106,10 +165,10 @@ public final class ItemsUtil {
     /**
      * 获取符合条件的 slot 列表
      */
-    public static List<Integer> getFilterStackSlots(IItemHandler handler, Predicate<ItemStack> filter) {
+    public static List<Integer> getFilterStackSlots(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter) {
         IntList slots = new IntArrayList();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
+        for (int i = 0; i < handler.getSlotCount(); i++) {
+            ItemStack stack = ItemUtil.getStack(handler, i);
             if (filter.test(stack)) {
                 slots.add(i);
             }
@@ -120,7 +179,7 @@ public final class ItemsUtil {
     /**
      * 符合 filter 条件的物品是否在 handler 中
      */
-    public static boolean isStackIn(IItemHandler handler, Predicate<ItemStack> filter) {
+    public static boolean isStackIn(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter) {
         return findStackSlot(handler, filter) >= 0;
     }
 
@@ -133,10 +192,10 @@ public final class ItemsUtil {
      *
      * @return 如果该物品不存在，返回 ItemStack.EMPTY
      */
-    public static ItemStack getStack(IItemHandler handler, Predicate<ItemStack> filter) {
+    public static ItemStack getStack(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter) {
         int slotIndex = findStackSlot(handler, filter);
         if (slotIndex >= 0) {
-            return handler.getStackInSlot(slotIndex);
+            return ItemUtil.getStack(handler, slotIndex);
         } else {
             return ItemStack.EMPTY;
         }
@@ -185,9 +244,6 @@ public final class ItemsUtil {
     public static String getItemId(Item item) {
         Identifier key = BuiltInRegistries.ITEM.getKey(item);
         Preconditions.checkNotNull(key);
-        if (key.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
-            throw new NullPointerException("item can't be default key");
-        }
         return key.toString();
     }
 
@@ -197,13 +253,13 @@ public final class ItemsUtil {
      */
     public static ItemStack getItemStack(String itemId) {
         Identifier resourceLocation = Identifier.parse(itemId);
-        Item value = BuiltInRegistries.ITEM.get(resourceLocation);
+        Item value = BuiltInRegistries.ITEM.getValue(resourceLocation);
         return new ItemStack(value);
     }
 
     public static void giveItemToMaid(EntityMaid maid, ItemStack itemStack) {
-        IItemHandler inv = maid.getAvailableInv(false);
-        ItemStack stack = ItemHandlerHelper.insertItemStacked(inv, itemStack, false);
+        var inv = maid.getAvailableInv(false);
+        ItemStack stack = ItemsUtil.insertItemStacked(inv, itemStack, false, null);
         if (!stack.isEmpty()) {
             ItemEntity itemEntity = new ItemEntity(maid.level(), maid.getX(), maid.getY() + 0.5, maid.getZ(), stack);
             maid.level.addFreshEntity(itemEntity);
@@ -218,12 +274,12 @@ public final class ItemsUtil {
      */
     public static boolean canItemInsert(Player player, ItemStack testStack) {
         // 获取玩家主背包的物品处理器（与giveItemToPlayer使用相同的包装器）
-        IItemHandler inventory = new PlayerMainInvWrapper(player.getInventory());
+        var inventory = PlayerInventoryStorage.of(player).getSlots().subList(0, Inventory.INVENTORY_SIZE);
 
         // 遍历所有背包槽位
-        for (int i = 0; i < inventory.getSlots(); i++) {
+        for (int i = 0; i < inventory.size(); i++) {
             // 模拟插入物品（第三个参数为true表示仅测试，不实际修改物品栏）
-            ItemStack remainder = inventory.insertItem(i, testStack, true);
+            ItemStack remainder = ItemUtil.insertItemReturnRemaining(inventory, i, testStack, true, null);
 
             // 如果插入后没有剩余，说明该槽位可以容纳物品
             if (remainder.isEmpty()) {
@@ -233,5 +289,33 @@ public final class ItemsUtil {
 
         // 所有槽位都无法容纳测试物品
         return false;
+    }
+
+
+    public static NonNullList<ItemStack> containerToItemList(Container container) {
+        NonNullList<ItemStack> itemStack = NonNullList.create();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            itemStack.add(container.getItem(i));
+        }
+        return itemStack;
+    }
+
+    public static void fillContainerByItemList(Container container, List<ItemStack> itemStack) {
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            container.setItem(i, itemStack.get(i));
+        }
+    }
+
+
+    public static void saveContainer(Container container, String key, ValueOutput valueOutput) {
+        valueOutput.store(key, ItemStack.OPTIONAL_CODEC.listOf(), containerToItemList(container));
+    }
+
+    public static void loadContainer(Container container, String key, ValueInput valueInput) {
+        valueInput.read("container", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(l -> fillContainerByItemList(container, l));
+    }
+
+    public static ItemStacksResourceHandler createDummyHandler(List<ItemStack> stack) {
+        return new ItemStacksResourceHandler(NonNullListUtil.copyOf(stack));
     }
 }

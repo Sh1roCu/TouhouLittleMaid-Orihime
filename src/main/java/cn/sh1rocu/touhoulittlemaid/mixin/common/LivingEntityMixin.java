@@ -2,11 +2,10 @@ package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.LivingAttackEvent;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBedBlock;
-import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.EventHooks;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;

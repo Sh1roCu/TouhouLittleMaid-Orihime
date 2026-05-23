@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.function.Consumer;
 
@@ -42,7 +43,7 @@ public abstract class SoundEngineMixin {
     }
 
     @Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
-    private void tlm$prepareChannelInfo(SoundInstance soundInstance, CallbackInfo ci, @Local ChannelAccess.ChannelHandle channelHandle, @Local Sound sound) {
+    private void tlm$prepareChannelInfo(SoundInstance soundInstance, CallbackInfoReturnable<SoundEngine.PlayResult> cir, @Local ChannelAccess.ChannelHandle channelHandle, @Local Sound sound) {
         var injection = ((ChannelAccessHandleInjection) channelHandle);
 
         if (sound.shouldStream())
@@ -54,14 +55,14 @@ public abstract class SoundEngineMixin {
         injection.tlm$setSoundEngine((SoundEngine) (Object) this);
     }
 
-    @ModifyArg(method = "method_19757", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V"))
+    @ModifyArg(remap = false, method = "lambda$play$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V"))
     private static Consumer<Channel> tlm$storeSourceConsumer(Consumer<Channel> consumer) {
         SoundConsumerStorage.soundConsumerChannels.add(consumer);
         return consumer;
     }
 
     // 暂时用不到
-/*    @ModifyArg(method = "method_19758", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V"))
+/*    @ModifyArg(remap = false, method = "lambda$play$3", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V"))
     private static Consumer<Channel> kilt$storeStreamConsumer(Consumer<Channel> consumer) {
         SoundConsumerStorage.soundConsumerChannels.add(consumer);
         return consumer;

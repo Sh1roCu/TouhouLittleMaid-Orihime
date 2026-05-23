@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.CommonHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
@@ -70,15 +70,15 @@ public class MaidNodeEvaluator extends WalkNodeEvaluator {
         int z = pos.getZ();
 
         PathType pathType = getMaidBlockPathTypeRaw(context, x, y, z);
-        if (pathType == PathType.OPEN && y >= context.level().getMinBuildHeight() + 1) {
+        if (pathType == PathType.OPEN && y >= context.level().getMinY() + 1) {
             return switch (getMaidBlockPathTypeRaw(context, x, y - 1, z)) {
                 case OPEN, WATER, LAVA, WALKABLE -> PathType.OPEN;
-                case DAMAGE_FIRE -> PathType.DAMAGE_FIRE;
-                case DAMAGE_OTHER -> PathType.DAMAGE_OTHER;
+                case FIRE -> PathType.FIRE;
+                case DAMAGING -> PathType.DAMAGING;
                 case STICKY_HONEY -> PathType.STICKY_HONEY;
-                case POWDER_SNOW -> PathType.DANGER_POWDER_SNOW;
+                case POWDER_SNOW -> PathType.DAMAGE_CAUTIOUS;
                 case DAMAGE_CAUTIOUS -> PathType.DAMAGE_CAUTIOUS;
-                case TRAPDOOR -> PathType.DANGER_TRAPDOOR;
+                case TRAPDOOR -> PathType.TRAPDOOR;
                 default -> checkNeighbourBlocks(context, x, y, z, PathType.WALKABLE);
             };
         } else {
@@ -89,14 +89,14 @@ public class MaidNodeEvaluator extends WalkNodeEvaluator {
     private PathType getMaidBlockPathTypeRaw(PathfindingContext context, int pX, int pY, int pZ) {
         BlockPos pos = new BlockPos(pX, pY, pZ);
         // 女仆在限定范围内寻路寻到了范围外，失败
-        if (this.mob instanceof EntityMaid maid && maid.isWithinRestriction() && !maid.isWithinRestriction(pos)) {
+        if (this.mob instanceof EntityMaid maid && maid.isWithinRestriction() && !maid.isWithinHome(pos)) {
             return PathType.BLOCKED;
         }
 
         BlockState blockState = context.getBlockState(pos);
         // 先检查方块是否在黑名单中
         if (blockState.is(TagBlock.MAID_AVOID_BLOCK)) {
-            return PathType.DAMAGE_OTHER;
+            return PathType.DAMAGING;
         }
 
         PathType pathType;

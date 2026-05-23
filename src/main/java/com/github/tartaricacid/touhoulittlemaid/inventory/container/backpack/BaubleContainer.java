@@ -1,14 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.SlotItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidBaubleChangeEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,7 +30,7 @@ public class BaubleContainer extends MaidMainContainer {
     }
 
     public static MenuProvider create(EntityMaid maid) {
-        return new ExtendedScreenHandlerFactory<Integer>() {
+        return new ExtendedMenuProvider<Integer>() {
             @Override
             public boolean shouldCloseCurrentScreen() {
                 return false;
@@ -80,7 +80,7 @@ public class BaubleContainer extends MaidMainContainer {
                 if (index >= maxSize) {
                     return;
                 }
-                addSlot(new BaubleSlot(maid, index, 152 + 18 * x, 45 + 18 * y));
+                addSlot(new BaubleSlotSlot(maid, index, 152 + 18 * x, 45 + 18 * y));
             }
         }
     }
@@ -137,10 +137,10 @@ public class BaubleContainer extends MaidMainContainer {
         return stack1;
     }
 
-    public static class BaubleSlot extends SlotItemHandler implements ITriggerSlotChange {
+    public static class BaubleSlotSlot extends ResourceHandlerSlot implements ITriggerSlotChange {
         private final EntityMaid maid;
 
-        public BaubleSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
+        public BaubleSlotSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
             super(maid.getMaidBauble(), index, xPosition, yPosition);
             this.maid = maid;
         }

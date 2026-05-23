@@ -6,7 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainCont
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -44,10 +44,10 @@ public class TankBackpackContainer extends MaidMainContainer {
     @Override
     protected void addBackpackInv(Inventory inventory) {
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlot(maid, 6 + i, 143 + 18 * i, 57));
+            addSlot(new BackpackSlotSlot(maid, 6 + i, 143 + 18 * i, 57));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlot(maid, 12 + i, 143 + 18 * i, 75));
+            addSlot(new BackpackSlotSlot(maid, 12 + i, 143 + 18 * i, 75));
         }
     }
 

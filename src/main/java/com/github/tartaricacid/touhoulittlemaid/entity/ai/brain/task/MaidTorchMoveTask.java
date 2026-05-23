@@ -1,8 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -37,7 +38,7 @@ public class MaidTorchMoveTask extends MaidMoveToBlockTask {
     }
 
     private ItemStack getTorchItem(EntityMaid entityMaid) {
-        CombinedInvWrapper itemHandler = entityMaid.getAvailableInv(false);
+        CombinedResourceHandler<ItemVariant> itemHandler = entityMaid.getAvailableInv(false);
         return ItemsUtil.getStack(itemHandler, stack -> stack.getItem() == Items.TORCH);
     }
 }

@@ -1,4 +1,4 @@
-package cn.sh1rocu.touhoulittlemaid.util.itemhandler;
+package cn.sh1rocu.touhoulittlemaid.util.transfer;
 
 import net.minecraft.world.item.ItemStack;
 

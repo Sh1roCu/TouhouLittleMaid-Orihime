@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.event.food;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.CombinedInvWrapper;
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.ItemHandlerHelper;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
@@ -33,7 +32,7 @@ public class RemainFoodEatenEvent {
 
             if (!craftingRemainingItem.isEmpty()) {
                 EntityMaid maid = event.getMaid();
-                CombinedInvWrapper availableInv = maid.getAvailableInv(false);
+                CombinedResourceHandler availableInv = maid.getAvailableInv(false);
                 ItemStack result = ItemHandlerHelper.insertItemStacked(availableInv, craftingRemainingItem, false);
                 // 如果女仆背包满了，掉落在地上
                 if (!result.isEmpty()) {
