@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.ai.agent.context.tools;
 
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.context.AbstractMaidContext;
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.context.GameContextRegister;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -58,8 +59,8 @@ public final class EquipmentMaidContexts {
         public String getValue(EntityMaid maid) {
             List<String> names = Lists.newArrayList();
             var backpack = maid.getAvailableBackpackInv();
-            for (int i = 0; i < backpack.getSlots(); i++) {
-                ItemStack stack = backpack.getStackInSlot(i);
+            for (int i = 0; i < backpack.size(); i++) {
+                ItemStack stack = ItemUtil.getStack(backpack, i);
                 if (!stack.isEmpty()) {
                     String itemName = stack.getDisplayName().getString();
                     int count = stack.getCount();
@@ -81,13 +82,15 @@ public final class EquipmentMaidContexts {
         @Override
         public String getValue(EntityMaid maid) {
             List<String> names = Lists.newArrayList();
-            maid.getArmorSlots().forEach(stack -> {
+            var armor = maid.getArmorInvWrapper();
+            for (int i = 0; i < armor.size(); i++) {
+                ItemStack stack = ItemUtil.getStack(armor, i);
                 if (!stack.isEmpty()) {
                     String itemName = stack.getDisplayName().getString();
                     int count = stack.getCount();
                     names.add(ITEM_AND_COUNT_FORMAT.formatted(itemName, count));
                 }
-            });
+            }
             if (names.isEmpty()) {
                 return EMPTY;
             }
