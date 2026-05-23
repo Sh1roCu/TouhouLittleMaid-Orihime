@@ -6,8 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.ResponseCallback;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.ServiceType;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SendUserChatPackage;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -17,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.http.HttpRequest;
 
-@Environment(EnvType.CLIENT)
 public class STTCallback implements ResponseCallback<String> {
     private final Player player;
     private final EntityMaid maid;

@@ -9,8 +9,6 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSConfig;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSystemServices;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -42,7 +40,6 @@ public class TTSPlayer2Client implements TTSClient, TTSSystemServices {
         }
     }
 
-    @Environment(EnvType.CLIENT)
     private void handle(String message, TTSConfig config) {
         URI url = URI.create(this.site.url());
         String model = config.model();

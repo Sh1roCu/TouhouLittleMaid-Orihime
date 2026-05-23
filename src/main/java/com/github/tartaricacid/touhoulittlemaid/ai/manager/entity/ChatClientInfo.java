@@ -6,8 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import com.google.common.collect.Lists;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -36,7 +34,6 @@ public record ChatClientInfo(String language, String name, List<String> descript
         return new ChatClientInfo(language, name, description);
     }
 
-    @Environment(EnvType.CLIENT)
     public static ChatClientInfo fromMaid(EntityMaid maid) {
         String language = getClientLanguage();
         String name = getMaidName(maid);
@@ -44,17 +41,14 @@ public record ChatClientInfo(String language, String name, List<String> descript
         return new ChatClientInfo(language, name, description);
     }
 
-    @Environment(EnvType.CLIENT)
     private static String getClientLanguage() {
         return Minecraft.getInstance().getLanguageManager().getSelected();
     }
 
-    @Environment(EnvType.CLIENT)
     private static String getMaidName(EntityMaid maid) {
         return maid.getName().getString();
     }
 
-    @Environment(EnvType.CLIENT)
     private static List<String> getMaidDescription(EntityMaid maid) {
         List<String> description = Lists.newArrayList();
         // YSM 模型没有描述文本
