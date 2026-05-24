@@ -9,7 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.overlay.MaidTipsOverlay;
 import com.github.tartaricacid.touhoulittlemaid.client.overlay.ShowPowerOverlay;
 import com.github.tartaricacid.touhoulittlemaid.compat.embeddium.EmbeddiumCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.immersivemelodies.client.ImmersiveMelodiesCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.oculus.OculusCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.iris.IrisCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.patpat.PatPatCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ponder.PonderCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.simplehats.SimpleHatsCompat;
@@ -33,7 +33,7 @@ public class ClientSetupEvent {
         ImmersiveMelodiesCompat.init();
         SodiumCompat.init();
         EmbeddiumCompat.init();
-        OculusCompat.init();
+        IrisCompat.init();
         PatPatCompat.init();
         PonderCompat.register();
     }

@@ -5,7 +5,6 @@ import com.github.tartaricacid.touhoulittlemaid.datapack.BoardStateData;
 import com.github.tartaricacid.touhoulittlemaid.datapack.pojo.BoardStateRecord;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
@@ -19,14 +18,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BoardStateDataReloadListener implements ResourceManagerReloadListener, IdentifiableResourceReloadListener {
+public class BoardStateDataReloadListener implements ResourceManagerReloadListener {
     private static final Identifier CHESS_PATH = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "board_states/chess.json");
     private static final Identifier XIANGQI_PATH = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "board_states/xiangqi.json");
     private static final Identifier GOMOKU_PATH = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "board_states/gomoku.json");
 
     private static final Gson GSON = new Gson();
-
-    public static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "board_states_reload");
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -54,10 +51,5 @@ public class BoardStateDataReloadListener implements ResourceManagerReloadListen
         } catch (Exception e) {
             TouhouLittleMaid.LOGGER.error("Failed to load board state data from {}", path, e);
         }
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
     }
 }

@@ -1,8 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.resource.listener;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.google.common.collect.Lists;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -13,14 +11,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-public class EmojiReloadListener implements ResourceManagerReloadListener, IdentifiableResourceReloadListener {
+public class EmojiReloadListener implements ResourceManagerReloadListener {
     private static final List<EmojiResource> EMOJI_RESOURCES = Lists.newArrayList();
     private static final String EMOJI_PATH = "textures/chat_bubble/maid_emoji";
     private static final Random RANDOM = new Random();
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 256;
-
-    private static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "emoji_reload");
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -41,11 +37,6 @@ public class EmojiReloadListener implements ResourceManagerReloadListener, Ident
         }
         int index = RANDOM.nextInt(EMOJI_RESOURCES.size());
         return Optional.ofNullable(EMOJI_RESOURCES.get(index));
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
     }
 
     public record EmojiResource(Identifier location, Format format, int width, int height) {

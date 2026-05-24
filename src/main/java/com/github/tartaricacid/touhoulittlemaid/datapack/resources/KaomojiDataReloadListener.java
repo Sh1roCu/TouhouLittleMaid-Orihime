@@ -4,7 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.datapack.KaomojiData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -17,11 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-public class KaomojiDataReloadListener implements ResourceManagerReloadListener, IdentifiableResourceReloadListener {
+public class KaomojiDataReloadListener implements ResourceManagerReloadListener {
     private static final Identifier FILE_PATH = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "chat_bubble/kaomoji.json");
     private static final Gson GSON = new Gson();
-
-    private static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "kaomoji_reload");
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -43,10 +40,5 @@ public class KaomojiDataReloadListener implements ResourceManagerReloadListener,
                 TouhouLittleMaid.LOGGER.error("Failed to load kaomoji data from {}", FILE_PATH, e);
             }
         });
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
     }
 }

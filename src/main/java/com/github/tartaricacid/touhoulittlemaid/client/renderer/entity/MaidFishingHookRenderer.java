@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity;
 
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.MaidFishingHookRenderState;
-import com.github.tartaricacid.touhoulittlemaid.compat.oculus.OculusCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.iris.IrisCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.MaidFishingHook;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -115,7 +115,7 @@ public class MaidFishingHookRenderer<T extends MaidFishingHook, S extends MaidFi
                         colors[0], colors[1], colors[2]
                 );
             }
-            if (OculusCompat.isOculusInstalled()) {
+            if (IrisCompat.isOculusInstalled()) {
                 buffer.addVertex(pose, 0.0f, 0.0f, 0.0f)
                         .setColor(0, 0, 0, 255)
                         .setNormal(pose, 0.0F, 0.0F, 0.0F);
