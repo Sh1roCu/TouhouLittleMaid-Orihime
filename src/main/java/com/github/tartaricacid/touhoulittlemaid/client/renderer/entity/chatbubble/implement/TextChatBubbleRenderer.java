@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubb
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.EntityMaidRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.EntityGraphics;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -13,7 +11,6 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class TextChatBubbleRenderer implements IChatBubbleRenderer {
     private static final int MAX_WIDTH = 120;
     private static final int MAX_CENTER_WIDTH = 200;

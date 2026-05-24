@@ -1,31 +1,20 @@
 package com.github.tartaricacid.touhoulittlemaid.client.resource.models;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.client.animation.inner.IAnimation;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.inner.InnerAnimation;
 import com.github.tartaricacid.touhoulittlemaid.client.model.PlayerMaidModel;
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
+import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.EntityMaidModel;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-@Environment(EnvType.CLIENT)
 public final class PlayerMaidModels {
-    private static final Cache<String, GameProfile> GAME_PROFILE_CACHE = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES).build();
-    private static final GameProfile EMPTY_GAME_PROFILE = new GameProfile(UUID.randomUUID(), "alex");
+    // TODO: GameProfile 和 Cache 相关类型需重新添加 import
+    // GAME_PROFILE_CACHE 和 EMPTY_GAME_PROFILE 在新 API（PlayerSkinRenderCache）下不再需要
     private static final PlayerMaidModel PLAYER_MAID_MODEL = new PlayerMaidModel(false);
     private static final PlayerMaidModel PLAYER_MAID_MODEL_SLIM = new PlayerMaidModel(true);
     private static final List<Identifier> PLAYER_MAID_ANIMATION_RES = Lists.newArrayList(
@@ -37,7 +26,7 @@ public final class PlayerMaidModels {
             Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "animation/maid/player/sit/default.js")
     );
     private static final Identifier TEXTURE_ALEX = Identifier.withDefaultNamespace("textures/entity/alex.png");
-    private static final List<Object> PLAYER_MAID_ANIMATIONS = Lists.newArrayList();
+    private static final List<IAnimation<EntityMaidRenderState>> PLAYER_MAID_ANIMATIONS = Lists.newArrayList();
     private static MaidModelInfo playerMaidInfo;
     private static Identifier playerSkin;
 
@@ -54,61 +43,33 @@ public final class PlayerMaidModels {
         };
     }
 
-    public static BedrockModel<Mob> getPlayerMaidModel(String name) {
-        GameProfile newProfile = null;
-        Minecraft minecraft = Minecraft.getInstance();
-
-        try {
-            newProfile = GAME_PROFILE_CACHE.get(name, () -> {
-                SkullBlockEntity.fetchGameProfile(name).thenApply(gameProfile -> {
-                    GameProfile profile = gameProfile.orElse(EMPTY_GAME_PROFILE);
-                    GAME_PROFILE_CACHE.put(name, profile);
-                    return profile;
-                });
-                return EMPTY_GAME_PROFILE;
-            });
-        } catch (ExecutionException ignore) {
-        }
-
-        if (newProfile != null) {
-            PlayerSkin skin = minecraft.getSkinManager().getInsecureSkin(newProfile);
-            if (skin.model() == PlayerSkin.Model.SLIM) {
-                return PLAYER_MAID_MODEL_SLIM;
-            }
-        }
+    // TODO: getPlayerMaidModel 需要迁移至 26.1.2 新 API
+    // SkullBlockEntity.fetchGameProfile(String) 和 SkinManager.getInsecureSkin(GameProfile) 已被移除。
+    // 需使用 PlayerSkinRenderCache + ResolvableProfile（参考 PlayerDollItemRenderer 模式）：
+    // 1. 通过 SkullBlockEntity.getOrCreateProfile() 获取 ResolvableProfile
+    // 2. 通过 PlayerSkinRenderCache.getOrDefault(profile) 获取 RenderInfo
+    // 3. 从 RenderInfo.playerSkin().model() 判断是否为 SLIM
+    public static EntityMaidModel getPlayerMaidModel(String name) {
+        // TODO: 实现新的 PlayerSkinRenderCache 获取逻辑
         return PLAYER_MAID_MODEL;
     }
 
-    public static List<Object> getPlayerMaidAnimations() {
+    public static List<IAnimation<EntityMaidRenderState>> getPlayerMaidAnimations() {
         return PLAYER_MAID_ANIMATIONS;
     }
 
+    // TODO: getPlayerMaidInfo 需要迁移至 26.1.2 新 API（依赖 getPlayerSkin 修复）
     public static MaidModelInfo getPlayerMaidInfo(String name) {
-        playerSkin = getPlayerSkin(name);
+        // TODO: 实现新的皮肤纹理获取逻辑，通过 PlayerSkinRenderCache
+        playerSkin = TEXTURE_ALEX;  // 临时回退到默认纹理
         return playerMaidInfo;
     }
 
+    // TODO: getPlayerSkin 需要迁移至 26.1.2 新 API
+    // SkullBlockEntity.fetchGameProfile(String) 和 SkinManager.getInsecureSkin(GameProfile) 已被移除。
+    // 需使用 PlayerSkinRenderCache 代替 SkinManager.getInsecureSkin，
+    // 使用 ResolvableProfile 代替直接 fetchGameProfile。
     public static Identifier getPlayerSkin(String name) {
-        GameProfile newProfile = null;
-        Minecraft minecraft = Minecraft.getInstance();
-
-        try {
-            newProfile = GAME_PROFILE_CACHE.get(name, () -> {
-                SkullBlockEntity.fetchGameProfile(name).thenApply(gameProfile -> {
-                    GameProfile profile = gameProfile.orElse(EMPTY_GAME_PROFILE);
-                    GAME_PROFILE_CACHE.put(name, profile);
-                    return profile;
-                });
-                return EMPTY_GAME_PROFILE;
-            });
-        } catch (ExecutionException ignore) {
-        }
-
-        if (newProfile != null) {
-            PlayerSkin skin = minecraft.getSkinManager().getInsecureSkin(newProfile);
-            return skin.texture();
-        }
-
         return TEXTURE_ALEX;
     }
 }

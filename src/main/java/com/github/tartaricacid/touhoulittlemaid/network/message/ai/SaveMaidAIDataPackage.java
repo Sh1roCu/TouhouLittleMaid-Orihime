@@ -11,10 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SaveMaidAIDataPackage(int entityId, MaidAIChatSerializable data) implements CustomPacketPayload {
-    public static final Type<SaveMaidAIDataPackage> TYPE = new Type<>(getIdentifier("save_maid_ai_data"));
+    public static final Type<SaveMaidAIDataPackage> TYPE = new Type<>(getResourceLocation("save_maid_ai_data"));
     public static final StreamCodec<ByteBuf, SaveMaidAIDataPackage> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public SaveMaidAIDataPackage decode(ByteBuf byteBuf) {

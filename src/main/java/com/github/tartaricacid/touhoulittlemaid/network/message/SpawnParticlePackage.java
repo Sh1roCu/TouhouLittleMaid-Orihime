@@ -16,14 +16,14 @@ import net.minecraft.world.entity.Entity;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.IntFunction;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SpawnParticlePackage(int entityId, Type particleType, int delayTicks) implements CustomPacketPayload {
     public SpawnParticlePackage(int entityId, Type particleType) {
         this(entityId, particleType, 0);
     }
 
-    public static final CustomPacketPayload.Type<SpawnParticlePackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("spawn_particle"));
+    public static final CustomPacketPayload.Type<SpawnParticlePackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("spawn_particle"));
     public static final StreamCodec<ByteBuf, SpawnParticlePackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             SpawnParticlePackage::entityId,

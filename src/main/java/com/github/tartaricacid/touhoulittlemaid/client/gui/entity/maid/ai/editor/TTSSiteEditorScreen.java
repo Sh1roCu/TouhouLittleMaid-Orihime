@@ -13,7 +13,7 @@ import com.github.tartaricacid.touhoulittlemaid.util.Rectangle;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -168,7 +168,7 @@ public class TTSSiteEditorScreen extends Screen {
         box.active = field.editable;
         box.setValue(field.value);
         if (field.secret) {
-            box.setFormatter((text, pos) -> FormattedCharSequence.forward("·".repeat(text.length()), Style.EMPTY));
+            box.addFormatter((text, pos) -> FormattedCharSequence.forward("·".repeat(text.length()), Style.EMPTY));
         }
         this.addWidget(box);
         field.box = box;
@@ -219,12 +219,12 @@ public class TTSSiteEditorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        this.extractBackground(graphics, mouseX, mouseY, partialTick);
         graphics.fillGradient(0, 0, this.width, this.height, 0xc0101010, 0xc0101010);
 
         // 居中标题
-        graphics.drawCenteredString(this.font, ttsEditorTitle(this.siteDisplayName),
+        graphics.centeredText(this.font, ttsEditorTitle(this.siteDisplayName),
                 this.startX + BASE_WIDTH / 2, this.startY + 4, 0xFFF3EFE0);
 
         // 固定字段
@@ -238,18 +238,18 @@ public class TTSSiteEditorScreen extends Screen {
         }
 
         for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.render(graphics, mouseX, mouseY, partialTick);
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         // 保存提示
         if (System.currentTimeMillis() - this.tipTimestamp < 2000) {
             int x = this.startX + BASE_WIDTH - 155;
             int y = this.startY + BASE_HEIGHT - 35;
-            graphics.drawCenteredString(this.font, this.statusMessage, x, y, 0xFFADADAD);
+            graphics.centeredText(this.font, this.statusMessage, x, y, 0xFFADADAD);
         }
     }
 
-    private void renderInputField(GuiGraphics graphics, EditBox box, int mouseX, int mouseY, float partialTick) {
+    private void renderInputField(GuiGraphicsExtractor graphics, EditBox box, int mouseX, int mouseY, float partialTick) {
         if (box == null) {
             return;
         }
@@ -259,17 +259,17 @@ public class TTSSiteEditorScreen extends Screen {
         int width = box.getWidth() + 12;
         int height = box.getHeight() + 3;
 
-        graphics.drawString(this.font, box.getMessage(), x + 2, y - 12, LABEL_COLOR, false);
+        graphics.text(this.font, box.getMessage(), x + 2, y - 12, LABEL_COLOR, false);
         graphics.fill(x, y, x + width, y + height, 0xAA111111);
-        box.render(graphics, mouseX, mouseY, partialTick);
+        box.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
-    private void renderModelArea(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    private void renderModelArea(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int left = (int) this.modelArea.x;
         int top = (int) this.modelArea.y;
 
         // 主标题
-        graphics.drawString(this.font, this.layout.modelsTitle(), left + 2, top - 14, LABEL_COLOR, false);
+        graphics.text(this.font, this.layout.modelsTitle(), left + 2, top - 14, LABEL_COLOR, false);
 
         int visibleCount = this.getVisibleModelCount();
         int startIndex = this.modelScrollOffset;
@@ -291,8 +291,8 @@ public class TTSSiteEditorScreen extends Screen {
                         0xAA111111
                 );
 
-                row.idBox.render(graphics, mouseX, mouseY, partialTick);
-                row.nameBox.render(graphics, mouseX, mouseY, partialTick);
+                row.idBox.extractRenderState(graphics, mouseX, mouseY, partialTick);
+                row.nameBox.extractRenderState(graphics, mouseX, mouseY, partialTick);
             }
         }
         graphics.disableScissor();

@@ -11,10 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SetBeaconOverflowPackage(BlockPos pos, boolean overflowDelete) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SetBeaconOverflowPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("set_beacon_overflow"));
+    public static final CustomPacketPayload.Type<SetBeaconOverflowPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("set_beacon_overflow"));
     public static final StreamCodec<ByteBuf, SetBeaconOverflowPackage> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             SetBeaconOverflowPackage::pos,

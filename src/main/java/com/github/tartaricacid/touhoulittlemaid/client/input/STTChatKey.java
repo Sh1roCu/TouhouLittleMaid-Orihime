@@ -8,10 +8,9 @@ import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -23,17 +22,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Environment(EnvType.CLIENT)
+import static com.github.tartaricacid.touhoulittlemaid.client.init.KeyMappingRegister.MAID_CATEGORY;
+
 public class STTChatKey {
     public static final KeyMapping STT_CHAT_KEY = new KeyMapping("key.touhou_little_maid.stt_chat.desc",
 //            KeyConflictContext.IN_GAME,
 //            KeyModifier.NONE,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_X,
-            "key.category.touhou_little_maid");
+            MAID_CATEGORY
+    );
 
-    public static void onSttChatPress(int key, int scanCode, int action, int mods) {
-        if (keyIsMatch(key, scanCode, action, mods)) {
+    public static void onSttChatPress(int action, KeyEvent event) {
+        if (keyIsMatch(event)) {
             if (!AIConfig.LLM_ENABLED.get()) {
                 return;
             }
@@ -60,9 +61,9 @@ public class STTChatKey {
         }
     }
 
-    private static boolean keyIsMatch(int key, int scanCode, int action, int mods) {
-        return STT_CHAT_KEY.matches(key, scanCode)
-                /*&& STT_CHAT_KEY.getKeyModifier().equals(KeyModifier.getActiveModifier())*/;
+    @SuppressWarnings("removal")
+    private static boolean keyIsMatch(KeyEvent event) {
+        return STT_CHAT_KEY.matches(event);
     }
 
     private static void getNearestMaid(LocalPlayer player, Consumer<EntityMaid> consumer, boolean isStart) {

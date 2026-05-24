@@ -14,11 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SaveSwitcherDataPackage(BlockPos pos,
                                       List<TileEntityModelSwitcher.ModeInfo> modeInfos) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SaveSwitcherDataPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("save_switcher_data"));
+    public static final CustomPacketPayload.Type<SaveSwitcherDataPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("save_switcher_data"));
 
     public static final StreamCodec<ByteBuf, List<TileEntityModelSwitcher.ModeInfo>> COLLECTION_STREAM_CODEC =
             ByteBufCodecs.collection(

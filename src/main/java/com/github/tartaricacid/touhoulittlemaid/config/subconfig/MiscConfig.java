@@ -6,7 +6,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.isValidIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.isValidResourceLocation;
 
 public final class MiscConfig {
     private static final String TRANSLATE_KEY = "config.touhou_little_maid.misc";
@@ -95,7 +95,7 @@ public final class MiscConfig {
 
     private static boolean checkId(Object o) {
         if (o instanceof String name) {
-            return isValidIdentifier(name);
+            return isValidResourceLocation(name);
         }
         return false;
     }

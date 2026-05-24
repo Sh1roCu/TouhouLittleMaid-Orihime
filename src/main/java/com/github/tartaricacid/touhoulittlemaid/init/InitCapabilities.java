@@ -10,13 +10,13 @@ import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public class InitCapabilities implements EntityComponentInitializer {
-    public static final ComponentKey<LivingEntityEquipmentWrapper.EquipmentTypeWrapper> MAID_HAND = ComponentRegistry.getOrCreate(getIdentifier("maid_hand"), LivingEntityEquipmentWrapper.EquipmentTypeWrapper.class);
-    public static final ComponentKey<LivingEntityEquipmentWrapper.EquipmentTypeWrapper> MAID_ARMOR = ComponentRegistry.getOrCreate(getIdentifier("maid_armor"), LivingEntityEquipmentWrapper.EquipmentTypeWrapper.class);
-    public static final ComponentKey<MaidBackpackHandler> MAID_INV = ComponentRegistry.getOrCreate(getIdentifier("maid_inv"), MaidBackpackHandler.class);
-    public static final ComponentKey<BaubleItemHandler> MAID_BAUBLE = ComponentRegistry.getOrCreate(getIdentifier("maid_bauble"), BaubleItemHandler.class);
+    public static final ComponentKey<LivingEntityEquipmentWrapper.EquipmentTypeWrapper> MAID_HAND = ComponentRegistry.getOrCreate(getResourceLocation("maid_hand"), LivingEntityEquipmentWrapper.EquipmentTypeWrapper.class);
+    public static final ComponentKey<LivingEntityEquipmentWrapper.EquipmentTypeWrapper> MAID_ARMOR = ComponentRegistry.getOrCreate(getResourceLocation("maid_armor"), LivingEntityEquipmentWrapper.EquipmentTypeWrapper.class);
+    public static final ComponentKey<MaidBackpackHandler> MAID_INV = ComponentRegistry.getOrCreate(getResourceLocation("maid_inv"), MaidBackpackHandler.class);
+    public static final ComponentKey<BaubleItemHandler> MAID_BAUBLE = ComponentRegistry.getOrCreate(getResourceLocation("maid_bauble"), BaubleItemHandler.class);
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {

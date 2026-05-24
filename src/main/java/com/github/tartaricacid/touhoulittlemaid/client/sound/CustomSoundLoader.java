@@ -1,6 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.client.sound;
 
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.accessor.FileResourceAccessor;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.accessor.ZipResourceAccessor;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.DefaultPackConstant;
 import com.github.tartaricacid.touhoulittlemaid.client.sound.data.SoundCache;
 import com.github.tartaricacid.touhoulittlemaid.client.sound.data.SoundData;
@@ -78,7 +80,7 @@ public class CustomSoundLoader {
             info.decorate();
             // 加载图标贴图
             if (info.getIcon() != null) {
-                CustomPackLoader.registerFilePackTexture(rootPath, info.getIcon());
+                CustomPackLoader.registerTexture(new FileResourceAccessor(rootPath), info.getIcon());
             }
             Path soundsFolder = rootPath.resolve("assets").resolve(id).resolve("sounds").resolve("maid");
             SoundCache soundCache = new SoundCache(info, loadSoundEvent(soundsFolder));
@@ -94,40 +96,40 @@ public class CustomSoundLoader {
     private static Map<Identifier, List<SoundData>> loadSoundEvent(Path rootPath) {
         Map<Identifier, List<SoundData>> buffers = Maps.newLinkedHashMap();
 
-        buffers.put(InitSounds.MAID_IDLE.getLocation(), loadSounds(rootPath.resolve("mode"), "idle"));
-        buffers.put(InitSounds.MAID_ATTACK.getLocation(), loadSounds(rootPath.resolve("mode"), "attack"));
-        buffers.put(InitSounds.MAID_RANGE_ATTACK.getLocation(), loadSounds(rootPath.resolve("mode"), "range_attack"));
-        buffers.put(InitSounds.MAID_DANMAKU_ATTACK.getLocation(), loadSounds(rootPath.resolve("mode"), "danmaku_attack"));
-        buffers.put(InitSounds.MAID_FARM.getLocation(), loadSounds(rootPath.resolve("mode"), "farm"));
-        buffers.put(InitSounds.MAID_FEED.getLocation(), loadSounds(rootPath.resolve("mode"), "feed"));
-        buffers.put(InitSounds.MAID_SHEARS.getLocation(), loadSounds(rootPath.resolve("mode"), "shears"));
-        buffers.put(InitSounds.MAID_MILK.getLocation(), loadSounds(rootPath.resolve("mode"), "milk"));
-        buffers.put(InitSounds.MAID_TORCH.getLocation(), loadSounds(rootPath.resolve("mode"), "torch"));
-        buffers.put(InitSounds.MAID_FEED_ANIMAL.getLocation(), loadSounds(rootPath.resolve("mode"), "feed_animal"));
-        buffers.put(InitSounds.MAID_EXTINGUISHING.getLocation(), loadSounds(rootPath.resolve("mode"), "extinguishing"));
-        buffers.put(InitSounds.MAID_REMOVE_SNOW.getLocation(), loadSounds(rootPath.resolve("mode"), "snow"));
-        buffers.put(InitSounds.MAID_BREAK.getLocation(), loadSounds(rootPath.resolve("mode"), "break"));
-        buffers.put(InitSounds.MAID_FURNACE.getLocation(), loadSounds(rootPath.resolve("mode"), "furnace"));
-        buffers.put(InitSounds.MAID_BREWING.getLocation(), loadSounds(rootPath.resolve("mode"), "brewing"));
+        buffers.put(InitSounds.MAID_IDLE.location(), loadSounds(rootPath.resolve("mode"), "idle"));
+        buffers.put(InitSounds.MAID_ATTACK.location(), loadSounds(rootPath.resolve("mode"), "attack"));
+        buffers.put(InitSounds.MAID_RANGE_ATTACK.location(), loadSounds(rootPath.resolve("mode"), "range_attack"));
+        buffers.put(InitSounds.MAID_DANMAKU_ATTACK.location(), loadSounds(rootPath.resolve("mode"), "danmaku_attack"));
+        buffers.put(InitSounds.MAID_FARM.location(), loadSounds(rootPath.resolve("mode"), "farm"));
+        buffers.put(InitSounds.MAID_FEED.location(), loadSounds(rootPath.resolve("mode"), "feed"));
+        buffers.put(InitSounds.MAID_SHEARS.location(), loadSounds(rootPath.resolve("mode"), "shears"));
+        buffers.put(InitSounds.MAID_MILK.location(), loadSounds(rootPath.resolve("mode"), "milk"));
+        buffers.put(InitSounds.MAID_TORCH.location(), loadSounds(rootPath.resolve("mode"), "torch"));
+        buffers.put(InitSounds.MAID_FEED_ANIMAL.location(), loadSounds(rootPath.resolve("mode"), "feed_animal"));
+        buffers.put(InitSounds.MAID_EXTINGUISHING.location(), loadSounds(rootPath.resolve("mode"), "extinguishing"));
+        buffers.put(InitSounds.MAID_REMOVE_SNOW.location(), loadSounds(rootPath.resolve("mode"), "snow"));
+        buffers.put(InitSounds.MAID_BREAK.location(), loadSounds(rootPath.resolve("mode"), "break"));
+        buffers.put(InitSounds.MAID_FURNACE.location(), loadSounds(rootPath.resolve("mode"), "furnace"));
+        buffers.put(InitSounds.MAID_BREWING.location(), loadSounds(rootPath.resolve("mode"), "brewing"));
 
-        buffers.put(InitSounds.MAID_FIND_TARGET.getLocation(), loadSounds(rootPath.resolve("ai"), "find_target"));
-        buffers.put(InitSounds.MAID_HURT.getLocation(), loadSounds(rootPath.resolve("ai"), "hurt"));
-        buffers.put(InitSounds.MAID_HURT_FIRE.getLocation(), loadSounds(rootPath.resolve("ai"), "hurt_fire"));
-        buffers.put(InitSounds.MAID_PLAYER.getLocation(), loadSounds(rootPath.resolve("ai"), "hurt_player"));
-        buffers.put(InitSounds.MAID_TAMED.getLocation(), loadSounds(rootPath.resolve("ai"), "tamed"));
-        buffers.put(InitSounds.MAID_ITEM_GET.getLocation(), loadSounds(rootPath.resolve("ai"), "item_get"));
-        buffers.put(InitSounds.MAID_DEATH.getLocation(), loadSounds(rootPath.resolve("ai"), "death"));
-        buffers.put(InitSounds.GAME_WIN.getLocation(), loadSounds(rootPath.resolve("ai"), "game_win"));
-        buffers.put(InitSounds.GAME_LOST.getLocation(), loadSounds(rootPath.resolve("ai"), "game_lost"));
+        buffers.put(InitSounds.MAID_FIND_TARGET.location(), loadSounds(rootPath.resolve("ai"), "find_target"));
+        buffers.put(InitSounds.MAID_HURT.location(), loadSounds(rootPath.resolve("ai"), "hurt"));
+        buffers.put(InitSounds.MAID_HURT_FIRE.location(), loadSounds(rootPath.resolve("ai"), "hurt_fire"));
+        buffers.put(InitSounds.MAID_PLAYER.location(), loadSounds(rootPath.resolve("ai"), "hurt_player"));
+        buffers.put(InitSounds.MAID_TAMED.location(), loadSounds(rootPath.resolve("ai"), "tamed"));
+        buffers.put(InitSounds.MAID_ITEM_GET.location(), loadSounds(rootPath.resolve("ai"), "item_get"));
+        buffers.put(InitSounds.MAID_DEATH.location(), loadSounds(rootPath.resolve("ai"), "death"));
+        buffers.put(InitSounds.GAME_WIN.location(), loadSounds(rootPath.resolve("ai"), "game_win"));
+        buffers.put(InitSounds.GAME_LOST.location(), loadSounds(rootPath.resolve("ai"), "game_lost"));
 
-        buffers.put(InitSounds.MAID_COLD.getLocation(), loadSounds(rootPath.resolve("environment"), "cold"));
-        buffers.put(InitSounds.MAID_HOT.getLocation(), loadSounds(rootPath.resolve("environment"), "hot"));
-        buffers.put(InitSounds.MAID_RAIN.getLocation(), loadSounds(rootPath.resolve("environment"), "rain"));
-        buffers.put(InitSounds.MAID_SNOW.getLocation(), loadSounds(rootPath.resolve("environment"), "snow"));
-        buffers.put(InitSounds.MAID_MORNING.getLocation(), loadSounds(rootPath.resolve("environment"), "morning"));
-        buffers.put(InitSounds.MAID_NIGHT.getLocation(), loadSounds(rootPath.resolve("environment"), "night"));
+        buffers.put(InitSounds.MAID_COLD.location(), loadSounds(rootPath.resolve("environment"), "cold"));
+        buffers.put(InitSounds.MAID_HOT.location(), loadSounds(rootPath.resolve("environment"), "hot"));
+        buffers.put(InitSounds.MAID_RAIN.location(), loadSounds(rootPath.resolve("environment"), "rain"));
+        buffers.put(InitSounds.MAID_SNOW.location(), loadSounds(rootPath.resolve("environment"), "snow"));
+        buffers.put(InitSounds.MAID_MORNING.location(), loadSounds(rootPath.resolve("environment"), "morning"));
+        buffers.put(InitSounds.MAID_NIGHT.location(), loadSounds(rootPath.resolve("environment"), "night"));
 
-        buffers.put(InitSounds.MAID_CREDIT.getLocation(), loadSounds(rootPath.resolve("other"), "credit"));
+        buffers.put(InitSounds.MAID_CREDIT.location(), loadSounds(rootPath.resolve("other"), "credit"));
 
         reuseSounds(buffers, InitSounds.MAID_ATTACK, InitSounds.MAID_RANGE_ATTACK);
         reuseSounds(buffers, InitSounds.MAID_ATTACK, InitSounds.MAID_DANMAKU_ATTACK);
@@ -163,8 +165,8 @@ public class CustomSoundLoader {
     }
 
     private static void reuseSounds(Map<Identifier, List<SoundData>> buffers, SoundEvent from, SoundEvent to) {
-        List<SoundData> fromBuffers = buffers.get(from.getLocation());
-        buffers.get(to.getLocation()).addAll(fromBuffers);
+        List<SoundData> fromBuffers = buffers.get(from.location());
+        buffers.get(to.location()).addAll(fromBuffers);
     }
 
     private static boolean checkFileName(String patterString, String rawString) {
@@ -188,15 +190,14 @@ public class CustomSoundLoader {
             info.decorate();
             // 加载图标贴图
             if (info.getIcon() != null) {
-                CustomPackLoader.registerZipPackTexture(zipFile.getName(), info.getIcon());
+                CustomPackLoader.registerTexture(new ZipResourceAccessor(Path.of(zipFile.getName())), info.getIcon());
             }
             SoundCache soundCache = new SoundCache(info, loadSoundEvent(zipFile, id));
             CACHE.put(id, soundCache);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn(MARKER, "Failed to load sound pack {}", id, e);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn(MARKER, "Fail to parse sound pack in id {}", id);
-            e.printStackTrace();
+            LOGGER.warn(MARKER, "Fail to parse sound pack in id {}", id, e);
         }
         LOGGER.debug(MARKER, "Loaded {} sound pack.", id);
     }
@@ -270,7 +271,7 @@ public class CustomSoundLoader {
     }
 
     private static void loadSounds(ZipFile zipFile, Map<Identifier, List<SoundData>> buffers, ZipEntry zipEntry, String subDir, String fileName, SoundEvent soundEvent, String checkSubDir, String checkFileName) {
-        List<SoundData> sounds = buffers.computeIfAbsent(soundEvent.getLocation(), res -> Lists.newArrayList());
+        List<SoundData> sounds = buffers.computeIfAbsent(soundEvent.location(), res -> Lists.newArrayList());
         if (checkSubDir.equals(subDir) && checkFileName(checkFileName, fileName)) {
             OggReader.readSoundDataFromZip(zipFile, zipEntry, fileName, sounds, MARKER);
         }

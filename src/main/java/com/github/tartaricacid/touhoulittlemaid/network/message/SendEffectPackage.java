@@ -15,10 +15,10 @@ import net.minecraft.world.entity.Entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SendEffectPackage(int id, Collection<MobEffectInstance> effects) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SendEffectPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("send_effect"));
+    public static final CustomPacketPayload.Type<SendEffectPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("send_effect"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Collection<MobEffectInstance>> COLLECTION_STREAM_CODEC =
             ByteBufCodecs.collection(

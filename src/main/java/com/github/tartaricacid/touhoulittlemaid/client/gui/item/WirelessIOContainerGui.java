@@ -8,10 +8,11 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import com.github.tartaricacid.touhoulittlemaid.network.message.WirelessIOGuiPackage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,18 +39,18 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
                 (x, y) -> {
                     isMaidToChest = !isMaidToChest;
                     ClientPlayNetworking.send(new WirelessIOGuiPackage(isMaidToChest, isBlacklist));
-                }, (m, x, y) -> m.renderTooltip(font, Component.translatable("gui.touhou_little_maid.wireless_io.io_mode"), x, y));
+                }, (m, x, y) -> m.setTooltipForNextFrame(font, Component.translatable("gui.touhou_little_maid.wireless_io.io_mode"), x, y));
 
         ioModeToggle.initTextureValues(194, 32, -18, 18, MAIN);
         WirelessIOButton filterModeToggle = new WirelessIOButton(leftPos + 136, topPos + 26, 16, 16, isBlacklist,
                 (x, y) -> {
                     isBlacklist = !isBlacklist;
                     ClientPlayNetworking.send(new WirelessIOGuiPackage(isMaidToChest, isBlacklist));
-                }, (m, x, y) -> m.renderTooltip(font, Component.translatable("gui.touhou_little_maid.wireless_io.filter_mode"), x, y));
+                }, (m, x, y) -> m.setTooltipForNextFrame(font, Component.translatable("gui.touhou_little_maid.wireless_io.filter_mode"), x, y));
         filterModeToggle.initTextureValues(176, 0, 16, 16, MAIN);
 
         TouhouImageButton configButton = new TouhouImageButton(leftPos + 136, topPos + 44, 16, 16, 208, 0, 16,
-                MAIN, 256, 256, buttons -> this.minecraft.setScreen(new WirelessIOConfigSlotGui(menu.getWirelessIO())));
+                MAIN, 256, 256, buttons -> Screens.getMinecraft(this).setScreen(new WirelessIOConfigSlotGui(menu.getWirelessIO())));
         configButton.setTooltip(Tooltip.create(Component.translatable("gui.touhou_little_maid.wireless_io.config_slot")));
 
         addRenderableWidget(filterModeToggle);
@@ -58,23 +59,21 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        this.extractTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {
-        super.renderTransparentBackground(graphics);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, MAIN);
-        graphics.blit(MAIN, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractTransparentBackground(graphics);
+        GuiTools.blit(graphics, MAIN, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         if (isBlacklist) {
-            graphics.blit(MAIN, leftPos + 61, topPos + 15, 0, 166, 54, 55);
+            GuiTools.blit(graphics, MAIN, leftPos + 61, topPos + 15, 0, 166, 54, 55);
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int x, int y) {
+    protected void extractLabels(GuiGraphicsExtractor graphics, int x, int y) {
     }
 }

@@ -2,16 +2,17 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
+import java.util.Optional;
 
 // Accessories的loom注入导致的错误，不用管
 public class MaidTabButton extends Button implements ITooltipButton {
@@ -30,12 +31,11 @@ public class MaidTabButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.enableDepthTest();
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (!this.active) {
-            graphics.blit(SIDE, this.getX(), this.getY(), left, 21, this.width, this.height, 256, 256);
+            GuiTools.guiBlit(graphics, SIDE, this.getX(), this.getY(), left, 21, this.width, this.height);
         }
-        graphics.blit(SIDE, this.getX() + 4, this.getY() + 6, left, 47, 16, 16, 256, 256);
+        GuiTools.guiBlit(graphics, SIDE, this.getX() + 4, this.getY() + 6, left, 47, 16, 16);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class MaidTabButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics graphics, Minecraft mc, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor graphics, Minecraft mc, int mouseX, int mouseY) {
         Font font = Minecraft.getInstance().font;
-        graphics.renderComponentTooltip(font, tooltips, mouseX, mouseY);
+        graphics.setTooltipForNextFrame(font, tooltips, Optional.empty(), mouseX, mouseY);
     }
 }

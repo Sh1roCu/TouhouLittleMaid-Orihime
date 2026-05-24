@@ -3,7 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.other;
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
@@ -28,22 +28,22 @@ public class CheckSchedulePosGui extends Screen {
     protected void init() {
         this.middleX = this.width / 2;
         this.middleY = this.height / 2;
-        Button returnButton = Button.builder(Component.translatable("button.touhou_little_maid.maid.return"), (b) -> Screens.getClient(this).setScreen(this.parent))
+        Button returnButton = Button.builder(Component.translatable("button.touhou_little_maid.maid.return"), (b) -> Screens.getMinecraft(this).setScreen(this.parent))
                 .pos(middleX - 100, middleY + 10).size(200, 20).build();
         this.addRenderableWidget(returnButton);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(graphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        extractBackground(graphics, mouseX, mouseY, partialTicks);
         List<FormattedCharSequence> split = font.split(tips, 300);
         int startY = middleY - 10 - split.size() * (font.lineHeight + 3);
         for (FormattedCharSequence text : split) {
-            graphics.drawCenteredString(font, text, middleX, startY, 0xFFFFFF);
+            graphics.centeredText(font, text, middleX, startY, 0xFFFFFF);
             startY += font.lineHeight + 3;
         }
         for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.render(graphics, mouseX, mouseY, partialTicks);
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         }
     }
 }

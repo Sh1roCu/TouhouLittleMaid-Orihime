@@ -1,11 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.client.event;
 
 import com.github.tartaricacid.touhoulittlemaid.client.download.ClientPackDownloadManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.neoforged.fml.config.ModConfig;
 
-@Environment(EnvType.CLIENT)
 public class ClientPackDownloadEvent {
     private static final String CONFIG_NAME = "touhou_little_maid-server.toml";
 

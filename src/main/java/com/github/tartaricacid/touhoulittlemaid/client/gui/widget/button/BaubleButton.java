@@ -3,9 +3,9 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
 import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -29,7 +29,7 @@ public class BaubleButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderTexture(guiGraphics, BAUBLE_BUTTON, this.getX(), this.getY(),
                 this.uStart, this.vStart, 0, this.getWidth(), this.getHeight(),
                 256, 256);
@@ -41,11 +41,11 @@ public class BaubleButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics graphics, Minecraft mc, int mouseX, int mouseY) {
-        graphics.renderTooltip(mc.font, this.tooltip, mouseX, mouseY);
+    public void renderTooltip(GuiGraphicsExtractor graphics, Minecraft mc, int mouseX, int mouseY) {
+        graphics.setTooltipForNextFrame(mc.font, this.tooltip, mouseX, mouseY);
     }
 
-    public void renderTexture(GuiGraphics pGuiGraphics, Identifier pTexture, int pX, int pY, int uOffset,
+    public void renderTexture(GuiGraphicsExtractor pGuiGraphics, Identifier pTexture, int pX, int pY, int uOffset,
                               int vOffset, int yDiff, int pWidth, int pHeight, int pTextureWidth, int pTextureHeight) {
         int i = vOffset;
         if (!this.isActive()) {
@@ -54,7 +54,6 @@ public class BaubleButton extends Button implements ITooltipButton {
             i = vOffset + yDiff;
         }
 
-        RenderSystem.enableDepthTest();
-        pGuiGraphics.blit(pTexture, pX, pY, (float) uOffset, (float) i, pWidth, pHeight, pTextureWidth, pTextureHeight);
+        GuiTools.guiBlit(pGuiGraphics, pTexture, pX, pY, uOffset, i, pWidth, pHeight, pTextureWidth, pTextureHeight);
     }
 }

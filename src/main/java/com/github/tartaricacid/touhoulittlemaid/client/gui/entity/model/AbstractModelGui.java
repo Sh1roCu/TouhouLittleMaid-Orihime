@@ -7,19 +7,21 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouI
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.texture.SizeTexture;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.CustomModelPack;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.IModelInfo;
-import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -89,7 +91,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
      * @param mouseX  鼠标 x 坐标
      * @param mouseY  鼠标 Y 坐标
      */
-    protected abstract void drawLeftEntity(GuiGraphics graphics, int middleX, int middleY, float mouseX, float mouseY);
+    protected abstract void drawLeftEntity(GuiGraphicsExtractor graphics, int middleX, int middleY, float mouseX, float mouseY);
 
     /**
      * 绘制右侧示例实体
@@ -98,7 +100,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
      * @param posY      实体所在的 y 坐标
      * @param modelItem 该实体应该对应的模型数据
      */
-    protected abstract void drawRightEntity(GuiGraphics graphics, int posX, int posY, E modelItem);
+    protected abstract void drawRightEntity(GuiGraphicsExtractor graphics, int posX, int posY, E modelItem);
 
     /**
      * 打开详情界面
@@ -158,17 +160,6 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
 
         // 模型包翻页
         addScrollButton(startX, startY);
-
-        // 添加开启、关闭模型包图标缓存的按钮
-        MutableComponent enableCache = Component.translatable("gui.touhou_little_maid.skin.enable_cache");
-        int checkBoxWidth = font.width(enableCache) + 20;
-        int xOffset = (startX - 256 / 2) / 2 - checkBoxWidth / 2;
-        Checkbox cacheCheckBox = Checkbox.builder(enableCache, font)
-                .pos(xOffset, startY - 101)
-                .selected(MiscConfig.MODEL_ICON_CACHE.get())
-                .onValueChange((checkBox, value) -> MiscConfig.MODEL_ICON_CACHE.set(value))
-                .build();
-        this.addRenderableWidget(cacheCheckBox);
 
         // 创建搜索框（始终创建，根据模式控制可见性）
         int searchBoxWidth = 216;
@@ -252,7 +243,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
 
     private Button.OnPress onModelButtonClick(E modelItem) {
         return (button) -> {
-            if (hasShiftDown()) {
+            if (Screens.getMinecraft(this).hasShiftDown()) {
                 openDetailsGui(entity, modelItem);
             } else {
                 notifyModelChange(entity, modelItem);
@@ -332,21 +323,15 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderBlurredBackground(partialTicks);
-
-        graphics.pose().translate(0, 0, -100);
-
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         // 中心点
         int middleX = this.width / 2 + 50;
         int middleY = this.height / 2;
 
-        // 绘制灰色默认背景
-        renderBackground(graphics, mouseX, mouseY, partialTicks);
-
         // 绘制 GUI 背景
-        graphics.blit(BG, middleX - 256 / 2, middleY - 80, 0, 0, 256, 180);
-        graphics.blit(SIDE, middleX - 256 / 2 + 250, middleY - 80, 0, 0, 24, 180);
+        GuiTools.blit(graphics, BG, middleX - 256 / 2, middleY - 80, 0, 0, 256, 180);
+        GuiTools.blit(graphics, SIDE, middleX - 256 / 2 + 250, middleY - 80, 0, 0, 24, 180);
 
         // 绘制侧边的滚动条
         drawScrollSide(graphics, middleX, middleY);
@@ -367,32 +352,32 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         drawTooltips(graphics, mouseX, mouseY, middleX, middleY);
     }
 
-    private void drawButton(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    private void drawButton(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         for (Renderable button : ((ScreenAccessor) this).tlm$getRenderables()) {
-            button.render(graphics, mouseX, mouseY, partialTicks);
+            button.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void drawScrollSide(GuiGraphics graphics, int middleX, int middleY) {
+    private void drawScrollSide(GuiGraphicsExtractor graphics, int middleX, int middleY) {
         if (canScrollCurrentList()) {
-            graphics.blit(SIDE, middleX - 256 / 2 + 254,
+            GuiTools.blit(graphics, SIDE, middleX - 256 / 2 + 254,
                     middleY - 61 + (int) (127 * getCurrentScrollPosition()),
                     24, 0, 12, 15);
         } else {
-            graphics.blit(SIDE, middleX - 256 / 2 + 254,
+            GuiTools.blit(graphics, SIDE, middleX - 256 / 2 + 254,
                     middleY - 61 + (int) (127 * getCurrentScrollPosition()),
                     36, 0, 12, 15);
         }
     }
 
-    private void drawTabIcon(GuiGraphics graphics, int middleX, int middleY) {
+    private void drawTabIcon(GuiGraphicsExtractor graphics, int middleX, int middleY) {
         // 模型包的分栏按钮图标
         int size = guiNumber.getTabSize(getPackIndex());
         for (int index = 0; index < size; index++) {
             CustomModelPack<E> pack = modelPackList.get(guiNumber.tabToPackIndex(index, getPageIndex()));
             Identifier icon = pack.getIcon();
             if (icon != null) {
-                AbstractTexture iconTexture = Minecraft.getInstance().getTextureManager().getTexture(icon, EMPTY_ICON_TEXTURE);
+                AbstractTexture iconTexture = Minecraft.getInstance().getTextureManager().getTexture(icon);
                 if (EMPTY_ICON_TEXTURE.equals(iconTexture)) {
                     icon = EMPTY_ICON;
                 }
@@ -400,14 +385,12 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
                     checkIconAnimation(pack, icon);
                 }
                 if (pack.getIconAnimation() == CustomModelPack.AnimationState.FALSE) {
-                    graphics.blit(icon, middleX - 92 + 28 * index, middleY - 98,
+                    GuiTools.blit(graphics, icon, middleX - 92 + 28 * index, middleY - 98,
                             0, 0, 16, 16, 16, 16);
                 } else {
-                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                    RenderSystem.setShaderTexture(0, icon);
                     int time = getTickTime() / pack.getIconDelay();
                     int iconIndex = time % pack.getIconAspectRatio();
-                    graphics.blit(icon, middleX - 92 + 28 * index, middleY - 98,
+                    GuiTools.blit(graphics, icon, middleX - 92 + 28 * index, middleY - 98,
                             0, iconIndex * 16, 16,
                             16, 16, 16 * pack.getIconAspectRatio());
                 }
@@ -420,7 +403,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
     }
 
     private void checkIconAnimation(CustomModelPack<E> pack, Identifier icon) {
-        AbstractTexture iconText = Screens.getClient(this).getTextureManager().getTexture(icon);
+        AbstractTexture iconText = Screens.getMinecraft(this).getTextureManager().getTexture(icon);
         if (iconText instanceof SizeTexture sizeTexture) {
             int width = sizeTexture.getWidth();
             int height = sizeTexture.getHeight();
@@ -438,7 +421,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
     /**
      * 绘制所有的模型实体图案
      */
-    private void drawEntity(GuiGraphics graphics, int middleX, int middleY) {
+    private void drawEntity(GuiGraphicsExtractor graphics, int middleX, int middleY) {
         // 绘制包信息或搜索模式提示
         if (!isSearchMode) {
             // 获取当前包索引得到的模型列表
@@ -482,7 +465,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
     /**
      * 绘制包的文本信息
      */
-    private void drawPackInfoText(GuiGraphics graphics, CustomModelPack<E> pack, int middleX, int middleY) {
+    private void drawPackInfoText(GuiGraphicsExtractor graphics, CustomModelPack<E> pack, int middleX, int middleY) {
         int offsetY = -80;
         int sideMiddleX = (middleX - 256 / 2) / 2;
 
@@ -491,7 +474,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         List<FormattedText> packSplitName = font.getSplitter().splitLines(packName, (middleX - 256 / 2) - 20, Style.EMPTY);
         for (FormattedText properties : packSplitName) {
             offsetY += 10;
-            graphics.drawCenteredString(font, properties.getString(), sideMiddleX, middleY + offsetY, 0xffffff);
+            graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0xffffff);
         }
 
         // 如果描述不为空，逐行绘制描述
@@ -499,7 +482,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             List<FormattedText> split = font.getSplitter().splitLines(str, (middleX - 256 / 2) - 20, Style.EMPTY);
             for (FormattedText properties : split) {
                 offsetY += 10;
-                graphics.drawCenteredString(font, properties.getString(), sideMiddleX, middleY + offsetY, 0x777777);
+                graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0x777777);
             }
         }
 
@@ -507,7 +490,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         if (!pack.getAuthor().isEmpty()) {
             for (List<String> textList : Lists.partition(pack.getAuthor(), 2)) {
                 offsetY += 10;
-                graphics.drawCenteredString(font, Component.literal(textList.toString()).withStyle(ChatFormatting.GOLD),
+                graphics.centeredText(font, Component.literal(textList.toString()).withStyle(ChatFormatting.GOLD),
                         sideMiddleX, middleY + offsetY, 0xffffff);
             }
         }
@@ -515,7 +498,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         // 绘制版本信息
         if (pack.getVersion() != null) {
             offsetY += 10;
-            graphics.drawCenteredString(font, Component.translatable("gui.touhou_little_maid.skin.text.version", pack.getVersion())
+            graphics.centeredText(font, Component.translatable("gui.touhou_little_maid.skin.text.version", pack.getVersion())
                             .withStyle(ChatFormatting.DARK_AQUA),
                     sideMiddleX, middleY + offsetY, 0xffffff);
         }
@@ -523,13 +506,13 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         // 绘制日期信息
         if (pack.getDate() != null) {
             offsetY += 10;
-            graphics.drawCenteredString(font, Component.translatable("gui.touhou_little_maid.skin.text.date", pack.getDate())
+            graphics.centeredText(font, Component.translatable("gui.touhou_little_maid.skin.text.date", pack.getDate())
                             .withStyle(ChatFormatting.GREEN),
                     sideMiddleX, middleY + offsetY, 0xffffff);
         }
 
         // 绘制最后的翻页数
-        graphics.drawCenteredString(font, String.format("%s/%s", getPageIndex() + 1, guiNumber.getPageSize()), middleX, middleY - 118, 0xffffff);
+        graphics.centeredText(font, String.format("%s/%s", getPageIndex() + 1, guiNumber.getPageSize()), middleX, middleY - 118, 0xffffff);
     }
 
     /**
@@ -537,7 +520,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
      * 用遍历方式绘制文本提示，因为绝大多数情况下是空循环体（可能就涉及几个简单的 int 运算）<br>
      * 应该不会存在性能问题<br>
      */
-    private void drawTooltips(GuiGraphics graphics, int mouseX, int mouseY, int middleX, int middleY) {
+    private void drawTooltips(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int middleX, int middleY) {
         // 使用过滤后的列表
         List<E> displayList = getDisplayModelList();
 
@@ -578,7 +561,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
                                 .withStyle(ChatFormatting.DARK_PURPLE));
                     }
                     // 当开启显示更多物品信息功能时，显示模型 ID
-                    if (Screens.getClient(this).options.advancedItemTooltips) {
+                    if (Screens.getMinecraft(this).options.advancedItemTooltips) {
                         tooltips.add(Component.literal(modelItem.getModelId().toString()).withStyle(ChatFormatting.DARK_GRAY));
                     }
                     // 添加包名（搜索模式下需要查找模型所属的pack）
@@ -592,8 +575,9 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
                         tooltips.add(ParseI18n.parse(pack.getPackName()).withStyle(ChatFormatting.BLUE));
                     }
                     // 绘制解析过的文本提示
-                    graphics.renderComponentTooltip(font, tooltips, mouseX, mouseY);
+                    graphics.setTooltipForNextFrame(font, tooltips, Optional.empty(), mouseX, mouseY);
                 }
+
                 // 往右绘制
                 offsetX = offsetX + 20;
 
@@ -612,7 +596,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             boolean isyInRange = middleY - 108 < mouseY && mouseY < middleY - 108 + 31;
             if (isxInRange && isyInRange) {
                 CustomModelPack<E> hoverPack = modelPackList.get(guiNumber.tabToPackIndex(index, getPageIndex()));
-                graphics.renderTooltip(font, ParseI18n.parse(hoverPack.getPackName()), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(font, ParseI18n.parse(hoverPack.getPackName()), mouseX, mouseY);
             }
         }
 
@@ -620,7 +604,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         boolean xInRange = (middleX + 122) < mouseX && mouseX < (middleX + 143);
         boolean yInRange = (middleY - 97) < mouseY && mouseY < (middleY - 80);
         if (xInRange && yInRange) {
-            graphics.renderTooltip(font, Component.translatable("gui.touhou_little_maid.skin.button.close"), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.touhou_little_maid.skin.button.close"), mouseX, mouseY);
         }
     }
 
@@ -652,35 +636,40 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // 处理搜索框的点击事件
-        if (this.searchBox != null && this.searchBox.mouseClicked(mouseX, mouseY, button)) {
+        if (this.searchBox != null && this.searchBox.mouseClicked(event, doubleClick)) {
             this.setFocused(this.searchBox);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         // 处理搜索框的键盘输入
         if (this.searchBox != null && this.searchBox.isFocused()) {
-            if (this.searchBox.keyPressed(keyCode, scanCode, modifiers)) {
+            if (this.searchBox.keyPressed(event)) {
                 return true;
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
+        return super.keyReleased(event);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent event) {
         // 处理搜索框的字符输入
         if (this.searchBox != null && this.searchBox.isFocused()) {
-            if (this.searchBox.charTyped(codePoint, modifiers)) {
+            if (this.searchBox.charTyped(event)) {
                 return true;
             }
         }
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
 
     /**

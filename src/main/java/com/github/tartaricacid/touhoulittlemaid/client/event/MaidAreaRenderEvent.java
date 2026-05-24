@@ -8,15 +8,15 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.gizmos.GizmoStyle;
+import net.minecraft.gizmos.Gizmos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -25,17 +25,16 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
-@Environment(EnvType.CLIENT)
 public class MaidAreaRenderEvent {
     private static final Cache<Integer, SchedulePos> CACHE = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
-    //after block entities
+    //AfterOpaqueFeatures
     public static void onRender(LevelRenderContext context) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             return;
         }
-        Vec3 camera = context.gameRenderer().getMainCamera().position().reverse();
+        Vec3 camera = context.levelState().cameraRenderState.pos.reverse();
         PoseStack poseStack = context.poseStack();
         for (int id : CACHE.asMap().keySet()) {
             SchedulePos pos = CACHE.getIfPresent(id);
@@ -53,11 +52,12 @@ public class MaidAreaRenderEvent {
         }
     }
 
-    private static void renderPos(@Nullable BlockPos workPos, @Nullable BlockPos idlePos, @Nullable BlockPos resetPos, Vec3 camera, PoseStack poseStack, Minecraft mc, EntityMaid maid, Player player) {
+    private static void renderPos(@Nullable BlockPos workPos, @Nullable BlockPos idlePos, @Nullable BlockPos resetPos, Vec3 camera,
+                                  PoseStack poseStack, Minecraft mc, EntityMaid maid, Player player) {
         poseStack.pushPose();
         poseStack.translate(0, 1, 0);
 
-        BlockPos restrictCenter = maid.getRestrictCenter();
+        BlockPos restrictCenter = maid.getHomePosition();
         Vec3 restrictPos = camera.add(restrictCenter.getX() + 0.5, restrictCenter.getY() + 0.5, restrictCenter.getZ() + 0.5);
         if (!maid.isHomeModeEnable()) {
             restrictPos = camera.add(player.position());
@@ -65,7 +65,7 @@ public class MaidAreaRenderEvent {
         Vec3 maidPos = camera.add(maid.position());
         RenderHelper.renderLine(poseStack, mc.renderBuffers().bufferSource().getBuffer(RenderTypes.LINES), restrictPos, maidPos, 1.0f, 0.2f, 0.2f);
         AABB aabb = maid.getBoundingBox().move(0, -1, 0).move(camera);
-        DebugRenderer.renderFilledBox(poseStack, mc.renderBuffers().bufferSource(), aabb, 0.8F, 0.8F, 0.2F, 0.75F);
+        Gizmos.cuboid(aabb, GizmoStyle.fill(ARGB.colorFromFloat(0.8F, 0.2F, 0.75F, 0.8F)));
 
         if (workPos != null) {
             Vec3 centerPos = camera.add(workPos.getX() + 0.5, workPos.getY() + 0.5, workPos.getZ() + 0.5);

@@ -1,22 +1,22 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 public class MaidConfigButton extends Button {
     private static final Identifier ICON = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/maid_gui_button.png");
-    private final OnPress leftPress;
-    private final OnPress rightPress;
+    private final MaidConfigButton.OnPress leftPress;
+    private final MaidConfigButton.OnPress rightPress;
     private boolean leftClicked = false;
     private Component value;
 
@@ -30,21 +30,20 @@ public class MaidConfigButton extends Button {
         this.value = value;
     }
 
-    public MaidConfigButton(int x, int y, Component title, Component value, OnPress onPress) {
+    public MaidConfigButton(int x, int y, Component title, Component value, MaidConfigButton.OnPress onPress) {
         this(x, y, title, value, onPress, onPress);
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft mc = Minecraft.getInstance();
-        RenderSystem.enableDepthTest();
         if (this.isHovered) {
-            graphics.blit(ICON, this.getX(), this.getY(), 63, 141, this.width, this.height, 256, 256);
+            GuiTools.guiBlit(graphics, ICON, this.getX(), this.getY(), 63, 141, this.width, this.height);
         } else {
-            graphics.blit(ICON, this.getX(), this.getY(), 63, 128, this.width, this.height, 256, 256);
+            GuiTools.guiBlit(graphics, ICON, this.getX(), this.getY(), 63, 128, this.width, this.height);
         }
-        graphics.drawString(mc.font, this.getMessage(), this.getX() + 5, this.getY() + 3, 0x444444, false);
-        drawCenteredStringWithoutShadow(graphics, mc.font, this.value, this.getX() + 142, this.getY() + 3, ChatFormatting.GREEN.getColor());
+        graphics.text(mc.font, this.getMessage(), this.getX() + 5, this.getY() + 3, 0xFF444444, false);
+        drawCenteredStringWithoutShadow(graphics, mc.font, this.value, this.getX() + 142, this.getY() + 3, ChatFormatting.GREEN.getColor() | 0xFF000000);
     }
 
     public void setValue(Component value) {
@@ -52,26 +51,25 @@ public class MaidConfigButton extends Button {
     }
 
     @Override
-    protected boolean clicked(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
         if (!this.active || !this.visible) {
-            return false;
+            return;
         }
+        double mouseX = event.x();
+        double mouseY = event.y();
         boolean leftClickX = (this.getX() + 120) <= mouseX && mouseX <= (this.getX() + 130);
         boolean rightClickX = (this.getX() + 154) <= mouseX && mouseX <= (this.getX() + 164);
         boolean clickY = this.getY() <= mouseY && mouseY <= (this.getY() + this.getHeight());
         if (leftClickX && clickY) {
             leftClicked = true;
-            return true;
-        }
-        if (rightClickX && clickY) {
+        } else if (rightClickX && clickY) {
             leftClicked = false;
-            return true;
         }
-        return false;
+        super.onClick(event, doubleClick);
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         if (leftClicked) {
             leftPress.onPress(this);
         } else {
@@ -79,12 +77,11 @@ public class MaidConfigButton extends Button {
         }
     }
 
-    public void drawCenteredStringWithoutShadow(GuiGraphics graphics, Font pFont, Component pText, int pX, int pY, int pColor) {
+    public void drawCenteredStringWithoutShadow(GuiGraphicsExtractor graphics, Font pFont, Component pText, int pX, int pY, int pColor) {
         FormattedCharSequence formattedcharsequence = pText.getVisualOrderText();
-        graphics.drawString(pFont, formattedcharsequence, pX - pFont.width(formattedcharsequence) / 2, pY, pColor, false);
+        graphics.text(pFont, formattedcharsequence, pX - pFont.width(formattedcharsequence) / 2, pY, pColor, false);
     }
 
-    @Environment(EnvType.CLIENT)
     public interface OnPress {
         void onPress(MaidConfigButton button);
     }

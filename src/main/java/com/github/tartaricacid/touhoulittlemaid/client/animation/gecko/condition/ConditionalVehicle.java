@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.condition;
 
-import com.google.common.collect.Lists;
-import net.minecraft.core.registries.BuiltInRegistries;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -9,14 +8,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 
-import java.util.List;
+import java.util.Set;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.isValidIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.isValidResourceLocation;
 
 public class ConditionalVehicle {
     private static final String EMPTY = "";
-    private final List<Identifier> idTest = Lists.newArrayList();
-    private final List<TagKey<EntityType<?>>> tagTest = Lists.newArrayList();
+    private final Set<Identifier> idTest = new ReferenceOpenHashSet<>();
+    private final Set<TagKey<EntityType<?>>> tagTest = new ReferenceOpenHashSet<>();
     private final String idPre;
     private final String tagPre;
 
@@ -31,10 +30,10 @@ public class ConditionalVehicle {
             return;
         }
         String substring = name.substring(preSize);
-        if (name.startsWith(idPre) && isValidIdentifier(substring)) {
+        if (name.startsWith(idPre) && isValidResourceLocation(substring)) {
             idTest.add(Identifier.parse(substring));
         }
-        if (name.startsWith(tagPre) && isValidIdentifier(substring)) {
+        if (name.startsWith(tagPre) && isValidResourceLocation(substring)) {
             tagTest.add(TagKey.create(
                     Registries.ENTITY_TYPE,
                     Identifier.parse(substring)
@@ -54,14 +53,12 @@ public class ConditionalVehicle {
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     private String doIdTest(Entity vehicle) {
         if (idTest.isEmpty()) {
             return EMPTY;
         }
-        Identifier registryName = BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType());
-        if (registryName.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {
-            return EMPTY;
-        }
+        Identifier registryName = vehicle.getType().builtInRegistryHolder().key().identifier();
         if (idTest.contains(registryName)) {
             return idPre + registryName;
         }
@@ -72,6 +69,10 @@ public class ConditionalVehicle {
         if (tagTest.isEmpty()) {
             return EMPTY;
         }
-        return tagTest.stream().filter(tag -> vehicle.getType().is(tag)).findFirst().map(itemTagKey -> tagPre + itemTagKey.location()).orElse(EMPTY);
+        return tagTest.stream()
+                .filter(vehicle::is)
+                .findFirst()
+                .map(itemTagKey -> tagPre + itemTagKey.location())
+                .orElse(EMPTY);
     }
 }

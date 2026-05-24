@@ -3,7 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.download;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadInfo;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadStatus;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.entity.info.ServerCustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.util.HttpUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ZipFileCheck;
@@ -11,8 +11,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.util.UndashedUuid;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.WorldVersion;
@@ -47,7 +45,6 @@ import java.util.concurrent.TimeUnit;
  * @author TartaricAcid
  * @date 2020/1/12 15:32
  **/
-@Environment(EnvType.CLIENT)
 public class InfoGetManager {
     /**
      * 线路 1，PCL 作者宅魂 Kill 提供的 CDN
@@ -85,11 +82,11 @@ public class InfoGetManager {
 
         map.put("X-Minecraft-Username", user.getName());
         map.put("X-Minecraft-UUID", UndashedUuid.toString(user.getProfileId()));
-        map.put("X-Minecraft-Version", currentVersion.getName());
-        map.put("X-Minecraft-Version-ID", currentVersion.getId());
+        map.put("X-Minecraft-Version", currentVersion.name());
+        map.put("X-Minecraft-Version-ID", currentVersion.id());
         map.put("X-Fabric-Version", FabricLoader.getInstance().getModContainer("fabric").get().getMetadata().getVersion().getFriendlyString());
         map.put("X-TLM-Version", FabricLoader.getInstance().getModContainer(TouhouLittleMaid.MOD_ID).get().getMetadata().getVersion().getFriendlyString());
-        map.put("User-Agent", "Minecraft Java/" + currentVersion.getName());
+        map.put("User-Agent", "Minecraft Java/" + currentVersion.name());
 
         return map;
     }
@@ -205,7 +202,6 @@ public class InfoGetManager {
         }
     }
 
-    @Environment(EnvType.CLIENT)
     public static void onClientSetup() {
         InfoGetManager.checkInfoJsonFile();
     }

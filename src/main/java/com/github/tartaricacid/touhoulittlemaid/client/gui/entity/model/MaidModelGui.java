@@ -1,9 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.model;
 
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.detail.MaidModelDetailsGui;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
-import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.MaidModelPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenMaidGuiPackage;
@@ -12,12 +11,11 @@ import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.github.tartaricacid.touhoulittlemaid.client.event.SpecialMaidRenderEvent.EASTER_EGG_MODEL;
+import static com.github.tartaricacid.touhoulittlemaid.client.resource.models.SpecialMaidModelResolver.EASTER_EGG_MODEL;
 import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clearMaidDataResidue;
 
 public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
@@ -39,11 +37,11 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
     }
 
     @Override
-    protected void drawLeftEntity(GuiGraphics graphics, int middleX, int middleY, float mouseX, float mouseY) {
+    protected void drawLeftEntity(GuiGraphicsExtractor graphics, int middleX, int middleY, float mouseX, float mouseY) {
         float renderItemScale = CustomPackLoader.MAID_MODELS.getModelRenderItemScale(entity.getModelId());
         int centerX = (middleX - 256 / 2) / 2;
         int yOffset = (int) (45 * (renderItemScale - 1));
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
+        InventoryScreen.extractEntityInInventoryFollowsMouse(
                 graphics,
                 centerX - 100,
                 middleY - 100,
@@ -57,15 +55,8 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
     }
 
     @Override
-    protected void drawRightEntity(GuiGraphics graphics, int posX, int posY, MaidModelInfo modelItem) {
-        Identifier cacheIconId = modelItem.getCacheIconId();
-        var allTextures = Minecraft.getInstance().getTextureManager().byPath;
-        if (MiscConfig.MODEL_ICON_CACHE.get() && allTextures.containsKey(cacheIconId)) {
-            int textureSize = 24;
-            graphics.blit(cacheIconId, posX - textureSize / 2, posY - textureSize, textureSize, textureSize, 0, 0, textureSize, textureSize, textureSize, textureSize);
-        } else {
-            drawEntity(graphics, posX, posY, modelItem);
-        }
+    protected void drawRightEntity(GuiGraphicsExtractor graphics, int posX, int posY, MaidModelInfo modelItem) {
+        drawEntity(graphics, posX, posY, modelItem);
     }
 
     @Override
@@ -128,8 +119,8 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
         ROW_INDEX = rowIndex;
     }
 
-    private void drawEntity(GuiGraphics graphics, int posX, int posY, MaidModelInfo modelItem) {
-        Level world = Screens.getClient(this).level;
+    private void drawEntity(GuiGraphicsExtractor graphics, int posX, int posY, MaidModelInfo modelItem) {
+        Level world = Screens.getMinecraft(this).level;
         if (world == null) {
             return;
         }
@@ -137,7 +128,7 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
         EntityMaid maid;
         try {
             maid = (EntityMaid) EntityCacheUtil.ENTITY_CACHE.get(EntityMaid.TYPE, () -> {
-                Entity e = EntityMaid.TYPE.create(world);
+                Entity e = EntityMaid.TYPE.create(world, EntitySpawnReason.COMMAND);
                 return Objects.requireNonNullElseGet(e, () -> new EntityMaid(world));
             });
         } catch (ExecutionException | ClassCastException e) {
@@ -153,7 +144,7 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
         }
         // 女仆换皮肤界面需要指定 YSM 渲染为空
         maid.setIsYsmModel(false);
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
+        InventoryScreen.extractEntityInInventoryFollowsMouse(
                 graphics,
                 posX - 10,
                 posY - 32,

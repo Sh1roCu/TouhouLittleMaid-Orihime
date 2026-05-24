@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
@@ -20,12 +20,12 @@ public class TouhouStateSwitchButton extends AbstractWidget {
         this.isStateTriggered = pInitialState;
     }
 
-    public void initTextureValues(int pXTexStart, int pYTexStart, int pXDiffTex, int pYDiffTex, Identifier pIdentifier) {
+    public void initTextureValues(int pXTexStart, int pYTexStart, int pXDiffTex, int pYDiffTex, Identifier pResourceLocation) {
         this.xTexStart = pXTexStart;
         this.yTexStart = pYTexStart;
         this.xDiffTex = pXDiffTex;
         this.yDiffTex = pYDiffTex;
-        this.resourceLocation = pIdentifier;
+        this.resourceLocation = pResourceLocation;
     }
 
     public void setStateTriggered(boolean pTriggered) {
@@ -36,12 +36,13 @@ public class TouhouStateSwitchButton extends AbstractWidget {
         return this.isStateTriggered;
     }
 
+    @Override
     public void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
         this.defaultButtonNarrationText(pNarrationElementOutput);
     }
 
-    public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        RenderSystem.disableDepthTest();
+    @Override
+    public void extractWidgetRenderState(GuiGraphicsExtractor pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         int i = this.xTexStart;
         int j = this.yTexStart;
         if (this.isStateTriggered) {
@@ -52,7 +53,6 @@ public class TouhouStateSwitchButton extends AbstractWidget {
             j += this.yDiffTex;
         }
 
-        pGuiGraphics.blit(this.resourceLocation, this.getX(), this.getY(), i, j, this.width, this.height);
-        RenderSystem.enableDepthTest();
+        GuiTools.guiBlit(pGuiGraphics, this.resourceLocation, this.getX(), this.getY(), i, j, this.width, this.height);
     }
 }

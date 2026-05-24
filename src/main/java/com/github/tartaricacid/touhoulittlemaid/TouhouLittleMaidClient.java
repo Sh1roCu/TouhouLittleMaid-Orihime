@@ -21,7 +21,7 @@ public class TouhouLittleMaidClient {
             if (clientEntity instanceof Mob mob) {
                 IMaid maid = IMaid.convert(mob);
                 if (maid != null) {
-                    clientEntity.setAttached(GeckoMaidEntity.TYPE, new GeckoMaidEntity(mob, maid));
+                    clientEntity.setAttached(GeckoMaidEntity.TYPE, new GeckoMaidEntity<>(mob, maid));
                 }
             }
         });

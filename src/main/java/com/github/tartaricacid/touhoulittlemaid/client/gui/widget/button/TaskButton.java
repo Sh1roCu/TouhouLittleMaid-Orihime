@@ -2,20 +2,19 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-@Environment(EnvType.CLIENT)
 // Accessories的loom注入导致的错误，不用管
 public class TaskButton extends Button implements ITooltipButton {
     private final IMaidTask task;
@@ -58,31 +57,30 @@ public class TaskButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // 禁用声音
         if (!enable) {
             return false;
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
     @SuppressWarnings("all")
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         int i = this.yTexStart;
         if (this.isHoveredOrFocused()) {
             i += this.yDiffTex;
         }
-        RenderSystem.enableDepthTest();
-        graphics.blit(this.resourceLocation, this.getX(), this.getY(), (float) this.xTexStart, (float) i, this.width, this.height, this.textureWidth, this.textureHeight);
+        GuiTools.guiBlit(graphics, this.resourceLocation, this.getX(), this.getY(), this.xTexStart, i, this.width, this.height, this.textureWidth, this.textureHeight);
         if (!enable) {
-            // 不知为啥设定渲染高度是19，但渲染出来的是20...
             graphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x80000000);
-            graphics.blit(this.resourceLocation, this.getX() + 72, this.getY(), (float) 93, (float) 68, 7, 19, this.textureWidth, this.textureHeight);
+            GuiTools.guiBlit(graphics, this.resourceLocation, this.getX() + 72, this.getY(),93, 68,7, 19, this.textureWidth, this.textureHeight);
+//            GuiTools.blit(graphics, this.resourceLocation, this.getX() + 72, this.getY(), 7, 19, 93, 68, 7, 19, this.textureWidth, this.textureHeight);
         }
-        graphics.renderItem(task.getIcon(), this.getX() + 2, this.getY() + 2);
-        graphics.drawString(minecraft.font, task.getName(), this.getX() + 23, this.getY() + 6, 0x333333, false);
+        graphics.item(task.getIcon(), this.getX() + 2, this.getY() + 2);
+        graphics.text(minecraft.font, task.getName(), this.getX() + 23, this.getY() + 6, 0xFF333333, false);
     }
 
     @Override
@@ -91,9 +89,9 @@ public class TaskButton extends Button implements ITooltipButton {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics graphics, Minecraft mc, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor graphics, Minecraft mc, int mouseX, int mouseY) {
         if (!this.tooltips.isEmpty()) {
-            graphics.renderComponentTooltip(mc.font, this.tooltips, mouseX, mouseY);
+            graphics.setTooltipForNextFrame(mc.font, this.tooltips, Optional.empty(), mouseX, mouseY);
         }
     }
 }

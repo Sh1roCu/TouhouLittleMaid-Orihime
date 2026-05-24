@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import static net.minecraft.resources.Identifier.isValidNamespace;
 import static net.minecraft.resources.Identifier.isValidPath;
 
-public class IdentifierUtil {
-    public static boolean isValidIdentifier(String pLocation) {
+public class ResourceLocationUtil {
+    public static boolean isValidResourceLocation(String pLocation) {
         String[] astring = decompose(pLocation, ':');
         return isValidNamespace(StringUtils.isEmpty(astring[0]) ? "minecraft" : astring[0]) && isValidPath(astring[1]);
     }
@@ -27,7 +27,7 @@ public class IdentifierUtil {
         return astring;
     }
 
-    public static Identifier getIdentifier(String pLocation) {
+    public static Identifier getResourceLocation(String pLocation) {
         return Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, pLocation);
     }
 }

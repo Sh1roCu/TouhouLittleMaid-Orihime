@@ -3,11 +3,12 @@ package com.github.tartaricacid.touhoulittlemaid.client.overlay;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
@@ -17,13 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BroomTipsOverlay implements LayeredDraw.Layer {
+public class BroomTipsOverlay implements HudElement {
     private static final Identifier BG = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/download_background.png");
 
     public static final BroomTipsOverlay INSTANCE = new BroomTipsOverlay();
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, @NotNull DeltaTracker deltaTracker) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         Options options = minecraft.options;
         Player player = minecraft.player;
@@ -40,11 +41,11 @@ public class BroomTipsOverlay implements LayeredDraw.Layer {
             Component tip = Component.translatable("message.touhou_little_maid.broom.unable_fly");
             List<FormattedCharSequence> split = minecraft.font.split(tip, 150);
             int offset = (screenHeight / 2 - 5) - split.size() * 10;
-            guiGraphics.blit(BG, screenWidth / 2 - 8, offset - 2, 48, 16, 16, 16);
+            GuiTools.blit(guiGraphics,BG, screenWidth / 2 - 8, offset - 2, 48, 16, 16, 16);
             offset += 18;
             for (FormattedCharSequence sequence : split) {
                 int width = minecraft.font.width(sequence);
-                guiGraphics.drawString(minecraft.font, sequence, (screenWidth - width) / 2, offset, 0xFFFFFF);
+                guiGraphics.text(minecraft.font, sequence, (screenWidth - width) / 2, offset, 0xFFFFFFFF);
                 offset += 10;
             }
         }

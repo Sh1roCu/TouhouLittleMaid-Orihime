@@ -10,10 +10,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SetScrollPackage(String dimension, BlockPos pos) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SetScrollPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("set_scroll"));
+    public static final CustomPacketPayload.Type<SetScrollPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("set_scroll"));
     public static final StreamCodec<ByteBuf, SetScrollPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,
             SetScrollPackage::dimension,

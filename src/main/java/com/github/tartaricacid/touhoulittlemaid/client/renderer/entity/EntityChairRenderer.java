@@ -1,48 +1,101 @@
 package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.client.animation.script.GlWrapper;
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.ChairModelInfo;
+import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.AnimationUpdateManager;
+import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoChairEntity;
+import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.EntityChairModel;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.gecko.GeckoEntityChairRenderer;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityChairRenderState;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.ModelType;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.gizmos.GizmoStyle;
+import net.minecraft.gizmos.Gizmos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Collections;
 
-public class EntityChairRenderer extends LivingEntityRenderer<EntityChair, BedrockModel<EntityChair>> {
+public class EntityChairRenderer extends LivingEntityRenderer<EntityChair, EntityChairRenderState, EntityChairModel> {
     public static final Identifier DEFAULT_TEXTURE = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/entity/empty.png");
     private static final String DEFAULT_CHAIR_ID = "touhou_little_maid:cushion";
     public static boolean renderHitBox = true;
-    private ChairModelInfo chairInfo;
-    private List<Object> chairAnimations;
     private final GeckoEntityChairRenderer geckoEntityChairRenderer;
 
     public EntityChairRenderer(EntityRendererProvider.Context rendererManager) {
-        super(rendererManager, new BedrockModel<>(), 0);
+        super(rendererManager, new EntityChairModel(), 0);
         this.geckoEntityChairRenderer = new GeckoEntityChairRenderer(rendererManager);
     }
 
     @Override
-    public void render(EntityChair chair, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn) {
-        LocalPlayer player = Minecraft.getInstance().player;
+    public EntityChairRenderState createRenderState() {
+        return new EntityChairRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EntityChair chair, EntityChairRenderState state, float partialTicks) {
+        state.clear();
+        super.extractRenderState(chair, state, partialTicks);
+
+        state.chair = chair;    // TODO
+        state.hasPassenger = chair.hasPassenger();
+        state.passengerYRot = chair.getPassengerYaw();
+        state.passengerXRot = chair.getPassengerPitch();
+
+        // 读取默认模型，用于清除不存在模型的缓存残留
+        CustomPackLoader.CHAIR_MODELS.getModel(DEFAULT_CHAIR_ID).ifPresent(model -> state.bedrockModel = model);
+        CustomPackLoader.CHAIR_MODELS.getInfo(DEFAULT_CHAIR_ID).ifPresent(info -> state.chairInfo = info);
+
+        // 通过模型 id 获取对应数据
+        CustomPackLoader.CHAIR_MODELS.getModel(chair.getModelId()).ifPresent(model -> state.bedrockModel = model);
+        CustomPackLoader.CHAIR_MODELS.getInfo(chair.getModelId()).ifPresent(info -> state.chairInfo = info);
+
+        if (state.chairInfo != null) {
+            state.chairAnimations = CustomPackLoader.CHAIR_MODELS.getAnimation(state.chairInfo.getModelId().toString())
+                    .orElse(Collections.emptyList());
+        }
+
+        var player = Minecraft.getInstance().player;
         if (canShowHitBox(player) && renderHitBox) {
-            renderHitBox(chair, poseStack, bufferIn);
+            state.hitbox = chair.getBoundingBox().move(-state.x, -state.y, -state.z);
+        }
+
+        if (state.chairInfo != null && state.chairInfo.isGeckoModel()) {
+            state.modelType = ModelType.GECKO;
+            var geckoEntity = getGeckoEntity(chair);
+            if (geckoEntity != null) {
+                AnimationUpdateManager.createTask(geckoEntity, state);
+            }
         } else {
-            renderChair(chair, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
+            state.modelType = ModelType.SIMPLE_BEDROCK;
+        }
+    }
+
+    @Nullable
+    public GeckoChairEntity getGeckoEntity(EntityChair entity) {
+        return entity.getAnimatableEntity();
+    }
+
+    @Override
+    public void submit(EntityChairRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (state.hitbox != null) {
+            submitHitBox(state.hitbox, poseStack, submitNodeCollector);
+        } else {
+            submitChair(state, poseStack, submitNodeCollector, camera);
         }
     }
 
@@ -53,59 +106,49 @@ public class EntityChairRenderer extends LivingEntityRenderer<EntityChair, Bedro
         return false;
     }
 
-    private void renderHitBox(EntityChair chair, PoseStack poseStack, MultiBufferSource bufferIn) {
-        AABB aabb = chair.getBoundingBox().move(-chair.getX(), -chair.getY(), -chair.getZ());
-        LevelRenderer.renderLineBox(poseStack, bufferIn.getBuffer(RenderTypes.lines()), aabb, 1.0F, 0, 0, 1.0F);
+    private void submitHitBox(AABB hitbox, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, buffer) -> {
+            Gizmos.cuboid(hitbox, GizmoStyle.fill(ARGB.colorFromFloat(1.0F, 1.0F, 0, 0)));
+        });
     }
 
-    private void renderChair(EntityChair chair, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn) {
-        // 读取默认模型，用于清除不存在模型的缓存残留
-        CustomPackLoader.CHAIR_MODELS.getModel(DEFAULT_CHAIR_ID).ifPresent(model -> this.model = model);
-        CustomPackLoader.CHAIR_MODELS.getInfo(DEFAULT_CHAIR_ID).ifPresent(info -> this.chairInfo = info);
-        this.chairAnimations = null;
-
-        // 通过模型 id 获取对应数据
-        CustomPackLoader.CHAIR_MODELS.getModel(chair.getModelId()).ifPresent(model -> this.model = model);
-        CustomPackLoader.CHAIR_MODELS.getInfo(chair.getModelId()).ifPresent(info -> this.chairInfo = info);
-        CustomPackLoader.CHAIR_MODELS.getAnimation(chair.getModelId()).ifPresent(animations -> this.chairAnimations = animations);
-
+    private void submitChair(EntityChairRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         // GeckoLib 接管渲染
-        if (this.chairInfo.isGeckoModel()) {
-            this.geckoEntityChairRenderer.setMainInfo(this.chairInfo);
-            this.geckoEntityChairRenderer.getAnimatableEntity(chair).setChair(this.chairInfo);
-            this.geckoEntityChairRenderer.render(chair, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
+        if (state.modelType == ModelType.GECKO) {
+            this.geckoEntityChairRenderer.submit(state, poseStack, submitNodeCollector, camera);
             return;
         }
 
-        // 模型动画设置
-        this.model.setAnimations(this.chairAnimations);
-
-        GlWrapper.setPoseStack(poseStack);
-        super.render(chair, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
-        GlWrapper.clearPoseStack();
+        if (state.modelType == ModelType.SIMPLE_BEDROCK) {
+            this.model = state.bedrockModel;
+            // 模型动画设置
+            this.model.setAnimations(state.chairAnimations);
+            this.model.setupAnim(state);
+            super.submit(state, poseStack, submitNodeCollector, camera);
+        }
     }
 
     @Override
-    protected void scale(EntityChair chair, PoseStack poseStack, float partialTickTime) {
-        float scale = chairInfo.getRenderEntityScale();
+    protected void scale(EntityChairRenderState state, PoseStack poseStack) {
+        float scale = state.chairInfo.getRenderEntityScale();
         poseStack.scale(scale, scale, scale);
     }
 
     @Override
-    public Identifier getTextureLocation(EntityChair entity) {
-        if (chairInfo == null) {
+    public Identifier getTextureLocation(EntityChairRenderState state) {
+        if (state.chairInfo == null) {
             return DEFAULT_TEXTURE;
         }
-        return chairInfo.getTexture();
+        return state.chairInfo.getTexture();
     }
 
     @Override
-    protected void setupRotations(EntityChair chair, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTicks, float pScale) {
-        poseStack.mulPose(Axis.YP.rotationDegrees(180 - rotationYaw));
+    protected void setupRotations(EntityChairRenderState state, PoseStack poseStack, float bodyRot, float entityScale) {
+        poseStack.mulPose(Axis.YP.rotationDegrees(180 - state.yRot));
     }
 
     @Override
-    protected boolean shouldShowName(EntityChair entity) {
+    protected boolean shouldShowName(EntityChair entity, double distanceToCameraSq) {
         return entity.shouldShowName();
     }
 }

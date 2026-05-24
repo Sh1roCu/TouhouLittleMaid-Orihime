@@ -5,11 +5,11 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.ServantBellSetPa
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +31,7 @@ public class ServantBellSetScreen extends Screen {
         this.clearWidgets();
         int middleX = this.width / 2;
         int middleY = this.height / 2;
-        textField = new EditBox(Screens.getTextRenderer(this), middleX - 99, middleY - 26, 200, 20,
+        textField = new EditBox(Screens.getFont(this), middleX - 99, middleY - 26, 200, 20,
                 Component.translatable("gui.touhou_little_maid.servant_bell.edit_box"));
         this.addWidget(this.textField);
         this.setInitialFocus(this.textField);
@@ -42,31 +42,31 @@ public class ServantBellSetScreen extends Screen {
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
+    public void resize(int width, int height) {
         String value = this.textField.getValue();
-        super.resize(minecraft, width, height);
+        super.resize(width, height);
         this.textField.setValue(value);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         int middleX = this.width / 2;
         int middleY = this.height / 2;
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        textField.render(graphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        textField.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         if (textField.getValue().isEmpty()) {
-            graphics.drawString(font, Component.translatable("gui.touhou_little_maid.servant_bell.edit_box").withStyle(ChatFormatting.ITALIC), middleX - 94, middleY - 20, ChatFormatting.DARK_GRAY.getColor(), false);
+            graphics.text(font, Component.translatable("gui.touhou_little_maid.servant_bell.edit_box").withStyle(ChatFormatting.ITALIC), middleX - 94, middleY - 20, ChatFormatting.DARK_GRAY.getColor(), false);
         }
-        graphics.drawCenteredString(font, Component.translatable("tooltips.touhou_little_maid.servant_bell.uuid", this.maidUuid.toString()), middleX, middleY - 50, 0xFFFFFF);
+        graphics.centeredText(font, Component.translatable("tooltips.touhou_little_maid.servant_bell.uuid", this.maidUuid.toString()), middleX, middleY - 50, 0xFFFFFF);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.textField.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (this.textField.mouseClicked(event, doubleClick)) {
             this.setFocused(this.textField);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override

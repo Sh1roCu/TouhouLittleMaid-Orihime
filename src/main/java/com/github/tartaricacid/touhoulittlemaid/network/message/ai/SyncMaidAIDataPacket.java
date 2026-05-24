@@ -21,11 +21,11 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.Objects;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int currentTokens,
                                    int maxTokens) implements CustomPacketPayload {
-    public static final Type<SyncMaidAIDataPacket> TYPE = new Type<>(getIdentifier("sync_maid_ai_data"));
+    public static final Type<SyncMaidAIDataPacket> TYPE = new Type<>(getResourceLocation("sync_maid_ai_data"));
     public static final StreamCodec<ByteBuf, SyncMaidAIDataPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public SyncMaidAIDataPacket decode(ByteBuf byteBuf) {

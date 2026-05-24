@@ -15,11 +15,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SyncYsmMaidDataPackage(int entityId, String rouletteAnim, boolean isRouletteAnimPlaying,
                                      Object2FloatOpenHashMap<String> roamingVars) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncYsmMaidDataPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("sync_ysm_maid_data"));
+    public static final CustomPacketPayload.Type<SyncYsmMaidDataPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("sync_ysm_maid_data"));
     public static final StreamCodec<ByteBuf, SyncYsmMaidDataPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             SyncYsmMaidDataPackage::entityId,

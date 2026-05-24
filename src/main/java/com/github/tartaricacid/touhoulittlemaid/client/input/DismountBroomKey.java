@@ -2,25 +2,26 @@ package com.github.tartaricacid.touhoulittlemaid.client.input;
 
 import com.github.tartaricacid.touhoulittlemaid.network.message.DismountPackage;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
+import static com.github.tartaricacid.touhoulittlemaid.client.init.KeyMappingRegister.MAID_CATEGORY;
+
 public class DismountBroomKey {
     public static final KeyMapping DISMOUNT_KEY = new KeyMapping("key.touhou_little_maid.dismount.desc",
 //            KeyConflictContext.IN_GAME,
 //            KeyModifier.NONE,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_C,
-            "key.category.touhou_little_maid");
+            MAID_CATEGORY
+    );
 
-    public static void onDismountPress(int key, int scanCode, int action, int mods) {
-        if (keyIsMatch(key, scanCode, action, mods)) {
+    public static void onDismountPress(int action, KeyEvent event) {
+        if (keyIsMatch(event)) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null || player.isSpectator()) {
                 return;
@@ -35,9 +36,9 @@ public class DismountBroomKey {
         }
     }
 
-    private static boolean keyIsMatch(int key, int scanCode, int action, int mods) {
-        return DISMOUNT_KEY.matches(key, scanCode)
-                /*&& DISMOUNT_KEY.getKeyModifier().equals(KeyModifier.getActiveModifier())*/;
+    @SuppressWarnings("removal")
+    private static boolean keyIsMatch(KeyEvent event) {
+        return DISMOUNT_KEY.matches(event);
     }
 
     private static boolean isInGame() {

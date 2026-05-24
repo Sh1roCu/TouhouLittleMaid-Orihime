@@ -20,8 +20,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -105,7 +108,7 @@ public class AIChatScreen extends Screen {
     }
 
     private void addInputWidget(int inputX, int inputY, int inputWidth, String currentInput) {
-        this.input = new EditBox(Screens.getClient(this).fontFilterFishy, inputX, inputY, inputWidth, 20, Component.translatable("chat.editBox"));
+        this.input = new EditBox(Screens.getMinecraft(this).fontFilterFishy, inputX, inputY, inputWidth, 20, Component.translatable("chat.editBox"));
         this.input.setMaxLength(128);
         this.input.setBordered(false);
         this.input.setValue(currentInput);
@@ -119,13 +122,13 @@ public class AIChatScreen extends Screen {
     private void addLeftButtons(int leftX, int y, int size, int gap) {
         this.historyButton = this.addRenderableWidget(new FlatColorButton(leftX, y, size, size, Component.literal("🕑"), b -> {
             HistoryAIChatScreen screen = new HistoryAIChatScreen(this, this.maid);
-            Screens.getClient(this).setScreen(screen);
+            Screens.getMinecraft(this).setScreen(screen);
         }).setTooltips("ai.touhou_little_maid.chat.button.history.tip"));
 
         leftX = leftX + size + gap;
         this.settingButton = this.addRenderableWidget(new FlatColorButton(leftX, y, size, size, Component.literal("✎"), b -> {
             SettingEditScreen editScreen = new SettingEditScreen(this, this.maid);
-            Screens.getClient(this).setScreen(editScreen);
+            Screens.getMinecraft(this).setScreen(editScreen);
         }).setTooltips("ai.touhou_little_maid.chat.button.setting.tip"));
 
         leftX = leftX + size + gap;
@@ -358,14 +361,14 @@ public class AIChatScreen extends Screen {
     }
 
     @Override
-    public void resize(Minecraft mc, int pWidth, int pHeight) {
+    public void resize(int pWidth, int pHeight) {
         String chatText = this.input.getValue();
-        super.resize(mc, pWidth, pHeight);
+        super.resize(pWidth, pHeight);
         this.input.setValue(chatText);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (this.input != null) {
             int x = this.input.getX();
             int y = this.input.getY();
@@ -374,12 +377,12 @@ public class AIChatScreen extends Screen {
             String value = this.input.getValue();
 
             graphics.fill(x - 8, y - 8, x + w + 8, y + h - 6, 0xBF090909);
-            this.input.render(graphics, mouseX, mouseY, partialTicks);
+            this.input.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
             if (StringUtils.isEmpty(value)) {
                 MutableComponent text = Component.translatable("ai.touhou_little_maid.chat.input.tip")
                         .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-                graphics.drawCenteredString(this.font, text, x + w / 2, y + (h - 22) / 2, 0xFFFFFF);
+                graphics.centeredText(this.font, text, x + w / 2, y + (h - 22) / 2, 0xFFFFFF);
             }
         }
 
@@ -387,7 +390,7 @@ public class AIChatScreen extends Screen {
         this.renderTokenUsage(graphics);
 
         for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.render(graphics, mouseX, mouseY, partialTicks);
+            renderable.extractRenderState(graphics, mouseX, mouseY, partialTicks);
         }
 
         if (this.openPopup != null) {
@@ -402,15 +405,15 @@ public class AIChatScreen extends Screen {
         }
     }
 
-    private void renderSelectionSummaries(GuiGraphics graphics) {
+    private void renderSelectionSummaries(GuiGraphicsExtractor graphics) {
         int left = this.input.getX() - 6;
         int right = this.input.getX() + this.input.getInnerWidth() + 6;
         int summaryY = this.input.getY() + 16;
         int halfWidth = (right - left) / 2;
         float scale = 0.5f;
 
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 1.0f);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale);
 
         int scaledLeft = Math.round(left / scale);
         int scaledRight = Math.round(right / scale);
@@ -423,7 +426,7 @@ public class AIChatScreen extends Screen {
         );
         MutableComponent llmSummary = Component.translatable("ai.touhou_little_maid.chat.summary.llm", llmModelSummary);
         String trimmedLeft = this.trimToWidth(llmSummary.getString(), scaledHalfWidth);
-        graphics.drawString(this.font, trimmedLeft, scaledLeft, scaledY, 0xFFADADAD);
+        graphics.text(this.font, trimmedLeft, scaledLeft, scaledY, 0xFFADADAD);
 
         String ttsModelSummary;
         if (MaidAIChatSerializable.isNoTTSSite(this.manager.ttsSite)) {
@@ -439,12 +442,12 @@ public class AIChatScreen extends Screen {
                 ttsModelSummary, SupportLanguage.getLanguageName(this.manager.ttsLanguage));
         String trimmedRight = this.trimToWidth(ttsSummary.getString(), scaledHalfWidth);
         int rightX = scaledRight - this.font.width(trimmedRight);
-        graphics.drawString(this.font, trimmedRight, rightX, scaledY, 0xFFADADAD);
+        graphics.text(this.font, trimmedRight, rightX, scaledY, 0xFFADADAD);
 
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
-    private void renderTokenUsage(GuiGraphics graphics) {
+    private void renderTokenUsage(GuiGraphicsExtractor graphics) {
         int left = this.input.getX() - 6;
         int right = this.input.getX() + this.input.getInnerWidth() + 6;
         int tokenY = this.input.getY() - 14;
@@ -460,12 +463,12 @@ public class AIChatScreen extends Screen {
             text = "Token: %s / %s (%.1f%%)".formatted(currentStr, maxStr, percent);
         }
 
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 1.0f);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale);
         int scaledX = Math.round((left + right) / 2.0f / scale) - this.font.width(text) / 2;
         int scaledY = Math.round(tokenY / scale);
-        graphics.drawString(this.font, text, scaledX, scaledY, 0xFFADADAD, false);
-        graphics.pose().popPose();
+        graphics.text(this.font, text, scaledX, scaledY, 0xFFADADAD, false);
+        graphics.pose().popMatrix();
     }
 
     private static String formatTokenCount(int count) {
@@ -496,16 +499,16 @@ public class AIChatScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (this.openPopup != null) {
             // 执行正常下拉框按钮点击
-            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.tryClickPopup(mouseX, mouseY)) {
+            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.tryClickPopup(event.x(), event.y())) {
                 return true;
             }
 
             // 如果悬浮于下拉框按钮上，正常触发开启与关闭
-            if (this.isPopupTriggerHovered(mouseX, mouseY)) {
-                return super.mouseClicked(mouseX, mouseY, button);
+            if (this.isPopupTriggerHovered(event.x(), event.y())) {
+                return super.mouseClicked(event, doubleClick);
             }
 
             // 否者关闭下拉框按钮
@@ -514,17 +517,17 @@ public class AIChatScreen extends Screen {
         }
 
         // 输入框点击
-        if (this.input.mouseClicked(mouseX, mouseY, button)) {
+        if (this.input.mouseClicked(event, doubleClick)) {
             this.setFocused(this.input);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     private boolean isPopupTriggerHovered(double mouseX, double mouseY) {
         return this.isButtonHovered(this.llmButton, mouseX, mouseY)
-                || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
-                || this.isButtonHovered(this.langButton, mouseX, mouseY);
+               || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
+               || this.isButtonHovered(this.langButton, mouseX, mouseY);
     }
 
     private boolean isButtonHovered(FlatColorButton button, double mouseX, double mouseY) {
@@ -532,12 +535,12 @@ public class AIChatScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char pCodePoint, int pModifiers) {
+    public boolean charTyped(CharacterEvent event) {
         // GUI 刚打开的 5 tick 内，不允许输入，否则会把按键录入
         if (this.tickCounter < 5) {
             return false;
         }
-        return super.charTyped(pCodePoint, pModifiers);
+        return super.charTyped(event);
     }
 
     @Override
@@ -550,18 +553,18 @@ public class AIChatScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_ENTER) {
             this.sendDoneMessage();
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_UP) {
+        if (event.key() == GLFW.GLFW_KEY_UP) {
             return this.recallHistory(-1);
         }
-        if (keyCode == GLFW.GLFW_KEY_DOWN) {
+        if (event.key() == GLFW.GLFW_KEY_DOWN) {
             return this.recallHistory(1);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
@@ -591,7 +594,7 @@ public class AIChatScreen extends Screen {
 
     private void sendDoneMessage() {
         String value = this.input.getValue();
-        LocalPlayer player = Screens.getClient(this).player;
+        LocalPlayer player = Screens.getMinecraft(this).player;
         if (StringUtils.isNotBlank(value) && player != null) {
             ChatClientInfo clientInfo = ChatClientInfo.fromMaid(this.maid);
             ClientPlayNetworking.send(new SendUserChatPackage(this.maid.getId(), value, clientInfo));
@@ -601,7 +604,7 @@ public class AIChatScreen extends Screen {
         this.onClose();
     }
 
-    private void renderPopup(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderPopup(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (this.popupGeometry == null || this.popupGeometry.entries().isEmpty()) {
             return;
         }
@@ -654,8 +657,8 @@ public class AIChatScreen extends Screen {
         }
     }
 
-    private void drawPopupText(GuiGraphics graphics, String text, int x, int y, int maxWidth, int color) {
-        graphics.drawString(this.font, this.trimToWidth(text, maxWidth), x, y, color, false);
+    private void drawPopupText(GuiGraphicsExtractor graphics, String text, int x, int y, int maxWidth, int color) {
+        graphics.text(this.font, this.trimToWidth(text, maxWidth), x, y, color, false);
     }
 
     private boolean tryClickPopup(double mouseX, double mouseY) {
@@ -800,7 +803,7 @@ public class AIChatScreen extends Screen {
 
         private boolean contains(double mouseX, double mouseY) {
             return this.x <= mouseX && mouseX < this.x + this.width
-                    && this.y <= mouseY && mouseY < this.y + this.height();
+                   && this.y <= mouseY && mouseY < this.y + this.height();
         }
     }
 

@@ -31,6 +31,6 @@ public abstract class KeyboardHandlerMixin {
             at = @At(value = "RETURN")
     )
     public void tlm$onHandleKeyInput(long handle, int action, KeyEvent event, CallbackInfo ci) {
-        KeyInputCallback.EVENT.invoker().onKeyInput(event.key(), event.scancode(), action, event.modifiers());
+        KeyInputCallback.EVENT.invoker().onKeyInput(action, event);
     }
 }

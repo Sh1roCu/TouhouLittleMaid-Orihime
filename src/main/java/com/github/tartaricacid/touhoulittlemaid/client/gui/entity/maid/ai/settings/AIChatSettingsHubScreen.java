@@ -15,7 +15,7 @@ import com.github.tartaricacid.touhoulittlemaid.util.Rectangle;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -118,7 +118,7 @@ public abstract class AIChatSettingsHubScreen extends Screen {
     /**
      * 在列表区域右侧绘制滚动条
      */
-    protected void renderListScrollbar(GuiGraphics graphics, int totalCount, int visibleCount) {
+    protected void renderListScrollbar(GuiGraphicsExtractor graphics, int totalCount, int visibleCount) {
         if (this.listArea == null || totalCount <= visibleCount) {
             return;
         }
@@ -139,10 +139,10 @@ public abstract class AIChatSettingsHubScreen extends Screen {
     /**
      * 在 LLM 和 TTS 站点权限不足时绘制提示文本
      */
-    protected void renderInsufficientPermissions(GuiGraphics graphics) {
+    protected void renderInsufficientPermissions(GuiGraphicsExtractor graphics) {
         if (this.insufficientPermissions) {
             MutableComponent text = Component.translatable("ai.touhou_little_maid.chat.settings.hub.insufficient_permissions");
-            graphics.drawWordWrap(font, text, getContentX() + 20, getContentY() + 20, getContentWidth() - 60, 0xFFFF5555);
+            graphics.textWithWordWrap(font, text, getContentX() + 20, getContentY() + 20, getContentWidth() - 60, 0xFFFF5555);
         }
     }
 
@@ -229,9 +229,9 @@ public abstract class AIChatSettingsHubScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -239,7 +239,7 @@ public abstract class AIChatSettingsHubScreen extends Screen {
         if (this.parent instanceof AIChatScreen chatScreen && chatScreen.getMaid().isAlive()) {
             ClientPlayNetworking.send(new OpenMaidAIChatPacket(chatScreen.getMaid()));
         } else {
-            Screens.getClient(this).setScreen(null);
+            Screens.getMinecraft(this).setScreen(null);
         }
     }
 

@@ -10,10 +10,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record WirelessIOGuiPackage(boolean isMaidToChest, boolean isBlacklist) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<WirelessIOGuiPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("wireless_io_gui"));
+    public static final CustomPacketPayload.Type<WirelessIOGuiPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("wireless_io_gui"));
     public static final StreamCodec<ByteBuf, WirelessIOGuiPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
             WirelessIOGuiPackage::isMaidToChest,

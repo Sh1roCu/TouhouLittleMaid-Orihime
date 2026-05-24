@@ -14,11 +14,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record YsmMaidModelPackage(int maidId, String modeId, String texture,
                                   Component name) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<YsmMaidModelPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("ysm_maid_model"));
+    public static final CustomPacketPayload.Type<YsmMaidModelPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("ysm_maid_model"));
     public static final StreamCodec<RegistryFriendlyByteBuf, YsmMaidModelPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             YsmMaidModelPackage::maidId,

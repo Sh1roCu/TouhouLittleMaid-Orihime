@@ -7,10 +7,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record SyncFluidAmountPackage(int amount) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncFluidAmountPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("client_sync_fluid_amount"));
+    public static final CustomPacketPayload.Type<SyncFluidAmountPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("client_sync_fluid_amount"));
     public static final StreamCodec<ByteBuf, SyncFluidAmountPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             SyncFluidAmountPackage::amount,

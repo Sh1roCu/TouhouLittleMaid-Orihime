@@ -13,10 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record WirelessIOSlotConfigPackage(List<Boolean> configData) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<WirelessIOSlotConfigPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("wireless_slot_config"));
+    public static final CustomPacketPayload.Type<WirelessIOSlotConfigPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("wireless_slot_config"));
     public static final StreamCodec<ByteBuf, WirelessIOSlotConfigPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL.apply(ByteBufCodecs.list()),
             WirelessIOSlotConfigPackage::configData,

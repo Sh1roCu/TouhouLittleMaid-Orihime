@@ -70,7 +70,7 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         KeyInputCallback.EVENT.register(STTChatKey::onSttChatPress);
         KeyInputCallback.EVENT.register(DismountBroomKey::onDismountPress);
         ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "reload_resource_event"), new ReloadResourceEvent());
-        LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(ScrollRenderEvent::onRenderWorldLastEvent);
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register(ScrollRenderEvent::onRenderWorldLastEvent);
         ScreenEvents.AFTER_INIT.register(ShowOptifineScreen::showOptifineWarning);
 
         RenderMaidEvent.CALLBACK.register(HIGHEST, SpecialMaidRenderEvent::onRenderPlayerNamedMaid);
@@ -81,7 +81,6 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         LevelRenderEvents.AFTER_SOLID_FEATURES.register(WirelessIORenderEvent::onRender);
         ClientSetupEvent.onClientSetup();
         ClientSetupEvent.onRegisterGuiLayers();
-        ClientSetupEvent.onRegisterClientReloadListeners();
         ClientTooltipComponentCallback.EVENT.register(InitClientTooltip::onRegisterClientTooltip);
         InitContainerGui.clientSetup();
         InitEntitiesRender.onEntityRenderers();

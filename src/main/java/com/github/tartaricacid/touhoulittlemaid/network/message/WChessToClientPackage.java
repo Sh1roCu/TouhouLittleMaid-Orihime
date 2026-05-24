@@ -16,10 +16,10 @@ import net.minecraft.util.Util;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record WChessToClientPackage(BlockPos pos, String fenData) implements CustomPacketPayload {
-    public static final Type<WChessToClientPackage> TYPE = new Type<>(getIdentifier("wchess_to_client"));
+    public static final Type<WChessToClientPackage> TYPE = new Type<>(getResourceLocation("wchess_to_client"));
     public static final StreamCodec<ByteBuf, WChessToClientPackage> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             WChessToClientPackage::pos,

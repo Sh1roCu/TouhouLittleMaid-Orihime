@@ -16,10 +16,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record CChessToClientPackage(BlockPos pos, String fenData) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<CChessToClientPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("cchess_to_client"));
+    public static final CustomPacketPayload.Type<CChessToClientPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("cchess_to_client"));
     public static final StreamCodec<ByteBuf, CChessToClientPackage> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             CChessToClientPackage::pos,

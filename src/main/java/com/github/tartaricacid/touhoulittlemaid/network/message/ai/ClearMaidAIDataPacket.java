@@ -10,11 +10,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record ClearMaidAIDataPacket(int entityId, int msgIndex) implements CustomPacketPayload {
     private static final int ALL_MSG_INDEX = -1;
-    public static final Type<ClearMaidAIDataPacket> TYPE = new Type<>(getIdentifier("clear_maid_ai_data"));
+    public static final Type<ClearMaidAIDataPacket> TYPE = new Type<>(getResourceLocation("clear_maid_ai_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClearMaidAIDataPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, ClearMaidAIDataPacket::entityId,
             ByteBufCodecs.VAR_INT, ClearMaidAIDataPacket::msgIndex,

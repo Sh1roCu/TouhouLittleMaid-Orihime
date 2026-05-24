@@ -2,8 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.client.event;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.BackpackManager;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -12,7 +10,6 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public final class AddInformationEvent {
     public static void onRenderTooltips(ItemStack stack, Item.TooltipContext context, TooltipFlag type, List<Component> lines) {
         if (stack.isEmpty()) {

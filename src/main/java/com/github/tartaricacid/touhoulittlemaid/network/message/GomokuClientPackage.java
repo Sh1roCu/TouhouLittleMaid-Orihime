@@ -18,11 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record GomokuClientPackage(BlockPos pos, List<byte[]> chessData, Point point,
                                   int count) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<GomokuClientPackage> TYPE = new CustomPacketPayload.Type<>(getIdentifier("gomoku_to_client"));
+    public static final CustomPacketPayload.Type<GomokuClientPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("gomoku_to_client"));
     public static final StreamCodec<ByteBuf, List<byte[]>> BYTE_BUF_LIST_STREAM_CODEC = ByteBufCodecs.collection(
             ArrayList::new,
             ByteBufCodecs.BYTE_ARRAY,

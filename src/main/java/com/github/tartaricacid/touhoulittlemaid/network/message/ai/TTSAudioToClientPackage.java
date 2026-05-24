@@ -12,10 +12,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record TTSAudioToClientPackage(int maidId, byte[] data) implements CustomPacketPayload {
-    public static final Type<TTSAudioToClientPackage> TYPE = new Type<>(getIdentifier("tts_audio_to_client"));
+    public static final Type<TTSAudioToClientPackage> TYPE = new Type<>(getResourceLocation("tts_audio_to_client"));
     public static final StreamCodec<ByteBuf, TTSAudioToClientPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             TTSAudioToClientPackage::maidId,

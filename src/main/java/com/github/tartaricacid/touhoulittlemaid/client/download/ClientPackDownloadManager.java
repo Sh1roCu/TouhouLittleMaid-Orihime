@@ -1,12 +1,10 @@
 package com.github.tartaricacid.touhoulittlemaid.client.download;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.util.HttpUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ZipFileCheck;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.io.FilenameUtils;
@@ -26,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 依据服务端配置，下载客户端模型包
  */
-@Environment(EnvType.CLIENT)
 public class ClientPackDownloadManager {
     /**
      * 缓存的配置文件哈希值，用于判断客户端是否需要更新

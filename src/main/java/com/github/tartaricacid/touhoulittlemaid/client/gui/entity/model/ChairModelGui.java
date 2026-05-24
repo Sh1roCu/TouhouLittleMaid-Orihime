@@ -2,20 +2,20 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.model;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.detail.ChairModelDetailsGui;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.ChairModelInfo;
-import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ChairModelPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -31,11 +31,11 @@ public class ChairModelGui extends AbstractModelGui<EntityChair, ChairModelInfo>
     }
 
     @Override
-    protected void drawLeftEntity(GuiGraphics graphics, int middleX, int middleY, float mouseX, float mouseY) {
+    protected void drawLeftEntity(GuiGraphicsExtractor graphics, int middleX, int middleY, float mouseX, float mouseY) {
         float renderItemScale = CustomPackLoader.CHAIR_MODELS.getModelRenderItemScale(entity.getModelId());
         int centerX = (middleX - 256 / 2) / 2;
         int centerY = middleY + 80;
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
+        InventoryScreen.extractEntityInInventoryFollowsMouse(
                 graphics,
                 centerX - 68,
                 centerY - 100,
@@ -49,15 +49,8 @@ public class ChairModelGui extends AbstractModelGui<EntityChair, ChairModelInfo>
     }
 
     @Override
-    protected void drawRightEntity(GuiGraphics graphics, int posX, int posY, ChairModelInfo modelItem) {
-        Identifier cacheIconId = modelItem.getCacheIconId();
-        var allTextures = Minecraft.getInstance().getTextureManager().byPath;
-        if (MiscConfig.MODEL_ICON_CACHE.get() && allTextures.containsKey(cacheIconId)) {
-            int textureSize = 24;
-            graphics.blit(cacheIconId, posX - textureSize / 2, posY - textureSize, textureSize, textureSize, 0, 0, textureSize, textureSize, textureSize, textureSize);
-        } else {
-            drawEntity(graphics, posX, posY, modelItem);
-        }
+    protected void drawRightEntity(GuiGraphicsExtractor graphics, int posX, int posY, ChairModelInfo modelItem) {
+        drawEntity(graphics, posX, posY, modelItem);
     }
 
     @Override
@@ -107,8 +100,8 @@ public class ChairModelGui extends AbstractModelGui<EntityChair, ChairModelInfo>
         ROW_INDEX = rowIndex;
     }
 
-    private void drawEntity(GuiGraphics graphics, int posX, int posY, ChairModelInfo modelItem) {
-        Level world = Screens.getClient(this).level;
+    private void drawEntity(GuiGraphicsExtractor graphics, int posX, int posY, ChairModelInfo modelItem) {
+        Level world = Screens.getMinecraft(this).level;
         if (world == null) {
             return;
         }
@@ -116,7 +109,7 @@ public class ChairModelGui extends AbstractModelGui<EntityChair, ChairModelInfo>
         EntityChair chair;
         try {
             chair = (EntityChair) EntityCacheUtil.ENTITY_CACHE.get(EntityChair.TYPE, () -> {
-                Entity e = EntityChair.TYPE.create(world);
+                Entity e = EntityChair.TYPE.create(world, EntitySpawnReason.COMMAND);
                 if (e == null) {
                     return new EntityChair(world);
                 } else {
@@ -129,7 +122,7 @@ public class ChairModelGui extends AbstractModelGui<EntityChair, ChairModelInfo>
         }
 
         chair.setModelId(modelItem.getModelId().toString());
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
+        InventoryScreen.extractEntityInInventoryFollowsMouse(
                 graphics,
                 posX - 18,
                 posY - 30,

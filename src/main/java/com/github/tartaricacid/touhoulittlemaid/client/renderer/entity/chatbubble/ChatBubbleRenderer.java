@@ -4,8 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.EntityMai
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleDataCollection;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.Identifier;
 
 public class ChatBubbleRenderer {
@@ -16,7 +16,7 @@ public class ChatBubbleRenderer {
     }
 
     @SuppressWarnings("all")
-    public void render(EntityGraphics graphics) {
+    public void submit(SubmitNodeCollector submitNodeCollector, EntityGraphics graphics) {
         EntityMaid maid = graphics.getMaid();
         double distance = renderer.getDispatcher().distanceToSqr(maid);
         // if (!ClientHooks.isNameplateInRenderDistance(maid, distance)) {
@@ -76,7 +76,6 @@ public class ChatBubbleRenderer {
 
         graphics.getPoseStack().pushPose();
         graphics.getPoseStack().translate(0, -y, 0);
-        RenderSystem.enableDepthTest();
 
         if (position == IChatBubbleRenderer.Position.LEFT) {
             graphics.blitNineSliced(texture, -marginX - bgWidth, -bgHeight, bgWidth, bgHeight, 8, 8, 48, 24, 0, 0);

@@ -9,13 +9,16 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.SetBeaconOverflo
 import com.github.tartaricacid.touhoulittlemaid.network.message.StorageAndTakePowerPackage;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon.BeaconEffect;
+import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -90,21 +93,21 @@ public class MaidBeaconGui extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        graphics.blit(BG, leftPos, topPos + 2, 0, 0, 142, 111);
-        graphics.blit(BG, leftPos + 118, topPos + 1, 44, 111, 154, 15);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        GuiTools.guiBlit(graphics, BG, leftPos, topPos + 2, 0, 0, 142, 111);
+        GuiTools.guiBlit(graphics, BG, leftPos + 118, topPos + 1, 44, 111, 154, 15);
 
-        graphics.blit(BG, leftPos + 224, topPos + 44, 44, 126, 12, 12);
-        graphics.blit(BG, leftPos + 224, topPos + 58, 44, 138, 12, 12);
+        GuiTools.guiBlit(graphics, BG, leftPos + 224, topPos + 44, 44, 126, 12, 12);
+        GuiTools.guiBlit(graphics, BG, leftPos + 224, topPos + 58, 44, 138, 12, 12);
 
-        graphics.blit(BG, leftPos + 146, topPos + 46, 58, 128, 74, 9);
-        graphics.blit(BG, leftPos + 146, topPos + 59, 58, 128, 74, 9);
+        GuiTools.guiBlit(graphics, BG, leftPos + 146, topPos + 46, 58, 128, 74, 9);
+        GuiTools.guiBlit(graphics, BG, leftPos + 146, topPos + 59, 58, 128, 74, 9);
         float percent = beacon.getStoragePower() / beacon.getMaxStorage();
-        graphics.blit(BG, leftPos + 146, topPos + 48, 58, 138, (int) (74 * percent), 5);
+        GuiTools.guiBlit(graphics, BG, leftPos + 146, topPos + 48, 58, 138, (int) (74 * percent), 5);
 
         this.renderPlayerPower(graphics);
-        graphics.drawString(font, DECIMAL_FORMAT.format(beacon.getStoragePower()), leftPos + 240, topPos + 46, 0xffffff);
+        graphics.text(font, DECIMAL_FORMAT.format(beacon.getStoragePower()), leftPos + 240, topPos + 46, 0xffffff);
         if (potionIndex == -1) {
             this.drawCenteredString(graphics, font, I18n.get("gui.touhou_little_maid.maid_beacon.cost_power", DECIMAL_FORMAT.format(0)), leftPos + 195, topPos + 5, ChatFormatting.DARK_GRAY.getColor());
         } else {
@@ -119,22 +122,22 @@ public class MaidBeaconGui extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        //InputConstants.Key mouseKey = InputConstants.getKey(keyCode, scanCode);
-        if (this.minecraft != null && this.minecraft.options.keyInventory.matches(keyCode, scanCode)/*isActiveAndMatches(mouseKey)*/) {
+    public boolean keyPressed(KeyEvent event) {
+        InputConstants.Key mouseKey = InputConstants.getKey(event);
+        if (this.minecraft != null && this.minecraft.options.keyInventory.matches(event)/*isActiveAndMatches(mouseKey)*/) {
             this.onClose();
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
-    private void renderPlayerPower(GuiGraphics graphics) {
+    private void renderPlayerPower(GuiGraphicsExtractor graphics) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             PowerAttachment power = player.getAttachedOrCreate(InitDataAttachment.POWER_NUM, () -> new PowerAttachment(0));
             float percent = power.get() / PowerAttachment.MAX_POWER;
-            graphics.blit(BG, leftPos + 146, topPos + 61, 58, 143, (int) (74 * percent), 5);
-            graphics.drawString(font, DECIMAL_FORMAT.format(power.get()), leftPos + 240, topPos + 60, 0xffffff);
+            GuiTools.guiBlit(graphics, BG, leftPos + 146, topPos + 61, 58, 143, (int) (74 * percent), 5);
+            graphics.text(font, DECIMAL_FORMAT.format(power.get()), leftPos + 240, topPos + 60, 0xffffff);
         }
     }
 
@@ -143,11 +146,11 @@ public class MaidBeaconGui extends Screen {
                 Component.translatable("gui.touhou_little_maid.maid_beacon.overflow_delete_false");
     }
 
-    private void drawCenteredString(GuiGraphics graphics, Font font, String text, int pX, int pY, int color) {
-        graphics.drawString(font, text, pX - font.width(text) / 2, pY, color, false);
+    private void drawCenteredString(GuiGraphicsExtractor graphics, Font font, String text, int pX, int pY, int color) {
+        graphics.text(font, text, pX - font.width(text) / 2, pY, color, false);
     }
 
-    private void drawCenteredString(GuiGraphics graphics, Font font, Component text, int pX, int pY, int color) {
-        graphics.drawString(font, text, pX - font.width(text) / 2, pY, color, false);
+    private void drawCenteredString(GuiGraphicsExtractor graphics, Font font, Component text, int pX, int pY, int color) {
+        graphics.text(font, text, pX - font.width(text) / 2, pY, color, false);
     }
 }

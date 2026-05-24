@@ -1,19 +1,18 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.mod;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
-@Environment(EnvType.CLIENT)
 public class PatchouliWarningScreen extends Screen {
     private final String patchouliUrl = "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric";
     private final Screen lastScreen;
@@ -38,10 +37,10 @@ public class PatchouliWarningScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderBackground(graphics, pMouseX, pMouseY, pPartialTick);
-        this.message.renderCentered(graphics, this.width / 2, 80);
-        super.render(graphics, pMouseX, pMouseY, pPartialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        ActiveTextCollector textRenderer = graphics.textRenderer();
+        this.message.visitLines(TextAlignment.CENTER, this.width / 2, 100, 9, textRenderer);
+        super.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
     }
 
     private void openUrl(String url) {

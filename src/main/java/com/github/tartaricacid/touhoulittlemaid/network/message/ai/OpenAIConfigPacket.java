@@ -14,10 +14,10 @@ import net.minecraft.server.level.ServerPlayer;
 import javax.annotation.Nullable;
 import java.util.Collections;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record OpenAIConfigPacket() implements CustomPacketPayload {
-    public static final Type<OpenAIConfigPacket> TYPE = new Type<>(getIdentifier("open_ai_config"));
+    public static final Type<OpenAIConfigPacket> TYPE = new Type<>(getResourceLocation("open_ai_config"));
 
     public static final OpenAIConfigPacket INSTANCE = new OpenAIConfigPacket();
     public static final StreamCodec<ByteBuf, OpenAIConfigPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);

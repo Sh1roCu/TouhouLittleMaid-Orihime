@@ -11,10 +11,10 @@ import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.getIdentifier;
+import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
 public record OpenMaidAIChatPacket(int entityId) implements CustomPacketPayload {
-    public static final Type<OpenMaidAIChatPacket> TYPE = new Type<>(getIdentifier("open_maid_ai_chat"));
+    public static final Type<OpenMaidAIChatPacket> TYPE = new Type<>(getResourceLocation("open_maid_ai_chat"));
     public static final StreamCodec<ByteBuf, OpenMaidAIChatPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, OpenMaidAIChatPacket::entityId,
             OpenMaidAIChatPacket::new
