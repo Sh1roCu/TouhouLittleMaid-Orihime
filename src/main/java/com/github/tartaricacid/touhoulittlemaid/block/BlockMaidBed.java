@@ -6,14 +6,17 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemMaidBed;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBed;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,8 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -39,6 +42,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -60,10 +64,22 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
     protected static final VoxelShape BASE = Block.box(0.0, 0.0, 0.0, 16.0, 9.0, 16.0);
+    private static final MapCodec<BlockMaidBed> CODEC = simpleCodec(BlockMaidBed::new);
 
-    public BlockMaidBed() {
-        super(BlockBehaviour.Properties.of().sound(SoundType.WOOD).sound(SoundType.WOOD).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY));
-        this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, false));
+    public BlockMaidBed(Identifier id) {
+        super(BlockBehaviour.Properties.of()
+                .setId(ResourceKey.create(Registries.BLOCK, id))
+                .sound(SoundType.WOOD)
+                .strength(0.2F)
+                .noOcclusion()
+                .pushReaction(PushReaction.DESTROY));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(PART, BedPart.FOOT)
+                .setValue(OCCUPIED, false));
+    }
+
+    public BlockMaidBed(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -72,46 +88,50 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
-                                           Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                       Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack itemStack = player.getItemInHand(hand);
         // 检查是否是染料物品
-        if (!(itemStack.getItem() instanceof DyeItem dyeItem)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!(itemStack.getItem() instanceof DyeItem)) {
+            return InteractionResult.PASS;
         }
-        DyeColor dyeColor = dyeItem.getDyeColor();
+        DyeColor dyeColor = itemStack.getOrDefault(DataComponents.DYE, DyeColor.WHITE);
         // 检查染料颜色是否在可用颜色列表中
         if (!AVAILABLE_COLOR.contains(dyeColor)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         // 获取床头位置和方块实体
         BlockPos headPos = state.getValue(PART) == BedPart.HEAD ? pos : pos.relative(state.getValue(FACING));
         BlockEntity blockEntity = level.getBlockEntity(headPos);
         if (!(blockEntity instanceof TileEntityMaidBed bed)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (bed.getColor() == dyeColor) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         bed.setColor(dyeColor);
         if (!player.isCreative()) {
             itemStack.shrink(1);
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState stateIn, LevelReader level, ScheduledTickAccess ticks,
+                                  BlockPos pos, Direction facing, BlockPos neighbourPos,
+                                  BlockState neighbourState, RandomSource random) {
         if (facing == getNeighbourDirection(stateIn.getValue(PART), stateIn.getValue(FACING))) {
-            return facingState.is(this) && facingState.getValue(PART) != stateIn.getValue(PART) ? stateIn.setValue(OCCUPIED, facingState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
+            return neighbourState.is(this) && neighbourState.getValue(PART) != stateIn.getValue(PART)
+                    ? stateIn.setValue(OCCUPIED, neighbourState.getValue(OCCUPIED))
+                    : Blocks.AIR.defaultBlockState();
         } else {
-            return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+            return super.updateShape(stateIn, level, ticks, pos, facing, neighbourPos, neighbourState, random);
         }
     }
 
     @Override
     public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        if (!worldIn.isClientSide && player.isCreative()) {
+        if (!worldIn.isClientSide() && player.isCreative()) {
             BedPart bedpart = state.getValue(PART);
             if (bedpart == BedPart.FOOT) {
                 BlockPos blockpos = pos.relative(getNeighbourDirection(bedpart, state.getValue(FACING)));
@@ -141,10 +161,10 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             BlockPos headPos = pos.relative(state.getValue(FACING));
             worldIn.setBlock(headPos, state.setValue(PART, BedPart.HEAD), Block.UPDATE_ALL);
-            worldIn.blockUpdated(pos, Blocks.AIR);
+            worldIn.updateNeighborsAt(pos, Blocks.AIR);
             state.updateNeighbourShapes(worldIn, pos, Block.UPDATE_ALL);
 
             if (worldIn.getBlockEntity(headPos) instanceof TileEntityMaidBed bed) {
@@ -154,14 +174,14 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, float fallDistance) {
+    public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, double fallDistance) {
         super.fallOn(worldIn, blockState, pos, entityIn, fallDistance * 0.5f);
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entity) {
+    public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entity) {
         if (entity.isSuppressingBounce()) {
-            super.updateEntityAfterFallOn(worldIn, entity);
+            super.updateEntityMovementAfterFallOn(worldIn, entity);
         } else {
             Vec3 movement = entity.getDeltaMovement();
             if (movement.y < 0) {
@@ -171,16 +191,11 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
         }
     }
 
-/*    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.DESTROY;
-    }*/
 
-    @Environment(EnvType.CLIENT)
     @Override
-    public long getSeed(BlockState state, BlockPos pos) {
-        BlockPos blockpos = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
-        return Mth.getSeed(blockpos.getX(), pos.getY(), blockpos.getZ());
+    protected long getSeed(BlockState state, BlockPos pos) {
+        BlockPos sourcePos = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
+        return Mth.getSeed(sourcePos.getX(), pos.getY(), sourcePos.getZ());
     }
 
     @Override
@@ -203,7 +218,7 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec((properties) -> new BlockMaidBed());
+        return CODEC;
     }
 
     @Override
@@ -213,11 +228,6 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
             return new TileEntityMaidBed(pPos, pState);
         }
         return null;
-    }
-
-    @Override
-    public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -235,9 +245,8 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     }
 
     @Override
-    // public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        ItemStack stack = super.getCloneItemStack(level, pos, state);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+        ItemStack stack = super.getCloneItemStack(level, pos, state, includeData);
 
         // 获取床的颜色信息
         BlockEntity blockEntity = level.getBlockEntity(pos);

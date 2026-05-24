@@ -10,16 +10,18 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemPicnicBasket;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.util.Util;
-import net.minecraft.client.particle.ParticleEngine;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,12 +37,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,12 +50,24 @@ import java.util.UUID;
 
 public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     public static final EnumProperty<PicnicMatPart> PART = EnumProperty.create("part", PicnicMatPart.class);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape AABB = Block.box(0, 0, 0, 16, 1, 16);
 
-    public BlockPicnicMat() {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(2.0F, 3.0F).forceSolidOn().noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(PART, PicnicMatPart.CENTER));
+    public BlockPicnicMat(Identifier id) {
+        super(BlockBehaviour.Properties.of()
+                .setId(ResourceKey.create(Registries.BLOCK, id))
+                .mapColor(MapColor.WOOD)
+                .sound(SoundType.WOOD)
+                .strength(2.0F, 3.0F)
+                .forceSolidOn()
+                .noOcclusion());
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(PART, PicnicMatPart.CENTER));
+    }
+
+    public BlockPicnicMat(Properties properties) {
+        super(properties);
     }
 
     public void startMaidSit(EntityMaid maid, BlockState state, Level worldIn, BlockPos pos) {
@@ -81,7 +93,8 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
             }
             if (hasEmptySit) {
                 Vec3 sitPosition = this.sitPosition(sitIndex);
-                EntitySit newSitEntity = new EntitySit(worldIn, Vec3.atLowerCornerWithOffset(pos, sitPosition.x, sitPosition.y + 0.0625, sitPosition.z), Type.ON_HOME_MEAL.getTypeName(), pos);
+                Vec3 corner = Vec3.atLowerCornerWithOffset(pos, sitPosition.x, sitPosition.y + 0.0625, sitPosition.z);
+                EntitySit newSitEntity = new EntitySit(worldIn, corner, Type.ON_HOME_MEAL.getTypeName(), pos);
                 double y = sitPosition.z < 0 ? -1 : 1;
                 double x = sitPosition.x < 0 ? -1 : 1;
                 double rotOffset = Math.toDegrees(Math.atan2(y, x));
@@ -94,33 +107,29 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     }
 
     private Vec3 sitPosition(int sitIndex) {
-        switch (sitIndex) {
-            case 0:
-                return new Vec3(2, 0, 2);
-            case 1:
-                return new Vec3(-1, 0, 2);
-            case 2:
-                return new Vec3(-1, 0, -1);
-            case 3:
-            default:
-                return new Vec3(2, 0, -1);
-        }
+        return switch (sitIndex) {
+            case 0 -> new Vec3(2, 0, 2);
+            case 1 -> new Vec3(-1, 0, 2);
+            case 2 -> new Vec3(-1, 0, -1);
+            default -> new Vec3(2, 0, -1);
+        };
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, BlockHitResult hit) {
-        if (worldIn.isClientSide) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+    public InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level worldIn, BlockPos pos,
+                                       Player playerIn, InteractionHand hand, BlockHitResult hit) {
+        if (worldIn.isClientSide()) {
+            return InteractionResult.PASS;
         }
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         }
         if (!(worldIn.getBlockEntity(pos) instanceof TileEntityPicnicMat picnicMat)) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
         BlockPos centerPos = picnicMat.getCenterPos();
         if (!(worldIn.getBlockEntity(centerPos) instanceof TileEntityPicnicMat picnicMatCenter)) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
         ItemStack itemInHand = playerIn.getItemInHand(hand);
         if (itemInHand.get(DataComponents.FOOD) != null) {
@@ -129,35 +138,43 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
         if (itemInHand.isEmpty() && playerIn.isDiscrete()) {
             return takeFood(playerIn, picnicMatCenter);
         }
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
 
-    private static ItemInteractionResult placeFood(ItemStack food, Player playerIn, TileEntityPicnicMat picnicMatCenter) {
-        int count = food.getCount();
-        ItemStack resultStack = ItemHandlerHelper.insertItemStacked(picnicMatCenter.getHandler(), food.copy(), false);
-        picnicMatCenter.refresh();
-        int shrinkCount = count - resultStack.getCount();
-        if (shrinkCount <= 0) {
-            return ItemInteractionResult.FAIL;
-        }
-        food.shrink(shrinkCount);
-        return ItemInteractionResult.SUCCESS;
-    }
+    private static InteractionResult placeFood(ItemStack food, Player playerIn, TileEntityPicnicMat picnicMatCenter) {
+        try (Transaction tx = Transaction.openOuter()) {
+            ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
+            int count = food.getCount();
+            int shrinkCount = handler.insert(ItemVariant.of(food), count, tx);
+            tx.commit();
 
-    private static ItemInteractionResult takeFood(Player playerIn, TileEntityPicnicMat picnicMatCenter) {
-        ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
-        int size = handler.getSlots() - 1;
-        for (int i = size; i >= 0; i--) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                ItemStack outputStack = handler.extractItem(i, handler.getSlotLimit(i), false);
-                picnicMatCenter.refresh();
-                ItemHandlerHelper.giveItemToPlayer(playerIn, outputStack);
-                return ItemInteractionResult.SUCCESS;
+            picnicMatCenter.refresh();
+            if (shrinkCount <= 0) {
+                return InteractionResult.FAIL;
             }
+            food.shrink(shrinkCount);
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.FAIL;
+    }
+
+    private static InteractionResult takeFood(Player playerIn, TileEntityPicnicMat picnicMatCenter) {
+        try (Transaction tx = Transaction.openOuter()) {
+            ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
+            int size = handler.size() - 1;
+            for (int i = size; i >= 0; i--) {
+                ItemVariant resource = handler.getResource(i);
+                if (!resource.isBlank()) {
+                    int extractCount = handler.extract(i, resource, handler.getAmountAsInt(i), tx);
+                    tx.commit();
+
+                    picnicMatCenter.refresh();
+                    playerIn.getInventory().placeItemBackInInventory(resource.toStack(extractCount));
+                    return InteractionResult.SUCCESS;
+                }
+            }
+            return InteractionResult.FAIL;
+        }
     }
 
     @Override
@@ -166,14 +183,8 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
         return super.playerWillDestroy(world, pos, state, player);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
-    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
-        return false;
-    }
-
-    @Override
-    public void tlm$onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void tlm$onBlockExploded(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion) {
         handlePicnicMatRemove(world, pos, state);
         IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
@@ -196,7 +207,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             return;
         }
         for (int i = -2; i < 3; i++) {
@@ -237,11 +248,6 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
     public boolean isPathfindable(BlockState state, PathComputationType type) {
         return true;
     }
@@ -262,7 +268,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlock {
     }
 
     private static void handlePicnicMatRemove(Level world, BlockPos pos, BlockState state) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         if (!(world.getBlockEntity(pos) instanceof TileEntityPicnicMat picnicMat)) {
