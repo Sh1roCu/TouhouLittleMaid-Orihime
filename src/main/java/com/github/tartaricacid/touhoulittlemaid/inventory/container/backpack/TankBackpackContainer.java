@@ -25,7 +25,7 @@ public class TankBackpackContainer extends MaidMainContainer {
     private static final Identifier INPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_input_slot");
     private static final Identifier OUTPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_output_slot");
     private final ContainerData data;
-    private int clientFluidAmount;
+    private long clientFluidAmount;
 
     public TankBackpackContainer(int id, Inventory inventory, int entityId) {
         super(TYPE, id, inventory, entityId);
@@ -56,11 +56,11 @@ public class TankBackpackContainer extends MaidMainContainer {
     }
 
     // 客户端同步
-    public void setClientFluidCount(int amount) {
+    public void setClientFluidCount(long amount) {
         this.clientFluidAmount = amount;
     }
 
-    public int getClientFluidAmount() {
+    public long getClientFluidAmount() {
         return this.clientFluidAmount;
     }
 

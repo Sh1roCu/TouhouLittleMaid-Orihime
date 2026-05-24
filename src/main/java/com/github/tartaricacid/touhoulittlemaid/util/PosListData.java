@@ -2,32 +2,30 @@ package com.github.tartaricacid.touhoulittlemaid.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import java.util.List;
 
-public final class PosListData {
+public final class PosListData implements ValueIOSerializable {
+    private static final String KEY = "PosListData";
+
     private final List<BlockPos> data = Lists.newArrayList();
 
-    public ListTag serialize() {
-        ListTag nbt = new ListTag();
-        for (BlockPos pos : data) {
-            nbt.add(NbtUtils.writeBlockPos(pos));
-        }
-        return nbt;
+    @Override
+    public void serialize(ValueOutput output) {
+        output.store(KEY, BlockPos.CODEC.listOf(), this.data);
     }
 
-    public void deserialize(ListTag nbt) {
-        data.clear();
-        for (int i = 0; i < nbt.size(); i++) {
-            int[] pos = nbt.getIntArray(i);
-            data.add(new BlockPos(pos[0], pos[1], pos[2]));
-        }
+    @Override
+    public void deserialize(ValueInput input) {
+        this.data.clear();
+        input.read(KEY, BlockPos.CODEC.listOf()).ifPresent(this.data::addAll);
     }
 
     public List<BlockPos> getData() {
-        return data;
+        return this.data;
     }
 
     public void add(BlockPos pos) {

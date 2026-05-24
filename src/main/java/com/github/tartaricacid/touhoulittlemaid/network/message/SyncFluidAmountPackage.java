@@ -9,10 +9,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
-public record SyncFluidAmountPackage(int amount) implements CustomPacketPayload {
+public record SyncFluidAmountPackage(long amount) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncFluidAmountPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("client_sync_fluid_amount"));
     public static final StreamCodec<ByteBuf, SyncFluidAmountPackage> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
+            ByteBufCodecs.VAR_LONG,
             SyncFluidAmountPackage::amount,
             SyncFluidAmountPackage::new
     );

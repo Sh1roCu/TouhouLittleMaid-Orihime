@@ -57,3 +57,5 @@ accessible method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbow
 extendable method net/minecraft/world/entity/ai/behavior/CrossbowAttack crossbowAttack (Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/LivingEntity;)V
 
 accessible field net/minecraft/world/entity/EquipmentSlot countLimit I
+
+accessible method net/minecraft/client/gui/GuiGraphicsExtractor blitTiledSprite (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;IIIIIIIIIII)V

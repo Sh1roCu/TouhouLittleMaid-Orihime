@@ -52,7 +52,7 @@ public class TankBackpackContainerScreen extends AbstractMaidContainerGui<TankBa
         super.extractBackground(graphics, mouseX, mouseY, pPartialTick);
         GuiTools.blit(graphics, BACKPACK, leftPos + 85, topPos + 36, 0, 0, 165, 128);
 
-        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getFluidCount(), (int) TankBackpackData.CAPACITY);
+        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getClientFluidAmount(), TankBackpackData.CAPACITY);
         GuiTools.blit(graphics, BACKPACK, leftPos + 197, topPos + 104, 165, 0, 34, 50);
 
         boolean xInRange = leftPos + 196 <= mouseX && mouseX <= leftPos + 196 + 29;
