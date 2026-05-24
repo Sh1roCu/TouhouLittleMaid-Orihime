@@ -46,6 +46,8 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
 
         com.github.tartaricacid.simplebedrockmodel.client.ClientSetupEvent.onClientSetup();
 
+        ClientReloadListenerRegistry.onRegisterClientReloadListeners();
+
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof IItemRenderer).forEach(clientEx ->
                 BuiltinItemRendererRegistry.INSTANCE.register(clientEx,
                         (stack, mode, matrices, vertexConsumers, light, overlay) ->
@@ -69,7 +71,6 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         KeyInputCallback.EVENT.register(PressAIChatKeyEvent::onOpenConfig);
         KeyInputCallback.EVENT.register(STTChatKey::onSttChatPress);
         KeyInputCallback.EVENT.register(DismountBroomKey::onDismountPress);
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "reload_resource_event"), new ReloadResourceEvent());
         LevelRenderEvents.AFTER_SOLID_FEATURES.register(ScrollRenderEvent::onRenderWorldLastEvent);
         ScreenEvents.AFTER_INIT.register(ShowOptifineScreen::showOptifineWarning);
 

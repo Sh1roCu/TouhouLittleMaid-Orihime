@@ -2,12 +2,9 @@ package com.github.tartaricacid.touhoulittlemaid;
 
 import com.github.tartaricacid.touhoulittlemaid.api.entity.IMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.world.entity.Mob;
 
-@Environment(EnvType.CLIENT)
 public class TouhouLittleMaidClient {
     public static void setup() {
         registerClientOnly();
