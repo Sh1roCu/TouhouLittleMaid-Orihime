@@ -1,9 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid;
 
-import com.github.tartaricacid.touhoulittlemaid.api.entity.IMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.minecraft.world.entity.Mob;
 
 public class TouhouLittleMaidClient {
     public static void setup() {
@@ -15,11 +14,8 @@ public class TouhouLittleMaidClient {
         ClientEntityEvents.ENTITY_LOAD.register((clientEntity, level) -> {
             if (!clientEntity.level.isClientSide())
                 return;
-            if (clientEntity instanceof Mob mob) {
-                IMaid maid = IMaid.convert(mob);
-                if (maid != null) {
-                    clientEntity.setAttached(GeckoMaidEntity.TYPE, new GeckoMaidEntity<>(mob, maid));
-                }
+            if (clientEntity instanceof EntityMaid maid) {
+                clientEntity.setAttached(GeckoMaidEntity.TYPE, new GeckoMaidEntity<>(maid));
             }
         });
     }

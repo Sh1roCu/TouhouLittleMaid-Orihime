@@ -1,12 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.client.entity;
 
 import com.github.tartaricacid.touhoulittlemaid.api.animation.IMagicCastingState;
-import com.github.tartaricacid.touhoulittlemaid.api.entity.IMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.molang.MolangEventWrapper;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.EntityMaidRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.gecko.GeckoMaidRenderData;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.event.AnimationEvent;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.value.IValue;
@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Vector2f;
@@ -35,14 +34,12 @@ import java.util.function.Consumer;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
-
-@SuppressWarnings("UnstableApiUsage")
-public class GeckoMaidEntity<T extends Mob> extends AnimatableEntity<T> implements IGeoEntity {
-    @SuppressWarnings("rawtypes")
+public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> implements IGeoEntity {
+    @SuppressWarnings({"rawtypes"})
     public static final AttachmentType<GeckoMaidEntity> TYPE = AttachmentRegistry.create(getResourceLocation("gecko_maid"),
             AttachmentRegistry.Builder::copyOnDeath);
 
-    private final IMaid maid;
+    private final EntityMaid maid;
     private final Vector2f headRotBackup = new Vector2f();
     private MaidModelInfo maidInfo;
 
@@ -55,8 +52,8 @@ public class GeckoMaidEntity<T extends Mob> extends AnimatableEntity<T> implemen
      */
     private IMagicCastingState.CastingPhase lastCastingPhase = IMagicCastingState.CastingPhase.NONE;
 
-    public GeckoMaidEntity(T mob, IMaid maid) {
-        super(mob, true);
+    public GeckoMaidEntity(T maid) {
+        super(maid, true);
         this.maid = maid;
     }
 
@@ -180,7 +177,7 @@ public class GeckoMaidEntity<T extends Mob> extends AnimatableEntity<T> implemen
     }
 
     @Override
-    public IMaid getMaid() {
+    public EntityMaid getMaid() {
         return maid;
     }
 
