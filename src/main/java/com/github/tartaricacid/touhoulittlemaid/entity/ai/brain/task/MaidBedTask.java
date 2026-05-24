@@ -37,7 +37,7 @@ public class MaidBedTask extends MaidCheckRateTask {
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (super.checkExtraStartConditions(worldIn, maid) && maid.canBrainMoving()) {
             BlockPos bedPos = findBed(worldIn, maid);
-            if (bedPos != null && maid.isWithinRestriction(bedPos)) {
+            if (bedPos != null && maid.isWithinHome(bedPos)) {
                 if (bedPos.distToCenterSqr(maid.position()) < Math.pow(this.closeEnoughDist, 2)) {
                     maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(bedPos));
                     return true;

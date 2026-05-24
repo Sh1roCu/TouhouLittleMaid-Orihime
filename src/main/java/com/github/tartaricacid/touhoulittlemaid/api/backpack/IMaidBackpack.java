@@ -1,13 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.api.backpack;
 
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.BackpackManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.Identifier;
@@ -47,25 +46,22 @@ public abstract class IMaidBackpack {
 
     public abstract int getAvailableMaxContainerIndex();
 
-    @Environment(EnvType.CLIENT)
     public abstract void offsetBackpackItem(PoseStack poseStack);
 
     @Nullable
-    @Environment(EnvType.CLIENT)
-    public abstract EntityModel<EntityMaid> getBackpackModel(EntityModelSet modelSet);
+    public abstract EntityModel<EntityMaidRenderState> getBackpackModel(EntityModelSet modelSet);
 
     @Nullable
-    @Environment(EnvType.CLIENT)
     public abstract Identifier getBackpackTexture();
 
     protected final void dropAllItems(EntityMaid maid) {
-        ItemsUtil.dropEntityItems(maid, maid.getMaidInv(), BackpackLevel.EMPTY_CAPACITY);
+        ItemsUtil.dropEntityItems(maid, maid.getMaidInv(), BackpackLevel.EMPTY_CAPACITY, null);
     }
 
     protected final void dropRelativeItems(ItemStack stack, EntityMaid maid) {
         BackpackManager.findBackpack(stack).ifPresentOrElse(backpack -> {
             int startIndex = backpack.getAvailableMaxContainerIndex();
-            ItemsUtil.dropEntityItems(maid, maid.getMaidInv(), startIndex);
+            ItemsUtil.dropEntityItems(maid, maid.getMaidInv(), startIndex, null);
         }, () -> this.dropAllItems(maid));
     }
 }

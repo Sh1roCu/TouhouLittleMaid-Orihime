@@ -79,7 +79,7 @@ public class TaskFeedAnimal implements IAttackTask {
 
     private Optional<? extends LivingEntity> findFirstValidAttackTarget(EntityMaid maid) {
         long animalCount = this.getEntities(maid)
-                .find(e -> maid.isWithinRestriction(e.blockPosition()))
+                .find(e -> maid.isWithinHome(e.blockPosition()))
                 .filter(Entity::isAlive)
                 .filter(e -> e instanceof Animal).count();
 
@@ -88,7 +88,7 @@ public class TaskFeedAnimal implements IAttackTask {
         }
 
         return this.getEntities(maid)
-                .find(e -> maid.isWithinRestriction(e.blockPosition()))
+                .find(e -> maid.isWithinHome(e.blockPosition()))
                 .filter(Entity::isAlive)
                 .filter(e -> e instanceof Animal)
                 .filter(e -> ((Animal) e).getAge() == 0)

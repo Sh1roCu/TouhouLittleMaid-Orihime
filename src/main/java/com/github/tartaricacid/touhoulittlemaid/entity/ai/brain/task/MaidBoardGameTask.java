@@ -39,7 +39,7 @@ public class MaidBoardGameTask extends MaidCheckRateTask {
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (super.checkExtraStartConditions(worldIn, maid) && maid.canBrainMoving()) {
             BlockPos gamePos = findGameBlock(worldIn, maid);
-            if (gamePos != null && maid.isWithinRestriction(gamePos)) {
+            if (gamePos != null && maid.isWithinHome(gamePos)) {
                 if (gamePos.distToCenterSqr(maid.position()) < Math.pow(this.closeEnoughDist, 2)) {
                     maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(gamePos));
                     return true;

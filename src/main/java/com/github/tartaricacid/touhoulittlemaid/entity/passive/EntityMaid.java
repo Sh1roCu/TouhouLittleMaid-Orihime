@@ -2125,7 +2125,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     }
 
     @Override
-    public boolean isWithinRestriction() {
+    public boolean isWithinHome() {
         return this.isWithinHome(this.blockPosition());
     }
 

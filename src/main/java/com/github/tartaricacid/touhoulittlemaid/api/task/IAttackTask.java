@@ -38,7 +38,7 @@ public interface IAttackTask extends IMaidTask {
      */
     static Optional<? extends LivingEntity> findFirstValidAttackTarget(EntityMaid maid) {
         return maid.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).flatMap(
-                mobs -> mobs.findClosest((e) -> maid.canAttack(e) && maid.isWithinRestriction(e.blockPosition())));
+                mobs -> mobs.findClosest((e) -> maid.canAttack(e) && maid.isWithinHome(e.blockPosition())));
     }
 
     /**
@@ -57,7 +57,7 @@ public interface IAttackTask extends IMaidTask {
             return false;
         }
         // 有主的宠物也不攻击
-        if (target instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwnerUUID() != null) {
+        if (target instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwnerReference() != null) {
             return false;
         }
         // 特殊命名的怪物，因为有的玩家会使用怪物做刷怪塔，会被女仆误杀

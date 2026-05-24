@@ -3,7 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.api;
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.context.GameContextRegister;
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.tool.ToolRegister;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.SerializerRegister;
-import com.github.tartaricacid.touhoulittlemaid.ai.service.function.FunctionCallRegister;
 import com.github.tartaricacid.touhoulittlemaid.block.multiblock.MultiBlockManager;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.magic.MagicCastingAnimationManager;
@@ -23,8 +22,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.task.crop.SpecialCropMana
 import com.github.tartaricacid.touhoulittlemaid.entity.task.meal.MaidMealManager;
 import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.VisibleForDebug;
 import net.minecraft.world.entity.Mob;
@@ -147,15 +144,6 @@ public interface ILittleMaid {
     }
 
     /**
-     * 注册一个自己的 function call
-     *
-     * @deprecated 自 1.5.1 起，更换为 skill 机制，此方法已经无效
-     */
-    @Deprecated(since = "1.5.1", forRemoval = true)
-    default void registerAIFunctionCall(FunctionCallRegister register) {
-    }
-
-    /**
      * 注册一个扫帚的控制器
      */
     default void registerBroomControl(BroomControlManager register) {
@@ -183,28 +171,24 @@ public interface ILittleMaid {
      * <p>
      * 有些物品在指向女仆时，能够在屏幕上显示相关提示文本
      */
-    @Environment(EnvType.CLIENT)
     default void addMaidTips(MaidTipsOverlay maidTipsOverlay) {
     }
 
     /**
      * 添加默认模型风格的实体 layer 渲染
      */
-    @Environment(EnvType.CLIENT)
     default void addAdditionMaidLayer(EntityMaidRenderer renderer, EntityRendererProvider.Context context) {
     }
 
     /**
      * 添加 Gecko 风格的实体 layer 渲染
      */
-    @Environment(EnvType.CLIENT)
     default void addAdditionGeckoMaidLayer(GeckoEntityMaidRenderer<? extends Mob> renderer, EntityRendererProvider.Context context) {
     }
 
     /**
      * 添加硬编码的动画
      */
-    @Environment(EnvType.CLIENT)
     default void addHardcodeAnimation(HardcodedAnimationManger manger) {
     }
 
@@ -213,7 +197,6 @@ public interface ILittleMaid {
      *
      * @param manager 注册管理器
      */
-    @Environment(EnvType.CLIENT)
     @ApiStatus.AvailableSince("1.4.7")
     default void registerMagicCastingAnimation(MagicCastingAnimationManager manager) {
     }

@@ -3,14 +3,11 @@ package com.github.tartaricacid.touhoulittlemaid.api.event.client;
 import cn.sh1rocu.touhoulittlemaid.api.event.CancellableEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.entity.IMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.models.MaidModels;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
 
-@Environment(EnvType.CLIENT)
 public class RenderMaidEvent extends CancellableEvent {
     private final IMaid maid;
     private final MaidModels.ModelData modelData;

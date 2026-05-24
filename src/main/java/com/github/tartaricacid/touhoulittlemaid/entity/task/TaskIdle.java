@@ -61,7 +61,7 @@ public class TaskIdle implements IMaidTask {
     private Optional<? extends LivingEntity> findFirstValidSnowballTarget(EntityMaid maid) {
         return maid.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).flatMap(
                 list -> list.find(e -> isSnowballTarget(e, maid))
-                        .filter(e -> maid.isWithinRestriction(e.blockPosition()))
+                        .filter(e -> maid.isWithinHome(e.blockPosition()))
                         .findFirst());
     }
 

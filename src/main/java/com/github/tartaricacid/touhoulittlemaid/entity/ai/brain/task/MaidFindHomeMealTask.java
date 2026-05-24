@@ -38,7 +38,7 @@ public class MaidFindHomeMealTask extends MaidCheckRateTask {
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (super.checkExtraStartConditions(worldIn, maid) && maid.canBrainMoving()) {
             BlockPos picnicMatPos = findPicnicMat(worldIn, maid);
-            if (picnicMatPos != null && maid.isWithinRestriction(picnicMatPos)) {
+            if (picnicMatPos != null && maid.isWithinHome(picnicMatPos)) {
                 if (picnicMatPos.distToCenterSqr(maid.position()) < Math.pow(this.closeEnoughDist, 3)) {
                     maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(picnicMatPos));
                     return true;

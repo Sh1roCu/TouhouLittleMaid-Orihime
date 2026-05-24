@@ -55,7 +55,7 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
                 for (int x = 0; x <= i; x = x > 0 ? -x : 1 - x) {
                     for (int z = x < i && x > -i ? i : 0; z <= i; z = z > 0 ? -z : 1 - z) {
                         mutableBlockPos.setWithOffset(centrePos, x, y - 1, z);
-                        if (maid.isWithinRestriction(mutableBlockPos) && shouldMoveTo(worldIn, maid, mutableBlockPos) && checkPathReach(maid, pathFinding, mutableBlockPos)
+                        if (maid.isWithinHome(mutableBlockPos) && shouldMoveTo(worldIn, maid, mutableBlockPos) && checkPathReach(maid, pathFinding, mutableBlockPos)
                                 && checkOwnerPos(maid, mutableBlockPos)) {
                             BehaviorUtils.setWalkAndLookTargetMemories(maid, mutableBlockPos, this.movementSpeed, 0);
                             maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(mutableBlockPos));
@@ -95,7 +95,7 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
     private BlockPos getWorkSearchPos(EntityMaid maid) {
         if (maid.hasRestriction()) {
             // 当且仅当开启home模式，并且工作点在工作范围内才返回最近工作点
-            if (this.currentWorkPos != null && maid.isWithinRestriction(currentWorkPos)) {
+            if (this.currentWorkPos != null && maid.isWithinHome(currentWorkPos)) {
                 return this.currentWorkPos;
             } else {
                 return maid.getRestrictCenter();

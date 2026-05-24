@@ -39,7 +39,7 @@ public class MaidJoyTask extends MaidCheckRateTask {
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (super.checkExtraStartConditions(worldIn, maid) && maid.canBrainMoving()) {
             BlockPos joyPos = findJoy(worldIn, maid);
-            if (joyPos != null && maid.isWithinRestriction(joyPos)) {
+            if (joyPos != null && maid.isWithinHome(joyPos)) {
                 if (joyPos.distToCenterSqr(maid.position()) < Math.pow(this.closeEnoughDist, 2)) {
                     maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(joyPos));
                     return true;

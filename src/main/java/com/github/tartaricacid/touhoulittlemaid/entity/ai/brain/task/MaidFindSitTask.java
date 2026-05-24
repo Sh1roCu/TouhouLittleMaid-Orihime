@@ -55,7 +55,7 @@ public class MaidFindSitTask extends MaidCheckRateTask {
         if (!entity.isAlive()) {
             return false;
         }
-        if (!maid.isWithinRestriction(entity.blockPosition())) {
+        if (!maid.isWithinHome(entity.blockPosition())) {
             return false;
         }
         if (!entity.getPassengers().isEmpty()) {

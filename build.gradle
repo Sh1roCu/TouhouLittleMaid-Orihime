@@ -174,9 +174,6 @@ dependencies {
     // YAML 库
     mcLib("org.yaml:snakeyaml:2.4")
 
-    // Nashorn JavaScript 引擎，目前仅用于女仆的旧版 JS 动画
-    mcLib "org.openjdk.nashorn:nashorn-core:15.4"
-
     // 拆分出来的基岩版模型加载库
     // 又合并回来了
     // implementation(include("libs:simplebedrockmodel:1.3.0-fabric+mc1.21.1"))
