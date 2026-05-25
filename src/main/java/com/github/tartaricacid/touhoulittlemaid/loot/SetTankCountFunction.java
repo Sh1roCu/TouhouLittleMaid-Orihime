@@ -2,24 +2,23 @@ package com.github.tartaricacid.touhoulittlemaid.loot;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.TankBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
-import com.github.tartaricacid.touhoulittlemaid.init.InitLootModifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,8 +43,8 @@ public class SetTankCountFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
-        return InitLootModifier.SET_TANK_COUNT_FUNCTION;
+    public MapCodec<? extends LootItemConditionalFunction> codec() {
+        return CODEC;
     }
 
     @Override
@@ -54,16 +53,21 @@ public class SetTankCountFunction extends LootItemConditionalFunction {
         if (tags == null) {
             tags = new CompoundTag();
         }
-        SingleFluidStorage tank = SingleFluidStorage.withFixedCapacity(TankBackpackData.CAPACITY, () -> {
-        });
-        FluidVariant fluidStack = FluidVariant.of(BuiltInRegistries.FLUID.get(this.fluidId), DataComponentPatch.EMPTY);
-        try (Transaction transaction = Transaction.openOuter()) {
-            tank.insert(fluidStack, count, transaction);
-            transaction.commit();
-            tank.writeNbt(tags, context.getLevel().registryAccess());
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(this.fluidId);
+        if (fluid == null || fluid.isSame(Fluids.EMPTY)) {
             stack.set(InitDataComponent.TANK_BACKPACK_TAG, tags);
             return stack;
         }
+        SingleFluidStorage tank = SingleFluidStorage.withFixedCapacity(TankBackpackData.CAPACITY, () -> {
+        });
+        FluidVariant fluidStack = FluidVariant.of(fluid);
+        tank.variant = fluidStack;
+        tank.amount = this.count;
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, context.getLevel().registryAccess());
+        tank.writeValue(output);
+        tags.put("Fluid", output.buildResult());
+        stack.set(InitDataComponent.TANK_BACKPACK_TAG, tags);
+        return stack;
     }
 
     public static class Builder extends LootItemConditionalFunction.Builder<SetTankCountFunction.Builder> {
@@ -76,12 +80,12 @@ public class SetTankCountFunction extends LootItemConditionalFunction {
         }
 
         @Override
-        protected @NotNull Builder getThis() {
+        protected Builder getThis() {
             return this;
         }
 
         @Override
-        public @NotNull LootItemFunction build() {
+        public LootItemFunction build() {
             Identifier key = BuiltInRegistries.FLUID.getKey(fluid);
             return new SetTankCountFunction(this.getConditions(), key, bucketCount * FluidConstants.BUCKET);
         }
