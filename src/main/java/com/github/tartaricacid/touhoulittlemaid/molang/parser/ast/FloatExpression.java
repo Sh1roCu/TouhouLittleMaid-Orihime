@@ -29,49 +29,44 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Literal double expression implementation for Molang
+ * Literal float expression implementation for Molang
  * numerical values.
  *
- * <p>Example double expressions: {@code 2.0}, {@code 59}, {@code 20}, {@code 5.002}</p>
+ * <p>Example float expressions: {@code 2.0}, {@code 59}, {@code 20}, {@code 5.002}</p>
  *
  * @since 3.0.0
  */
-public final class DoubleExpression implements Expression {
+public final class FloatExpression implements Expression {
 
-    public static final DoubleExpression ZERO = new DoubleExpression(0.0D);
-    public static final DoubleExpression ONE = new DoubleExpression(1.0D);
+    public static final FloatExpression ZERO = new FloatExpression(0.0f);
+    public static final FloatExpression ONE = new FloatExpression(1.0f);
 
-    private final double value;
+    private final float value;
 
-    public DoubleExpression(final double value) {
+    public FloatExpression(final float value) {
         this.value = value;
     }
 
     /**
-     * Gets the double expression value.
+     * Gets the float expression value.
      *
      * @since 3.0.0
      */
-    public double value() {
+    public float value() {
         return value;
     }
 
     @Override
     public <R> R visit(final @NotNull ExpressionVisitor<R> visitor) {
-        return visitor.visitDouble(this);
-    }
-
-    @Override
-    public String toString() {
-        return "Double(" + value + ")";
+        return visitor.visitFloat(this);
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DoubleExpression that = (DoubleExpression) o;
-        return Double.compare(that.value, value) == 0;
+        FloatExpression that = (FloatExpression) o;
+        return Float.compare(that.value, value) == 0;
     }
 
     @Override

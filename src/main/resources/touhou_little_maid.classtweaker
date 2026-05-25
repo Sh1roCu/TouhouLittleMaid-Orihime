@@ -54,4 +54,6 @@ accessible method net/minecraft/client/gui/GuiGraphicsExtractor blitTiledSprite 
 accessible method net/minecraft/world/entity/LivingEntity handleRelativeFrictionAndCalculateMovement (Lnet/minecraft/world/phys/Vec3;F)Lnet/minecraft/world/phys/Vec3;
 extendable method net/minecraft/world/entity/LivingEntity handleRelativeFrictionAndCalculateMovement (Lnet/minecraft/world/phys/Vec3;F)Lnet/minecraft/world/phys/Vec3;
 
+accessible field net/minecraft/world/level/storage/SavedDataStorage dataFolder Ljava/nio/file/Path;
+
 inject-interface net/minecraft/client/renderer/entity/state/EntityRenderState cn/sh1rocu/touhoulittlemaid/api/mixin/IEntityRenderStatePartialTick

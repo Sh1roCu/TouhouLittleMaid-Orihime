@@ -1,23 +1,23 @@
 package com.github.tartaricacid.touhoulittlemaid.world.data;
 
+import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -26,15 +26,54 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MaidWorldData extends SavedData {
-    private static final String IDENTIFIER = "touhou_little_maid_world_data";
-    private static final String MAID_INFOS_TAG = "MaidInfos";
-    private static final String MAID_TOMBSTONES_TAG = "MaidTombstones";
-    private final Map<UUID, List<MaidInfo>> infos = Maps.newHashMap();
-    private final Map<UUID, List<MaidInfo>> tombstones = Maps.newHashMap();
+    // TODO 貌似不太优雅，需要检查一下
+    public static final Codec<MaidWorldData> CODEC = RecordCodecBuilder.create(ins -> ins.group(
+            Codec.unboundedMap(Codec.STRING, MaidInfo.CODEC.listOf()).fieldOf("MaidInfos").forGetter(o -> {
+                Map<String, List<MaidInfo>> infos = Maps.newHashMap();
+                o.infos.forEach((uuid, value) -> infos.put(uuid.toString(), value));
+                return infos;
+            }),
+            Codec.unboundedMap(Codec.STRING, MaidInfo.TOMBSHSTONE_CODEC.listOf()).fieldOf("MaidTombstones").forGetter(o -> {
+                Map<String, List<MaidInfo>> tombstones = Maps.newHashMap();
+                o.tombstones.forEach((uuid, value) -> tombstones.put(uuid.toString(), value));
+                return tombstones;
+            }),
+            Codec.BOOL.fieldOf("dirty").forGetter(SavedData::isDirty)
+    ).apply(ins, ((oInfos, oTombstones, oDirty) -> {
+        Map<UUID, List<MaidInfo>> infos = Maps.newHashMap();
+        oInfos.forEach((uuidString, value) -> {
+            infos.put(UUID.fromString(uuidString), value);
+        });
+        Map<UUID, List<MaidInfo>> tombstones = Maps.newHashMap();
+        oTombstones.forEach((uuidString, value) -> {
+            tombstones.put(UUID.fromString(uuidString), value);
+        });
+        return new MaidWorldData(infos, tombstones, oDirty);
+    })));
 
-    public static SavedData.Factory<MaidWorldData> factory() {
+    private static final Identifier IDENTIFIER = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "world_data");
+    private final Map<UUID, List<MaidInfo>> infos;
+    private final Map<UUID, List<MaidInfo>> tombstones;
+
+    private MaidWorldData(Map<UUID, List<MaidInfo>> infos, Map<UUID, List<MaidInfo>> tombstones) {
+        this.infos = Maps.newHashMap(infos);
+        this.tombstones = Maps.newHashMap(tombstones);
+    }
+
+    private MaidWorldData(Map<UUID, List<MaidInfo>> infos, Map<UUID, List<MaidInfo>> tombstones, boolean dirty) {
+        this.infos = Maps.newHashMap(infos);
+        this.tombstones = Maps.newHashMap(tombstones);
+        this.setDirty(dirty);
+    }
+
+    private MaidWorldData() {
+        this.infos = Maps.newHashMap();
+        this.tombstones = Maps.newHashMap();
+    }
+
+    public static SavedDataType<@NotNull MaidWorldData> factory() {
         // 可能是 ENTITY_CHUNK 吧
-        return new SavedData.Factory<>(MaidWorldData::new, MaidWorldData::load, DataFixTypes.ENTITY_CHUNK);
+        return new SavedDataType<@NotNull MaidWorldData>(IDENTIFIER, MaidWorldData::new, CODEC, DataFixTypes.ENTITY_CHUNK);
     }
 
     @Nullable
@@ -44,114 +83,30 @@ public class MaidWorldData extends SavedData {
             if (overWorld == null) {
                 return null;
             }
-            DimensionDataStorage storage = overWorld.getDataStorage();
-            MaidWorldData data = storage.computeIfAbsent(MaidWorldData.factory(), IDENTIFIER);
+            SavedDataStorage storage = overWorld.getDataStorage();
+            MaidWorldData data = storage.computeIfAbsent(MaidWorldData.factory());
             data.setDirty();
             return data;
         }
         return null;
     }
 
-    public static MaidWorldData load(CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        MaidWorldData data = new MaidWorldData();
-        if (tag.contains(MAID_INFOS_TAG, Tag.TAG_COMPOUND)) {
-            CompoundTag infosTag = tag.getCompound(MAID_INFOS_TAG);
-            for (String key : infosTag.getAllKeys()) {
-                ListTag listTag = infosTag.getList(key, Tag.TAG_COMPOUND);
-                for (int i = 0; i < listTag.size(); i++) {
-                    CompoundTag infoTag = listTag.getCompound(i);
-                    String dimension = infoTag.getString("Dimension");
-                    @Nullable BlockPos chunkPos = NbtUtils.readBlockPos(infoTag, "ChunkPos").orElse(null);
-                    if (chunkPos == null) {
-                        continue;
-                    }
-                    UUID ownerId = infoTag.getUUID("OwnerId");
-                    UUID maidId = infoTag.getUUID("MaidId");
-                    long timestamp = infoTag.getLong("Timestamp");
-                    MutableComponent name = Component.Serializer.fromJson(infoTag.getString("Name"), provider);
-                    List<MaidInfo> maidInfos = data.infos.computeIfAbsent(ownerId, uuid -> Lists.newArrayList());
-                    maidInfos.add(new MaidInfo(dimension, chunkPos, ownerId, maidId, timestamp, name));
-                }
-            }
-        }
-        if (tag.contains(MAID_TOMBSTONES_TAG, Tag.TAG_COMPOUND)) {
-            CompoundTag tombstonesTag = tag.getCompound(MAID_TOMBSTONES_TAG);
-            for (String key : tombstonesTag.getAllKeys()) {
-                ListTag listTag = tombstonesTag.getList(key, Tag.TAG_COMPOUND);
-                for (int i = 0; i < listTag.size(); i++) {
-                    CompoundTag infoTag = listTag.getCompound(i);
-                    String dimension = infoTag.getString("Dimension");
-                    @Nullable BlockPos chunkPos = NbtUtils.readBlockPos(infoTag, "ChunkPos").orElse(null);
-                    if (chunkPos == null) {
-                        continue;
-                    }
-                    UUID ownerId = infoTag.getUUID("OwnerId");
-                    UUID tombstoneId = infoTag.getUUID("TombstoneId");
-                    long timestamp = infoTag.getLong("Timestamp");
-                    MutableComponent name = Component.Serializer.fromJson(infoTag.getString("Name"), provider);
-                    List<MaidInfo> tombstoneInfos = data.tombstones.computeIfAbsent(ownerId, uuid -> Lists.newArrayList());
-                    tombstoneInfos.add(new MaidInfo(dimension, chunkPos, ownerId, tombstoneId, timestamp, name));
-                }
-            }
-        }
-        return data;
-    }
-
-    @Override
-    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        CompoundTag infosTag = new CompoundTag();
-        infos.forEach((id, data) -> {
-            ListTag listTag = new ListTag();
-            data.forEach(info -> {
-                if (info.getChunkPos() == null) {
-                    return;
-                }
-                CompoundTag infoTag = new CompoundTag();
-                infoTag.putString("Dimension", info.getDimension());
-                infoTag.put("ChunkPos", NbtUtils.writeBlockPos(info.getChunkPos()));
-                infoTag.putUUID("OwnerId", info.getOwnerId());
-                infoTag.putUUID("MaidId", info.getEntityId());
-                infoTag.putLong("Timestamp", info.getTimestamp());
-                infoTag.putString("Name", Component.Serializer.toJson(info.getName(), provider));
-                listTag.add(infoTag);
-            });
-            infosTag.put(id.toString(), listTag);
-        });
-
-        CompoundTag tombstonesTag = new CompoundTag();
-        tombstones.forEach((id, data) -> {
-            ListTag listTag = new ListTag();
-            data.forEach(info -> {
-                if (info.getChunkPos() == null) {
-                    return;
-                }
-                CompoundTag infoTag = new CompoundTag();
-                infoTag.putString("Dimension", info.getDimension());
-                infoTag.put("ChunkPos", NbtUtils.writeBlockPos(info.getChunkPos()));
-                infoTag.putUUID("OwnerId", info.getOwnerId());
-                infoTag.putUUID("TombstoneId", info.getEntityId());
-                infoTag.putLong("Timestamp", info.getTimestamp());
-                infoTag.putString("Name", Component.Serializer.toJson(info.getName(), provider));
-                listTag.add(infoTag);
-            });
-            tombstonesTag.put(id.toString(), listTag);
-        });
-        tag.put(MAID_INFOS_TAG, infosTag);
-        tag.put(MAID_TOMBSTONES_TAG, tombstonesTag);
-        return tag;
-    }
-
     public void addInfo(MaidInfo info) {
-        UUID ownerId = info.getOwnerId();
+        UUID ownerId = info.ownerId();
         List<MaidInfo> maidInfos = this.infos.computeIfAbsent(ownerId, uuid -> Lists.newArrayList());
         maidInfos.add(info);
         this.setDirty();
     }
 
+    //TODO : 这里先简单判null
     public void addInfo(EntityMaid maid) {
-        String dimension = maid.level.dimension().location().toString();
+        String dimension = maid.level.dimension().identifier().toString();
         BlockPos chunkPos = maid.blockPosition();
-        UUID ownerId = maid.getOwnerUUID();
+        LivingEntity owner = maid.getOwner();
+        if (owner == null) {
+            return;
+        }
+        UUID ownerId = owner.getUUID();
         UUID maidId = maid.getUUID();
         long timestamp = System.currentTimeMillis();
         Component name = maid.getDisplayName();
@@ -159,10 +114,14 @@ public class MaidWorldData extends SavedData {
     }
 
     public void removeInfo(EntityMaid maid) {
-        UUID ownerId = maid.getOwnerUUID();
+        LivingEntity owner = maid.getOwner();
+        if (owner == null) {
+            return;
+        }
+        UUID ownerId = owner.getUUID();
         if (this.infos.containsKey(ownerId)) {
             UUID maidId = maid.getUUID();
-            this.infos.get(ownerId).removeIf(info -> info.getEntityId().equals(maidId));
+            this.infos.get(ownerId).removeIf(info -> info.entityId().equals(maidId));
             this.setDirty();
         }
     }
@@ -178,16 +137,20 @@ public class MaidWorldData extends SavedData {
     }
 
     public void addTombstones(MaidInfo info) {
-        UUID ownerId = info.getOwnerId();
+        UUID ownerId = info.ownerId();
         List<MaidInfo> tombstoneInfos = this.tombstones.computeIfAbsent(ownerId, uuid -> Lists.newArrayList());
         tombstoneInfos.add(info);
         this.setDirty();
     }
 
     public void addTombstones(EntityMaid maid, EntityTombstone tombstone) {
-        String dimension = maid.level.dimension().location().toString();
+        String dimension = maid.level.dimension().identifier().toString();
         BlockPos chunkPos = tombstone.blockPosition();
-        UUID ownerId = maid.getOwnerUUID();
+        LivingEntity owner = maid.getOwner();
+        if (owner == null) {
+            return;
+        }
+        UUID ownerId = owner.getUUID();
         UUID tombstoneId = tombstone.getUUID();
         long timestamp = System.currentTimeMillis();
         Component name = maid.getDisplayName();
@@ -198,7 +161,7 @@ public class MaidWorldData extends SavedData {
         UUID ownerId = tombstone.getOwnerId();
         if (this.tombstones.containsKey(ownerId)) {
             UUID tombstoneId = tombstone.getUUID();
-            this.tombstones.get(ownerId).removeIf(info -> info.getEntityId().equals(tombstoneId));
+            this.tombstones.get(ownerId).removeIf(info -> info.entityId().equals(tombstoneId));
             this.setDirty();
         }
     }
