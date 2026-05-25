@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.world.backups;
 
-import cn.sh1rocu.touhoulittlemaid.util.neoforge.TagValueOutputUtil;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueOutputUtil;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.Lists;
@@ -167,7 +167,7 @@ public final class MaidBackupsManager {
                 .orElse(new CompoundTag());
         ProblemReporter.ScopedCollector problemReporter = new ProblemReporter.ScopedCollector(maid.problemPath(), LOGGER);
         TagValueOutput tagValueOutput = TagValueOutput.createWithContext(problemReporter, maid.registryAccess());
-        TagValueOutputUtil.store(tagValueOutput, indexTag);
+        ValueOutputUtil.store(tagValueOutput, indexTag);
 
         return tagValueOutput;
     }

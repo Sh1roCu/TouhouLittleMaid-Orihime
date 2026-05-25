@@ -1,25 +1,21 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
 import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameEntityBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.GomokuCodec;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Point;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Statue;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
-public class TileEntityGomoku extends TileEntityJoy implements IBoardGameEntityBlock, IBlockEntityPersistentData {
-    public static final BlockEntityType<TileEntityGomoku> TYPE = BlockEntityType.Builder.of(TileEntityGomoku::new, InitBlocks.GOMOKU).build(null);
+public class TileEntityGomoku extends TileEntityJoy implements IBoardGameEntityBlock {
     private static final String CHESS_DATA = "ChessData";
     private static final String STATUE = "Statue";
     private static final String PLAYER_TURN = "PlayerTurn";
@@ -33,35 +29,29 @@ public class TileEntityGomoku extends TileEntityJoy implements IBoardGameEntityB
     private Point latestChessPoint = Point.NULL;
 
     public TileEntityGomoku(BlockPos pos, BlockState blockState) {
-        super(TYPE, pos, blockState);
+        super(InitBlocks.GOMOKU_TE, pos, blockState);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        ListTag listTag = new ListTag();
-        for (byte[] chessRow : chessData) {
-            listTag.add(new ByteArrayTag(chessRow));
-        }
-        tlm$getPersistentData().put(CHESS_DATA, listTag);
-        tlm$getPersistentData().putInt(STATUE, this.statue);
-        tlm$getPersistentData().putBoolean(PLAYER_TURN, this.playerTurn);
-        tlm$getPersistentData().putInt(CHESS_COUNTER, this.chessCounter);
-        tlm$getPersistentData().put(LATEST_CHESS_POINT, Point.toTag(this.latestChessPoint));
-        super.saveAdditional(pTag, pRegistries);
+    protected void saveAdditional(ValueOutput output) {
+        output.store(CHESS_DATA, ChessData.CODEC, new ChessData(chessData));
+        output.putInt(STATUE, this.statue);
+        output.putBoolean(PLAYER_TURN, this.playerTurn);
+        output.putInt(CHESS_COUNTER, this.chessCounter);
+        Point.toTag(this.latestChessPoint, output.child(LATEST_CHESS_POINT));
+        super.saveAdditional(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        ListTag listTag = tlm$getPersistentData().getList(CHESS_DATA, Tag.TAG_BYTE_ARRAY);
-        for (int i = 0; i < listTag.size(); i++) {
-            ByteArrayTag byteArray = (ByteArrayTag) listTag.get(i);
-            this.chessData[i] = byteArray.getAsByteArray();
-        }
-        this.statue = tlm$getPersistentData().getInt(STATUE);
-        this.playerTurn = tlm$getPersistentData().getBoolean(PLAYER_TURN);
-        this.chessCounter = tlm$getPersistentData().getInt(CHESS_COUNTER);
-        this.latestChessPoint = Point.fromTag(tlm$getPersistentData().getCompound(LATEST_CHESS_POINT));
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.chessData = new byte[15][15];
+        input.read(CHESS_DATA, ChessData.CODEC).ifPresent(data -> this.chessData = data.grid);
+        this.statue = input.getIntOr(STATUE, Statue.IN_PROGRESS.ordinal());
+        this.playerTurn = input.getBooleanOr(PLAYER_TURN, true);
+        this.chessCounter = input.getIntOr(CHESS_COUNTER, 0);
+        input.child(LATEST_CHESS_POINT).ifPresent(pointInput ->
+                this.latestChessPoint = Point.fromTag(pointInput));
     }
 
     public void reset() {
@@ -147,5 +137,30 @@ public class TileEntityGomoku extends TileEntityJoy implements IBoardGameEntityB
         this.chessCounter = stateData.turnCount();
         this.latestChessPoint = stateData.latestPoint();
         this.refresh();
+    }
+
+    private record ChessData(byte[][] grid) {
+        private static final int SIZE = 15;
+        private static final int TOTAL_SIZE = SIZE * SIZE;
+
+        private static final Codec<ChessData> CODEC = Codec.BYTE_BUFFER.xmap(
+                buffer -> {
+                    byte[] bytes = new byte[TOTAL_SIZE];
+                    buffer.get(bytes);
+
+                    byte[][] grid = new byte[SIZE][SIZE];
+                    for (int i = 0; i < TOTAL_SIZE; i++) {
+                        grid[i / SIZE][i % SIZE] = bytes[i];
+                    }
+                    return new ChessData(grid);
+                },
+                data -> {
+                    byte[] flattened = new byte[TOTAL_SIZE];
+                    for (int x = 0; x < SIZE; x++) {
+                        System.arraycopy(data.grid[x], 0, flattened, x * 15, SIZE);
+                    }
+                    return ByteBuffer.wrap(flattened);
+                }
+        );
     }
 }

@@ -1,10 +1,10 @@
 package com.github.tartaricacid.touhoulittlemaid.util;
 
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueIOSerializable;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import java.util.List;
 
