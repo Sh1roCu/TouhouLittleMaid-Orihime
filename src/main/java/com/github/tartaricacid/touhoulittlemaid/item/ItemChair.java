@@ -1,22 +1,21 @@
 package com.github.tartaricacid.touhoulittlemaid.item;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IItemRenderer;
-import com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity.TileEntityItemStackChairRenderer;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -35,22 +35,18 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.*;
 
-public class ItemChair extends Item implements IItemRenderer {
+public class ItemChair extends Item {
     private static final String DEFAULT_MODEL_ID = "touhou_little_maid:cushion";
 
-    @Environment(EnvType.CLIENT)
-    @Override
-    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-        return TileEntityItemStackChairRenderer.INSTANCE.get();
-    }
-
-    public ItemChair() {
-        super((new Properties()).stacksTo(1));
+    public ItemChair(Identifier id) {
+        super((new Properties())
+                .setId(ResourceKey.create(Registries.ITEM, id))
+                .stacksTo(1));
     }
 
     public static Data getData(ItemStack stack) {
@@ -67,7 +63,6 @@ public class ItemChair extends Item implements IItemRenderer {
         return stack;
     }
 
-    @Environment(EnvType.CLIENT)
     public static void fillItemCategory(CreativeModeTab.Output items) {
         for (String key : CustomPackLoader.CHAIR_MODELS.getModelIdSet()) {
             float height = CustomPackLoader.CHAIR_MODELS.getModelMountedYOffset(key);
@@ -94,7 +89,7 @@ public class ItemChair extends Item implements IItemRenderer {
                     world.playSound(null, chair.getX(), chair.getY(), chair.getZ(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                 }
                 stack.shrink(1);
-                return InteractionResult.sidedSuccess(world.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.FAIL;
@@ -106,7 +101,7 @@ public class ItemChair extends Item implements IItemRenderer {
             if (stack.get(DataComponents.CUSTOM_NAME) != null) {
                 e.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
             }
-        }, pos, EntitySpawnReason.SPAWN_EGG, true, true);
+        }, pos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
         if (chair != null) {
             addExtraData(player, stack, chair, rotation);
         }
@@ -121,18 +116,17 @@ public class ItemChair extends Item implements IItemRenderer {
         chair.setNoGravity(data.isNoGravity());
         chair.setOwner(player);
         float yaw = (float) Mth.floor((Mth.wrapDegrees(rotation - 180) + 22.5F) / 45.0F) * 45.0F;
-        chair.moveTo(chair.getX(), chair.getY(), chair.getZ(), yaw, 0.0F);
+        chair.snapTo(chair.getX(), chair.getY(), chair.getZ(), yaw, 0.0F);
         chair.setYBodyRot(yaw);
         chair.setYHeadRot(yaw);
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public Component getName(ItemStack stack) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             // 添加坐垫前缀，方便搜索
             MutableComponent prefix = Component.translatable("item.touhou_little_maid.chair.prefix");
-            Data data = getData(stack);
+            ItemChair.Data data = getData(stack);
             if (CustomPackLoader.CHAIR_MODELS.getInfo(data.modelId()).isPresent()) {
                 String name = CustomPackLoader.CHAIR_MODELS.getInfo(data.modelId()).get().getName();
                 return prefix.append(ParseI18n.parse(name));
@@ -142,18 +136,17 @@ public class ItemChair extends Item implements IItemRenderer {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.chair.place.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.chair.destroy.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.chair.gui.desc").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("tooltips.touhou_little_maid.chair.place.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltips.touhou_little_maid.chair.destroy.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltips.touhou_little_maid.chair.gui.desc").withStyle(ChatFormatting.GRAY));
         // 调试模式，不加国际化
-        if (flagIn.isAdvanced() && Screen.hasShiftDown()) {
+        if (flagIn.isAdvanced() && Minecraft.getInstance().hasShiftDown()) {
             Data data = Data.deserialization(stack);
-            tooltip.add(Component.literal("Model Id: " + data.modelId()).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Mounted Height: " + data.height()).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Tameable Can Ride: " + data.canRide()).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.literal("Is No Gravity: " + data.isNoGravity()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.literal("Model Id: " + data.modelId()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.literal("Mounted Height: " + data.height()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.literal("Tameable Can Ride: " + data.canRide()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.literal("Is No Gravity: " + data.isNoGravity()).withStyle(ChatFormatting.GRAY));
         }
     }
 

@@ -7,6 +7,8 @@ import com.github.tartaricacid.touhoulittlemaid.compat.kubejs.ModKubeJSCompat;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

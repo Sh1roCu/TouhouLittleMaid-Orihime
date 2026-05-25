@@ -7,41 +7,44 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidInfo;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidWorldData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.*;
 
 public class ItemServantBell extends Item {
     private static final int MIN_USE_DURATION = 20;
 
-    public ItemServantBell() {
-        super((new Properties().stacksTo(1)));
+    public ItemServantBell(Identifier id) {
+        super((new Properties()
+                .stacksTo(1))
+                .setId(ResourceKey.create(Registries.ITEM, id)));
     }
 
     public static void recordMaidInfo(ItemStack stack, UUID uuid, String tip) {
@@ -59,7 +62,7 @@ public class ItemServantBell extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand usedHand) {
         if (usedHand == InteractionHand.MAIN_HAND && target instanceof EntityMaid maid && maid.isOwnedBy(player)) {
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            if (maid.level.isClientSide()) {
                 openServantBellSetScreen(maid);
             }
             return InteractionResult.SUCCESS;
@@ -68,28 +71,28 @@ public class ItemServantBell extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         UUID searchUuid = getMaidUuid(stack);
         if (searchUuid != null) {
             playerIn.startUsingItem(handIn);
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             playerIn.sendSystemMessage(Component.translatable("message.touhou_little_maid.servant_bell.data_is_empty"));
         }
         return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player) || timeLeft < MIN_USE_DURATION) {
-            return;
+            return false;
         }
         UUID searchUuid = getMaidUuid(stack);
         if (searchUuid == null) {
             player.sendSystemMessage(Component.translatable("message.touhou_little_maid.servant_bell.data_is_empty"));
-            return;
+            return false;
         }
         if (worldIn instanceof ServerLevel serverLevel) {
             List<? extends EntityMaid> maids = serverLevel.getEntities(EntityMaid.TYPE, maid -> checkMaidUuid(player, maid, searchUuid));
@@ -104,7 +107,8 @@ public class ItemServantBell extends Item {
         if (player instanceof ServerPlayer serverPlayer) {
             InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.USE_SERVANT_BELL);
         }
-        player.getCooldowns().addCooldown(this, 20);
+        player.getCooldowns().addCooldown(stack, 20);
+        return true;
     }
 
     @Nullable
@@ -135,10 +139,10 @@ public class ItemServantBell extends Item {
             player.sendSystemMessage(Component.translatable("message.touhou_little_maid.servant_bell.no_result"));
             return;
         }
-        infos.stream().filter(info -> info.getEntityId().equals(searchUuid)).findFirst().ifPresentOrElse(info -> {
-            String dimension = info.getDimension();
-            String playerDimension = player.level.dimension().location().toString();
-            stack.set(SAKUYA_BELL_SHOW_TAG, new ItemFoxScroll.TrackInfo(dimension, info.getChunkPos()));
+        infos.stream().filter(info -> info.entityId().equals(searchUuid)).findFirst().ifPresentOrElse(info -> {
+            String dimension = info.dimension();
+            String playerDimension = player.level.dimension().identifier().toString();
+            stack.set(SAKUYA_BELL_SHOW_TAG, new ItemFoxScroll.TrackInfo(dimension, info.chunkPos()));
             if (dimension.equals(playerDimension)) {
                 player.sendSystemMessage(Component.translatable("message.touhou_little_maid.servant_bell.show_pos"));
             } else {
@@ -151,9 +155,8 @@ public class ItemServantBell extends Item {
         return maid.isOwnedBy(player) && maid.getUUID().equals(searchUuid);
     }
 
-    @Environment(EnvType.CLIENT)
     private void openServantBellSetScreen(EntityMaid maid) {
-        if (maid.level.isClientSide) {
+        if (maid.level.isClientSide()) {
             Minecraft.getInstance().setScreen(new ServantBellSetScreen(maid));
         }
     }
@@ -164,8 +167,8 @@ public class ItemServantBell extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BLOCK;
+    public ItemUseAnimation getUseAnimation(ItemStack pStack) {
+        return ItemUseAnimation.BLOCK;
     }
 
     @Override
@@ -178,13 +181,13 @@ public class ItemServantBell extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         UUID uuid = getMaidUuid(stack);
         if (uuid != null) {
-            tooltip.add(Component.translatable("tooltips.touhou_little_maid.servant_bell.uuid", uuid.toString()).withStyle(ChatFormatting.GRAY));
-            tooltip.add(CommonComponents.space());
+            tooltip.accept(Component.translatable("tooltips.touhou_little_maid.servant_bell.uuid", uuid.toString()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(CommonComponents.space());
         }
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.servant_bell.desc.1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.servant_bell.desc.2").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltips.touhou_little_maid.servant_bell.desc.1").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltips.touhou_little_maid.servant_bell.desc.2").withStyle(ChatFormatting.GRAY));
     }
 }

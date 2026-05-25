@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.item.bauble;
 
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAttackEvent;
@@ -7,14 +8,13 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.TeleportHelper;
-import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.HIGH;
-import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.LOW;
 
 public class NimbleFabricBauble implements IMaidBauble {
     private static final int MAX_RETRY = 16;
@@ -30,9 +30,9 @@ public class NimbleFabricBauble implements IMaidBauble {
             int slot = ItemsUtil.getBaubleSlotInMaid(maid, this);
             if (slot >= 0) {
                 event.setCanceled(true);
-                ItemStack stack = maid.getMaidBauble().getStackInSlot(slot);
+                ItemStack stack = ItemUtil.getStack(maid.getMaidBauble(), slot);
                 maid.hurtAndBreak(stack, 1);
-                maid.getMaidBauble().setStackInSlot(slot, stack);
+                maid.getMaidBauble().set(slot, ItemVariant.of(stack), 1);
                 for (int i = 0; i < MAX_RETRY; ++i) {
                     if (TeleportHelper.teleport(maid)) {
                         if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
