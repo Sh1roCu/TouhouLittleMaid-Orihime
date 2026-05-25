@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -11,18 +10,18 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
-public class TileEntityMaidBed extends BlockEntity implements IBlockEntityPersistentData {
-    public static final BlockEntityType<TileEntityMaidBed> TYPE = BlockEntityType.Builder.of(TileEntityMaidBed::new, InitBlocks.MAID_BED).build(null);
+public class TileEntityMaidBed extends BlockEntity {
     private static final String COLOR_TAG = "BedColor";
     private DyeColor color = DyeColor.PINK;
 
     public TileEntityMaidBed(BlockPos blockPos, BlockState blockState) {
-        super(TYPE, blockPos, blockState);
+        super(InitBlocks.MAID_BED_TE, blockPos, blockState);
     }
 
     public void setColor(DyeColor color) {
@@ -31,15 +30,15 @@ public class TileEntityMaidBed extends BlockEntity implements IBlockEntityPersis
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        tlm$getPersistentData().putInt(COLOR_TAG, color.getId());
-        super.saveAdditional(tag, registries);
+    public void saveAdditional(ValueOutput output) {
+        output.putInt(COLOR_TAG, color.getId());
+        super.saveAdditional(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        color = DyeColor.byId(tlm$getPersistentData().getInt(COLOR_TAG));
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        color = DyeColor.byId(input.getIntOr(COLOR_TAG, DyeColor.PINK.getId()));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.tileentity;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -8,39 +7,38 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TileEntityStatue extends BlockEntity implements IBlockEntityPersistentData {
-    public static final BlockEntityType<TileEntityStatue> TYPE = BlockEntityType.Builder.of(TileEntityStatue::new, InitBlocks.STATUE).build(null);
+import static net.minecraft.world.item.component.CustomData.COMPOUND_TAG_CODEC;
+
+public class TileEntityStatue extends BlockEntity {
     private static final String STATUE_SIZE_TAG = "StatueSize";
     private static final String CORE_BLOCK_TAG = "CoreBlock";
     private static final String CORE_BLOCK_POS_TAG = "CoreBlockPos";
     private static final String STATUE_FACING_TAG = "StatueFacing";
     private static final String ALL_BLOCKS_TAG = "AllBlocks";
     private static final String EXTRA_MAID_DATA = "ExtraMaidData";
+
     private Size size = Size.SMALL;
     private boolean isCoreBlock = false;
     private BlockPos coreBlockPos = BlockPos.ZERO;
     private Direction facing = Direction.NORTH;
     private List<BlockPos> allBlocks = Lists.newArrayList();
-    @Nullable
-    private CompoundTag extraMaidData = null;
+    private @Nullable CompoundTag extraMaidData = null;
 
     public TileEntityStatue(BlockPos blockPos, BlockState blockState) {
-        super(TYPE, blockPos, blockState);
+        super(InitBlocks.STATUE_TE, blockPos, blockState);
     }
 
     public void setForgeData(Size size, boolean isCoreBlock, BlockPos coreBlockPos, Direction facing,
@@ -55,38 +53,30 @@ public class TileEntityStatue extends BlockEntity implements IBlockEntityPersist
     }
 
     @Override
-    public void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        tlm$getPersistentData().putInt(STATUE_SIZE_TAG, size.ordinal());
-        tlm$getPersistentData().putBoolean(CORE_BLOCK_TAG, isCoreBlock);
-        tlm$getPersistentData().put(CORE_BLOCK_POS_TAG, NbtUtils.writeBlockPos(coreBlockPos));
-        tlm$getPersistentData().putString(STATUE_FACING_TAG, facing.getSerializedName());
-        ListTag blockList = new ListTag();
-        for (BlockPos pos : allBlocks) {
-            blockList.add(NbtUtils.writeBlockPos(pos));
-        }
-        tlm$getPersistentData().put(ALL_BLOCKS_TAG, blockList);
+    public void saveAdditional(ValueOutput output) {
+        output.putInt(STATUE_SIZE_TAG, size.ordinal());
+        output.putBoolean(CORE_BLOCK_TAG, isCoreBlock);
+        output.store(CORE_BLOCK_POS_TAG, BlockPos.CODEC, coreBlockPos);
+        output.store(STATUE_FACING_TAG, Direction.CODEC, facing);
+        output.store(ALL_BLOCKS_TAG, BlockPos.CODEC.listOf(), allBlocks);
         if (extraMaidData != null) {
-            tlm$getPersistentData().put(EXTRA_MAID_DATA, extraMaidData);
+            output.store(EXTRA_MAID_DATA, COMPOUND_TAG_CODEC, extraMaidData);
         }
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        size = Size.getSizeByIndex(tlm$getPersistentData().getInt(STATUE_SIZE_TAG));
-        isCoreBlock = tlm$getPersistentData().getBoolean(CORE_BLOCK_TAG);
-        NbtUtils.readBlockPos(tlm$getPersistentData(), CORE_BLOCK_POS_TAG).ifPresent(pos -> coreBlockPos = pos);
-        facing = Direction.byName(tlm$getPersistentData().getString(STATUE_FACING_TAG));
-        allBlocks.clear();
-        ListTag blockList = tlm$getPersistentData().getList(ALL_BLOCKS_TAG, Tag.TAG_COMPOUND);
-        for (int i = 0; i < blockList.size(); i++) {
-            int[] pos = blockList.getIntArray(i);
-            allBlocks.add(new BlockPos(pos[0], pos[1], pos[2]));
-        }
-        if (tlm$getPersistentData().contains(EXTRA_MAID_DATA, Tag.TAG_COMPOUND)) {
-            extraMaidData = tlm$getPersistentData().getCompound(EXTRA_MAID_DATA);
-        }
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        size = Size.getSizeByIndex(input.getIntOr(STATUE_SIZE_TAG, Size.SMALL.ordinal()));
+        isCoreBlock = input.getBooleanOr(CORE_BLOCK_TAG, false);
+        coreBlockPos = input.read(CORE_BLOCK_POS_TAG, BlockPos.CODEC).orElse(BlockPos.ZERO);
+        facing = input.read(STATUE_FACING_TAG, Direction.CODEC).orElse(Direction.NORTH);
+        input.read(ALL_BLOCKS_TAG, BlockPos.CODEC.listOf()).ifPresent(list -> {
+            allBlocks.clear();
+            allBlocks.addAll(list);
+        });
+        extraMaidData = input.read(EXTRA_MAID_DATA, COMPOUND_TAG_CODEC).orElse(null);
     }
 
     public BlockPos getWorldPosition() {
@@ -164,6 +154,4 @@ public class TileEntityStatue extends BlockEntity implements IBlockEntityPersist
             return dimension;
         }
     }
-
-
 }

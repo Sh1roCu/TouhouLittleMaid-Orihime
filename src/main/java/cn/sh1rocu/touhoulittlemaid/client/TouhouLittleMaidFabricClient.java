@@ -1,18 +1,19 @@
 package cn.sh1rocu.touhoulittlemaid.client;
 
-import cn.sh1rocu.touhoulittlemaid.api.event.*;
+import cn.sh1rocu.touhoulittlemaid.api.event.KeyInputCallback;
+import cn.sh1rocu.touhoulittlemaid.api.event.PlaySoundEvent;
+import cn.sh1rocu.touhoulittlemaid.api.event.PlaySoundSourceEvent;
+import cn.sh1rocu.touhoulittlemaid.api.event.RenderHandEvent;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IItemRenderer;
 import com.github.tartaricacid.simplebedrockmodel.client.manager.BedrockEntityModelRegisterEvent;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaidClient;
 import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
-import com.github.tartaricacid.touhoulittlemaid.api.event.client.RenderMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.download.InfoGetManager;
 import com.github.tartaricacid.touhoulittlemaid.client.event.*;
 import com.github.tartaricacid.touhoulittlemaid.client.init.*;
 import com.github.tartaricacid.touhoulittlemaid.client.input.DismountBroomKey;
 import com.github.tartaricacid.touhoulittlemaid.client.input.STTChatKey;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.DebugClientRenderEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.ClientExtensionsEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.ClientTickEvent;
@@ -25,16 +26,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
 
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.*;
 
