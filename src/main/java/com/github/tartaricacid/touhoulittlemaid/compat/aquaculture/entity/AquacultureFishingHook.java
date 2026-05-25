@@ -232,4 +232,4 @@ public abstract class AquacultureFishingHook {
         this.bobber = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
         this.fishingRod = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
     }
-}
+}*/
