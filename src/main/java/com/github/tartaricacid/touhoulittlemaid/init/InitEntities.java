@@ -7,7 +7,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidNeare
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidPickupEntitiesSensor;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockAction;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegister;
-import com.github.tartaricacid.touhoulittlemaid.entity.data.MaidTaskDataMaps;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -113,7 +112,6 @@ public final class InitEntities {
     private static void registerSerializers() {
         EntityDataSerializers.registerSerializer(MaidSchedule.DATA);
         EntityDataSerializers.registerSerializer(ChatBubbleRegister.INSTANCE);
-        EntityDataSerializers.registerSerializer(MaidTaskDataMaps.SERIALIZER_INSTANCE);
         EntityDataSerializers.registerSerializer(SERIALIZER_OPTIONAL_UUID);
         EntityDataSerializers.registerSerializer(MaidGameRecordManager.WIN_COUNT_SERIALIZER);
     }

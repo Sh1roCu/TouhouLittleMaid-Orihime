@@ -5,17 +5,31 @@ import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class ChatTokensAttachment {
+    public static final Codec<ChatTokensAttachment> CODEC = RecordCodecBuilder.create(ins -> ins.group(
+            Codec.INT.fieldOf("num").forGetter(o -> o.num)
+    ).apply(ins, ChatTokensAttachment::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChatTokensAttachment> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, ChatTokensAttachment::get,
+            ChatTokensAttachment::new
+    );
+
     public static final AttachmentType<ChatTokensAttachment> TYPE = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "chat_tokens"),
             builder -> builder
                     .initializer(() -> new ChatTokensAttachment(0))
                     .copyOnDeath()
-                    .persistent(RecordCodecBuilder.create(ins -> ins.group(Codec.INT.fieldOf("num")
-                            .forGetter(o -> o.num)).apply(ins, ChatTokensAttachment::new))));
+                    .persistent(CODEC)
+                    .syncWith(STREAM_CODEC, AttachmentSyncPredicate.all()));
+
     private int num;
 
     public ChatTokensAttachment(int num) {

@@ -6,8 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,7 +15,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.util.Objects;
 
@@ -50,7 +51,9 @@ public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int cur
     };
 
     public SyncMaidAIDataPacket(EntityMaid maid, ServerPlayer player) {
-        this(maid.getId(), maid.getAiChatManager().writeToTag(new CompoundTag()),
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.level.registryAccess());
+        maid.getAiChatManager().saveValue(output);
+        this(maid.getId(), output.buildResult(),
                 player.getAttachedOrCreate(InitDataAttachment.CHAT_TOKENS).get(),
                 AIConfig.MAX_TOKENS_PER_PLAYER.get()
         );
@@ -61,12 +64,10 @@ public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int cur
         return TYPE;
     }
 
-    @Environment(EnvType.CLIENT)
     public static void handle(SyncMaidAIDataPacket message, ClientPlayNetworking.Context context) {
         context.client().execute(() -> handle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handle(SyncMaidAIDataPacket message) {
         ClientLevel level = Minecraft.getInstance().level;
         LocalPlayer player = Minecraft.getInstance().player;
@@ -76,8 +77,8 @@ public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int cur
         }
         Entity entity = level.getEntity(message.entityId);
         if (entity instanceof EntityMaid maid) {
-            maid.getAiChatManager().readFromTag(message.configData);
-
+            var input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), message.configData);
+            maid.getAiChatManager().loadValue(input);
             AIChatScreen chatScreen = new AIChatScreen(maid);
             chatScreen.updateTokens(message.currentTokens, message.maxTokens);
             Minecraft.getInstance().setScreen(chatScreen);

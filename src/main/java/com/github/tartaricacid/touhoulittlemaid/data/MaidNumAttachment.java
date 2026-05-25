@@ -5,17 +5,33 @@ import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class MaidNumAttachment {
-    public static final AttachmentType<MaidNumAttachment> TYPE = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "maid_num"),
+    public static final Codec<MaidNumAttachment> CODEC = RecordCodecBuilder.create(ins -> ins.group(
+            Codec.INT.fieldOf("num")
+                    .forGetter(o -> o.num)
+    ).apply(ins, MaidNumAttachment::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MaidNumAttachment> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, MaidNumAttachment::get,
+            MaidNumAttachment::new
+    );
+
+    public static final AttachmentType<MaidNumAttachment> TYPE = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "maid_num"),
             builder -> builder
                     .initializer(() -> new MaidNumAttachment(0))
                     .copyOnDeath()
-                    .persistent(RecordCodecBuilder.create(ins -> ins.group(Codec.INT.fieldOf("num")
-                            .forGetter(o -> o.num)).apply(ins, MaidNumAttachment::new))));
+                    .persistent(CODEC)
+                    .syncWith(STREAM_CODEC, AttachmentSyncPredicate.all()));
+
     private int num;
 
     public MaidNumAttachment(int num) {
