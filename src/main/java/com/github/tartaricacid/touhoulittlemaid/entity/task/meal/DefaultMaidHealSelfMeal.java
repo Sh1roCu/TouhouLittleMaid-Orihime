@@ -16,9 +16,9 @@ public class DefaultMaidHealSelfMeal implements IMaidMeal {
     private static final int MAX_PROBABILITY = 5;
 
     public static boolean isHealMeal(ItemStack stack) {
-        return stack.get(DataComponents.FOOD) != null
-                && !IMaidMeal.isBlockList(stack, MaidConfig.MAID_HEAL_MEALS_BLOCK_LIST.get())
-                && !IMaidMeal.isBlockList(stack, MaidMealRegConfigEvent.HEAL_MEAL_REGEX);
+        return stack.has(DataComponents.FOOD)
+               && !IMaidMeal.isBlockList(stack, MaidConfig.MAID_HEAL_MEALS_BLOCK_LIST.get())
+               && !IMaidMeal.isBlockList(stack, MaidMealRegConfigEvent.HEAL_MEAL_REGEX);
     }
 
     @Override
@@ -28,7 +28,6 @@ public class DefaultMaidHealSelfMeal implements IMaidMeal {
 
     @Override
     public void onMaidEat(EntityMaid maid, ItemStack stack, InteractionHand hand) {
-        //FoodProperties foodProperties = stack.getFoodProperties(maid);
         FoodProperties foodProperties = stack.get(DataComponents.FOOD);
         if (foodProperties != null) {
             // 调用饰品

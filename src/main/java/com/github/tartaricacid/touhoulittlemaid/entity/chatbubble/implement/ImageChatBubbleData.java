@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.implement.ImageChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
@@ -23,7 +21,6 @@ public class ImageChatBubbleData implements IChatBubbleData {
     private final int textureHeight;
     private final int priority;
 
-    @Environment(EnvType.CLIENT)
     private IChatBubbleRenderer renderer;
 
     private ImageChatBubbleData(int existTick, Identifier bg, Identifier image, int width, int height,
@@ -73,7 +70,6 @@ public class ImageChatBubbleData implements IChatBubbleData {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public IChatBubbleRenderer getRenderer(IChatBubbleRenderer.Position position) {
         if (this.renderer == null) {
             this.renderer = new ImageChatBubbleRenderer(this.width, this.height, this.uOffset, this.vOffset,

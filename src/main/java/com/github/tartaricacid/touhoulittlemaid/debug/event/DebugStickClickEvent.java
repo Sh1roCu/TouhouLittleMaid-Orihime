@@ -11,8 +11,6 @@ import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 
-import java.util.UUID;
-
 
 @VisibleForDebug
 public class DebugStickClickEvent {
@@ -21,13 +19,13 @@ public class DebugStickClickEvent {
         EntityMaid maid = event.getMaid();
         if (player.getMainHandItem().is(Items.DEBUG_STICK) && TouhouLittleMaid.DEBUG) {
             if (player.isShiftKeyDown()) {
-                maid.setOwnerUUID(UUID.randomUUID());
+                maid.setOwner(null);
                 maid.level.broadcastEntityEvent(maid, EntityEvent.TAMING_SUCCEEDED);
-                if (!event.getWorld().isClientSide) {
+                if (!event.getWorld().isClientSide()) {
                     player.sendSystemMessage(Component.translatable("debug.touhou_little_maid.debug_stick.random_owner_uuid"));
                 }
             } else {
-                if (!event.getWorld().isClientSide) {
+                if (!event.getWorld().isClientSide()) {
                     DebugMaidManager.triggerDebuggingMaid((ServerPlayer) player, maid);
                 }
             }

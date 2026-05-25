@@ -52,7 +52,7 @@ public final class FallbackIngredient implements CustomIngredient {
 
     @Override
     public Stream<Holder<Item>> items() {
-        return this.resolvedIngredient.items();
+        return this.resolvedIngredient.values.stream();
     }
 
     @Override

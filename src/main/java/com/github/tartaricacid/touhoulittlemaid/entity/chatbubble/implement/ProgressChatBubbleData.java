@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.implement.ProgressChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -23,7 +21,6 @@ public class ProgressChatBubbleData implements IChatBubbleData {
     private final double progress;
     private final boolean alignCenter;
 
-    @Environment(EnvType.CLIENT)
     private IChatBubbleRenderer renderer;
 
     private ProgressChatBubbleData(int existTick, Identifier bg, int priority, Component text, int barBackgroundColor,
@@ -66,7 +63,6 @@ public class ProgressChatBubbleData implements IChatBubbleData {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public IChatBubbleRenderer getRenderer(IChatBubbleRenderer.Position position) {
         if (renderer == null) {
             renderer = new ProgressChatBubbleRenderer(this.bg, this.text, this.barBackgroundColor, this.barForegroundColor, this.progress, this.alignCenter);
@@ -78,7 +74,7 @@ public class ProgressChatBubbleData implements IChatBubbleData {
         @Override
         public IChatBubbleData readFromBuff(FriendlyByteBuf buf) {
             // 往客户端同步的数据里，不需要同步 existTick 和 priority，这两个数据仅在服务端有效
-            return new ProgressChatBubbleData(DEFAULT_EXIST_TICK, buf.readIdentifier(), DEFAULT_PRIORITY, buf.readJsonWithCodec(ComponentSerialization.CODEC),
+            return new ProgressChatBubbleData(DEFAULT_EXIST_TICK, buf.readIdentifier(), DEFAULT_PRIORITY, buf.readLenientJsonWithCodec(ComponentSerialization.CODEC),
                     buf.readInt(), buf.readInt(), buf.readDouble(), buf.readBoolean());
         }
 

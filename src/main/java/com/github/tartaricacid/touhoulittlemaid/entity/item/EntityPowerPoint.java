@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn;
+import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
@@ -10,15 +11,15 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.BeaconAbsorbPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SyncDataPackage;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -31,13 +32,16 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment.POWER_NUM;
 
 public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn, IEntityExtension {
     public static final EntityType<EntityPowerPoint> TYPE = EntityType.Builder.<EntityPowerPoint>of(EntityPowerPoint::new, MobCategory.MISC)
-            .sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20).build("power_point");
+            .sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20)
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "power_point")));
     private static final int MAX_AGE = 6000;
     public int tickCount;
     public int age;
@@ -93,7 +97,7 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     }
 
     public static void spawnExplosionParticle(Level world, float x, float y, float z, RandomSource rand) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             return;
         }
         for (int i = 0; i < 5; ++i) {
@@ -112,7 +116,7 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
         float x = (float) position().x;
         float y = (float) position().y + 0.125F;
         float z = (float) position().z;
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             spawnExplosionParticle(level, x, y, z, random);
         } else {
             NetworkHandler.sendToNearby(this, new BeaconAbsorbPackage(x, y, z));
@@ -215,12 +219,10 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     protected void doWaterSplashEffect() {
     }
 
+
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.level.isClientSide || !this.isAlive()) {
-            return false;
-        }
-        if (!this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (!this.isInvulnerableToBase(source)) {
             this.markHurt();
             this.health = (int) ((float) this.health - amount);
             if (this.health <= 0) {
@@ -231,22 +233,22 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput compound) {
         compound.putShort("Health", (short) this.health);
         compound.putShort("Age", (short) this.age);
         compound.putShort("Value", (short) this.value);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.health = compound.getShort("Health");
-        this.age = compound.getShort("Age");
-        this.value = compound.getShort("Value");
+    public void readAdditionalSaveData(ValueInput compound) {
+        this.health = compound.getShortOr("Health", (short) 0);
+        this.age = compound.getShortOr("Age", (short) 0);
+        this.value = compound.getShortOr("Value", (short) 0);
     }
 
     @Override
     public void playerTouch(Player player) {
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             return;
         }
 
@@ -276,8 +278,8 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     }
 
     public void take(Entity player, int quantity) {
-        if (this.isAlive() && !this.level.isClientSide) {
-            ((ServerLevel) this.level).getChunkSource().broadcast(this, new ClientboundTakeItemEntityPacket(this.getId(), player.getId(), quantity));
+        if (this.isAlive() && !this.level.isClientSide()) {
+            ((ServerLevel) this.level).getChunkSource().sendToTrackingPlayers(this, new ClientboundTakeItemEntityPacket(this.getId(), player.getId(), quantity));
         }
     }
 
@@ -285,7 +287,6 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
         return this.value;
     }
 
-    @Environment(EnvType.CLIENT)
     public int getIcon() {
         if (this.value >= 485) {
             return 10;

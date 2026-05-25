@@ -4,13 +4,12 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.implement.WaitingChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class WaitingChatBubbleData implements IChatBubbleData {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "waiting");
@@ -22,7 +21,6 @@ public class WaitingChatBubbleData implements IChatBubbleData {
     private final @Nullable Component secondaryText;
     private final Identifier icon;
 
-    @Environment(EnvType.CLIENT)
     private IChatBubbleRenderer renderer;
 
     private WaitingChatBubbleData(int existTick, Identifier bg, int priority, Component text,
@@ -68,7 +66,6 @@ public class WaitingChatBubbleData implements IChatBubbleData {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public IChatBubbleRenderer getRenderer(IChatBubbleRenderer.Position position) {
         if (renderer == null) {
             renderer = new WaitingChatBubbleRenderer(this.bg, this.text, this.secondaryText, this.icon);
@@ -85,12 +82,11 @@ public class WaitingChatBubbleData implements IChatBubbleData {
         @Override
         public IChatBubbleData readFromBuff(FriendlyByteBuf buf) {
             // 往客户端同步的数据里，不需要同步 existTick 和 priority，这两个数据仅在服务端有效
-
             Identifier bg = buf.readIdentifier();
-            Component text = buf.readJsonWithCodec(ComponentSerialization.CODEC);
+            Component text = buf.readLenientJsonWithCodec(ComponentSerialization.CODEC);
             Component secondaryText = null;
             if (buf.readBoolean()) {
-                secondaryText = buf.readJsonWithCodec(ComponentSerialization.CODEC);
+                secondaryText = buf.readLenientJsonWithCodec(ComponentSerialization.CODEC);
             }
             return new WaitingChatBubbleData(DEFAULT_EXIST_TICK, bg, DEFAULT_PRIORITY, text, secondaryText, buf.readIdentifier());
         }

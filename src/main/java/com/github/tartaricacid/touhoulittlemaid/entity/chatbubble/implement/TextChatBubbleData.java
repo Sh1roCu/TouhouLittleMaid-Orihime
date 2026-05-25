@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.implement.TextChatBubbleRenderer;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.IChatBubbleData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -19,7 +17,6 @@ public class TextChatBubbleData implements IChatBubbleData {
     private final int priority;
     private Component text;
 
-    @Environment(EnvType.CLIENT)
     private IChatBubbleRenderer renderer;
 
     private TextChatBubbleData(int existTick, Component text, Identifier bg, int priority) {
@@ -65,7 +62,6 @@ public class TextChatBubbleData implements IChatBubbleData {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public IChatBubbleRenderer getRenderer(IChatBubbleRenderer.Position position) {
         if (renderer == null) {
             renderer = new TextChatBubbleRenderer(this.text, this.bg, position);
@@ -77,7 +73,7 @@ public class TextChatBubbleData implements IChatBubbleData {
         @Override
         public IChatBubbleData readFromBuff(FriendlyByteBuf buf) {
             // 往客户端同步的数据里，不需要同步 existTick 和 priority，这两个数据仅在服务端有效
-            return new TextChatBubbleData(DEFAULT_EXIST_TICK, buf.readJsonWithCodec(ComponentSerialization.CODEC), buf.readIdentifier());
+            return new TextChatBubbleData(DEFAULT_EXIST_TICK, buf.readLenientJsonWithCodec(ComponentSerialization.CODEC), buf.readIdentifier());
         }
 
         @Override

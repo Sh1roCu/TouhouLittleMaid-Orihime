@@ -111,7 +111,7 @@ public class ItemKappaCompass extends Item {
                     maid.getSchedulePos().setSleepPos(point);
                 }
                 maid.getSchedulePos().setConfigured(true);
-                maid.getSchedulePos().restrictTo(maid);
+                maid.getSchedulePos().setHomeTo(maid);
                 player.sendSystemMessage(Component.translatable("message.touhou_little_maid.kappa_compass.maid_write"));
                 player.level.playSound(null, player.blockPosition(), InitSounds.COMPASS_POINT, SoundSource.PLAYERS, 0.8f, 1.5f);
                 return InteractionResult.SUCCESS;

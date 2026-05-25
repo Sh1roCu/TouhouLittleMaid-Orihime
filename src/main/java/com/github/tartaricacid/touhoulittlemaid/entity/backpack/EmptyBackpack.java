@@ -2,14 +2,13 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.EmptyBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -72,11 +71,6 @@ public class EmptyBackpack extends IMaidBackpack {
             public boolean shouldCloseCurrentScreen() {
                 return false;
             }
-
-/*            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                return false;
-            }*/
         };
     }
 
@@ -87,19 +81,16 @@ public class EmptyBackpack extends IMaidBackpack {
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
-    public EntityModel<EntityMaid> getBackpackModel(EntityModelSet modelSet) {
+    public EntityModel<EntityMaidRenderState> getBackpackModel(EntityModelSet modelSet) {
         return null;
     }
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
     public Identifier getBackpackTexture() {
         return null;
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void offsetBackpackItem(PoseStack poseStack) {
         poseStack.translate(0, 0.625, 0.2);

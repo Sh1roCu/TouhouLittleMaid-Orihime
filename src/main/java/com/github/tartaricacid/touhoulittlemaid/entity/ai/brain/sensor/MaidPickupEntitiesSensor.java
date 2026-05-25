@@ -32,10 +32,10 @@ public class MaidPickupEntitiesSensor extends Sensor<EntityMaid> {
         if (!maid.isTame()) {
             return;
         }
-        float radius = maid.getRestrictRadius();
+        float radius = maid.getHomeRadius();
         AABB aabb;
-        if (maid.hasRestriction()) {
-            aabb = new AABB(maid.getRestrictCenter()).inflate(radius, VERTICAL_SEARCH_RANGE, radius);
+        if (maid.hasHome()) {
+            aabb = new AABB(maid.getHomePosition()).inflate(radius, VERTICAL_SEARCH_RANGE, radius);
         } else {
             aabb = maid.getBoundingBox().inflate(radius, VERTICAL_SEARCH_RANGE, radius);
         }

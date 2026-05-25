@@ -3,7 +3,8 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.FurnaceBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -13,8 +14,6 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.Fur
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.minecraft.client.model.EntityModel;
@@ -30,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.FURNACE_BACKPACK;
+import static com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry.FURNACE_BACKPACK;
 
 public class FurnaceBackpack extends IMaidBackpack {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "furnace_backpack");
@@ -81,11 +80,6 @@ public class FurnaceBackpack extends IMaidBackpack {
             public boolean shouldCloseCurrentScreen() {
                 return false;
             }
-
-/*            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                return false;
-            }*/
         };
     }
 
@@ -107,20 +101,18 @@ public class FurnaceBackpack extends IMaidBackpack {
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
-    public EntityModel<EntityMaid> getBackpackModel(EntityModelSet modelSet) {
-        return BedrockModelLoader.getModel(FURNACE_BACKPACK);
+    //FIXME 等待EntityMaidRenderState的实现
+    public EntityModel<EntityMaidRenderState> getBackpackModel(EntityModelSet modelSet) {
+        return InternalBedrockModelRegistry.getEntityModel(FURNACE_BACKPACK);
     }
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
     public Identifier getBackpackTexture() {
         return Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/backpack/furnace_backpack.png");
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void offsetBackpackItem(PoseStack poseStack) {
         poseStack.translate(0, 0.625, 0.25);
     }

@@ -1,13 +1,19 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidWorldData;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
@@ -18,17 +24,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil.canItemInsert;
 
 public class EntityTombstone extends Entity {
     public static final EntityType<EntityTombstone> TYPE = EntityType.Builder.<EntityTombstone>of(EntityTombstone::new, MobCategory.MISC)
-            .sized(0.8f, 1.2f).clientTrackingRange(10).build("tombstone");
+            .sized(0.8f, 1.2f).clientTrackingRange(10)
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "tombstone")));
     private static final String OWNER_ID_TAG = "OwnerId";
     private static final String TOMBSTONE_ITEMS_TAG = "TombstoneItems";
     private static final String MAID_NAME_TAG = "MaidName";
@@ -48,29 +56,31 @@ public class EntityTombstone extends Entity {
     }
 
     public void insertItem(ItemStack item) {
-        ItemHandlerHelper.insertItemStacked(this.items, item, false);
+        ItemsUtil.insertItemStacked(this.items, item, false, null);
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 position) {
         ItemStack itemInHand = player.getItemInHand(hand);
         Ingredient ntrItem = EntityMaid.getNtrItem();
+
         // 只能主手触发
         if (hand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
+
         // NTR 工具可以收回墓碑
         if (player.getUUID().equals(this.ownerId) || ntrItem.test(itemInHand)) {
+            var stacks = this.items.copyToList();
             // 第一步：预检查所有物品是否能被玩家容纳（不实际提取物品）
             // 如果玩家按下了 Shift 键，则强制取出
             if (!player.isSecondaryUseActive()) {
-                for (int i = 0; i < this.items.getSlotCount(); i++) {
-                    ItemStack stack = this.items.getStackInSlot(i);
+                for (ItemStack stack : stacks) {
                     if (stack.isEmpty() || canItemInsert(player, stack)) {
                         continue;
                     }
                     // 一旦发现有物品不能插入，立即中断检查
-                    if (!player.level.isClientSide) {
+                    if (!player.level.isClientSide()) {
                         player.sendSystemMessage(Component.translatable("message.touhou_little_maid.tombstone.player_inventory_full.1"));
                         player.sendSystemMessage(Component.translatable("message.touhou_little_maid.tombstone.player_inventory_full.2"));
                     }
@@ -79,26 +89,27 @@ public class EntityTombstone extends Entity {
             }
 
             // 第二步：确认可以处理后，才实际提取并给予物品
-            for (int i = 0; i < this.items.getSlots(); i++) {
-                int size = this.items.getSlotLimit(i);
-                ItemStack extractItem = this.items.extractItem(i, size, false);
+            for (int i = 0; i < stacks.size(); i++) {
+                int size = this.items.getCapacityAsInt(i, this.items.getResource(i));
+                ItemStack extractItem = ItemsUtil.extractItem(this.items, i, size, false, null);
                 if (!extractItem.isEmpty()) {
-                    ItemHandlerHelper.giveItemToPlayer(player, extractItem);
+                    player.getInventory().placeItemBackInInventory(extractItem);
                 }
             }
+
             // 所有物品处理完毕后，再销毁实体
             this.discard();
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
 
         // 其他逻辑...
-        if (!player.level.isClientSide) {
-            ItemStack stack = Arrays.stream(ntrItem.getItems()).findFirst().orElse(ItemStack.EMPTY);
+        if (!player.level.isClientSide()) {
+            ItemStack stack = ntrItem.values.stream().findFirst().map(t -> t.value().getDefaultInstance()).orElse(ItemStack.EMPTY);
             Component displayName = stack.getDisplayName();
             player.sendSystemMessage(Component.translatable("message.touhou_little_maid.tombstone.not_yours.1"));
             player.sendSystemMessage(Component.translatable("message.touhou_little_maid.tombstone.not_yours.2").append(displayName));
         }
-        return super.interact(player, hand);
+        return super.interact(player, hand, position);
     }
 
     @Override
@@ -107,29 +118,22 @@ public class EntityTombstone extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains(OWNER_ID_TAG)) {
-            this.ownerId = tag.getUUID(OWNER_ID_TAG);
-        }
-        if (tag.contains(TOMBSTONE_ITEMS_TAG)) {
-            items.deserializeNBT(this.registryAccess(), tag.getCompound(TOMBSTONE_ITEMS_TAG));
-        }
-        if (tag.contains(MAID_NAME_TAG)) {
-            String nameJson = tag.getString(MAID_NAME_TAG);
-            setMaidName(Component.Serializer.fromJson(nameJson, this.registryAccess()));
-        }
+    protected void readAdditionalSaveData(ValueInput input) {
+        input.read(OWNER_ID_TAG, UUIDUtil.CODEC).ifPresent(t -> this.ownerId = t);
+        this.items.deserialize(input.childOrEmpty(TOMBSTONE_ITEMS_TAG));
+        input.read(MAID_NAME_TAG, ComponentSerialization.CODEC).ifPresent(this::setMaidName);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putUUID(OWNER_ID_TAG, this.ownerId);
-        tag.put(TOMBSTONE_ITEMS_TAG, this.items.serializeNBT(this.registryAccess()));
-        tag.putString(MAID_NAME_TAG, Component.Serializer.toJson(this.getMaidName(), this.registryAccess()));
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.store(OWNER_ID_TAG, UUIDUtil.CODEC, this.ownerId);
+        this.items.serialize(output.child(TOMBSTONE_ITEMS_TAG));
+        output.store(MAID_NAME_TAG, ComponentSerialization.CODEC, this.getMaidName());
     }
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.checkBelowWorld();
         }
     }
@@ -140,7 +144,7 @@ public class EntityTombstone extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel level, DamageSource pSource, float pAmount) {
         return false;
     }
 

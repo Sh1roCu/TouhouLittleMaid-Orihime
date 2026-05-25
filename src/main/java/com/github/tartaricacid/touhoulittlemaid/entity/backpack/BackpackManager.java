@@ -3,11 +3,9 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.Identifier;
@@ -22,8 +20,8 @@ import java.util.Optional;
 public class BackpackManager {
     private static Map<Identifier, IMaidBackpack> BACKPACK_ID_MAP;
     private static Map<Item, IMaidBackpack> BACKPACK_ITEM_MAP;
-    @Environment(EnvType.CLIENT)
-    private static Map<Identifier, Pair<EntityModel<EntityMaid>, Identifier>> BACKPACK_MODEL_MAP;
+
+    private static Map<Identifier, Pair<EntityModel<EntityMaidRenderState>, Identifier>> BACKPACK_MODEL_MAP;
     private static IMaidBackpack EMPTY_BACKPACK;
 
     private BackpackManager() {
@@ -51,7 +49,6 @@ public class BackpackManager {
         BACKPACK_ITEM_MAP = ImmutableMap.copyOf(BACKPACK_ITEM_MAP);
     }
 
-    @Environment(EnvType.CLIENT)
     public static void initClient(EntityModelSet modelSet) {
         // 有些模组可能会比上面 init 还要早执行这块，所以需要检查一下？
         if (BACKPACK_ID_MAP == null) {
@@ -76,13 +73,13 @@ public class BackpackManager {
 
     public static void addBackpackCooldown(Player player) {
         for (Item backpack : BACKPACK_ITEM_MAP.keySet()) {
-            player.getCooldowns().addCooldown(backpack, 20);
+            player.getCooldowns().addCooldown(backpack.getDefaultInstance(), 20);
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static Optional<Pair<EntityModel<EntityMaid>, Identifier>> findBackpackModel(Identifier id) {
-        Pair<EntityModel<EntityMaid>, Identifier> pair = BACKPACK_MODEL_MAP.get(id);
+    //FIXME 等待EntityMaidRenderState的实现
+    public static Optional<Pair<EntityModel<EntityMaidRenderState>, Identifier>> findBackpackModel(Identifier id) {
+        Pair<EntityModel<EntityMaidRenderState>, Identifier> pair = BACKPACK_MODEL_MAP.get(id);
         if (pair == null) {
             return Optional.empty();
         }

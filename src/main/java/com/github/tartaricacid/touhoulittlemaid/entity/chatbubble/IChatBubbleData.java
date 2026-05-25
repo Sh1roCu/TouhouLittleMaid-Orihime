@@ -2,8 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.entity.chatbubble;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.IChatBubbleRenderer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
@@ -53,7 +51,6 @@ public interface IChatBubbleData {
      * @param position 排列位置
      * @return 渲染类
      */
-    @Environment(EnvType.CLIENT)
     IChatBubbleRenderer getRenderer(IChatBubbleRenderer.Position position);
 
     /**

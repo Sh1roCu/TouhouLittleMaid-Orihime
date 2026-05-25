@@ -25,8 +25,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.StartAttacking;
 import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,8 +60,8 @@ public class TaskBowAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(e -> hasBow(e) && hasArrow(e), IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasBow(maid) || !hasArrow(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasBow(e) && hasArrow(e), (level, e) -> IRangedAttackTask.findFirstValidAttackTarget(e));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasBow(maid) || !hasArrow(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> moveToTargetTask = MaidRangedWalkToTarget.create(0.6f);
         BehaviorControl<EntityMaid> maidAttackStrafingTask = new MaidAttackStrafingTask();
         BehaviorControl<EntityMaid> shootTargetTask = new MaidShootTargetTask();
@@ -77,8 +77,8 @@ public class TaskBowAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(e -> hasBow(e) && hasArrow(e), IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasBow(maid) || !hasArrow(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasBow(e) && hasArrow(e), (level, e) -> IRangedAttackTask.findFirstValidAttackTarget(e));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasBow(maid) || !hasArrow(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> shootTargetTask = new MaidShootTargetTask();
 
         return Lists.newArrayList(
@@ -121,8 +121,8 @@ public class TaskBowAttack implements IRangedAttackTask {
     public AABB searchDimension(EntityMaid maid) {
         if (hasBow(maid)) {
             float searchRange = this.searchRadius(maid);
-            if (maid.hasRestriction()) {
-                return new AABB(maid.getRestrictCenter()).inflate(searchRange);
+            if (maid.hasHome()) {
+                return new AABB(maid.getHomePosition()).inflate(searchRange);
             } else {
                 return maid.getBoundingBox().inflate(searchRange);
             }
@@ -156,7 +156,7 @@ public class TaskBowAttack implements IRangedAttackTask {
     private int findArrow(EntityMaid maid) {
         ItemStack mainHandItem = maid.getMainHandItem();
         if (mainHandItem.getItem() instanceof BowItem) {
-            CombinedResourceHandler handler = maid.getAvailableInv(true);
+            var handler = maid.getAvailableInv(true);
             return ItemsUtil.findStackSlot(handler, ((BowItem) mainHandItem.getItem()).getAllSupportedProjectiles());
         }
         return -1;
@@ -169,8 +169,8 @@ public class TaskBowAttack implements IRangedAttackTask {
             return null;
         }
 
-        CombinedResourceHandler handler = maid.getAvailableInv(true);
-        ItemStack arrowStack = handler.getStackInSlot(slot);
+        var handler = maid.getAvailableInv(true);
+        ItemStack arrowStack = handler.getResource(slot).toStack();
         ItemStack mainHandItem = maid.getMainHandItem();
         RegistryAccess access = maid.level.registryAccess();
         AbstractArrow arrowEntity = ProjectileUtil.getMobArrow(maid, arrowStack, chargeTime, mainHandItem);
@@ -180,8 +180,7 @@ public class TaskBowAttack implements IRangedAttackTask {
         }
         // 无限附魔不存在或者小于 0 时
         if (getEnchantmentLevel(access, Enchantments.INFINITY, mainHandItem) <= 0) {
-            arrowStack.shrink(1);
-            handler.setStackInSlot(slot, arrowStack);
+            ItemsUtil.extractItem(handler, slot, 1, false, null);
             // 记得把箭设置为可以拾起状态
             arrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
         }
@@ -193,7 +192,7 @@ public class TaskBowAttack implements IRangedAttackTask {
             attackValue = attackDamage.getBaseValue();
         }
         float multiplier = (float) (attackValue / 2.0f);
-        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * multiplier);
+        arrowEntity.setBaseDamage(Math.max(1.0, 2.0 * multiplier));
 
         return arrowEntity;
     }

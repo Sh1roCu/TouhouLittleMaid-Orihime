@@ -2,7 +2,8 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
-import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
+import com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
@@ -10,8 +11,6 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaid
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BigBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -26,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader.BIG_BACKPACK;
+import static com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry.BIG_BACKPACK;
 
 public class BigBackpack extends IMaidBackpack {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "big_backpack");
@@ -67,10 +66,6 @@ public class BigBackpack extends IMaidBackpack {
                 return false;
             }
 
-/*            @Override
-            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
-                return false;
-            }*/
         };
     }
 
@@ -81,19 +76,16 @@ public class BigBackpack extends IMaidBackpack {
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
-    public EntityModel<EntityMaid> getBackpackModel(EntityModelSet modelSet) {
-        return BedrockModelLoader.getModel(BIG_BACKPACK);
+    public EntityModel<EntityMaidRenderState> getBackpackModel(EntityModelSet modelSet) {
+        return InternalBedrockModelRegistry.getEntityModel(BIG_BACKPACK);
     }
 
     @Nullable
     @Override
-    @Environment(EnvType.CLIENT)
     public Identifier getBackpackTexture() {
         return Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/bedrock/entity/backpack/big_backpack.png");
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void offsetBackpackItem(PoseStack poseStack) {
         poseStack.translate(0, 0.25, -0.25);

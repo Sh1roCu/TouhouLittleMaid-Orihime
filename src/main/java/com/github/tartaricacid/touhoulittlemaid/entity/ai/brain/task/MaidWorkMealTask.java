@@ -69,7 +69,7 @@ public class MaidWorkMealTask extends MaidCheckRateTask {
         var backpackInv = maid.getAvailableBackpackInv();
 
         // 若没有食物则借助此调用触发 MaidRequestItemEvent 来尝试获取食物
-        ItemsUtil.findStackSlot(backpackInv, DefaultMaidWorkMeal::isWorkMeal);
+        ItemsUtil.findStackSlot(backpackInv, DefaultMaidWorkMeal::isWorkMeal, null);
 
         swapItemCheck:
         for (int i = 0; i < backpackInv.size(); i++) {

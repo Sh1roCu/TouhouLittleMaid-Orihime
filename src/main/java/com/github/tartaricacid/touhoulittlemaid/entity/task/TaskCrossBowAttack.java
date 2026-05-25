@@ -50,8 +50,8 @@ public class TaskCrossBowAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(entityMaid -> hasCrossBow(entityMaid) && hasAmmunition(entityMaid), IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasCrossBow(maid) || !hasAmmunition(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, entityMaid) -> hasCrossBow(entityMaid) && hasAmmunition(entityMaid), (level, entityMaid) -> IRangedAttackTask.findFirstValidAttackTarget(entityMaid));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasCrossBow(maid) || !hasAmmunition(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> moveToTargetTask = MaidRangedWalkToTarget.create(0.6f);
         BehaviorControl<EntityMaid> maidAttackStrafingTask = new MaidAttackStrafingTask();
         BehaviorControl<EntityMaid> shootTargetTask = new MaidCrossbowAttack();
@@ -67,8 +67,8 @@ public class TaskCrossBowAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(entityMaid -> hasCrossBow(entityMaid) && hasAmmunition(entityMaid), IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasCrossBow(maid) || !hasAmmunition(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, entityMaid) -> hasCrossBow(entityMaid) && hasAmmunition(entityMaid), (level, entityMaid) -> IRangedAttackTask.findFirstValidAttackTarget(entityMaid));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasCrossBow(maid) || !hasAmmunition(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> shootTargetTask = new MaidCrossbowAttack();
 
         return Lists.newArrayList(
@@ -87,8 +87,8 @@ public class TaskCrossBowAttack implements IRangedAttackTask {
     public AABB searchDimension(EntityMaid maid) {
         if (hasCrossBow(maid)) {
             float searchRange = this.searchRadius(maid);
-            if (maid.hasRestriction()) {
-                return new AABB(maid.getRestrictCenter()).inflate(searchRange);
+            if (maid.hasHome()) {
+                return new AABB(maid.getHomePosition()).inflate(searchRange);
             } else {
                 return maid.getBoundingBox().inflate(searchRange);
             }
@@ -131,7 +131,7 @@ public class TaskCrossBowAttack implements IRangedAttackTask {
     private int findArrow(EntityMaid maid) {
         ItemStack mainHandItem = maid.getMainHandItem();
         if (mainHandItem.getItem() instanceof CrossbowItem) {
-            CombinedResourceHandler handler = maid.getAvailableInv(true);
+            var handler = maid.getAvailableInv(true);
             return ItemsUtil.findStackSlot(handler, ((CrossbowItem) mainHandItem.getItem()).getAllSupportedProjectiles());
         }
         return -1;

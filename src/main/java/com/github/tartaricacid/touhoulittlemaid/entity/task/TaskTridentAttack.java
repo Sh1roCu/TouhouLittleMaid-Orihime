@@ -58,8 +58,8 @@ public class TaskTridentAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(this::hasTrident, IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasTrident(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasTrident(e), (level, e) -> IRangedAttackTask.findFirstValidAttackTarget(e));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasTrident(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> moveToTargetTask = MaidRangedWalkToTarget.create(0.6f);
         BehaviorControl<EntityMaid> maidAttackStrafingTask = new MaidAttackTridentTask();
         BehaviorControl<EntityMaid> shootTargetTask = new MaidTridentTargetTask();
@@ -75,8 +75,8 @@ public class TaskTridentAttack implements IRangedAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(this::hasTrident, IRangedAttackTask::findFirstValidAttackTarget);
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((target) -> !hasTrident(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasTrident(e), (level, e) -> IRangedAttackTask.findFirstValidAttackTarget(e));
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasTrident(maid) || farAway(target, maid));
         BehaviorControl<EntityMaid> shootTargetTask = new MaidTridentTargetTask();
 
         return Lists.newArrayList(
@@ -95,8 +95,8 @@ public class TaskTridentAttack implements IRangedAttackTask {
     public AABB searchDimension(EntityMaid maid) {
         if (hasTrident(maid)) {
             float searchRange = this.searchRadius(maid);
-            if (maid.hasRestriction()) {
-                return new AABB(maid.getRestrictCenter()).inflate(searchRange);
+            if (maid.hasHome()) {
+                return new AABB(maid.getHomePosition()).inflate(searchRange);
             } else {
                 return maid.getBoundingBox().inflate(searchRange);
             }

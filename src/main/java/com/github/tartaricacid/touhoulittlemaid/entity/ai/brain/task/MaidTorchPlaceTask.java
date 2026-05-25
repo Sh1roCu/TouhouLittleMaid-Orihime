@@ -68,9 +68,9 @@ public class MaidTorchPlaceTask extends Behavior<EntityMaid> {
 
     private boolean getAndExtractTorchItem(EntityMaid entityMaid) {
         CombinedResourceHandler<ItemVariant> itemHandler = entityMaid.getAvailableInv(false);
-        try (Transaction transaction = Transaction.openOuter()) {
+        try(Transaction transaction = Transaction.openOuter()){
             int extract = itemHandler.extract(ItemVariant.of(Items.TORCH), 1, transaction);
-            if (extract != 0) {
+            if(extract != 0){
                 transaction.commit();
                 return true;
             }

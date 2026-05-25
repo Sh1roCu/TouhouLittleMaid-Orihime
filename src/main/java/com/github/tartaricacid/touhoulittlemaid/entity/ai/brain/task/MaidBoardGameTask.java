@@ -74,7 +74,7 @@ public class MaidBoardGameTask extends MaidCheckRateTask {
     private BlockPos findGameBlock(ServerLevel world, EntityMaid maid) {
         BlockPos blockPos = maid.getBrainSearchPos();
         PoiManager poiManager = world.getPoiManager();
-        int range = (int) maid.getRestrictRadius();
+        int range = (int) maid.getHomeRadius();
         return poiManager.getInRange(type -> type.value().equals(InitPoi.JOY_BLOCK), blockPos, range, PoiManager.Occupancy.ANY)
                 .map(PoiRecord::getPos).filter(pos -> !isOccupied(world, pos))
                 .min(Comparator.comparingDouble(pos -> pos.distSqr(maid.blockPosition()))).orElse(null);

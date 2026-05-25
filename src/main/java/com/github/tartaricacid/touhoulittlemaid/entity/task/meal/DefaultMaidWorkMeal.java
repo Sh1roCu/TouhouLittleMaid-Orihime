@@ -17,7 +17,7 @@ public class DefaultMaidWorkMeal implements IMaidMeal {
     private static final int MAX_PROBABILITY = 100;
 
     public static boolean isWorkMeal(ItemStack stack) {
-        return stack.get(DataComponents.FOOD) != null
+        return stack.has(DataComponents.FOOD)
                 && !IMaidMeal.isBlockList(stack, MaidConfig.MAID_WORK_MEALS_BLOCK_LIST.get())
                 && !IMaidMeal.isBlockList(stack, MaidMealRegConfigEvent.WORK_MEAL_REGEX);
     }
@@ -29,7 +29,6 @@ public class DefaultMaidWorkMeal implements IMaidMeal {
 
     @Override
     public void onMaidEat(EntityMaid maid, ItemStack stack, InteractionHand hand) {
-        //FoodProperties foodProperties = stack.getFoodProperties(maid);
         FoodProperties foodProperties = stack.get(DataComponents.FOOD);
         if (foodProperties != null) {
             // 调用饰品

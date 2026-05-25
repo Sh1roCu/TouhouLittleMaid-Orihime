@@ -77,7 +77,7 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
      */
     @ApiStatus.AvailableSince("1.4.7")
     protected int getHorizontalSearchRange(EntityMaid maid) {
-        return (int) maid.getRestrictRadius();
+        return (int) maid.getHomeRadius();
     }
 
     protected void clearCurrentArrivalMap(MaidPathFindingBFS pathFinding) {
@@ -93,12 +93,12 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
 
     // 获取工作的搜寻中心点
     private BlockPos getWorkSearchPos(EntityMaid maid) {
-        if (maid.hasRestriction()) {
+        if (maid.hasHome()) {
             // 当且仅当开启home模式，并且工作点在工作范围内才返回最近工作点
             if (this.currentWorkPos != null && maid.isWithinHome(currentWorkPos)) {
                 return this.currentWorkPos;
             } else {
-                return maid.getRestrictCenter();
+                return maid.getHomePosition();
             }
         } else {
             return maid.blockPosition();
