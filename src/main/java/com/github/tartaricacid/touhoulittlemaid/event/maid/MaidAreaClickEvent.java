@@ -16,7 +16,7 @@ public class MaidAreaClickEvent {
         EntityMaid maid = event.getMaid();
 
         if (player.getMainHandItem().is(Items.COMPASS) && player instanceof ServerPlayer serverPlayer) {
-            if (!maid.level.isClientSide) {
+            if (!maid.level.isClientSide()) {
                 SchedulePos schedulePos = maid.getSchedulePos();
                 if (!schedulePos.getWorkPos().equals(BlockPos.ZERO)) {
                     ServerPlayNetworking.send(serverPlayer, new SyncMaidAreaPackage(maid.getId(), schedulePos));

@@ -2,7 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.event;
 
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
 public final class CopyEntityIdEvent {
     public static InteractionResult copyEntityId(Player player, Level world, InteractionHand hand, Entity target, @Nullable HitResult hitResult) {
         if (player.getItemInHand(hand).is(InitItems.ENTITY_ID_COPY)) {
-            if (player.level.isClientSide && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            if (player.level.isClientSide() && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 copyEntityId(player, target);
             }
             return InteractionResult.FAIL;
@@ -28,7 +27,6 @@ public final class CopyEntityIdEvent {
         return InteractionResult.PASS;
     }
 
-    @Environment(EnvType.CLIENT)
     private static void copyEntityId(Player player, Entity target) {
         Identifier key = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
         if (key.equals(BuiltInRegistries.ENTITY_TYPE.getDefaultKey())) {

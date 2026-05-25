@@ -25,21 +25,19 @@ public final class ApplyPotionEffectEvent {
             stack.getItem().finishUsingItem(stack.copy(), world, maid);
             if (!player.isCreative()) {
                 stack.shrink(1);
-                ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.GLASS_BOTTLE));
+                player.getInventory().placeItemBackInInventory(new ItemStack(Items.GLASS_BOTTLE));
             }
-            maid.playSound(SoundEvents.GENERIC_DRINK, 0.6f, 0.8F + world.random.nextFloat() * 0.4F);
+            maid.playSound(SoundEvents.GENERIC_DRINK.value(), 0.6f, 0.8F + world.getRandom().nextFloat() * 0.4F);
             event.setCanceled(true);
         }
 
         if (player.isDiscrete() && stack.getItem() == Items.MILK_BUCKET) {
-            //maid.removeEffectsCuredBy(EffectCures.MILK);
-            BuiltInRegistries.MOB_EFFECT.stream().filter(effect -> effect.getCategory() == MobEffectCategory.HARMFUL)
-                    .forEach(harmful -> maid.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(harmful)));
+            maid.removeAllEffects();
             if (!player.isCreative()) {
                 stack.shrink(1);
-                ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(Items.BUCKET));
+                player.getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
             }
-            maid.playSound(SoundEvents.GENERIC_DRINK, 0.6f, 0.8F + world.random.nextFloat() * 0.4F);
+            maid.playSound(SoundEvents.GENERIC_DRINK.value(), 0.6f, 0.8F + world.getRandom().nextFloat() * 0.4F);
             if (player instanceof ServerPlayer serverPlayer) {
                 InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.CLEAR_MAID_EFFECTS);
             }

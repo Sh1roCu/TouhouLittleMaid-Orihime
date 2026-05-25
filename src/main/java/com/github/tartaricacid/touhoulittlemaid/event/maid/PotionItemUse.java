@@ -1,25 +1,31 @@
 package com.github.tartaricacid.touhoulittlemaid.event.maid;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.LivingEntityUseItemFinishEvent;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 
 public class PotionItemUse {
     public static void onMaidPotionItemUse(LivingEntityUseItemFinishEvent event) {
-        if (event.getEntity() instanceof EntityMaid maid && event.getItem().getItem() instanceof PotionItem) {
+        if (event.getEntity() instanceof EntityMaid maid && event.getItem().getItem() instanceof PotionItem && maid.level() instanceof ServerLevel serverLevel) {
             ItemStack potionStack = event.getItem();
             // 原版药水非玩家使用后会原样返回，我们需要正确扣掉内容
             potionStack.shrink(1);
             // 说明喝的是堆叠的药水，需要主动给女仆加瓶子
             if (!potionStack.isEmpty()) {
-                CombinedResourceHandler inv = maid.getAvailableInv(false);
-                ItemStack leftStack = ItemHandlerHelper.insertItemStacked(inv, new ItemStack(Items.GLASS_BOTTLE), false);
-                // 如果背包满了，那就生成掉落物，预防一些改动物品堆叠的模组
-                if (!leftStack.isEmpty()) {
-                    maid.spawnAtLocation(leftStack);
+                var inv = maid.getAvailableInv(false);
+                try (Transaction tx = Transaction.openOuter()) {
+                    ItemVariant resource = ItemVariant.of(Items.GLASS_BOTTLE);
+                    int insert = inv.insert(resource, 1, tx);
+                    // 如果背包满了，那就生成掉落物，预防一些改动物品堆叠的模组
+                    if (insert == 0) {
+                        maid.spawnAtLocation(serverLevel, new ItemStack(Items.GLASS_BOTTLE));
+                    }
+                    tx.commit();
                 }
                 event.setResultStack(potionStack);
             } else {

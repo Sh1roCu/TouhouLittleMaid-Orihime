@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.event.maid;
 import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.NameTagGui;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class UseNameTagEvent {
-    @Environment(EnvType.CLIENT)
     public static void onInteractClient(InteractMaidEvent event) {
         ItemStack stack = event.getStack();
         Player player = event.getPlayer();
@@ -26,7 +23,6 @@ public final class UseNameTagEvent {
         }
     }
 
-    @Environment(EnvType.SERVER)
     public static void onInteractServer(InteractMaidEvent event) {
         ItemStack stack = event.getStack();
         Player player = event.getPlayer();

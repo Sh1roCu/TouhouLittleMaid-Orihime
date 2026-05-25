@@ -5,7 +5,6 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -42,11 +41,9 @@ public class SaddleMaidEvent {
         }
     }
 
-    @Environment(EnvType.CLIENT)
     public static void showTips() {
         Minecraft minecraft = Minecraft.getInstance();
         Component component = Component.translatable("message.touhou_little_maid.saddle.how_to_eject");
         minecraft.gui.setOverlayMessage(component, false);
-        minecraft.getNarrator().sayNow(component);
     }
 }

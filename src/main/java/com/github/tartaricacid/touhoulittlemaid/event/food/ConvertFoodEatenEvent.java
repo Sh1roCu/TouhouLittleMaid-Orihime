@@ -1,30 +1,37 @@
 package com.github.tartaricacid.touhoulittlemaid.event.food;
 
-import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAfterEatEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Optional;
+import net.minecraft.world.item.component.UseRemainder;
 
 public class ConvertFoodEatenEvent {
     public static void onAfterMaidEat(MaidAfterEatEvent event) {
         ItemStack foodAfterEat = event.getFoodAfterEat();
         EntityMaid maid = event.getMaid();
-        //FoodProperties foodProperties = foodAfterEat.getFoodProperties(maid);
+
         FoodProperties foodProperties = foodAfterEat.get(DataComponents.FOOD);
-        if (!foodAfterEat.isEmpty() && foodProperties != null) {
-            Optional<ItemStack> convertedStack = foodProperties.usingConvertsTo();
-            if (convertedStack.isPresent() && !convertedStack.get().isEmpty()) {
-                CombinedResourceHandler availableInv = maid.getAvailableInv(false);
-                ItemStack result = ItemHandlerHelper.insertItemStacked(availableInv, convertedStack.get(), false);
-                // 如果女仆背包满了，掉落在地上
-                if (!result.isEmpty()) {
-                    ItemEntity itemEntity = new ItemEntity(maid.level, maid.getX(), maid.getY(), maid.getZ(), convertedStack.get());
-                    maid.level.addFreshEntity(itemEntity);
+        UseRemainder useRemainder = foodAfterEat.get(DataComponents.USE_REMAINDER);
+
+        if (!foodAfterEat.isEmpty() && foodProperties != null && useRemainder != null) {
+            ItemStack convertedStack = useRemainder.convertInto().create();
+            if (!convertedStack.isEmpty()) {
+                var availableInv = maid.getAvailableInv(false);
+                try (Transaction tx = Transaction.openOuter()) {
+                    ItemVariant resource = ItemVariant.of(convertedStack);
+                    int insert = availableInv.insert(resource, convertedStack.count(), tx);
+                    // 如果女仆背包满了，掉落在地上
+                    if (insert < convertedStack.count()) {
+                        ItemStack droppedStack = convertedStack.copyWithCount(convertedStack.count() - insert);
+                        ItemEntity itemEntity = new ItemEntity(maid.level, maid.getX(), maid.getY(), maid.getZ(), droppedStack);
+                        maid.level.addFreshEntity(itemEntity);
+                    }
+                    tx.commit();
                 }
             }
         }

@@ -21,12 +21,12 @@ public class HandleBackpackEvent {
         if (stack.is(ConventionalItemTags.SHEAR_TOOLS)) {
             if (maid.isOwnedBy(player) && !maid.backpackHasDelay() && maidBackpack != BackpackManager.getEmptyBackpack()) {
                 maid.setBackpackDelay();
-                player.getCooldowns().addCooldown(stack.getItem(), 20);
-                ItemHandlerHelper.giveItemToPlayer(player, maidBackpack.getTakeOffItemStack(stack, player, maid));
+                player.getCooldowns().addCooldown(stack, 20);
+                player.getInventory().placeItemBackInInventory(maidBackpack.getTakeOffItemStack(stack, player, maid));
                 maidBackpack.onTakeOff(stack, player, maid);
                 maid.setMaidBackpackType(BackpackManager.getEmptyBackpack());
                 stack.hurtAndBreak(1, player, event.getPlayer().getEquipmentSlotForItem(stack));
-                maid.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+                maid.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
                 event.setCanceled(true);
             }
         } else {
@@ -34,12 +34,12 @@ public class HandleBackpackEvent {
                 if (maid.isOwnedBy(player) && !maid.backpackHasDelay() && backpack != BackpackManager.getEmptyBackpack() && backpack != maidBackpack) {
                     maid.setBackpackDelay();
                     BackpackManager.addBackpackCooldown(player);
-                    ItemHandlerHelper.giveItemToPlayer(player, maidBackpack.getTakeOffItemStack(stack, player, maid));
+                    player.getInventory().placeItemBackInInventory(maidBackpack.getTakeOffItemStack(stack, player, maid));
                     maidBackpack.onTakeOff(stack, player, maid);
                     maid.setMaidBackpackType(backpack);
                     backpack.onPutOn(stack, player, maid);
                     stack.shrink(1);
-                    maid.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+                    maid.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
                     if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
                         InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.MAID_BACKPACK);
                     }

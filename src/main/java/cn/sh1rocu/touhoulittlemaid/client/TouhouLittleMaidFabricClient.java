@@ -15,12 +15,14 @@ import com.github.tartaricacid.touhoulittlemaid.client.input.STTChatKey;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.DebugClientRenderEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.ClientExtensionsEvent;
+import com.github.tartaricacid.touhoulittlemaid.event.ClientTickEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.maid.UseNameTagEvent;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -89,5 +91,6 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         ModelLoadingPlugin.register(new InitSpecialItemRender());
         ClientEntityEvents.ENTITY_LOAD.register(EntityCacheUtil::onChangeDim);
         LevelRenderEvents.AFTER_SOLID_FEATURES.register(DebugClientRenderEvent::onRender);
+        ClientTickEvents.START_CLIENT_TICK.register(ClientTickEvent::onClientTick);
     }
 }

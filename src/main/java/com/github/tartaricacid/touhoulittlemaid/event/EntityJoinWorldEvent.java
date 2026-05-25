@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
@@ -34,8 +35,8 @@ public class EntityJoinWorldEvent {
             // 先复制一遍进行遍历，避免出现 ConcurrentModificationException
             var goals = List.copyOf(goalSelector.getAvailableGoals());
             goals.stream().filter(goal -> goal.getGoal() instanceof TemptGoal).findFirst().ifPresent(g -> {
-                if (g.getGoal() instanceof TemptGoal temptGoal) {
-                    MaidTemptGoal maidTemptGoal = new MaidTemptGoal(temptGoal.mob, temptGoal.speedModifier, temptGoal.items, temptGoal.canScare);
+                if (g.getGoal() instanceof TemptGoal temptGoal && temptGoal.mob instanceof PathfinderMob pathfinderMob) {
+                    MaidTemptGoal maidTemptGoal = new MaidTemptGoal(pathfinderMob, temptGoal.speedModifier, temptGoal.items, temptGoal.canScare);
                     goalSelector.addGoal(g.getPriority(), maidTemptGoal);
                 }
             });

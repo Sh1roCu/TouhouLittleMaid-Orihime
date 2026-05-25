@@ -6,7 +6,9 @@ import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gamerules.GameRules;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment.MAID_NUM;
@@ -25,7 +27,12 @@ public class EntityDeathEvent {
     public static void onPlayerCloned() {
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
             boolean wasDeath = !alive;
-            boolean isKeep = newPlayer.level().getServer().getGameRules().get(GameRules.KEEP_INVENTORY);
+            Level level = newPlayer.level;
+            if (!(level instanceof ServerLevel serverLevel)) {
+                return;
+            }
+
+            boolean isKeep = serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY);
 
             PowerAttachment power = oldPlayer.getAttachedOrCreate(POWER_NUM, () -> new PowerAttachment(0));
             MaidNumAttachment maidNum = oldPlayer.getAttachedOrCreate(MAID_NUM, () -> new MaidNumAttachment(0));
