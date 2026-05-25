@@ -2,13 +2,10 @@ package com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo;
 
 
 import com.github.tartaricacid.simplebedrockmodel.SimpleBedrockModel;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 
-@Environment(EnvType.CLIENT)
 public enum BedrockVersion {
     /**
      * 旧版本基岩版模型，仅限 1.10.0
@@ -54,12 +51,12 @@ public enum BedrockVersion {
         }
     }
 
-    public static BedrockVersion getVersion(BedrockModelPOJO pojo) {
+    public static BedrockVersion getVersion(BedrockModelPOJO pojo) throws VersionParsingException {
         if (isNewVersion(pojo)) {
             return NEW;
         } else if (isLegacyVersion(pojo)) {
             return LEGACY;
         }
-        throw new RuntimeException("Invalid version for model: " + pojo);
+        throw new VersionParsingException("Invalid version for model: " + pojo);
     }
 }

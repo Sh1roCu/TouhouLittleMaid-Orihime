@@ -24,18 +24,13 @@ public interface BedrockCube {
     };
 
     /**
-     * Compiles the cube's vertices and adds them to the provided vertex consumer
-     * <p>
      * 编译 Cube 的顶点并将它们添加到提供的 VertexConsumer 中
      *
-     * @param pose     the current pose of the rendering context
-     * @param consumer the vertex consumer to which the compiled vertices are added
-     * @param lightmap the lightmap coordinates (usually 0xF000F0 for full brightness)
-     * @param overlay  the overlay color (usually 0x00F000F0 for no overlay)
-     * @param red      the red color component (0.0 to 1.0)
-     * @param green    the green color component (0.0 to 1.0)
-     * @param blue     the blue color component (0.0 to 1.0)
-     * @param alpha    the alpha (transparency) component (0.0 to 1.0)
+     * @param pose     当前渲染上下文的 pose
+     * @param consumer 接收编译后顶点数据的顶点消费者
+     * @param lightmap 光照贴图坐标（0xF000F0 表示全亮度）
+     * @param overlay  叠加层颜色（通常为 0x00F000F0 表示无叠加）
+     * @param color    顶点颜色（通常为 0xFFFFFFFF 表示白色）
      */
-    void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, float red, float green, float blue, float alpha);
+    void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, int color);
 }

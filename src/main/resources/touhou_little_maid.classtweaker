@@ -56,4 +56,11 @@ extendable method net/minecraft/world/entity/LivingEntity handleRelativeFriction
 
 accessible field net/minecraft/world/level/storage/SavedDataStorage dataFolder Ljava/nio/file/Path;
 
+extendable class net/minecraft/client/model/geom/ModelPart
+accessible field net/minecraft/client/model/geom/ModelPart cubes Ljava/util/List;
+accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/Map;
+accessible field net/minecraft/client/model/geom/ModelPart initialPose Lnet/minecraft/client/model/geom/PartPose;
+accessible method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
+extendable method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
+
 inject-interface net/minecraft/client/renderer/entity/state/EntityRenderState cn/sh1rocu/touhoulittlemaid/api/mixin/IEntityRenderStatePartialTick
