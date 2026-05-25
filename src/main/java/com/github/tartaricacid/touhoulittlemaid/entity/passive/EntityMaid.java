@@ -1,11 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.passive;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IEntity;
-import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ExperienceOrbAccessor;
-import cn.sh1rocu.touhoulittlemaid.util.block.BlockUtil;
 import cn.sh1rocu.touhoulittlemaid.util.enchant.EnchantmentUtil;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.*;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
@@ -23,9 +21,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelIn
 import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
-import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
 import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
-import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagEntity;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidBrain;
@@ -41,19 +37,17 @@ import com.github.tartaricacid.touhoulittlemaid.entity.data.MaidTaskDataMaps;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.FavorabilityManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.info.ServerCustomPackLoader;
-import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityPowerPoint;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.MaidFishingHook;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskIdle;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
-import com.github.tartaricacid.touhoulittlemaid.init.*;
+import com.github.tartaricacid.touhoulittlemaid.init.InitAttribute;
+import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.BaubleContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
-import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ItemBreakPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.PlayMaidSoundPackage;
@@ -69,16 +63,9 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ColorParticleOption;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
@@ -96,7 +83,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.DifficultyInstance;
@@ -114,36 +100,23 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.BlocksAttacks;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableFloat;
@@ -155,11 +128,11 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static com.github.tartaricacid.touhoulittlemaid.config.ServerConfig.MAID_AI_TIME_DEBUG;
-import static com.github.tartaricacid.touhoulittlemaid.datagen.EnchantmentKeys.getEnchantmentLevel;
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment.MAID_NUM;
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.MODEL_ID_TAG_NAME;
 
-public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEntity {
+public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEntity,
+        MaidConfigManager.View, MaidItemManager.View, MaidEffectsManager.View, MaidDataManager.View, MaidActionView.View, MaidModelView.View {
     private boolean isAddedToLevel;
 
     public static final EntityType<EntityMaid> TYPE = EntityType.Builder.<EntityMaid>of(EntityMaid::new, MobCategory.CREATURE)
@@ -170,16 +143,14 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     public static final String MODEL_ID_TAG = MODEL_ID_TAG_NAME;
     public static final String SOUND_PACK_ID_TAG = "SoundPackId";
     public static final String MAID_BACKPACK_TYPE = "MaidBackpackType";
+    public static final String EXPERIENCE_TAG = "MaidExperience";
     public static final String MAID_INVENTORY_TAG = "MaidInventory";
     public static final String MAID_BAUBLE_INVENTORY_TAG = "MaidBaubleInventory";
     public static final String MAID_HIDE_INVENTORY_TAG = "MaidHideInventory";
     public static final String MAID_TASK_INVENTORY_TAG = "MaidTaskInventory";
-    public static final String EXPERIENCE_TAG = "MaidExperience";
 
     // AI 超时检测
     private static final long WARNING_TIME_NANOS = Duration.ofMillis(50L).toNanos();
-    // 女仆传送到主人处的最大尝试次数
-    private static final int MAX_TELEPORT_ATTEMPTS_TIMES = 10;
     // 饰品栏容量
     public static final int BAUBLE_INV_SIZE = 30;
 
@@ -250,17 +221,22 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     private static final @Deprecated String BACKPACK_LEVEL_TAG = "MaidBackpackLevel";
     private static final @Deprecated String RESTRICT_CENTER_TAG = "MaidRestrictCenter";
 
+    public static boolean canInsertItem(ItemStack stack) {
+        Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (key != null && MaidConfig.MAID_BACKPACK_BLACKLIST.get().contains(key.toString())) {
+            return false;
+        }
+        return stack.getItem().canFitInsideContainerItems();
+    }
+
+    private final MaidDataManager dataManager = new MaidDataManager(this);
+    private final MaidItemManager itemManager = new MaidItemManager(this);
+    private final MaidEffectsManager effectsManager = new MaidEffectsManager(this);
+    private final MaidActionView actionView = new MaidActionView(this);
+    private final MaidModelView modelView = new MaidModelView(this);
+
     public final ItemStack[] handItemsForAnimation = new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY};
 
-    // 物品存储相关
-    private final LivingEntityEquipmentWrapper.EquipmentTypeWrapper armorInvWrapper = InitCapabilities.MAID_ARMOR.get(this);
-    private final LivingEntityEquipmentWrapper.EquipmentTypeWrapper handsInvWrapper = InitCapabilities.MAID_HAND.get(this);
-    private final MaidBackpackHandler maidInv = InitCapabilities.MAID_INV.get(this);
-    private final BaubleItemHandler maidBauble = InitCapabilities.MAID_BAUBLE.get(this);
-    // 用于暂存副手物品的物品栏
-    private final ItemStacksResourceHandler hideInv = new ItemStacksResourceHandler(1);
-    // 用于工作任务可能需要的物品栏
-    private final ItemStacksResourceHandler taskInv = new ItemStacksResourceHandler(9);
 
     private final MaidKillRecordManager killRecordManager = new MaidKillRecordManager();
     private final ChatBubbleManager chatBubbleManager = new ChatBubbleManager(this);
@@ -292,12 +268,11 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     private IMaidTask task = TaskManager.getIdleTask();
     private IMaidBackpack backpack = BackpackManager.getEmptyBackpack();
     private int playerHurtSoundCount = 120;
-    private int pickupSoundCount = 5;
     private int backpackDelay = 0;
     private int passiveUseShieldTick = 0;
     private @Nullable IBackpackData backpackData = null;
     private boolean syncTaskDataMaps = false;
-    private MaidConfigManager configManager = new MaidConfigManager(this.entityData);
+    MaidConfigManager configManager = new MaidConfigManager(this.entityData);
     private MaidGameRecordManager gameRecordManager = new MaidGameRecordManager(this);
 
     /**
@@ -343,6 +318,35 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         this(TYPE, worldIn);
     }
 
+    public MaidConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    @Override
+    public MaidDataManager getDataManager() {
+        return dataManager;
+    }
+
+    @Override
+    public MaidEffectsManager getEffectsManager() {
+        return effectsManager;
+    }
+
+    @Override
+    public MaidItemManager getItemManager() {
+        return itemManager;
+    }
+
+    @Override
+    public MaidActionView getActionView() {
+        return actionView;
+    }
+
+    @Override
+    public MaidModelView getModelView() {
+        return modelView;
+    }
+
     /**
      * 如果其他模组想要给女仆添加额外属性
      * <p>
@@ -370,14 +374,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
                 .add(InitAttribute.MAID_PICKUP_RANGE)
                 .add(InitAttribute.MAID_PASSIVE_USE_SHIELD_TICK)
                 .add(InitAttribute.MAID_HUNGER);
-    }
-
-    public static boolean canInsertItem(ItemStack stack) {
-        Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (key != null && MaidConfig.MAID_BACKPACK_BLACKLIST.get().contains(key.toString())) {
-            return false;
-        }
-        return stack.getItem().canFitInsideContainerItems();
     }
 
     public static EntityDataAccessor<ChatBubbleDataCollection> getChatBubbleKey() {
@@ -511,7 +507,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         MaidTickEvent.CALLBACK.invoker().post(maidTickEvent);
         if (!maidTickEvent.isCanceled()) {
             super.tick();
-            maidBauble.fireEvent((b, s) -> {
+            getMaidBauble().fireEvent((b, s) -> {
                 b.onTick(this, s);
                 return false;
             });
@@ -539,7 +535,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
             climbFallDelayTicks--;
             this.fallDistance = 0;
         }
-        this.spawnPortalParticle();
+        this.effectsManager.spawnPortalParticle();
         this.randomRestoreHealth();
         this.onMaidSleep();
         this.syncData();
@@ -684,194 +680,8 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         super.pushEntities();
         // 只有拾物模式开启，驯服状态下才可以捡起物品
         if (this.isPickup() && this.isTame()) {
-            AABB pickupBox;
-            AttributeInstance attribute = this.getAttribute(InitAttribute.MAID_PICKUP_RANGE);
-            if (attribute != null) {
-                pickupBox = this.getBoundingBox().inflate(attribute.getValue());
-            } else {
-                pickupBox = this.getBoundingBox().inflate(0.5);
-            }
-
-            List<Entity> entityList = this.level.getEntities(this, pickupBox, this::canPickup);
-            if (!entityList.isEmpty() && this.isAlive()) {
-                for (Entity entityPickup : entityList) {
-                    // 如果是物品
-                    if (entityPickup instanceof ItemEntity) {
-                        pickupItem((ItemEntity) entityPickup, false);
-                    }
-                    // 如果是经验
-                    if (entityPickup instanceof ExperienceOrb) {
-                        pickupXPOrb((ExperienceOrb) entityPickup);
-                    }
-                    // 如果是 P 点
-                    if (entityPickup instanceof EntityPowerPoint) {
-                        pickupPowerPoint((EntityPowerPoint) entityPickup);
-                    }
-                    // 如果是箭
-                    if (entityPickup instanceof AbstractArrow) {
-                        pickupArrow((AbstractArrow) entityPickup, false);
-                    }
-                }
-            }
+            itemManager.pickupEntities();
         }
-    }
-
-    public boolean pickupItem(ItemEntity entityItem, boolean simulate) {
-        MaidPickupEvent.ItemResultPre resultPre = new MaidPickupEvent.ItemResultPre(this, entityItem, simulate);
-        MaidPickupEvent.ITEM_RESULT_PRE.invoker().onItemResultPre(resultPre);
-        if (resultPre.isCanceled()) {
-            return resultPre.isCanPickup();
-        }
-        if (!level.isClientSide() && entityItem.isAlive() && !entityItem.hasPickUpDelay()) {
-            // 获取实体的物品堆
-            ItemStack itemstack = entityItem.getItem();
-            // 检查物品是否合法
-            if (!canInsertItem(itemstack)) {
-                return false;
-            }
-            // 获取数量，为后面方面用
-            int count = itemstack.getCount();
-            itemstack = ItemsUtil.insertItemStacked(getAvailableInv(false), itemstack, simulate, null);
-            if (count == itemstack.getCount()) {
-                return false;
-            }
-            if (!simulate) {
-                // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
-                this.take(entityItem, count - itemstack.getCount());
-                this.tryPlayMaidPickupSound();
-                ItemStack copy = new ItemStack(itemstack.getItem(), count - itemstack.getCount());
-                // 如果遍历塞完后发现为空了
-                if (itemstack.isEmpty()) {
-                    // 清除这个实体
-                    entityItem.discard();
-                } else {
-                    // 将物品数量同步到客户端
-                    entityItem.setItem(itemstack);
-                }
-                MaidPickupEvent.ITEM_RESULT_POST.invoker().onItemResultPost(new MaidPickupEvent.ItemResultPost(this, copy));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void pickupXPOrb(ExperienceOrb entityXPOrb) {
-        MaidPickupEvent.ExperienceResult expResult = new MaidPickupEvent.ExperienceResult(this, entityXPOrb, false);
-        MaidPickupEvent.EXPERIENCE_RESULT.invoker().onExperienceResult(expResult);
-        if (expResult.isCanceled()) {
-            return;
-        }
-        if (!this.level.isClientSide() && entityXPOrb.isAlive() && entityXPOrb.tickCount > 2) {
-            // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
-            this.take(entityXPOrb, 1);
-            this.tryPlayMaidPickupSound();
-
-            // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
-            var allItems = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidBauble);
-            ItemStack itemstack = this.getRandomItemWithMendingEnchantments(allItems);
-            if (!itemstack.isEmpty() && itemstack.isDamaged()) {
-                int i = Math.min((int) (entityXPOrb.getValue() /** itemstack.getXpRepairRatio()*/), itemstack.getDamageValue());
-                ((ExperienceOrbAccessor) entityXPOrb).tlm$setValue((entityXPOrb.getValue() - i / 2));
-                itemstack.setDamageValue(itemstack.getDamageValue() - i);
-            }
-            if (entityXPOrb.getValue() > 0) {
-                this.setExperience(getExperience() + entityXPOrb.getValue());
-            }
-            entityXPOrb.discard();
-        }
-    }
-
-    public void pickupPowerPoint(EntityPowerPoint powerPoint) {
-        MaidPickupEvent.PowerPointResult pointResult = new MaidPickupEvent.PowerPointResult(this, powerPoint, false);
-        MaidPickupEvent.POWERPOINT_RESULT.invoker().onPowerPointResult(pointResult);
-        if (pointResult.isCanceled()) {
-            return;
-        }
-        if (!this.level.isClientSide() && powerPoint.isAlive() && powerPoint.throwTime == 0) {
-            // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
-            powerPoint.take(this, 1);
-            this.tryPlayMaidPickupSound();
-
-            // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
-            var allItems = this.getAllInv();
-            ItemStack itemstack = this.getRandomItemWithMendingEnchantments(allItems);
-            int xpValue = EntityPowerPoint.transPowerValueToXpValue(powerPoint.getValue());
-            if (!itemstack.isEmpty() && itemstack.isDamaged()) {
-                int i = Math.min((int) (xpValue /** itemstack.getXpRepairRatio()*/), itemstack.getDamageValue());
-                xpValue -= (i / 2);
-                itemstack.setDamageValue(itemstack.getDamageValue() - i);
-            }
-            if (xpValue > 0) {
-                this.setExperience(getExperience() + xpValue);
-            }
-            powerPoint.discard();
-        }
-    }
-
-    private ItemStack getRandomItemWithMendingEnchantments(ResourceHandler<ItemVariant> handler) {
-        RegistryAccess access = this.level.registryAccess();
-        List<ItemStack> stacks = Lists.newArrayList();
-        for (int i = 0; i < handler.size(); i++) {
-            ItemStack stackInSlot = ItemUtil.getStack(handler, i);
-            if (!stackInSlot.isEmpty() && getEnchantmentLevel(access, Enchantments.MENDING, stackInSlot) > 0
-                    && stackInSlot.isDamaged() && !stackInSlot.is(TagItem.MAID_MENDING_BLOCKLIST_ITEM)) {
-                stacks.add(stackInSlot);
-            }
-        }
-        return stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(this.getRandom().nextInt(stacks.size()));
-    }
-
-    public boolean pickupArrow(AbstractArrow arrow, boolean simulate) {
-        MaidPickupEvent.ArrowResult arrowResult = new MaidPickupEvent.ArrowResult(this, arrow, simulate);
-        MaidPickupEvent.ARROW_RESULT.invoker().onArrowResult(arrowResult);
-        if (arrowResult.isCanceled()) {
-            return arrowResult.isCanPickup();
-        }
-        if (!this.level.isClientSide() && arrow.isAlive() && arrow.shakeTime <= 0) {
-            // 先判断箭是否处于可以拾起的状态
-            if (arrow.pickup != AbstractArrow.Pickup.ALLOWED) {
-                return false;
-            }
-            // 能够塞入
-            ItemStack stack = getArrowFromEntity(arrow);
-            if (stack.isEmpty()) {
-                return false;
-            }
-            if (!ItemsUtil.insertItemStacked(getAvailableInv(false), stack, simulate, null).isEmpty()) {
-                return false;
-            }
-            // 非模拟状态下，清除实体箭
-            if (!simulate) {
-                // 这是向客户端同步数据用的，如果加了这个方法，会有短暂的拾取动画和音效
-                this.take(arrow, 1);
-                this.tryPlayMaidPickupSound();
-                arrow.discard();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void tryPlayMaidPickupSound() {
-        var event = new MaidPlaySoundEvent(this);
-        MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-        if (!event.isCanceled()) {
-            pickupSoundCount--;
-            if (pickupSoundCount == 0) {
-                this.playSound(InitSounds.MAID_ITEM_GET, 1, 1);
-                pickupSoundCount = 5;
-            }
-        }
-    }
-
-    @SuppressWarnings("ReferenceToMixin")
-    private ItemStack getArrowFromEntity(AbstractArrow entity) {
-        if (entity instanceof ArrowAccessor mixinArrow) {
-            if (mixinArrow.tlmInGround() || entity.isNoPhysics()) {
-                return mixinArrow.getTlmPickupItem();
-            }
-        }
-        return ItemStack.EMPTY;
     }
 
     @Override
@@ -890,7 +700,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         }
 
         // 调用饰品的攻击
-        maidBauble.fireEvent((b, s) -> {
+        getMaidBauble().fireEvent((b, s) -> {
             b.onMeleeAttack(this, s, target);
             return false;
         });
@@ -938,7 +748,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
                 }
             }
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, this.getSoundSource(), 1, 1);
-            this.spawnSweepAttackParticle();
+            this.effectsManager.spawnSweepAttackParticle();
         }
     }
 
@@ -1011,7 +821,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
 
             // 饰品
             MutableFloat newDamage = new MutableFloat(damageAmount);
-            boolean baubleCancel = maidBauble.fireEvent((b, s) -> b.onInjured(this, s, damageSrc, newDamage));
+            boolean baubleCancel = getMaidBauble().fireEvent((b, s) -> b.onInjured(this, s, damageSrc, newDamage));
             float damageAfterAbsorption = newDamage.getValue();
             // 如果饰品取消了事件，那么也不触发后续内容了
             if (baubleCancel || damageAfterAbsorption <= 0) {
@@ -1081,7 +891,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     public void die(DamageSource cause) {
         MaidDeathEvent event = new MaidDeathEvent(this, cause);
         MaidDeathEvent.CALLBACK.invoker().post(event);
-        boolean baubleCancel = this.maidBauble.fireEvent((b, s) -> b.onDeath(this, s, cause));
+        boolean baubleCancel = getMaidBauble().fireEvent((b, s) -> b.onDeath(this, s, cause));
         if (!baubleCancel && !event.isCanceled()) {
             // 清除死亡时需要清除的内容
             this.clearFire();
@@ -1112,26 +922,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
             OutgoingChatMessage message = OutgoingChatMessage.create(PlayerChatMessage.system(msg));
             serverPlayer.sendChatMessage(message, false, ChatType.bind(ChatType.CHAT, serverPlayer));
         }
-    }
-
-    public boolean canPickup(Entity pickupEntity, boolean checkInWater) {
-        if (isPickup()) {
-            if (checkInWater && pickupEntity.isInWater()) {
-                return false;
-            }
-            PickType pickupType = this.configManager.getPickupType();
-            if (pickupType.canPickItem() && pickupEntity instanceof ItemEntity) {
-                return pickupItem((ItemEntity) pickupEntity, true);
-            }
-            if (pickupType.canPickItem() && pickupEntity instanceof AbstractArrow) {
-                return pickupArrow((AbstractArrow) pickupEntity, true);
-            }
-            if (pickupType.canPickXp() && pickupEntity instanceof ExperienceOrb) {
-                return true;
-            }
-            return pickupType.canPickXp() && pickupEntity instanceof EntityPowerPoint;
-        }
-        return false;
     }
 
     public boolean canPickup(Entity pickupEntity) {
@@ -1202,7 +992,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         IMaidTask maidTask = this.getTask();
         if (maidTask instanceof IRangedAttackTask rangedAttackTask) {
             // 调用饰品的攻击
-            maidBauble.fireEvent((b, s) -> {
+            getMaidBauble().fireEvent((b, s) -> {
                 b.onRangedAttack(this, s, rangedAttackTask);
                 return false;
             });
@@ -1251,91 +1041,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         }
     }
 
-    private void spawnPortalParticle() {
-        if (this.level.isClientSide() && this.getIsInvulnerable() && MiscConfig.INVULNERABLE_PARTICLE_EFFECT.get() && this.getOwner() != null) {
-            this.level.addParticle(ParticleTypes.PORTAL,
-                    this.getX() + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth(),
-                    this.getY() + this.random.nextDouble() * (double) this.getBbHeight() - 0.25D,
-                    this.getZ() + (this.random.nextDouble() - 0.5D) * (double) this.getBbWidth(),
-                    (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
-                    (this.random.nextDouble() - 0.5D) * 2.0D);
-        }
-    }
-
-    public void spawnRestoreHealthParticle(int particleCount) {
-        if (this.level.isClientSide()) {
-            for (int i = 0; i < particleCount; ++i) {
-                double xRandom = this.random.nextGaussian() * 0.02D;
-                double yRandom = this.random.nextGaussian() * 0.02D;
-                double zRandom = this.random.nextGaussian() * 0.02D;
-
-                this.level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9f, 0.1f, 0.1f),
-                        this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth() - xRandom * 10.0D,
-                        this.getY() + (double) (this.random.nextFloat() * this.getBbHeight()) - yRandom * 10.0D,
-                        this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth() - zRandom * 10.0D,
-                        0, 0, 0);
-            }
-        }
-    }
-
-    public void spawnExplosionParticle() {
-        if (this.level.isClientSide()) {
-            for (int i = 0; i < 20; ++i) {
-                float mx = (random.nextFloat() - 0.5F) * 0.02F;
-                float my = (random.nextFloat() - 0.5F) * 0.02F;
-                float mz = (random.nextFloat() - 0.5F) * 0.02F;
-                level.addParticle(ParticleTypes.CLOUD,
-                        getX() + random.nextFloat() - 0.5F,
-                        getY() + random.nextFloat() - 0.5F,
-                        getZ() + random.nextFloat() - 0.5F,
-                        mx, my, mz);
-            }
-        }
-    }
-
-    public void spawnBubbleParticle() {
-        if (this.level.isClientSide()) {
-            for (int i = 0; i < 8; ++i) {
-                double offsetX = 2 * random.nextDouble() - 1;
-                double offsetY = random.nextDouble() / 2;
-                double offsetZ = 2 * random.nextDouble() - 1;
-                level.addParticle(ParticleTypes.BUBBLE, getX() + offsetX, getY() + offsetY, getZ() + offsetZ,
-                        0, 0.1, 0);
-            }
-        }
-    }
-
-    public void spawnHeartParticle() {
-        if (this.level.isClientSide()) {
-            for (int i = 0; i < 8; ++i) {
-                double offsetX = this.random.nextGaussian() * 0.02;
-                double offsetY = this.random.nextGaussian() * 0.02;
-                double offsetZ = this.random.nextGaussian() * 0.02;
-                level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0), this.getRandomY() + 0.5, this.getRandomZ(1.0), offsetX, offsetY, offsetZ);
-            }
-        }
-    }
-
-    public void spawnRankUpParticle() {
-        if (this.level.isClientSide()) {
-            Minecraft minecraft = Minecraft.getInstance();
-            minecraft.particleEngine.createTrackingEmitter(this, ParticleTypes.TOTEM_OF_UNDYING, 30);
-            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.BELL_BLOCK, this.getSoundSource(), 1.0F, 1.0F, false);
-            minecraft.gui.setTitle(Component.translatable("message.touhou_little_maid.gomoku.rank_up.title"));
-            minecraft.gui.setSubtitle(Component.translatable("message.touhou_little_maid.gomoku.rank_up.subtitle"));
-        }
-    }
-
-    private void spawnSweepAttackParticle() {
-        double xOffset = -Mth.sin(this.getYRot() * ((float) Math.PI / 180F));
-        double zOffset = Mth.cos(this.getYRot() * ((float) Math.PI / 180F));
-        if (this.level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK,
-                    this.getX() + xOffset, this.getY(0.5),
-                    this.getZ() + zOffset, 0, xOffset, 0, zOffset, 0);
-        }
-    }
-
     @Override
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
@@ -1343,10 +1048,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
 
         output.store(SOUND_PACK_ID_TAG, Codec.STRING, getSoundPackId());
         output.store(TASK_TAG, Codec.STRING, getTask().getUid().toString());
-        maidInv.serialize(output.child(MAID_INVENTORY_TAG));
-        maidBauble.serialize(output.child(MAID_BAUBLE_INVENTORY_TAG));
-        hideInv.serialize(output.child(MAID_HIDE_INVENTORY_TAG));
-        taskInv.serialize(output.child(MAID_TASK_INVENTORY_TAG));
+        itemManager.addAdditionalSaveData(output);
         output.store(STRUCK_BY_LIGHTNING_TAG, Codec.BOOL, isStruckByLightning());
         output.store(INVULNERABLE_TAG, Codec.BOOL, getIsInvulnerable());
         output.store(HUNGER_TAG, Codec.INT, getHunger());
@@ -1382,10 +1084,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
             setTask(task);
         });
 
-        maidInv.deserialize(input.childOrEmpty(MAID_INVENTORY_TAG));
-        maidBauble.deserialize(input.childOrEmpty(MAID_BAUBLE_INVENTORY_TAG));
-        hideInv.deserialize(input.childOrEmpty(MAID_HIDE_INVENTORY_TAG));
-        taskInv.deserialize(input.childOrEmpty(MAID_TASK_INVENTORY_TAG));
+        itemManager.readAdditionalSaveData(input);
 
         input.read(STRUCK_BY_LIGHTNING_TAG, Codec.BOOL).ifPresent(this::setStruckByLightning);
         input.read(INVULNERABLE_TAG, Codec.BOOL).ifPresent(this::setEntityInvulnerable);
@@ -1408,7 +1107,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         this.gameRecordManager.readAdditionalSaveData(input);
         this.favorabilityManager.readAdditionalSaveData(input);
         this.schedulePos.load(input, this);
-        this.setBackpackShowItem(ItemUtil.getStack(maidInv, MaidBackpackHandler.BACKPACK_ITEM_SLOT));
+        this.setBackpackShowItem(ItemUtil.getStack(itemManager.maidInv, MaidBackpackHandler.BACKPACK_ITEM_SLOT));
         this.killRecordManager.readAdditionalSaveData(input);
         this.aiChatManager.loadValue(input);
     }
@@ -1451,25 +1150,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
             EntityTombstone tombstone = new EntityTombstone(level, this.getOwnerUUID(), position);
             tombstone.setMaidName(this.getDisplayName());
 
-            // 女仆物品栏
-            CombinedResourceHandler<ItemVariant> invWrapper = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidInv, maidBauble, hideInv, taskInv);
-            // 需要考虑消失诅咒附魔
-            destroyVanishingCursedItems(invWrapper);
-            for (int i = 0; i < invWrapper.size(); i++) {
-                ItemVariant resource = invWrapper.getResource(i);
-                // TODO resource不能为空，否则会报错
-                if (resource.isBlank())
-                    continue;
-                int size = invWrapper.getCapacityAsInt(i, resource);
-                tombstone.insertItem(ItemsUtil.extractItem(invWrapper, i, size, false, null));
-            }
-            // 背包额外数据
-            IMaidBackpack maidBackpack = this.getMaidBackpackType();
-            tombstone.insertItem(maidBackpack.getTakeOffItemStack(ItemStack.EMPTY, null, this));
-            maidBackpack.onSpawnTombstone(this, tombstone);
-            // 胶片
-            ItemStack filmItem = ItemFilm.maidToFilm(this);
-            tombstone.insertItem(filmItem);
+            itemManager.addItemsToTomb(tombstone);
 
             // 事件触发，既可以阻断墓碑生成，也可以修改墓碑内容
             MaidTombstoneEvent tombstoneEvent = new MaidTombstoneEvent(this, tombstone);
@@ -1491,18 +1172,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         }
     }
 
-    private void destroyVanishingCursedItems(CombinedResourceHandler<ItemVariant> invWrapper) {
-        if (this.level instanceof ServerLevel level && level.getGameRules().get(GameRules.KEEP_INVENTORY)) {
-            return;
-        }
-        for (int i = 0; i < invWrapper.size(); ++i) {
-            ItemStack stack = ItemUtil.getStack(invWrapper, i);
-            if (!stack.isEmpty() && EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP) && !stack.is(TagItem.MAID_VANISHING_BLOCKLIST_ITEM)) {
-                ItemsUtil.extractItem(invWrapper, i, stack.getCount(), false, null);
-            }
-        }
-    }
-
     @Override
     public void remove(RemovalReason reason) {
         // TODO: 尝试修复可能存在的目标生成丢失问题，可能会有问题
@@ -1518,45 +1187,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     protected void completeUsingItem() {
         this.getSwimManager().resetEatBreatheItem();
         super.completeUsingItem();
-        this.backCurrentHandItemStack();
-    }
-
-    /**
-     * 当需要临时调换手中物品和背包内物品时，可调用此方法
-     * 当置换后的物品使用完后会自动将之前的手中物品再次返回到手上
-     *
-     * @param itemStack 当前手上的物品（必须是能使用--需要持续使用的物品）
-     */
-    public void memoryHandItemStack(ItemStack itemStack) {
-        // 先检查内部存储是否已经有物品了，有就掉落
-        ItemStack hideItemStack = ItemUtil.getStack(this.getHideInv(), 0);
-        if (!hideItemStack.isEmpty()) {
-            ItemStack extractItem = ItemsUtil.extractItem(this.getHideInv(), 0, hideItemStack.getCount(), false, null);
-            if (!extractItem.isEmpty()) {
-                ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY() + 0.5, this.getZ(), extractItem);
-                this.level.addFreshEntity(itemEntity);
-            }
-        }
-        // 然后存入我们的物品
-        ItemsUtil.insertItemStacked(this.getHideInv(), itemStack, false, null);
-    }
-
-    /**
-     * 将之前临时存在背包里的物品再次放在对应的手上
-     */
-    private void backCurrentHandItemStack() {
-        // 先看看副手是否为空？
-        ItemStack offhandItem = this.getItemInHand(InteractionHand.OFF_HAND);
-        if (!offhandItem.isEmpty()) {
-            ItemStack stack = ItemsUtil.insertItemStacked(this.getAvailableBackpackInv(), offhandItem.copy(), false, null);
-            if (!stack.isEmpty()) {
-                ItemEntity itemEntity = new ItemEntity(this.level(), this.getX(), this.getY() + 0.5, this.getZ(), stack);
-                this.level.addFreshEntity(itemEntity);
-            }
-        }
-        // 副手此时为空，那么插入我们的物品
-        ItemStack output = ItemsUtil.extractItem(this.getHideInv(), 0, ItemUtil.getStack(this.getHideInv(), 0).getCount(), false, null);
-        this.setItemInHand(InteractionHand.OFF_HAND, output);
+        this.itemManager.backCurrentHandItemStack(this);
     }
 
     //FIXME eat方法已经被Consumer取代。事件需要寻找替代品或者对应移除
@@ -1662,9 +1293,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-        MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-        if (event.isCanceled()) {
+        if (!mayPlaySound()) {
             return null;
         }
         return task.getAmbientSound(this);
@@ -1673,9 +1302,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     @Nullable
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-        MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-        if (event.isCanceled()) {
+        if (!mayPlaySound()) {
             return null;
         }
         if (damageSourceIn.is(DamageTypeTags.IS_FIRE)) {
@@ -1695,9 +1322,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     @Nullable
     @Override
     protected SoundEvent getDeathSound() {
-        MaidPlaySoundEvent event = new MaidPlaySoundEvent(this);
-        MaidPlaySoundEvent.CALLBACK.invoker().post(event);
-        if (event.isCanceled()) {
+        if (!mayPlaySound()) {
             return null;
         }
         return InitSounds.MAID_DEATH;
@@ -1737,7 +1362,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         Path path = this.getNavigation().createPath(entity, 0);
         return path != null && path.canReach();
     }
-
 
     /**
      * 给 MaidMeleeAttack 使用，用于判断当前任务是否能够近战
@@ -1907,18 +1531,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         this.entityData.set(DATA_BEGGING, begging);
     }
 
-    public boolean isHomeModeEnable() {
-        return this.configManager.isHomeModeEnable();
-    }
-
-    public void setHomeModeEnable(boolean enable) {
-        this.configManager.setHomeModeEnable(enable);
-    }
-
-    public MaidConfigManager getConfigManager() {
-        return configManager;
-    }
-
     @Override
     public boolean isWithinHome() {
         return this.isWithinHome(this.blockPosition());
@@ -1969,22 +1581,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
 
     public boolean canBrainMoving() {
         return !this.isMaidInSittingPose() && !this.isPassenger() && !this.isSleeping() && !this.isLeashed();
-    }
-
-    public boolean isPickup() {
-        return this.configManager.isPickup();
-    }
-
-    public void setPickup(boolean isPickup) {
-        this.configManager.setPickup(isPickup);
-    }
-
-    public boolean isRideable() {
-        return this.configManager.isRideable();
-    }
-
-    public void setRideable(boolean rideable) {
-        this.configManager.setRideable(rideable);
     }
 
     public int getHunger() {
@@ -2051,7 +1647,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         return level.environmentAttributes().getValue(this.getSchedule().getEnvironmentAttribute(), blockPosition());
     }
 
-
     public SchedulePos getSchedulePos() {
         return schedulePos;
     }
@@ -2088,59 +1683,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
 
     public IBackpackData getBackpackData() {
         return backpackData;
-    }
-
-    public ItemStacksResourceHandler getMaidInv() {
-        return maidInv;
-    }
-
-    /**
-     * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
-     */
-    public CombinedResourceHandler<ItemVariant> getAvailableInv(boolean handsFirst) {
-        int maxContainerIndex = getMaidBackpackType().getAvailableMaxContainerIndex();
-        var combinedInvWrapper = RangedResourceHandler.of(maidInv, 0, maxContainerIndex);
-        return handsFirst ? new MaidInvWrapper(this, handsInvWrapper, combinedInvWrapper)
-                : new MaidInvWrapper(this, combinedInvWrapper, handsInvWrapper);
-    }
-
-    /**
-     * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
-     */
-    public CombinedResourceHandler<ItemVariant> getAvailableBackpackInv() {
-        int maxContainerIndex = getMaidBackpackType().getAvailableMaxContainerIndex();
-        var rangedWrapper = RangedResourceHandler.of(maidInv, 0, maxContainerIndex);
-        return new MaidInvWrapper(this, rangedWrapper);
-    }
-
-    public LivingEntityEquipmentWrapper.EquipmentTypeWrapper getHandsInvWrapper() {
-        return handsInvWrapper;
-    }
-
-    public LivingEntityEquipmentWrapper.EquipmentTypeWrapper getArmorInvWrapper() {
-        return armorInvWrapper;
-    }
-
-    public BaubleItemHandler getMaidBauble() {
-        return maidBauble;
-    }
-
-    public CombinedResourceHandler<ItemVariant> getAllInv() {
-        return new CombinedResourceHandler<>(this.getArmorInvWrapper(), this.getHandsInvWrapper(), this.getMaidInv(), this.getMaidBauble());
-    }
-
-    /**
-     * 获取隐藏物品栏
-     */
-    public ItemStacksResourceHandler getHideInv() {
-        return hideInv;
-    }
-
-    /**
-     * 获取任务物品栏
-     */
-    public ItemStacksResourceHandler getTaskInv() {
-        return taskInv;
     }
 
     public boolean getIsInvulnerable() {
@@ -2211,82 +1753,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         this.effects = effects;
     }
 
-    public boolean canDestroyBlock(BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        return BlockUtil.canEntityDestroy(state.getBlock(), state, level, pos, this) /*&& net.neoforged.neoforge.event.EventHooks.onEntityDestroyBlock(this, pos, state)*/;
-    }
-
-    public boolean canPlaceBlock(BlockPos pos) {
-        BlockState oldState = level.getBlockState(pos);
-        return oldState.canBeReplaced();
-    }
-
-    public boolean destroyBlock(BlockPos pos) {
-        return destroyBlock(pos, true);
-    }
-
-    public boolean destroyBlock(BlockPos pos, boolean dropBlock) {
-        return canDestroyBlock(pos) && destroyBlock(level, pos, dropBlock, this);
-    }
-
-    public boolean destroyBlock(Level level, BlockPos blockPos, boolean dropBlock, @Nullable Entity entity) {
-        BlockState blockState = level.getBlockState(blockPos);
-        if (blockState.isAir()) {
-            return false;
-        } else {
-            FluidState fluidState = level.getFluidState(blockPos);
-            if (!(blockState.getBlock() instanceof BaseFireBlock)) {
-                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState));
-            }
-            if (dropBlock) {
-                BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
-                dropResourcesToMaidInv(blockState, level, blockPos, blockEntity, this, ItemStack.EMPTY);
-            }
-            boolean setResult = level.setBlock(blockPos, fluidState.createLegacyBlock(), Block.UPDATE_ALL);
-            if (setResult) {
-                level.gameEvent(GameEvent.BLOCK_DESTROY, blockPos, GameEvent.Context.of(entity, blockState));
-            }
-            return setResult;
-        }
-    }
-
-    public void dropResourcesToMaidInv(BlockState state, Level level, BlockPos pos, @Nullable BlockEntity blockEntity, EntityMaid maid, ItemStack tool) {
-        if (level instanceof ServerLevel serverLevel) {
-            var availableInv = this.getAvailableInv(false);
-            Block.getDrops(state, serverLevel, pos, blockEntity, maid, tool).forEach(stack -> {
-                ItemStack remindItemStack = ItemsUtil.insertItemStacked(availableInv, stack, false, null);
-                if (!remindItemStack.isEmpty()) {
-                    Block.popResource(level, pos, remindItemStack);
-                }
-            });
-            state.spawnAfterBreak(serverLevel, pos, tool, true);
-        }
-    }
-
-    public boolean placeItemBlock(InteractionHand hand, BlockPos placePos, Direction direction, ItemStack stack) {
-        if (stack.getItem() instanceof BlockItem blockItem) {
-            return blockItem.place(new BlockPlaceContext(level, null, hand, stack,
-                    getBlockRayTraceResult(placePos, direction))).consumesAction();
-        }
-        return false;
-    }
-
-    public boolean placeItemBlock(BlockPos placePos, Direction direction, ItemStack stack) {
-        return placeItemBlock(InteractionHand.MAIN_HAND, placePos, direction, stack);
-    }
-
-    public boolean placeItemBlock(BlockPos placePos, ItemStack stack) {
-        return placeItemBlock(placePos, Direction.UP, stack);
-    }
-
-    private BlockHitResult getBlockRayTraceResult(BlockPos pos, Direction direction) {
-        return new BlockHitResult(
-                new Vec3((double) pos.getX() + 0.5D + (double) direction.getStepX() * 0.5D,
-                        (double) pos.getY() + 0.5D + (double) direction.getStepY() * 0.5D,
-                        (double) pos.getZ() + 0.5D + (double) direction.getStepZ() * 0.5D),
-                direction, pos, false);
-    }
-
     public FavorabilityManager getFavorabilityManager() {
         return favorabilityManager;
     }
@@ -2300,7 +1766,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     }
 
     private Ingredient merge(Collection<Ingredient> parts) {
-        return Ingredient.of(parts.stream().flatMap(Ingredient::items).map(Holder::value));
+        return Ingredient.of(parts.stream().flatMap(i -> i.values.stream()).map(Holder::value));
     }
 
     @SuppressWarnings("all")
@@ -2490,7 +1956,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         return v;
     }
 
-
     public ItemCooldowns getCooldowns() {
         return cooldowns;
     }
@@ -2502,7 +1967,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
     public MaidNavigationManager getNavigationManager() {
         return navigationManager;
     }
-
 
     public @Nullable UUID getOwnerUUID() {
         EntityReference<LivingEntity> ownerReference = getOwnerReference();
@@ -2528,59 +1992,6 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
         return server.getPlayerList().getPlayer(uuid);
     }
 
-    public boolean teleportToOwner(LivingEntity owner) {
-        BlockPos blockPos = owner.blockPosition();
-        for (int i = 0; i < MAX_TELEPORT_ATTEMPTS_TIMES; ++i) {
-            int x = this.randomIntInclusive(this.getRandom(), -3, 3);
-            int y = this.randomIntInclusive(this.getRandom(), -1, 1);
-            int z = this.randomIntInclusive(this.getRandom(), -3, 3);
-            if (maybeTeleportTo(owner, blockPos.getX() + x, blockPos.getY() + y, blockPos.getZ() + z)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean maybeTeleportTo(LivingEntity owner, int x, int y, int z) {
-        if (teleportTooClosed(owner, x, z)) {
-            return false;
-        } else if (!canTeleportTo(new BlockPos(x, y, z))) {
-            return false;
-        } else {
-            this.moveOrInterpolateTo(new Vec3(x + 0.5, y, z + 0.5), this.getYRot(), this.getXRot());
-            this.getNavigation().stop();
-            this.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-            this.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
-            this.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-            this.getBrain().eraseMemory(MemoryModuleType.PATH);
-            return true;
-        }
-    }
-
-    private boolean teleportTooClosed(LivingEntity owner, int x, int z) {
-        return Math.abs(x - owner.getX()) < 2 && Math.abs(z - owner.getZ()) < 2;
-    }
-
-    private boolean canTeleportTo(BlockPos pos) {
-        // 先检查下方方块是否在黑名单中
-        BlockState blockState = this.level().getBlockState(pos.below());
-        if (blockState.is(TagBlock.MAID_AVOID_BLOCK)) {
-            return false;
-        }
-
-        // 再检查路径节点类型和碰撞箱
-        PathType pathNodeType = WalkNodeEvaluator.getPathTypeStatic(this, pos);
-        if (pathNodeType == PathType.WALKABLE || pathNodeType == PathType.WATER) {
-            BlockPos blockPos = pos.subtract(this.blockPosition());
-            return this.level().noCollision(this, this.getBoundingBox().move(blockPos));
-        }
-        return false;
-    }
-
-    private int randomIntInclusive(RandomSource random, int min, int max) {
-        return random.nextInt(max - min + 1) + min;
-    }
-
     public ChatBubbleManager getChatBubbleManager() {
         return chatBubbleManager;
     }
@@ -2595,24 +2006,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IEnt
 
     @Override
     public void spawnItemParticles(ItemStack stack, int amount) {
-        for (int i = 0; i < amount; ++i) {
-            Vec3 speed = new Vec3((this.random.nextFloat() - 0.5) * 0.1, Math.random() * 0.1 + 0.1, 0.0);
-            speed = speed.xRot(-this.getXRot() * Mth.DEG_TO_RAD);
-            speed = speed.yRot(-this.getYRot() * Mth.DEG_TO_RAD);
-
-            double yOffset = -this.random.nextFloat() * 0.6 - 0.3;
-            Vec3 pos = new Vec3((this.random.nextFloat() - 0.5) * 0.3, yOffset, 0.6);
-            pos = pos.xRot(-this.getXRot() * Mth.DEG_TO_RAD);
-            pos = pos.yRot(-this.getYRot() * Mth.DEG_TO_RAD);
-            pos = pos.add(this.getX(), this.getEyeY(), this.getZ());
-
-            ItemParticleOption option = new ItemParticleOption(ParticleTypes.ITEM, stack.getItem());
-            if (this.level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(option, pos.x, pos.y, pos.z, 1, speed.x, speed.y + 0.05, speed.z, 0.0);
-            } else {
-                this.level.addParticle(option, pos.x, pos.y, pos.z, speed.x, speed.y + 0.05, speed.z);
-            }
-        }
+        effectsManager.spawnItemParticles(stack, amount);
     }
 
     /**

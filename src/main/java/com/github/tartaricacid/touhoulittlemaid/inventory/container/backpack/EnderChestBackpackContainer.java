@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.inventory.Slot;
 
 public class EnderChestBackpackContainer extends MaidMainContainer {
-    public static final MenuType<EnderChestBackpackContainer> TYPE = new ExtendedScreenHandlerType<>(EnderChestBackpackContainer::new, ByteBufCodecs.INT);
+    public static final MenuType<EnderChestBackpackContainer> TYPE = new ExtendedMenuType<>(EnderChestBackpackContainer::new, ByteBufCodecs.INT);
 
     public EnderChestBackpackContainer(int id, Inventory inventory, int entityId) {
         super(TYPE, id, inventory, entityId);

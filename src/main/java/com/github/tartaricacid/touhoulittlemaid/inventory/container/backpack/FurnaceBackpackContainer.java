@@ -3,8 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.data.FurnaceBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class FurnaceBackpackContainer extends MaidMainContainer {
-    public static final MenuType<FurnaceBackpackContainer> TYPE = new ExtendedScreenHandlerType<>(FurnaceBackpackContainer::new, ByteBufCodecs.INT);
+    public static final MenuType<FurnaceBackpackContainer> TYPE = new ExtendedMenuType<>(FurnaceBackpackContainer::new, ByteBufCodecs.INT);
     private final ContainerData data;
 
     public FurnaceBackpackContainer(int id, Inventory inventory, int entityId) {
@@ -42,16 +41,15 @@ public class FurnaceBackpackContainer extends MaidMainContainer {
     @Override
     protected void addBackpackInv(Inventory inventory) {
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 6 + i, 143 + 18 * i, 57));
+            addSlot(BackpackSlot.create(maid, 6 + i, 143 + 18 * i, 57));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 12 + i, 143 + 18 * i, 75));
+            addSlot(BackpackSlot.create(maid, 12 + i, 143 + 18 * i, 75));
         }
     }
 
     private boolean isFuel(ItemStack stack) {
-        Integer burnTime = FuelRegistry.INSTANCE.get(stack.getItem());
-        return burnTime != null && burnTime > 0;
+        return this.maid.level.fuelValues().burnDuration(stack) > 0;
     }
 
     public int getBurnProgress() {

@@ -1,15 +1,16 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container;
 
-import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.IndexModifier;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidBackpackChangeEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
-import com.mojang.datafixers.util.Pair;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,9 +20,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static net.minecraft.world.inventory.InventoryMenu.*;
 
@@ -44,72 +44,75 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidHandInv() {
-        IItemHandler handler = InitCapabilities.MAID_HAND.getNullable(maid);
-        if (handler == null) {
-            return;
+        ResourceHandler<ItemVariant> capability = InitCapabilities.MAID_HAND.getNullable(maid);
+        if (capability != null) {
+            var indexModifier = ItemsUtil.createIndexModifier(capability);
+
+            addSlot(new ResourceHandlerSlot(capability, indexModifier, 0, 87, 77) {
+                @Override
+                public Identifier getNoItemIcon() {
+                    return EMPTY_MAINHAND_SLOT;
+                }
+            });
+            addSlot(new ResourceHandlerSlot(capability, indexModifier, 1, 121, 77) {
+                @Override
+                public Identifier getNoItemIcon() {
+                    return EMPTY_ARMOR_SLOT_SHIELD;
+                }
+            });
         }
-        addSlot(new ResourceHandlerSlot(handler, 0, 87, 77) {
-            @Override
-            @Environment(EnvType.CLIENT)
-            public Pair<Identifier, Identifier> getNoItemIcon() {
-                return Pair.of(BLOCK_ATLAS, EMPTY_MAINHAND_SLOT);
-            }
-        });
-        addSlot(new ResourceHandlerSlot(handler, 1, 121, 77) {
-            @Override
-            @Environment(EnvType.CLIENT)
-            public Pair<Identifier, Identifier> getNoItemIcon() {
-                return Pair.of(BLOCK_ATLAS, EMPTY_ARMOR_SLOT_SHIELD);
-            }
-        });
+
     }
 
     protected void addMaidArmorInv() {
-        IItemHandler handler = InitCapabilities.MAID_ARMOR.getNullable(maid);
-        if (handler != null) {
+        ResourceHandler<ItemVariant> capability = InitCapabilities.MAID_ARMOR.getNullable(maid);
+        if (capability != null) {
+            var indexModifier = ItemsUtil.createIndexModifier(capability);
+
             for (int i = 0; i < 2; ++i) {
                 for (int j = 0; j < 2; j++) {
                     final EquipmentSlot equipmentSlot = SLOT_IDS[2 * i + j];
-                    addSlot(new ResourceHandlerSlot(handler, 3 - 2 * i - j, 94 + 20 * j, 37 + 20 * i) {
+                    addSlot(new ResourceHandlerSlot(capability, indexModifier, 3 - 2 * i - j, 94 + 20 * j, 37 + 20 * i) {
                         @Override
                         public int getMaxStackSize() {
                             return 1;
                         }
 
                         @Override
-                        public boolean mayPlace(@Nonnull ItemStack stack) {
-                            return maid != null && maid.getEquipmentSlotForItem(stack) == equipmentSlot && stack.getItem().canFitInsideContainerItems();
+                        public boolean mayPlace(ItemStack stack) {
+                            return maid.getEquipmentSlotForItem(stack) == equipmentSlot && stack.getItem().canFitInsideContainerItems();
                         }
 
                         @Override
                         public boolean mayPickup(Player playerIn) {
                             ItemStack itemstack = this.getItem();
                             boolean curseEnchant = !itemstack.isEmpty() && !playerIn.isCreative()
-                                    && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
+                                                   && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
                             return !curseEnchant && super.mayPickup(playerIn);
                         }
 
                         @Override
-                        @Environment(EnvType.CLIENT)
-                        public Pair<Identifier, Identifier> getNoItemIcon() {
-                            return Pair.of(BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[equipmentSlot.getIndex()]);
+                        public Identifier getNoItemIcon() {
+                            return TEXTURE_EMPTY_SLOTS[equipmentSlot.getIndex()];
                         }
                     });
                 }
             }
         }
+
     }
 
     protected void addMainDefaultInv() {
         // 默认背包
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, i, 143 + 18 * i, 37));
+            addSlot(BackpackSlot.create(maid, i, 143 + 18 * i, 37));
             // 最后一格给予特殊图标
             if (i == 5) {
-                addSlot(new BackpackSlotSlot(maid, i, 143 + 18 * i, 37) {
+                ItemStacksResourceHandler maidInv = maid.getMaidInv();
+                addSlot(new BackpackSlot(maid, maidInv::set, i, 143 + 18 * i, 37) {
                     @Override
-                    public Pair<Identifier, Identifier> getNoItemIcon() {
-                        return Pair.of(BLOCK_ATLAS, EMPTY_BACK_SHOW_SLOT);
+                    public Identifier getNoItemIcon() {
+                        return EMPTY_BACK_SHOW_SLOT;
                     }
                 });
             }
@@ -153,29 +156,34 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
             // 用来修正护甲值不变化的问题
             if (PLAYER_INVENTORY_SIZE <= index && index < PLAYER_INVENTORY_SIZE + 4) {
                 EquipmentSlot equipmentSlot = SLOT_IDS[index - PLAYER_INVENTORY_SIZE];
-                maid.setLastArmorItem(equipmentSlot, stack1);
+                maid.setItemSlot(equipmentSlot, stack1);
             }
             // 还有主副手
             if (PLAYER_INVENTORY_SIZE + 4 <= index && index < PLAYER_INVENTORY_SIZE + 6) {
                 int slotIndex = index - PLAYER_INVENTORY_SIZE - 4;
                 EquipmentSlot equipmentSlot = slotIndex == 0 ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-                maid.setLastHandItem(equipmentSlot, stack1);
+                maid.setItemSlot(equipmentSlot, stack1);
             }
         }
         return stack1;
     }
 
-    public static class BackpackSlotSlot extends ResourceHandlerSlot implements ITriggerSlotChange {
+    public static class BackpackSlot extends ResourceHandlerSlot implements ITriggerSlotChange {
         private final EntityMaid maid;
 
-        public BackpackSlotSlot(EntityMaid maid, int index, int xPosition, int yPosition) {
-            super(maid.getMaidInv(), index, xPosition, yPosition);
+        private BackpackSlot(EntityMaid maid, IndexModifier<ItemVariant> slotModifier, int index, int xPosition, int yPosition) {
+            super(maid.getMaidInv(), slotModifier, index, xPosition, yPosition);
             this.maid = maid;
+        }
+
+        public static BackpackSlot create(EntityMaid maid, int index, int xPosition, int yPosition) {
+            ItemStacksResourceHandler maidInv = maid.getMaidInv();
+            return new BackpackSlot(maid, maidInv::set, index, xPosition, yPosition);
         }
 
         @Override
         public void onShiftTakeoff(@Nullable Player player, ItemStack stack) {
-            if (!maid.level.isClientSide && !stack.isEmpty()) {
+            if (!maid.level.isClientSide() && !stack.isEmpty()) {
                 MaidBackpackChangeEvent.TAKE_OFF.invoker().takeOff(new MaidBackpackChangeEvent.TakeOff(maid, stack));
             }
         }
@@ -189,7 +197,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
         @Override
         public void setByPlayer(ItemStack stack) {
             super.setByPlayer(stack);
-            if (!maid.level.isClientSide && !stack.isEmpty()) {
+            if (!maid.level.isClientSide() && !stack.isEmpty()) {
                 MaidBackpackChangeEvent.PUT_ON.invoker().putOn(new MaidBackpackChangeEvent.PutOn(maid, stack));
             }
         }

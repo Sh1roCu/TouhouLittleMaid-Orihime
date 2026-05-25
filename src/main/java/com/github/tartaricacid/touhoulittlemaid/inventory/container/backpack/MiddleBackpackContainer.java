@@ -1,13 +1,13 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class MiddleBackpackContainer extends MaidMainContainer {
-    public static final MenuType<MiddleBackpackContainer> TYPE = new ExtendedScreenHandlerType<>(MiddleBackpackContainer::new, ByteBufCodecs.INT);
+    public static final MenuType<MiddleBackpackContainer> TYPE = new ExtendedMenuType<>(MiddleBackpackContainer::new, ByteBufCodecs.INT);
 
     public MiddleBackpackContainer(int id, Inventory inventory, int entityId) {
         super(TYPE, id, inventory, entityId);
@@ -16,13 +16,13 @@ public class MiddleBackpackContainer extends MaidMainContainer {
     @Override
     protected void addBackpackInv(Inventory inventory) {
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 6 + i, 143 + 18 * i, 59));
+            addSlot(BackpackSlot.create(maid, 6 + i, 143 + 18 * i, 59));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 12 + i, 143 + 18 * i, 82));
+            addSlot(BackpackSlot.create(maid, 12 + i, 143 + 18 * i, 82));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 18 + i, 143 + 18 * i, 100));
+            addSlot(BackpackSlot.create(maid, 18 + i, 143 + 18 * i, 100));
         }
     }
 }

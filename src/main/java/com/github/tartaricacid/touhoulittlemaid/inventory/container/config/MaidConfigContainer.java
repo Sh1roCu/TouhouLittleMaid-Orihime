@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.inventory.container.config;
 
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class MaidConfigContainer extends AbstractMaidContainer {
-    public static final MenuType<MaidConfigContainer> TYPE = new ExtendedScreenHandlerType<>(MaidConfigContainer::new, ByteBufCodecs.INT);
+    public static final MenuType<MaidConfigContainer> TYPE = new ExtendedMenuType<>(MaidConfigContainer::new, ByteBufCodecs.INT);
     private static final int PLAYER_INVENTORY_SIZE = 27;
 
     public MaidConfigContainer(int id, Inventory inventory, int entityId) {

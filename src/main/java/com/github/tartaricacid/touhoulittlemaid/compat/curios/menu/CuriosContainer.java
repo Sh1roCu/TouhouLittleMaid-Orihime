@@ -9,7 +9,7 @@ import io.wispforest.accessories.api.AccessoriesCapability;
 import io.wispforest.accessories.api.AccessoriesContainer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Optional;
 
 public class CuriosContainer extends MaidMainContainer {
-    public static final MenuType<CuriosContainer> TYPE = new ExtendedScreenHandlerType<>(CuriosContainer::new, ByteBufCodecs.INT);
+    public static final MenuType<CuriosContainer> TYPE = new ExtendedMenuType<>(CuriosContainer::new, ByteBufCodecs.INT);
 
     private static final int PREV = 0;
     private static final int NEXT = 1;

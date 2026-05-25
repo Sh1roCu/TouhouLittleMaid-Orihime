@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class CraftingTableBackpackContainer extends MaidMainContainer {
-    public static final MenuType<CraftingTableBackpackContainer> TYPE = new ExtendedScreenHandlerType<>(CraftingTableBackpackContainer::new
+    public static final MenuType<CraftingTableBackpackContainer> TYPE = new ExtendedMenuType<>(CraftingTableBackpackContainer::new
             , ByteBufCodecs.INT);
     private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
@@ -65,7 +65,7 @@ public class CraftingTableBackpackContainer extends MaidMainContainer {
             ItemStack stack2 = slot.getItem();
             stack1 = stack2.copy();
             if (index == resultSlot.index) {
-                this.access.execute((level, blockPos) -> stack2.getItem().onCraftedBy(stack2, level, player));
+                this.access.execute((level, blockPos) -> stack2.getItem().onCraftedBy(stack2, player));
                 if (!this.moveItemStackTo(stack2, 0, PLAYER_INVENTORY_SIZE, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -104,23 +104,23 @@ public class CraftingTableBackpackContainer extends MaidMainContainer {
     @Override
     protected void addBackpackInv(Inventory inventory) {
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 6 + i, 143 + 18 * i, 57));
+            addSlot(BackpackSlot.create(maid, 6 + i, 143 + 18 * i, 57));
         }
         for (int i = 0; i < 6; i++) {
-            addSlot(new BackpackSlotSlot(maid, 12 + i, 143 + 18 * i, 75));
+            addSlot(BackpackSlot.create(maid, 12 + i, 143 + 18 * i, 75));
         }
     }
 
     private void slotChangedCraftingGrid(AbstractContainerMenu menu, Level level, Player player, CraftingContainer container, ResultContainer result) {
-        if (!level.isClientSide && level.getServer() != null) {
+        if (!level.isClientSide() && level.getServer() != null) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             ItemStack stack1 = ItemStack.EMPTY;
             CraftingInput craftInput = container.asCraftInput();
             Optional<RecipeHolder<CraftingRecipe>> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftInput, level);
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = optional.get();
-                if (result.setRecipeUsed(level, serverPlayer, recipe)) {
-                    ItemStack stack2 = recipe.value().assemble(craftInput, level.registryAccess());
+                if (result.setRecipeUsed(serverPlayer, recipe)) {
+                    ItemStack stack2 = recipe.value().assemble(craftInput);
                     if (stack2.isItemEnabled(level.enabledFeatures())) {
                         stack1 = stack2;
                     }
