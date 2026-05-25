@@ -26,7 +26,7 @@ public class AquacultureFishingType {
     @Override
     public MaidFishingHook getFishingHook(EntityMaid maid, Level level, ItemStack rod, Vec3 pos) {
         int lureSpeed = (int) (EnchantmentHelper.getFishingTimeReduction((ServerLevel) level, rod, maid) * 20.0F);
-        Tier tier = Tiers.WOOD;
+        ToolMaterial tier = ToolMaterial.WOOD;
         if (rod.getItem() instanceof AquaFishingRodItem aquaFishingRodItem) {
             tier = aquaFishingRodItem.getTier();
         }

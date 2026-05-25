@@ -9,7 +9,10 @@ public abstract class AquacultureFishingHook {
     public static final EntityType<AquacultureFishingHook> TYPE = EntityType.Builder.<AquacultureFishingHook>of(AquacultureFishingHook::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F)
             .clientTrackingRange(4).updateInterval(5)
-            .build("aquaculture_fishing_hook");
+            .build(ResourceKey.create(
+                    Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "aquaculture_fishing_hook")
+            ));
 
     private Hook hook = Hooks.EMPTY;
     private ItemStack fishingLine = ItemStack.EMPTY;
@@ -21,10 +24,11 @@ public abstract class AquacultureFishingHook {
     }
 
     public AquacultureFishingHook(EntityMaid maid, Level world, int luck, int lureSpeed, Vec3 pos,
-                                  @Nonnull Hook hook, @Nonnull ItemStack fishingLine, @Nonnull ItemStack bobber, @Nonnull ItemStack rod) {
+                                  @Nonnull Hook hook, @Nonnull ItemStack fishingLine,
+                                  @Nonnull ItemStack bobber, @Nonnull ItemStack rod) {
         super(TYPE, world, luck, lureSpeed);
         this.setOwner(maid);
-        this.moveTo(pos);
+        this.setPos(pos);
         this.hook = hook;
         this.fishingLine = fishingLine;
         this.bobber = bobber;
@@ -35,7 +39,7 @@ public abstract class AquacultureFishingHook {
     }
 
     @Override
-    protected float getFluidHeight(FluidState fluidState, BlockPos blockPos) {
+    protected float getFluidHeight(@NotNull FluidState fluidState, @NotNull BlockPos blockPos) {
         if (this.isLavaHook() && fluidState.is(FluidTags.LAVA)) {
             return fluidState.getHeight(this.level(), blockPos);
         }
@@ -43,7 +47,7 @@ public abstract class AquacultureFishingHook {
     }
 
     @Override
-    protected void fallTick(FluidState fluidState) {
+    protected void fallTick(@NotNull FluidState fluidState) {
         if (this.isLavaHook() && !fluidState.is(FluidTags.LAVA)) {
             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.03D, 0.0D));
         } else {
@@ -52,7 +56,7 @@ public abstract class AquacultureFishingHook {
     }
 
     @Override
-    protected void spawnFishingParticle(ServerLevel level, BlockState blockState, double x, double y, double z, float sin, float cos) {
+    protected void spawnFishingParticle(@NotNull ServerLevel level, @NotNull BlockState blockState, double x, double y, double z, float sin, float cos) {
         if (this.isLavaHook() && blockState.getFluidState().is(FluidTags.LAVA)) {
             float sinOffset = sin * 0.04F;
             float cosOffset = cos * 0.04F;
@@ -100,7 +104,7 @@ public abstract class AquacultureFishingHook {
     }
 
     @Override
-    protected @NotNull List<ItemStack> getLoot(MinecraftServer server, LootParams lootParams) {
+    protected @NotNull List<ItemStack> getLoot(@NotNull MinecraftServer server, @NotNull LootParams lootParams) {
         List<ItemStack> loot = this.getAquaLoot(server, lootParams);
 
         // 如果双倍钓钩
@@ -132,25 +136,34 @@ public abstract class AquacultureFishingHook {
     @Override
     protected void afterFishing() {
         super.afterFishing();
-        ItemStackHandler rodHandler = AquaFishingRodItem.getHandler(this.fishingRod);
-        ItemStack bait = rodHandler.getStackInSlot(1);
+        ItemContainerContents rodContainer = AquaFishingRodItem.getHandler(this.fishingRod);
+        if (rodContainer.getSlots() <= 1) {
+            return;
+        }
+        ItemStack bait = rodContainer.getStackInSlot(1).copy();
         if (!bait.isEmpty()) {
-            bait.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {
+            bait.hurtAndBreak(1, (ServerLevel) this.level, null, ignored -> {
                 bait.shrink(1);
                 this.playSound(AquaSounds.BOBBER_BAIT_BREAK.get(), 0.7F, 0.2F);
             });
-            rodHandler.setStackInSlot(1, bait);
+
+            NonNullList<ItemStack> items = NonNullList.withSize(rodContainer.getSlots(), ItemStack.EMPTY);
+            for (int i = 0; i < rodContainer.getSlots(); i++) {
+                items.set(i, rodContainer.getStackInSlot(i).copy());
+            }
+            items.set(1, bait);
+            this.fishingRod.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
         }
     }
 
     @Override
-    protected void hurtRod(EntityMaid maid, ItemStack rodItem, int rodDamage) {
+    protected void hurtRod(@NotNull EntityMaid maid, @NotNull ItemStack rodItem, int rodDamage) {
         int currentDamage = rodItem.getMaxDamage() - rodItem.getDamageValue();
         if (rodDamage >= currentDamage) {
             rodDamage = currentDamage;
         }
         if (hook != Hooks.EMPTY && hook.getDurabilityChance() > 0) {
-            if (level.random.nextDouble() >= hook.getDurabilityChance()) {
+            if (level.getRandom().nextDouble() >= hook.getDurabilityChance()) {
                 rodItem.hurtAndBreak(rodDamage, maid, EquipmentSlot.MAINHAND);
             }
         } else {
@@ -219,4 +232,4 @@ public abstract class AquacultureFishingHook {
         this.bobber = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
         this.fishingRod = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
     }
-}*/
+}

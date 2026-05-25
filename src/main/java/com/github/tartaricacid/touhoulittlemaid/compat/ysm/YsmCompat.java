@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
 import net.minecraft.nbt.CompoundTag;
+import org.apache.commons.lang3.StringUtils;
 
 public class YsmCompat {
     private static final String MOD_ID = "yes_steve_model";
@@ -39,10 +40,10 @@ public class YsmCompat {
 
     public static YsmMaidInfo getYsmMaidInfo(CompoundTag maidData) {
         if (isInstalled()) {
-            boolean isYsmModel = maidData.getBoolean(EntityMaid.IS_YSM_MODEL_TAG);
-            String ysmModelId = maidData.getString(EntityMaid.YSM_MODEL_ID_TAG);
-            String ysmTextureId = maidData.getString(EntityMaid.YSM_MODEL_TEXTURE_TAG);
-            String ysmName = maidData.getString(EntityMaid.YSM_MODEL_NAME_TAG);
+            boolean isYsmModel = maidData.getBooleanOr(EntityMaid.IS_YSM_MODEL_TAG, false);
+            String ysmModelId = maidData.getStringOr(EntityMaid.YSM_MODEL_ID_TAG, StringUtils.EMPTY);
+            String ysmTextureId = maidData.getStringOr(EntityMaid.YSM_MODEL_TEXTURE_TAG, StringUtils.EMPTY);
+            String ysmName = maidData.getStringOr(EntityMaid.YSM_MODEL_NAME_TAG, StringUtils.EMPTY);
             return new YsmMaidInfo(isYsmModel, ysmModelId, ysmTextureId, ysmName);
         }
         return YsmMaidInfo.EMPTY;

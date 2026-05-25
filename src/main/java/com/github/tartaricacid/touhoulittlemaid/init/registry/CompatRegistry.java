@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.init.registry;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.immersivemelodies.server.ImmersiveMelodiesServerCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.patchouli.PatchouliCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.SBackpackCompat;
@@ -23,7 +23,7 @@ public final class CompatRegistry {
         checkModLoad(PATCHOULI, PatchouliCompat::init);
         checkModLoad(SBACKPACK, SBackpackCompat::init);
         checkModLoad(TBACKPACK, TBackpackCompat::init);
-        checkModLoad(ACCESSORIES, AccessoriesCompat::init);
+        checkModLoad(ACCESSORIES, CuriosCompat::init);
         checkModLoad(IMMERSIVE_MELODIES, ImmersiveMelodiesServerCompat::init);
     }
 

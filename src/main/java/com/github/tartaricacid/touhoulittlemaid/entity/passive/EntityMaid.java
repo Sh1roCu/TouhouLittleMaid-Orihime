@@ -22,7 +22,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.ysm.event.YsmMaidClientTickEvent;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
@@ -1554,7 +1554,7 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
             case TabIndex.TASK_CONFIG -> task.getTaskConfigGuiProvider(this);
             case TabIndex.MAID_CONFIG -> MaidConfigContainer.create(getId());
             case TabIndex.BAUBLE -> BaubleContainer.create(this);
-            case TabIndex.CURIOS -> AccessoriesCompat.create(this);
+            case TabIndex.CURIOS -> CuriosCompat.create(this);
             default -> this.getMaidBackpackType().getGuiProvider(getId());
         };
     }

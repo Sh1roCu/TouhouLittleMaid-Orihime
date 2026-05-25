@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -20,7 +20,7 @@ public record CuriosS2CUpdatePacket(int page) implements CustomPacketPayload {
 
     @Environment(EnvType.CLIENT)
     public static void handle(CuriosS2CUpdatePacket message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> AccessoriesCompat.clientUpdatePage(message.page()));
+        context.client().execute(() -> CuriosCompat.clientUpdatePage(message.page()));
     }
 
     @Override

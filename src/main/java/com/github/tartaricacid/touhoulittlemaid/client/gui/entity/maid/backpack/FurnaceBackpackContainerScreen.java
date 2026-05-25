@@ -3,12 +3,10 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.backpack
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.BaubleButton;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.FurnaceBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +33,7 @@ public class FurnaceBackpackContainerScreen extends AbstractMaidContainerGui<Fur
         this.addRenderableWidget(button);
 
         // 添加 accessories 兼容按钮
-        if (AccessoriesCompat.isLoadedOrEnable()) {
+        if (CuriosCompat.isLoadedOrEnable()) {
             this.addRenderableWidget(this.getCuriosButton(maid, leftPos, topPos));
         }
     }

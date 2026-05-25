@@ -1,14 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.simplehats;
 
-import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.BedrockModel;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.processor.ILocationBone;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public class SimpleHatsCompat {
     private static final String SIMPLE_HATS = "simplehats";
@@ -18,15 +15,14 @@ public class SimpleHatsCompat {
         isLoaded = FabricLoader.getInstance().isModLoaded(SIMPLE_HATS);
     }
 
-    public static void renderHat(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, Mob mob, ItemStack stack, BedrockModel<Mob> model) {
-        if (isLoaded) {
-            SimpleHatsRenderer.renderHat(poseStack, bufferIn, packedLightIn, mob, stack, model);
-        }
+    public static boolean isHatItem(ItemStack stack) {
+        return false;
     }
 
-    public static void renderGeckoHat(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, Mob mob, ItemStack stack, List<? extends ILocationBone> model) {
-        if (isLoaded) {
-            SimpleHatsRenderer.renderGeckoHat(poseStack, bufferIn, packedLightIn, mob, stack, model);
-        }
+    public static void extract(ItemStackRenderState state, ItemStack stack) {
+
+    }
+
+    public static void submit(ItemStackRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
     }
 }

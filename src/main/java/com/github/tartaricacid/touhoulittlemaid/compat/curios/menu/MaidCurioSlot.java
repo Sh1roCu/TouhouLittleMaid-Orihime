@@ -1,0 +1,107 @@
+package com.github.tartaricacid.touhoulittlemaid.compat.curios.menu;
+
+import cn.sh1rocu.touhoulittlemaid.mixin.accessor.EntityAccessor;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
+
+public class MaidCurioSlot extends AccessoriesBasedSlot {
+    private final String identifier;
+    private final EntityMaid maid;
+    private final SlotReference slotContext;
+
+    private List<Boolean> renderStatuses;
+    private boolean canToggleRender;
+    private boolean showCosmeticToggle;
+    private boolean isCosmetic;
+
+    public MaidCurioSlot(EntityMaid maid, AccessoriesContainer handler, int index, String identifier,
+                         int xPosition, int yPosition, List<Boolean> renders,
+                         boolean canToggleRender, boolean showCosmeticToggle, boolean isCosmetic) {
+        this(maid, handler, index, identifier, xPosition, yPosition, renders, canToggleRender, isCosmetic);
+        this.showCosmeticToggle = showCosmeticToggle;
+    }
+
+    public MaidCurioSlot(EntityMaid maid, AccessoriesContainer handler, int index, String identifier,
+                         int xPosition, int yPosition, List<Boolean> renders,
+                         boolean canToggleRender, boolean isCosmetic) {
+        super(handler, isCosmetic ? handler.getCosmeticAccessories() : handler.getAccessories(), index, xPosition, yPosition);
+        this.identifier = identifier;
+        this.renderStatuses = renders;
+        this.maid = maid;
+        this.canToggleRender = canToggleRender;
+        this.isCosmetic = isCosmetic;
+        this.slotContext = handler.createReference(index);
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public boolean canToggleRender() {
+        return this.canToggleRender;
+    }
+
+    public boolean isCosmetic() {
+        return this.isCosmetic;
+    }
+
+    public boolean showCosmeticToggle() {
+        return this.showCosmeticToggle;
+    }
+
+    public boolean getRenderStatus() {
+        if (!this.canToggleRender) {
+            return true;
+        }
+        return this.renderStatuses.size() > this.getContainerSlot() &&
+                this.renderStatuses.get(this.getContainerSlot());
+    }
+
+    @Override
+    public @Nullable Pair<Identifier, Identifier> getNoItemIcon() {
+        var slotType = slotContext.type();
+        return Pair.of(InventoryMenu.BLOCK_ATLAS, slotType == null ? null : slotType.icon());
+    }
+
+    public String getSlotName() {
+        StringBuilder builder = new StringBuilder();
+
+        if (this.isCosmetic) {
+            builder.append(I18n.get("accessories.cosmetic_slot.tooltip.singular"));
+        }
+        String key = "accessories.slot." + this.identifier;
+        if (I18n.exists(key)) {
+            builder.append(I18n.get(key));
+            return builder.toString();
+        }
+        builder.append(Character.toUpperCase(this.identifier.charAt(0)))
+                .append(this.identifier.substring(1).toLowerCase());
+        return builder.toString();
+    }
+
+    @Override
+    public void set(@Nonnull ItemStack stack) {
+        ItemStack current = this.getItem();
+        boolean flag = current.isEmpty() && stack.isEmpty();
+        super.set(stack);
+
+        if (!flag && !ItemStack.matches(current, stack) &&
+                !((EntityAccessor) maid).tlm$firstTick()) {
+            Optional.ofNullable(AccessoriesAPI.getAccessory(stack)).ifPresent(curio -> curio.onEquipFromUse(stack, this.slotContext));
+        }
+    }
+
+    @Override
+    public boolean allowModification(@Nonnull Player pPlayer) {
+        return true;
+    }
+}

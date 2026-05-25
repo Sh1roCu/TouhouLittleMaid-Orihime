@@ -1,0 +1,145 @@
+package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios;
+
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
+import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ContainerRef;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
+import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+import java.util.function.Predicate;
+
+public class ExtraContainerRequestHandler {
+    public static void onMaidRequestItem(MaidRequestItemEvent event) {
+        EntityMaid maid = event.getMaid();
+        Predicate<ItemStack> filter = event.getItemFilter();
+        int maxCount = event.getMaxCount();
+
+        var containers = MaidContainerCache.getContainers(maid);
+        if (containers.size() <= 1) {
+            return;
+        }
+
+        for (int i = 1; i < containers.size(); i++) {
+            ContainerRef ref = containers.get(i);
+
+            ItemStack extracted = ref.extract(maid, filter, maxCount);
+            if (extracted.isEmpty()) {
+                continue;
+            }
+
+            ItemStack remaining = transferToMaidInv(maid, extracted);
+            if (remaining.getCount() == extracted.getCount()) {
+                if (transferToBackpack(maid, containers)) {
+                    remaining = transferToMaidInv(maid, extracted);
+                }
+            }
+
+            if (remaining.getCount() < extracted.getCount()) {
+                int insertedCount = extracted.getCount() - remaining.getCount();
+                ItemStack result = extracted.copyWithCount(insertedCount);
+
+                if (!remaining.isEmpty()) {
+                    ref.insert(maid, remaining, false);
+                }
+
+                event.setRequestedItem(result);
+                event.setCanceled(true);
+                return;
+            } else {
+                ref.insert(maid, extracted, false);
+            }
+        }
+    }
+
+    private static ItemStack transferToMaidInv(EntityMaid maid, ItemStack stack) {
+        var inv = maid.getAvailableInv(false);
+        try (Transaction tx = Transaction.openOuter()) {
+            ItemVariant resource = ItemVariant.of(stack);
+            int count = inv.insert(resource, stack.getCount(), tx);
+            tx.commit();
+            return resource.toStack(count);
+        }
+    }
+
+    /**
+     * 尝试将物品栏中的物品放入背包以腾出空间
+     * 会跳过装饰槽位 {@link MaidBackpackHandler#BACKPACK_ITEM_SLOT}
+     * 该槽位物品永远不会被尝试放入背包
+     */
+    private static boolean transferToBackpack(EntityMaid maid, List<ContainerRef> containers) {
+        var inv = maid.getAvailableBackpackInv();
+
+        int targetSlot = -1;
+        ItemStack targetStack = ItemStack.EMPTY;
+        for (int i = inv.size() - 1; i >= 0; i--) {
+            if (i == MaidBackpackHandler.BACKPACK_ITEM_SLOT) {
+                continue;
+            }
+            ItemStack stack = ItemUtil.getStack(inv, i);
+            if (stack.isEmpty()) {
+                continue;
+            }
+            targetSlot = i;
+            targetStack = stack;
+            break;
+        }
+
+        if (targetSlot < 0 || targetStack.isEmpty()) {
+            return false;
+        }
+
+        // 尝试将该物品放入背包
+        // 优先放到已有该物品的背包中，但排除物品栏自身（从索引1开始）
+        ItemStack remaining = targetStack.copy();
+        final int slotToEmpty = targetSlot;
+        final ItemStack originStack = targetStack;
+
+        for (int i = 1; i < containers.size(); i++) {
+            ContainerRef ref = containers.get(i);
+            if (!ref.containing(maid, remaining)) {
+                continue;
+            }
+            remaining = ref.insert(maid, remaining, false);
+            if (remaining.isEmpty()) {
+                break;
+            }
+        }
+
+        if (!remaining.isEmpty()) {
+            for (int i = 1; i < containers.size(); i++) {
+                ContainerRef ref = containers.get(i);
+                remaining = ref.insert(maid, remaining, false);
+                if (remaining.isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        if (remaining.getCount() < originStack.getCount()) {
+            try (Transaction tx = Transaction.openOuter()) {
+                ItemVariant resource = ItemVariant.of(originStack);
+                int count;
+
+                if (remaining.isEmpty()) {
+                    count = originStack.getCount();
+                } else {
+                    count = originStack.getCount() - remaining.getCount();
+                }
+
+                inv.extract(resource, count, tx);
+                tx.commit();
+            }
+
+            ItemStack stack = ItemUtil.getStack(inv, slotToEmpty);
+            return stack.isEmpty() || stack.getCount() < stack.getMaxStackSize();
+        }
+
+        return false;
+    }
+}

@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.embeddium;
 
 /**
- * Fabric 1.21.1 暂无emb
+ * Fabric 26.1 暂无emb
  */
 class EmbeddiumGeoRenderer {
   /*  static Vector3f C000 = new Vector3f();
@@ -35,10 +35,7 @@ class EmbeddiumGeoRenderer {
         if (writer == null) {
             return false;
         }
-        if (bone.isHidden()) {
-            return true;
-        }
-        if (bone.cubesAreHidden()) {
+        if (bone.areCubesHidden()) {
             return true;
         }
 

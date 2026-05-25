@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.menu.CuriosContainer;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.menu.CuriosContainer;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.*;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;

@@ -3,10 +3,10 @@ package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer;
 import cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidPickupEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories.ExtraContainerPickupHandler;
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories.ExtraContainerRequestHandler;
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories.ExtraContainerEquipHandler;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerPickupHandler;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerRequestHandler;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerEquipHandler;
 import com.google.common.collect.Lists;
 import io.wispforest.accessories.api.events.AccessoryChangeCallback;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class ExtraContainerManager {
 
     public static void register(BackpackProvider provider) {
         PROVIDERS.add(provider);
-        if (!CURIOS_HANDLERS_REGISTERED && AccessoriesCompat.isLoadedOrEnable()) {
+        if (!CURIOS_HANDLERS_REGISTERED && CuriosCompat.isLoadedOrEnable()) {
             AccessoryChangeCallback.EVENT.register(ExtraContainerEquipHandler::onCurioChange);
             MaidPickupEvent.ITEM_RESULT_PRE.register(TouhouLittleMaidFabric.HIGH, ExtraContainerPickupHandler::onMaidPickupPre);
             MaidRequestItemEvent.EVENT.register(ExtraContainerRequestHandler::onMaidRequestItem);

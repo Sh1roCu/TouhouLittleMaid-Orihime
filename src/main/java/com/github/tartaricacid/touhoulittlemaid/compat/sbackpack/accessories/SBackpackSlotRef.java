@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.accessories;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories.AccessoriesSlotRef;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.CuriosSlotRef;
 import com.github.tartaricacid.touhoulittlemaid.compat.sbackpack.SBackpackCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class SBackpackSlotRef extends AccessoriesSlotRef {
+public class SBackpackSlotRef extends CuriosSlotRef {
     public SBackpackSlotRef(String slotType, int slotIndex) {
         super(slotType, slotIndex);
     }

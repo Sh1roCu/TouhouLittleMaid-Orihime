@@ -6,7 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.Atta
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.DefaultMaidTaskConfigGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.PicnicBasketContainerScreen;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.WirelessIOContainerGui;
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.init.InitContainer;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
 import net.fabricmc.api.EnvType;
@@ -36,7 +36,7 @@ public final class InitContainerGui {
 
         // accessories 兼容
         if (FabricLoader.getInstance().isModLoaded(CompatRegistry.ACCESSORIES)) {
-            AccessoriesCompat.registerScreen();
+            CuriosCompat.registerScreen();
         }
     }
 }

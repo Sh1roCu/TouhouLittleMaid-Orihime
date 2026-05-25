@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer;
 
-import com.github.tartaricacid.touhoulittlemaid.compat.accessories.AccessoriesCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.accessories.AccessoriesSlotRef;
+import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.CuriosSlotRef;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.Lists;
 import io.wispforest.accessories.api.AccessoriesCapability;
@@ -31,13 +31,13 @@ public class MaidContainerCache {
     public static void onEquipped(EntityMaid maid, ItemStack stack, String slotType, int slotIndex) {
         List<ContainerRef> containers = getContainers(maid);
         ContainerRef newRef = ExtraContainerManager.tryCreateSlotRef(stack, slotType, slotIndex);
-        if (newRef == null || !(newRef instanceof AccessoriesSlotRef newSlotRef)) {
+        if (newRef == null || !(newRef instanceof CuriosSlotRef newSlotRef)) {
             return;
         }
 
         for (int i = 1; i < containers.size(); i++) {
             ContainerRef ref = containers.get(i);
-            if (!(ref instanceof AccessoriesSlotRef slotRef)) {
+            if (!(ref instanceof CuriosSlotRef slotRef)) {
                 continue;
             }
             if (slotRef.slotType.equals(slotType) && slotRef.slotIndex == slotIndex) {
@@ -48,7 +48,7 @@ public class MaidContainerCache {
         int insertIndex = containers.size();
         for (int i = 1; i < containers.size(); i++) {
             ContainerRef ref = containers.get(i);
-            if (!(ref instanceof AccessoriesSlotRef slotRef)) {
+            if (!(ref instanceof CuriosSlotRef slotRef)) {
                 continue;
             }
             if (newSlotRef.compareTo(slotRef) < 0) {
@@ -62,7 +62,7 @@ public class MaidContainerCache {
     public static void onUnequipped(EntityMaid maid, String slotType, int slotIndex) {
         List<ContainerRef> containers = getContainers(maid);
         containers.removeIf(ref -> {
-            if (ref instanceof AccessoriesSlotRef slotRef) {
+            if (ref instanceof CuriosSlotRef slotRef) {
                 return slotRef.slotType.equals(slotType) && slotRef.slotIndex == slotIndex;
             }
             return false;
@@ -81,11 +81,11 @@ public class MaidContainerCache {
         List<ContainerRef> containers = Lists.newArrayList();
 
         containers.add(new MaidInventoryRef());
-        if (!AccessoriesCompat.isLoadedOrEnable()) {
+        if (!CuriosCompat.isLoadedOrEnable()) {
             return containers;
         }
 
-        List<AccessoriesSlotRef> slotRefs = Lists.newArrayList();
+        List<CuriosSlotRef> slotRefs = Lists.newArrayList();
         AccessoriesCapability.getOptionally(maid).ifPresent(handler -> {
             for (var entry : handler.getContainers().entrySet()) {
                 String slotType = entry.getKey();
@@ -95,18 +95,18 @@ public class MaidContainerCache {
                 for (int i = 0; i < stacks.getContainerSize(); i++) {
                     ItemStack stack = stacks.getItem(i);
                     ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(stack, slotType, i);
-                    if (ref instanceof AccessoriesSlotRef curiosRef) {
+                    if (ref instanceof CuriosSlotRef curiosRef) {
                         slotRefs.add(curiosRef);
                     }
                 }
             }
         });
 
-        for (AccessoriesSlotRef newRef : slotRefs) {
+        for (CuriosSlotRef newRef : slotRefs) {
             int insertIndex = containers.size();
             for (int i = 1; i < containers.size(); i++) {
                 ContainerRef ref = containers.get(i);
-                if (!(ref instanceof AccessoriesSlotRef slotRef)) {
+                if (!(ref instanceof CuriosSlotRef slotRef)) {
                     continue;
                 }
                 if (newRef.compareTo(slotRef) < 0) {

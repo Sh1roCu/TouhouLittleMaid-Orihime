@@ -44,7 +44,7 @@ public class BlockFoodEdible implements IMaidEdibleBlock {
         } else {
             maid.destroyBlock(pos);
         }
-        maid.playSound(SoundEvents.GENERIC_EAT);
+        maid.playSound(SoundEvents.GENERIC_EAT.value());
         return true;
     }
 
