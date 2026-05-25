@@ -54,6 +54,7 @@ public final class InitSounds {
     public static final SoundEvent FAIRY_HURT = registerSound("entity.fairy.hurt");
     public static final SoundEvent RECORDING_START = registerSound("ui.recording_start");
     public static final SoundEvent RECORDING_END = registerSound("ui.recording_end");
+    public static final SoundEvent GECKO_CUSTOM = registerSound("gecko_custom");
 
     private static SoundEvent registerSound(String name) {
         Identifier id = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name);

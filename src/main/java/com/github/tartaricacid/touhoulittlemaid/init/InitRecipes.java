@@ -17,7 +17,7 @@ public final class InitRecipes {
         CustomIngredientSerializer.register(FallbackIngredient.Serializer.INSTANCE);
     }
 
-    public static final RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe_serializers", new AltarRecipeSerializer());
+    public static final RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe_serializers", AltarRecipeSerializer.SERIALIZER);
     public static final RecipeType<AltarRecipe> ALTAR_CRAFTING = registerType("altar_recipe", simple(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "altar_crafting")));
 
     private static <T extends RecipeSerializer<?>> T registerSerializer(String id, T serializer) {

@@ -4,9 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.block.BlockGarageKit;
 import com.github.tartaricacid.touhoulittlemaid.datagen.EnchantmentKeys;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemChair;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemEntityPlaceholder;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -15,10 +14,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import vazkii.patchouli.common.item.ItemModBook;
 
 import java.util.Optional;
 
@@ -29,13 +27,14 @@ public class InitCreativeTabs {
 
     }
 
-    public static CreativeModeTab MAIN_TAB = register("main", FabricItemGroup.builder()
+    public static CreativeModeTab MAIN_TAB = register("main", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.main"))
             .icon(() -> InitItems.HAKUREI_GOHEI.getDefaultInstance())
             .displayItems((par, output) -> {
-                if (FabricLoader.getInstance().isModLoaded("patchouli")) {
-                    output.accept(ItemModBook.forBook(MEMORIZABLE_GENSOKYO_LOCATION));
-                }
+                // TODO: Patchouli 暂无
+                // if (FabricLoader.getInstance().isModLoaded("patchouli")) {
+                //     output.accept(ItemModBook.forBook(MEMORIZABLE_GENSOKYO_LOCATION));
+                // }
                 output.accept(MAID_SPAWN_EGG);
                 output.accept(FAIRY_SPAWN_EGG);
                 output.accept(HAKUREI_GOHEI);
@@ -96,7 +95,7 @@ public class InitCreativeTabs {
                 output.accept(ENTITY_ID_COPY);
                 output.accept(OWNER_CONVERSION_TOOL);
                 if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                    ItemEntityPlaceholder.fillItemCategory(output);
+                    //ItemEntityPlaceholder.fillItemCategory(output);
                 }
                 par.holders().lookup(Registries.ENCHANTMENT).ifPresent(reg -> {
                     addEnchantmentBook(reg.get(EnchantmentKeys.IMPEDING), output);
@@ -105,7 +104,7 @@ public class InitCreativeTabs {
                 });
             }).build());
 
-    public static CreativeModeTab GARAGE_KIT_TAB = register("chair", FabricItemGroup.builder()
+    public static CreativeModeTab GARAGE_KIT_TAB = register("chair", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.chair"))
             .icon(() -> InitItems.CHAIR.getDefaultInstance())
             .displayItems((par, output) -> {
@@ -114,7 +113,7 @@ public class InitCreativeTabs {
                 }
             }).build());
 
-    public static CreativeModeTab CHAIR_TAB = register("garage_kit", FabricItemGroup.builder()
+    public static CreativeModeTab CHAIR_TAB = register("garage_kit", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.garage_kit"))
             .icon(() -> InitItems.GARAGE_KIT.getDefaultInstance())
             .displayItems((par, output) -> {
@@ -126,7 +125,7 @@ public class InitCreativeTabs {
     private static void addEnchantmentBook(Optional<Holder.Reference<Enchantment>> holder, CreativeModeTab.Output output) {
         holder.ifPresent(ref -> {
             EnchantmentInstance instance = new EnchantmentInstance(ref, ref.value().getMaxLevel());
-            output.accept(EnchantedBookItem.createForEnchantment(instance));
+            output.accept(EnchantmentHelper.createBook(instance));
         });
     }
 

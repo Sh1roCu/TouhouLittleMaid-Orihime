@@ -121,7 +121,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (blockPos == null) return;
         BlockState state = this.level().getBlockState(blockPos);
         if (state.getBlock() instanceof IBedBlock bedBlock)
-            cir.setReturnValue(!bedBlock.tlm$isBed(state, this.level(), blockPos, (LivingEntity) (Object) this) ? Direction.UP : state.getValue(HorizontalDirectionalBlock.FACING));
+            cir.setReturnValue(!bedBlock.tlm$isBed(state, this.level(), blockPos, (LivingEntity) (Object) this) ? null : state.getValue(HorizontalDirectionalBlock.FACING));
     }
 
     @WrapOperation(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;finishUsingItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/item/ItemStack;"))

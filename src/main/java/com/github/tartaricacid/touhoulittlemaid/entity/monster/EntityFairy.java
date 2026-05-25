@@ -82,7 +82,7 @@ public class EntityFairy extends Monster implements RangedAttackMob, FlyingAnima
                 .add(Attributes.FLYING_SPEED, 0.4);
     }
 
-    public static boolean checkFairySpawnRules(EntityType<EntityFairy> entityType, ServerLevelAccessor levelAccessor, MobSpawnType spawnType, BlockPos pos, RandomSource randomSource) {
+    public static boolean checkFairySpawnRules(EntityType<EntityFairy> entityType, ServerLevelAccessor levelAccessor, EntitySpawnReason spawnType, BlockPos pos, RandomSource randomSource) {
         if (Monster.checkMonsterSpawnRules(entityType, levelAccessor, spawnType, pos, randomSource) && levelAccessor instanceof ServerLevel level) {
             int scarecrowRange = MiscConfig.SCARECROW_RANGE.get();
             long findCount = level.getPoiManager().getInSquare(type -> type.value().equals(InitPoi.SCARECROW), pos, scarecrowRange, PoiManager.Occupancy.ANY).count();
@@ -173,7 +173,7 @@ public class EntityFairy extends Monster implements RangedAttackMob, FlyingAnima
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason,
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason,
                                         @Nullable SpawnGroupData spawnDataIn) {
         this.setFairyTypeOrdinal(random.nextInt(FairyType.values().length));
         // 有 5% 概率生成 Rick-rolling 彩蛋

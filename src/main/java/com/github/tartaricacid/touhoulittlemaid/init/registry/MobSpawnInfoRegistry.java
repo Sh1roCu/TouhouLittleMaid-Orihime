@@ -29,7 +29,8 @@ public final class MobSpawnInfoRegistry {
                 List<Weighted<MobSpawnSettings.SpawnerData>> spawnerData = event.getSpawnerDataList();
                 boolean canZombieSpawn = spawnerData.stream().anyMatch(data -> data.value().type().equals(EntityType.ZOMBIE));
                 if (SPAWNER_DATA == null || SPAWNER_DATA.weight() != spawnProbability) {
-                    SPAWNER_DATA = new Weighted<>(new MobSpawnSettings.SpawnerData(InitEntities.FAIRY, 2, 4), spawnProbability);
+                    var data = new MobSpawnSettings.SpawnerData(InitEntities.FAIRY, 2, 4);
+                    SPAWNER_DATA = new Weighted<>(data, spawnProbability);
                 }
                 if (canZombieSpawn) {
                     event.addSpawnerData(SPAWNER_DATA);

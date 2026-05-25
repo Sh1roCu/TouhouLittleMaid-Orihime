@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.poi.MaidPoiManager;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
+import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 
@@ -17,7 +17,7 @@ public class InitPoi {
     public static final PoiType SCARECROW = register("scarecrow", MaidPoiManager.getScarecrow());
 
     private static PoiType register(String id, PoiType type) {
-        return PointOfInterestHelper.register(
+        return PoiHelper.register(
                 Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id),
                 type.maxTickets(), type.validRange(), type.matchingStates());
     }

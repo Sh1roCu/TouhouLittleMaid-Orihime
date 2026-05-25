@@ -40,9 +40,9 @@ public enum MaidSchedule {
 
     public EnvironmentAttribute<Activity> getEnvironmentAttribute() {
         return switch (this) {
-            case DAY -> InitEntities.MAID_DAY_SHIFT_SCHEDULES.get();
-            case NIGHT -> InitEntities.MAID_NIGHT_SHIFT_SCHEDULES.get();
-            case ALL -> InitEntities.MAID_ALL_DAY_SCHEDULES.get();
+            case DAY -> InitEntities.MAID_DAY_SHIFT_SCHEDULES;
+            case NIGHT -> InitEntities.MAID_NIGHT_SHIFT_SCHEDULES;
+            case ALL -> InitEntities.MAID_ALL_DAY_SCHEDULES;
         };
     }
 }

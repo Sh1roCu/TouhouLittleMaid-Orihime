@@ -13,14 +13,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-@SuppressWarnings({"deprecation"})
+@SuppressWarnings({"removal", "deprecation"})
 public class InitDataComponent {
     public static void init() {
 
@@ -103,10 +101,10 @@ public class InitDataComponent {
                     .build());
 
     public static final String FILTER_LIST_TAG_NAME = "item_filter_list";
-    public static final DataComponentType<CompoundTag> FILTER_LIST_TAG =
-            register(FILTER_LIST_TAG_NAME, DataComponentType.<CompoundTag>builder()
-                    .persistent(CompoundTag.CODEC)
-                    .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+    public static final DataComponentType<List<ItemStack>> FILTER_LIST_TAG =
+            register(FILTER_LIST_TAG_NAME, DataComponentType.<List<ItemStack>>builder()
+                    .persistent(ItemStack.OPTIONAL_CODEC.listOf())
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC))
                     .build());
 
     public static final String BINDING_POS_NAME = "binding_pos";
