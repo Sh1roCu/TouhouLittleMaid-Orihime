@@ -23,7 +23,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import static com.github.tartaricacid.touhoulittlemaid.client.resource.models.SpecialMaidModelResolver.EASTER_EGG_MODEL;
 import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clearMaidDataResidue;
@@ -194,16 +192,7 @@ public class SettingEditScreen extends Screen {
         }
         MaidModelInfo modelInfo = info.get();
 
-        EntityMaid maid;
-        try {
-            maid = (EntityMaid) EntityCacheUtil.ENTITY_CACHE.get(EntityMaid.TYPE, () -> {
-                Entity e = EntityMaid.TYPE.create(world, EntitySpawnReason.COMMAND);
-                return Objects.requireNonNullElseGet(e, () -> new EntityMaid(world));
-            });
-        } catch (ExecutionException | ClassCastException e) {
-            e.fillInStackTrace();
-            return;
-        }
+        EntityMaid maid = EntityCacheUtil.getMaid(world, EntitySpawnReason.COMMAND);
 
         clearMaidDataResidue(maid, false);
         if (modelInfo.getEasterEgg() != null) {
@@ -211,8 +200,6 @@ public class SettingEditScreen extends Screen {
         } else {
             maid.setModelId(modelInfo.getModelId().toString());
         }
-        // 女仆换皮肤界面需要指定 YSM 渲染为空
-        maid.setIsYsmModel(false);
         float renderItemScale = modelInfo.getRenderItemScale();
         InventoryScreen.extractEntityInInventoryFollowsMouse(
                 graphics,

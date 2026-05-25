@@ -11,8 +11,6 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.sound.MaidSoundPackGu
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.*;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPackLoader;
 import com.github.tartaricacid.touhoulittlemaid.compat.ipn.SortButtonScreen;
-import com.github.tartaricacid.touhoulittlemaid.compat.ysm.YsmCompat;
-import com.github.tartaricacid.touhoulittlemaid.compat.ysm.event.OpenYsmMaidScreenEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidGomokuAI;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.FavorabilityManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -48,7 +46,6 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
 import java.text.DecimalFormat;
@@ -86,7 +83,6 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
     private TouhouStateSwitchButton ride;
     private TouhouImageButton info;
     private TouhouImageButton skin;
-    private @Nullable TouhouImageButton ysmSkin;
     private TouhouImageButton sound;
     private TouhouImageButton pageDown;
     private TouhouImageButton pageUp;
@@ -254,9 +250,6 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
         renderTransTooltip(ride, graphics, x, y, "gui.touhou_little_maid.button.maid_riding_set");
         renderTransTooltip(modelDownload, graphics, x, y, "gui.touhou_little_maid.button.model_download");
         renderTransTooltip(skin, graphics, x, y, "gui.touhou_little_maid.button.skin");
-        if (ysmSkin != null) {
-            renderTransTooltip(ysmSkin, graphics, x, y, "gui.touhou_little_maid.button.ysm_skin");
-        }
         renderTransTooltip(sound, graphics, x, y, "gui.touhou_little_maid.button.sound");
         renderTransTooltip(pageUp, graphics, x, y, "gui.touhou_little_maid.task.previous_page");
         renderTransTooltip(pageDown, graphics, x, y, "gui.touhou_little_maid.task.next_page");
@@ -280,27 +273,15 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
     }
 
     private void addStateButton() {
-        skin = new TouhouImageButton(leftPos + 62, topPos + 14, 9, 9, 72, 43, 10, BUTTON, (b) -> getMinecraft().setScreen(new MaidModelGui(maid)));
+        skin = new TouhouImageButton(leftPos + 62, topPos + 14, 9, 9, 72, 43, 10, BUTTON, (b) -> Screens.getMinecraft(this).setScreen(new MaidModelGui(maid)));
         info = new TouhouImageButton(leftPos + 8, topPos + 14, 9, 9, 72, 65, 10, BUTTON, NO_ACTION);
         this.addRenderableWidget(skin);
         this.addRenderableWidget(info);
 
-        if (YsmCompat.isInstalled()) {
-            this.ysmSkin = new TouhouImageButton(leftPos + 52, topPos + 14, 9, 9,
-                    144, 65, 10, BUTTON,
-                    (b) -> OpenYsmMaidScreenEvent.CALLBACK.invoker().post(new OpenYsmMaidScreenEvent(maid)));
-            this.sound = new TouhouImageButton(leftPos + 42, topPos + 14, 9, 9,
-                    144, 43, 10, BUTTON,
-                    (b) -> Screens.getMinecraft(this).setScreen(new MaidSoundPackGui(maid)));
-
-            this.addRenderableWidget(ysmSkin);
-            this.addRenderableWidget(sound);
-        } else {
-            this.sound = new TouhouImageButton(leftPos + 52, topPos + 14, 9, 9,
-                    144, 43, 10, BUTTON,
-                    (b) -> Screens.getMinecraft(this).setScreen(new MaidSoundPackGui(maid)));
-            this.addRenderableWidget(sound);
-        }
+        this.sound = new TouhouImageButton(leftPos + 52, topPos + 14, 9, 9,
+                144, 43, 10, BUTTON,
+                (b) -> Screens.getMinecraft(this).setScreen(new MaidSoundPackGui(maid)));
+        this.addRenderableWidget(sound);
     }
 
     private void addTaskControlButton() {

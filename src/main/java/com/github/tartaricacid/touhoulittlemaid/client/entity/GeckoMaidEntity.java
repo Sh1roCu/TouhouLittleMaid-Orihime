@@ -11,12 +11,13 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.event.AnimationEvent;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.value.IValue;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.GeckoRenderData;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.IGeoEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.RenderContext;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoModel;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoLocatorType;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.resource.GeckoContainer;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -27,20 +28,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Vector2f;
+import org.joml.Math;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
-public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> implements IGeoEntity {
+public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> {
     @SuppressWarnings({"rawtypes"})
     public static final AttachmentType<GeckoMaidEntity> TYPE = AttachmentRegistry.create(getResourceLocation("gecko_maid"),
             AttachmentRegistry.Builder::copyOnDeath);
 
     private final EntityMaid maid;
-    private final Vector2f headRotBackup = new Vector2f();
+    private final FloatArrayList headRotBackup = new FloatArrayList(2);
     private MaidModelInfo maidInfo;
 
     private boolean fireInitEvent = false;
@@ -53,7 +54,7 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
     private IMagicCastingState.CastingPhase lastCastingPhase = IMagicCastingState.CastingPhase.NONE;
 
     public GeckoMaidEntity(T maid) {
-        super(maid, true);
+        super(maid, !maid.previewEntity);
         this.maid = maid;
     }
 
@@ -73,6 +74,7 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
     }
 
     @Override
+    @SuppressWarnings("resource")
     protected void extractRenderData(EntityRenderState state, RenderContext ctx, GeckoRenderData data, boolean ticked) {
         super.extractRenderData(state, ctx, data, ticked);
         // 懒得泛型了，凑合用
@@ -90,7 +92,6 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
                 optionalValue.ifPresent(direction -> maidData.climbRotation = direction.getOpposite().get2DDataValue() * 90);
             }
         }
-        maidData.showBackpack = maidInfo.isShowBackpack();
     }
 
     @Override
@@ -122,41 +123,59 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
     @Override
     protected void onLoadGeoModel(AnimatedGeoModel model) {
         super.onLoadGeoModel(model);
-        if (model != null && model.head() != null) {
-            var headRot = model.head().getRotation();
-            headRotBackup.set(headRot.x, headRot.y);
+        var heads = model.locatorGroup(GeoLocatorType.HEAD);
+        var headRot = headRotBackup;
+        headRot.size(heads.size() * 2);
+        for (var i = 0; i < heads.size(); i++) {
+            var head = heads.get(i);
+            var rot = head.getRotation();
+            headRot.set(i * 2, rot.x);
+            headRot.set(i * 2 + 1, rot.y);
         }
     }
 
     @Override
     protected void resetGeoModel() {
         super.resetGeoModel();
-        headRotBackup.set(0);
+        headRotBackup.clear();
         fireInitEvent = true;
     }
 
     @Override
     protected void codeAnimation(AnimationEvent<? extends AnimatableEntity<T>> event, boolean shouldUpdate) {
         var model = getLoadedGeoModel();
-        if (model != null && model.head() != null) {
-            var headRot = model.head().getRotation();
+        if (model != null) {
             // 更新头部旋转
-            if (shouldUpdate) {
-                headRotBackup.set(headRot.x, headRot.y);
+            var heads = model.locatorGroup(GeoLocatorType.HEAD);
+            var headRotBak = headRotBackup;
+            for (var i = 0; i < heads.size(); i++) {
+                var head = heads.get(i);
+                var rot = head.getRotation();
+
+                if (shouldUpdate) {
+                    headRotBak.set(i * 2, rot.x);
+                    headRotBak.set(i * 2 + 1, rot.y);
+                }
+
+                var data = event.getExtraData();
+                rot.x = headRotBak.getFloat(i * 2) + Math.toRadians(data.headPitch);
+                rot.y = headRotBak.getFloat(i * 2 + 1) + Math.toRadians(data.netHeadYaw);
             }
-            var data = event.getExtraData();
-            headRot.x = headRotBackup.x + (float) Math.toRadians(data.headPitch);
-            headRot.y = headRotBackup.y + (float) Math.toRadians(data.netHeadYaw);
         }
     }
 
     @Override
     protected void recoverLastCodedAnimation(boolean lastFrameUpdated) {
         var model = getLoadedGeoModel();
-        if (model != null && model.head() != null) {
-            var headRot = model.head().getRotation();
-            headRot.x = headRotBackup.x;
-            headRot.y = headRotBackup.y;
+        if (model != null) {
+            var heads = model.locatorGroup(GeoLocatorType.HEAD);
+            var headRotBak = headRotBackup;
+            for (var i = 0; i < heads.size(); i++) {
+                var head = heads.get(i);
+                var rot = head.getRotation();
+                rot.x = headRotBak.getFloat(i * 2);
+                rot.y = headRotBak.getFloat(i * 2 + 1);
+            }
         }
     }
 
@@ -176,17 +195,14 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
         }
     }
 
-    @Override
     public EntityMaid getMaid() {
         return maid;
     }
 
-    @Override
     public MaidModelInfo getMaidInfo() {
         return maidInfo;
     }
 
-    @Override
     public void setMaidInfo(MaidModelInfo info) {
         if (this.maidInfo != info) {
             this.maidInfo = info;
@@ -198,14 +214,6 @@ public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> i
     public void reset() {
         super.reset();
         this.maidInfo = null;
-    }
-
-    @Override
-    public void setYsmModel(String modelId, String texture) {
-    }
-
-    @Override
-    public void updateRoamingVars(Object2FloatOpenHashMap<String> roamingVars) {
     }
 
     public IMagicCastingState.CastingPhase getLastCastingPhase() {
