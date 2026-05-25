@@ -16,6 +16,7 @@
     "accessor.NonNullListAccessor",
     "accessor.ReloadableResourceManagerAccessor",
     "accessor.SnapshotParticipantAccessor",
+    "accessor.TagValueOutputAccessor",
     "common.AbstractArrowMixin",
     "common.AbstractHurtingProjectileMixin",
     "common.BlockBehaviourMixin",
