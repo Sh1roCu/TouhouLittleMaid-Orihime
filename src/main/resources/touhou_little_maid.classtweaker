@@ -1,7 +1,5 @@
 classTweaker v2 official
 
-accessible class net/minecraft/world/item/crafting/Ingredient$Value
-
 extendable method net/minecraft/world/entity/LivingEntity handleOnClimbable (Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;
 
 accessible field net/minecraft/world/item/crafting/Ingredient values Lnet/minecraft/core/HolderSet;
@@ -9,7 +7,7 @@ accessible field net/minecraft/world/item/crafting/Ingredient values Lnet/minecr
 accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate palettes Ljava/util/List;# palettes
 accessible method net/minecraft/world/entity/LivingEntity breakItem (Lnet/minecraft/world/item/ItemStack;)V # breakItem
 accessible field net/minecraft/client/Minecraft fps I # fps
-accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;)F # getTemperature
+accessible method net/minecraft/world/level/biome/Biome getTemperature (Lnet/minecraft/core/BlockPos;I)F # getTemperature
 extendable method net/minecraft/world/entity/ai/behavior/GateBehavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z # tryStart
 accessible field net/minecraft/world/entity/Entity level Lnet/minecraft/world/level/Level; # level
 
@@ -39,8 +37,6 @@ accessible field net/minecraft/client/GameNarrator narrator Lcom/mojang/text2spe
 
 accessible method net/minecraft/util/thread/BlockableEventLoop submitAsync (Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;
 
-accessible method net/minecraft/world/level/pathfinder/PathFinder findPath (Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Map;FIF)Lnet/minecraft/world/level/pathfinder/Path; # findPath
-extendable method net/minecraft/world/level/pathfinder/PathFinder findPath (Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Map;FIF)Lnet/minecraft/world/level/pathfinder/Path; # findPath
 accessible field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
 mutable field net/minecraft/world/level/pathfinder/PathFinder openSet Lnet/minecraft/world/level/pathfinder/BinaryHeap;
 accessible method net/minecraft/world/level/pathfinder/Path setDebug ([Lnet/minecraft/world/level/pathfinder/Node;[Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)V
@@ -57,3 +53,5 @@ accessible method net/minecraft/client/gui/GuiGraphicsExtractor blitTiledSprite 
 
 accessible method net/minecraft/world/entity/LivingEntity handleRelativeFrictionAndCalculateMovement (Lnet/minecraft/world/phys/Vec3;F)Lnet/minecraft/world/phys/Vec3;
 extendable method net/minecraft/world/entity/LivingEntity handleRelativeFrictionAndCalculateMovement (Lnet/minecraft/world/phys/Vec3;F)Lnet/minecraft/world/phys/Vec3;
+
+inject-interface net/minecraft/client/renderer/entity/state/EntityRenderState cn/sh1rocu/touhoulittlemaid/api/mixin/IEntityRenderStatePartialTick

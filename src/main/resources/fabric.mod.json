@@ -27,17 +27,8 @@
     "modmenu": [
       "cn.sh1rocu.touhoulittlemaid.compat.modmenu.ModMenuApiImpl"
     ],
-    "emi": [
-      "com.github.tartaricacid.touhoulittlemaid.compat.emi.MaidEmiPlugin"
-    ],
     "jade": [
       "com.github.tartaricacid.touhoulittlemaid.compat.jade.JadePlugin"
-    ],
-    "jei_mod_plugin": [
-      "com.github.tartaricacid.touhoulittlemaid.compat.jei.MaidPlugin"
-    ],
-    "rei_client": [
-      "com.github.tartaricacid.touhoulittlemaid.compat.rei.MaidREIClientPlugin"
     ]
   },
   "custom": {

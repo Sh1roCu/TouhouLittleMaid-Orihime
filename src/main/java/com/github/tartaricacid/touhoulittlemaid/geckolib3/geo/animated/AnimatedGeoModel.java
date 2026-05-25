@@ -1,144 +1,50 @@
 package com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated;
 
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoLocatorType;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoModel;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
-import org.jetbrains.annotations.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-public class AnimatedGeoModel implements ILocationModel {
+public class AnimatedGeoModel {
     private final GeoModel geoModel;
-    private final List<AnimatedGeoBone> topLevelBones;
-    private final Map<String, AnimatedGeoBone> bones;
-
-    private final List<AnimatedGeoBone> leftHandBones;
-    private final List<AnimatedGeoBone> rightHandBones;
-    private final List<AnimatedGeoBone> leftWaistBones;
-    private final List<AnimatedGeoBone> rightWaistBones;
-    private final List<AnimatedGeoBone> backpackBones;
-    private final List<AnimatedGeoBone> tacPistolBones;
-    private final List<AnimatedGeoBone> tacRifleBones;
-    private final List<AnimatedGeoBone> headBones;
-
-    @Nullable
-    private final AnimatedGeoBone head;
-    @Nullable
-    private final AnimatedGeoBone hat;
-    @Nullable
-    private final AnimatedGeoBone leftArm;
-    @Nullable
-    private final AnimatedGeoBone rightArm;
+    private final ReferenceArrayList<AnimatedGeoBone> flatBoneList;
+    private final Int2ReferenceOpenHashMap<AnimatedGeoBone> boneMap;
+    private final ReferenceArrayList<ReferenceArrayList<AnimatedGeoBone>> locatorMap;
 
     public AnimatedGeoModel(GeoModel model) {
-        geoModel = model;
-
-        var bones = new Object2ObjectOpenHashMap<String, AnimatedGeoBone>();
-        this.topLevelBones = ObjectLists.unmodifiable(new ObjectArrayList<>(model.topLevelBones().stream().map(b -> new AnimatedGeoBone(b, bones)).toList()));
-        this.bones = Object2ObjectMaps.unmodifiable(bones);
-
-        this.leftHandBones = getLocatorHierarchy("LeftHandLocator");
-        this.rightHandBones = getLocatorHierarchy("RightHandLocator");
-        this.leftWaistBones = getLocatorHierarchy("LeftWaistLocator");
-        this.rightWaistBones = getLocatorHierarchy("RightWaistLocator");
-        this.backpackBones = getLocatorHierarchy("BackpackLocator");
-        this.tacPistolBones = getLocatorHierarchy("PistolLocator");
-        this.tacRifleBones = getLocatorHierarchy("RifleLocator");
-        this.headBones = getLocatorHierarchy("Head");
-
-        this.head = bones.get("Head");
-        // fixme: 有 hat 部分吗？
-        this.hat = bones.get("Hat");
-        this.leftArm = bones.get("LeftArm");
-        this.rightArm = bones.get("RightArm");
-    }
-
-    private List<AnimatedGeoBone> getLocatorHierarchy(String locatorName) {
-        var bone = this.bones.get(locatorName);
-        if (bone == null) {
-            return ObjectLists.emptyList();
+        this.geoModel = model;
+        this.flatBoneList = ReferenceArrayList.wrap(model.flatBoneList().stream()
+                .map(AnimatedGeoBone::new)
+                .toArray(AnimatedGeoBone[]::new));
+        this.boneMap = new Int2ReferenceOpenHashMap<>();
+        for (var bone : this.flatBoneList) {
+            boneMap.put(bone.getPooledName(), bone);
         }
-
-        var list = new ObjectArrayList<AnimatedGeoBone>();
-        while (true) {
-            list.add(bone);
-            if (bone.geoBone().parent() != null) {
-                bone = Objects.requireNonNull(this.bones.get(bone.geoBone().parent().name()));
-            } else {
-                break;
+        this.locatorMap = new ReferenceArrayList<>(model.locatorMap().size());
+        for (var rawGroup : model.locatorMap()) {
+            var group = new ReferenceArrayList<AnimatedGeoBone>(rawGroup.size());
+            for (var rawBone : rawGroup) {
+                group.add(this.flatBoneList.get(rawBone.traverseOrder()));
             }
+            this.locatorMap.add(group);
         }
-
-        Collections.reverse(list);
-        return ObjectLists.unmodifiable(list);
     }
 
     public GeoModel geoModel() {
         return geoModel;
     }
 
-    public List<AnimatedGeoBone> topLevelBones() {
-        return topLevelBones;
+    public ReferenceArrayList<AnimatedGeoBone> flatBoneList() {
+        return flatBoneList;
     }
 
-    public Map<String, AnimatedGeoBone> bones() {
-        return bones;
+    public Int2ReferenceOpenHashMap<AnimatedGeoBone> boneMap() {
+        return boneMap;
     }
 
-    public List<AnimatedGeoBone> leftHandBones() {
-        return leftHandBones;
-    }
-
-    public List<AnimatedGeoBone> rightHandBones() {
-        return rightHandBones;
-    }
-
-    public List<AnimatedGeoBone> leftWaistBones() {
-        return leftWaistBones;
-    }
-
-    public List<AnimatedGeoBone> rightWaistBones() {
-        return rightWaistBones;
-    }
-
-    public List<AnimatedGeoBone> backpackBones() {
-        return backpackBones;
-    }
-
-    public List<AnimatedGeoBone> tacPistolBones() {
-        return tacPistolBones;
-    }
-
-    public List<AnimatedGeoBone> tacRifleBones() {
-        return tacRifleBones;
-    }
-
-    public List<AnimatedGeoBone> headBones() {
-        return headBones;
-    }
-
-    @Nullable
-    public AnimatedGeoBone head() {
-        return head;
-    }
-
-    @Nullable
-    public AnimatedGeoBone hat() {
-        return hat;
-    }
-
-    @Nullable
-    public AnimatedGeoBone leftArm() {
-        return leftArm;
-    }
-
-    @Nullable
-    public AnimatedGeoBone rightArm() {
-        return rightArm;
+    @NotNull
+    public ReferenceArrayList<AnimatedGeoBone> locatorGroup(GeoLocatorType type) {
+        return locatorMap.get(type.getSeq());
     }
 }

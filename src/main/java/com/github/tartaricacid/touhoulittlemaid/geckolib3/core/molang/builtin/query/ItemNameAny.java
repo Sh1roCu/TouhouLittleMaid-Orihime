@@ -30,7 +30,7 @@ public class ItemNameAny extends LivingEntityFunction {
         }
 
         for (int i = 1; i < arguments.size(); i++) {
-            Identifier id = MolangUtils.parseIdentifier(context.entity(), arguments.getAsString(context, i));
+            Identifier id = arguments.getAsResourceLocation(context, i);
             if (id == null) {
                 return null;
             }

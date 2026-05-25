@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 public class Lerp implements Function {
     @Override
     public Object evaluate(@NotNull ExecutionContext<?> context, ArgumentCollection arguments) {
-        return Interpolations.lerp(arguments.getAsDouble(context, 0),
-                arguments.getAsDouble(context, 1),
-                arguments.getAsDouble(context, 2));
+        return Interpolations.lerp(arguments.getAsFloat(context, 0),
+                arguments.getAsFloat(context, 1),
+                arguments.getAsFloat(context, 2));
     }
 
     @Override
