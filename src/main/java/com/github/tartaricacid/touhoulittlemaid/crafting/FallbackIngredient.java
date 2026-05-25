@@ -59,7 +59,7 @@ public final class FallbackIngredient implements CustomIngredient {
 
     @Override
     public CustomIngredientSerializer<?> getSerializer() {
-        return null;
+        return Serializer.INSTANCE;
     }
 
     private static Ingredient resolveIngredient(List<FallbackEntry> fallbacks) {
