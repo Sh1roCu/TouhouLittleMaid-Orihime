@@ -9,15 +9,17 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.storage.TagValueInput;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -25,25 +27,28 @@ import java.util.List;
 import java.util.Objects;
 
 public class AltarRecipe extends ShapelessRecipe {
-    private final String group;
-    private final CraftingBookCategory category;
     private final float power;
     private final ItemStack result;
     private final Identifier entityType;
     private final String langKey;
+    private final NonNullList<Ingredient> ingredients;
 
     public AltarRecipe(String group, CraftingBookCategory category, NonNullList<Ingredient> ingredients, float power, ItemStack result, Identifier entityType, String langKey) {
-        super(group, category, result, ingredients);
-        this.group = group;
-        this.category = category;
+        super(
+                new Recipe.CommonInfo(true),
+                new CraftingRecipe.CraftingBookInfo(category, group),
+                ItemStackTemplate.fromNonEmptyStack(result),
+                List.copyOf(ingredients)
+        );
+        this.ingredients = ingredients;
         this.power = power;
         this.result = result;
         this.entityType = entityType;
         this.langKey = langKey;
     }
 
-    public Identifier getId() {
-        return BuiltInRegistries.RECIPE_TYPE.getKey(InitRecipes.ALTAR_CRAFTING);
+    public NonNullList<Ingredient> getIngredients() {
+        return this.ingredients;
     }
 
     public String getRecipeString() {
@@ -56,7 +61,10 @@ public class AltarRecipe extends ShapelessRecipe {
     }
 
     public void spawnOutputEntity(ServerLevel world, BlockPos pos, @Nullable List<ItemStack> list) {
-        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(entityType);
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(entityType);
+        if (type == null) {
+            return;
+        }
 
         if (type == EntityType.ITEM) {
             this.spawnItem(world, pos);
@@ -74,7 +82,7 @@ public class AltarRecipe extends ShapelessRecipe {
         }
 
         // 生成类型为 EVENT 也许更合适
-        type.spawn(world, pos, MobSpawnType.EVENT);
+        type.spawn(world, pos, EntitySpawnReason.EVENT);
     }
 
     private void rebornMaid(ServerLevel world, BlockPos pos, @Nullable List<ItemStack> list) {
@@ -85,10 +93,12 @@ public class AltarRecipe extends ShapelessRecipe {
         EntityMaid maid = new EntityMaid(world);
         CustomData compoundData = itemFilm.get(InitDataComponent.MAID_INFO);
         if (compoundData != null) {
-            CompoundTag maidCompound = compoundData.copyTag();
-            maid.readAdditionalSaveData(maidCompound);
+            var input = TagValueInput.create(ProblemReporter.DISCARDING, world.registryAccess(), compoundData.copyTag());
+            maid.readAdditionalSaveData(input);
         } else {
-            maid.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.SPAWN_EGG, null);
+            // TODO: 也许换成 EventHooks.finalizeMobSpawn？另外，我寻思 EntitySpawnReason.Event 更贴切？
+            maid.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWN_ITEM_USE, null);
+            // EventHooks.finalizeMobSpawn(maid, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWN_ITEM_USE, null);
         }
         maid.setPos(pos.getX(), pos.getY(), pos.getZ());
         world.addFreshEntity(maid);
@@ -100,8 +110,9 @@ public class AltarRecipe extends ShapelessRecipe {
 
         EntityMaid maid = new EntityMaid(world);
         maid.setPos(pos.getX(), pos.getY(), pos.getZ());
-        maid.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.SPAWN_EGG, null);
-        maid.startRiding(box, true);
+        maid.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWN_ITEM_USE, null);
+        // EventHooks.finalizeMobSpawn(maid, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWN_ITEM_USE, null);
+        maid.startRiding(box, true, true);
 
         world.tryAddFreshEntityWithPassengers(box);
     }
@@ -112,26 +123,17 @@ public class AltarRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
-        return InitRecipes.ALTAR_CRAFTING;
+    public @NotNull RecipeType<CraftingRecipe> getType() {
+        return (RecipeType<CraftingRecipe>) (Object) InitRecipes.ALTAR_CRAFTING;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return InitRecipes.ALTAR_RECIPE_SERIALIZER;
+    public RecipeSerializer<ShapelessRecipe> getSerializer() {
+        return (RecipeSerializer<ShapelessRecipe>) (Object) InitRecipes.ALTAR_RECIPE_SERIALIZER;
     }
 
     public float getPower() {
         return power;
-    }
-
-    @Override
-    public String getGroup() {
-        return group;
-    }
-
-    public CraftingBookCategory getCategory() {
-        return category;
     }
 
     public ItemStack getResult() {

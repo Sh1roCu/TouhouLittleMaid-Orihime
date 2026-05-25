@@ -10,15 +10,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class FallbackIngredient implements CustomIngredient {
     private static final Codec<JsonElement> JSON_ELEMENT_CODEC = Codec.PASSTHROUGH.xmap(
@@ -48,8 +51,8 @@ public final class FallbackIngredient implements CustomIngredient {
     }
 
     @Override
-    public List<ItemStack> getMatchingStacks() {
-        return List.of(this.resolvedIngredient.getItems());
+    public Stream<Holder<Item>> items() {
+        return this.resolvedIngredient.items();
     }
 
     @Override
@@ -59,7 +62,7 @@ public final class FallbackIngredient implements CustomIngredient {
 
     @Override
     public CustomIngredientSerializer<?> getSerializer() {
-        return null;
+        return Serializer.INSTANCE;
     }
 
     private static Ingredient resolveIngredient(List<FallbackEntry> fallbacks) {
@@ -73,7 +76,7 @@ public final class FallbackIngredient implements CustomIngredient {
                 return parsed.get();
             }
         }
-        return Ingredient.EMPTY;
+        return Ingredient.of();
     }
 
     public record FallbackEntry(String modid, JsonElement value) {
@@ -110,13 +113,14 @@ public final class FallbackIngredient implements CustomIngredient {
         }
 
         @Override
-        public MapCodec<FallbackIngredient> getCodec(boolean b) {
+        public MapCodec<FallbackIngredient> getCodec() {
             return CODEC;
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, FallbackIngredient> getPacketCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, FallbackIngredient> getStreamCodec() {
             return ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
+
         }
     }
 }
