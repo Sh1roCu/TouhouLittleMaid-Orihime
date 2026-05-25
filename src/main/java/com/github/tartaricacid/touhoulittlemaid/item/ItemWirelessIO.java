@@ -6,29 +6,34 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.*;
 
@@ -36,8 +41,10 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
     private static final int FILTER_LIST_SIZE = 9;
     private static final String TOOLTIPS_PREFIX = "§a▍ §7";
 
-    public ItemWirelessIO() {
-        super((new Properties()).stacksTo(1));
+    public ItemWirelessIO(Identifier id) {
+        super((new Properties())
+                .setId(ResourceKey.create(Registries.ITEM, id))
+                .stacksTo(1));
     }
 
     public static void setMode(ItemStack stack, boolean maidToChest) {
@@ -69,17 +76,23 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
     public static ItemStacksResourceHandler getFilterList(HolderLookup.Provider provider, ItemStack stack) {
         WirelessIOHandler handler = new WirelessIOHandler(FILTER_LIST_SIZE);
         if (stack.getItem() == InitItems.WIRELESS_IO) {
-            CompoundTag tag = stack.get(FILTER_LIST_TAG);
-            if (tag != null) {
-                handler.deserializeNBT(provider, tag);
+            List<ItemStack> itemStackList = stack.get(FILTER_LIST_TAG);
+            if (itemStackList != null) {
+                for (int i = 0; i < itemStackList.size() && i < FILTER_LIST_SIZE; i++)
+                    handler.set(i, ItemVariant.of(itemStackList.get(i)), 1);
             }
         }
         return handler;
     }
 
-    public static void setFilterList(HolderLookup.Provider provider, ItemStack stack, ItemStacksResourceHandler itemStacksResourceHandler) {
+    public static void setFilterList(HolderLookup.Provider provider, ItemStack stack, ItemStacksResourceHandler itemStackHandler) {
         if (stack.getItem() == InitItems.WIRELESS_IO) {
-            stack.set(FILTER_LIST_TAG, itemStacksResourceHandler.serializeNBT(provider));
+            List<ItemStack> itemStackList = new ArrayList<>();
+            for (int i = 0; i < itemStackHandler.size(); i++) {
+                ItemStack itemStack = itemStackHandler.getResource(i).toStack();
+                itemStackList.add(itemStack);
+            }
+            stack.set(FILTER_LIST_TAG, itemStackList);
         }
     }
 
@@ -133,23 +146,23 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
             if (type.canOpenByPlayer(te, player)) {
                 ItemStack stack = player.getMainHandItem();
                 setBindingPos(stack, pos);
-                return InteractionResult.sidedSuccess(worldIn.isClientSide);
+                return worldIn.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
         }
         return super.useOn(context);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         if (handIn == InteractionHand.MAIN_HAND && playerIn instanceof ServerPlayer) {
-            playerIn.openMenu(this/*, buffer -> ItemStack.STREAM_CODEC.encode(buffer, playerIn.getMainHandItem())*/);
-            return InteractionResultHolder.success(playerIn.getMainHandItem());
+            playerIn.openMenu(this);
+            return worldIn.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
         boolean maidToChest = isMaidToChest(stack);
         boolean isBlacklist = isBlacklist(stack);
         BlockPos pos = getBindingPos(stack);
@@ -165,12 +178,12 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
                         pos.getX(), pos.getY(), pos.getZ()) :
                 I18n.get("tooltips.touhou_little_maid.wireless_io.binding_pos.none");
 
-        tooltip.add(Component.literal(TOOLTIPS_PREFIX + ioModeText));
-        tooltip.add(Component.literal(TOOLTIPS_PREFIX + filterModeText));
-        tooltip.add(Component.literal(TOOLTIPS_PREFIX + hasPos));
-        tooltip.add(Component.literal(" "));
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.wireless_io.usage.1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltips.touhou_little_maid.wireless_io.usage.2").withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.literal(TOOLTIPS_PREFIX + ioModeText));
+        builder.accept(Component.literal(TOOLTIPS_PREFIX + filterModeText));
+        builder.accept(Component.literal(TOOLTIPS_PREFIX + hasPos));
+        builder.accept(Component.literal(" "));
+        builder.accept(Component.translatable("tooltips.touhou_little_maid.wireless_io.usage.1").withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable("tooltips.touhou_little_maid.wireless_io.usage.2").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -196,7 +209,7 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        protected int getCapacity(int index, ItemVariant resource) {
             return 1;
         }
     }
