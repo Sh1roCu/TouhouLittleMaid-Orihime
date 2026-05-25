@@ -278,7 +278,7 @@ dependencies {
     modRuntimeOnly "maven.modrinth:xaeros-world-map:1.39.12_Fabric_1.21"
 
     // 拔刀剑
-    modImplementation "cn.sh1rocu:slashblade-refabricated:1.21.1-1.0.1-Resharped-1.7.55"
+    modImplementation "cn.sh1rocu:slashblade-refabricated:1.21.1-1.4.2-Resharped-1.9.65"
 
     // 农夫乐事
     modImplementation("vectorwing:FarmersDelight:1.21.1-3.2.2+refabricated") {
