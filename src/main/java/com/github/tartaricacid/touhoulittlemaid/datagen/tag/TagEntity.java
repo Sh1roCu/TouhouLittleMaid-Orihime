@@ -2,18 +2,20 @@ package com.github.tartaricacid.touhoulittlemaid.datagen.tag;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TagEntity extends FabricTagProvider<EntityType<?>> {
+public class TagEntity extends FabricTagsProvider.EntityTypeTagsProvider {
     /**
      * 女仆妖精的攻击目标，默认仅攻击铁傀儡和玩家
      */
@@ -26,7 +28,7 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
      */
     public static TagKey<EntityType<?>> MAID_VEHICLE_ROTATE_BLOCKLIST = createTagKey("maid_vehicle_rotate_blocklist");
 
-    public static TagKey<EntityType<?>> CARRYON_ENTITY_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("carryon", "entity_blacklist"));
+    public static TagKey<EntityType<?>> CARRYON_ENTITY_BLACKLIST = createTagKey(Identifier.parse("carryon:entity_blacklist"));
 
     /**
      * 冰与火的石化效果免疫标签
@@ -35,8 +37,9 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
             Identifier.parse("iceandfire:immune_to_gorgon_stone")
     );
 
-    public TagEntity(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, Registries.ENTITY_TYPE, lookupProvider);
+
+    public TagEntity(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     private static TagKey<EntityType<?>> createTagKey(String name) {
@@ -47,33 +50,37 @@ public class TagEntity extends FabricTagProvider<EntityType<?>> {
         return TagKey.create(Registries.ENTITY_TYPE, id);
     }
 
+    private static ResourceKey<EntityType<?>> createResourceKey(Identifier id) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, id);
+    }
+
     @Override
-    public void addTags(HolderLookup.Provider lookupProvider) {
-        getOrCreateTagBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(InitEntities.DANMAKU);
-        getOrCreateTagBuilder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(InitEntities.FAIRY);
-        getOrCreateTagBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(InitEntities.FAIRY);
-        getOrCreateTagBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(InitEntities.FAIRY);
+    public void addTags(HolderLookup.@NonNull Provider lookupProvider) {
+        valueLookupBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(InitEntities.DANMAKU);
+        valueLookupBuilder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(InitEntities.FAIRY);
+        valueLookupBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(InitEntities.FAIRY);
+        valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(InitEntities.FAIRY);
 
-        getOrCreateTagBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityType.IRON_GOLEM)
-                .addOptional(id("guardvillagers:guard"))
-                .addOptional(id("earthtojavamobs:furnace_golem"))
-                .addOptional(id("earthmobsmod:furnace_golem"))
-                .addOptional(id("mutantmonsters:mutant_snow_golem"))
-                .addOptional(id("alexscaves:gingerbread_man"))
-                .addOptional(id("alexsmobs:bunfungus"));
+        valueLookupBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityType.IRON_GOLEM);
+        builder(MAID_FAIRY_ATTACK_GOAL)
+                .addOptional(createResourceKey(id("guardvillagers:guard")))
+                .addOptional(createResourceKey(id("earthtojavamobs:furnace_golem")))
+                .addOptional(createResourceKey(id("earthmobsmod:furnace_golem")))
+                .addOptional(createResourceKey(id("mutantmonsters:mutant_snow_golem")))
+                .addOptional(createResourceKey(id("alexscaves:gingerbread_man")))
+                .addOptional(createResourceKey(id("alexsmobs:bunfungus")));
 
-        getOrCreateTagBuilder(MAID_VEHICLE_ROTATE_BLOCKLIST)
-                .addOptional(id("create:carriage_contraption"))
-                .addOptional(id("create:seat"));
+        builder(MAID_VEHICLE_ROTATE_BLOCKLIST)
+                .addOptional(createResourceKey(id("create:carriage_contraption")))
+                .addOptional(createResourceKey(id("create:seat")));
 
-        getOrCreateTagBuilder(CARRYON_ENTITY_BLACKLIST).add(
+        valueLookupBuilder(CARRYON_ENTITY_BLACKLIST).add(
                 InitEntities.TOMBSTONE,
                 InitEntities.SIT,
                 InitEntities.BROOM);
 
         // 让女仆免疫冰与火的石化效果，避免石化带来的各种问题
-        getOrCreateTagBuilder(IMMUNE_TO_GORGON_STONE).add(InitEntities.MAID);
-
+        valueLookupBuilder(IMMUNE_TO_GORGON_STONE).add(InitEntities.MAID);
     }
 
     private Identifier id(String name) {

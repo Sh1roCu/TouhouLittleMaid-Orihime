@@ -4,7 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemEntityPlaceholder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
@@ -13,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -40,14 +40,14 @@ public class ChallengeAdvancement {
                 .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.ALL_NETHERITE_EQUIPMENT))
                 .save(saver, id("challenge/all_netherite_equipment").toString());
 
-        ItemStack stack = ItemEntityPlaceholder.setRecipeId(new ItemStack(InitItems.ENTITY_PLACEHOLDER), "spawn_lightning_bolt");
-        AdvancementHolder lightningBolt = make(stack, "lightning_bolt").parent(protect)
-                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.LIGHTNING_BOLT))
-                .save(saver, id("challenge/lightning_bolt").toString());
-
-        makeGoal(InitItems.MAID_100_HEALTHY, "maid_100_healthy").parent(lightningBolt)
-                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.MAID_100_HEALTHY))
-                .save(saver, id("challenge/maid_100_healthy").toString());
+//        ItemStack stack = ItemEntityPlaceholder.setRecipeId(new ItemStack(InitItems.ENTITY_PLACEHOLDER), "spawn_lightning_bolt");
+//        AdvancementHolder lightningBolt = make(stack, "lightning_bolt").parent(protect)
+//                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.LIGHTNING_BOLT))
+//                .save(saver, id("challenge/lightning_bolt").toString());
+//
+//        makeGoal(InitItems.MAID_100_HEALTHY, "maid_100_healthy").parent(lightningBolt)
+//                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.MAID_100_HEALTHY))
+//                .save(saver, id("challenge/maid_100_healthy").toString());
     }
 
     private static void generateKill(AdvancementHolder root, Consumer<AdvancementHolder> saver) {
@@ -93,7 +93,7 @@ public class ChallengeAdvancement {
         MutableComponent title = Component.translatable(String.format("advancements.touhou_little_maid.challenge.%s.title", key));
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.challenge.%s.description", key));
 
-        return Advancement.Builder.advancement().display(item, title, desc,
+        return Advancement.Builder.advancement().display(ItemStackTemplate.fromNonEmptyStack(item), title, desc,
                 Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/advancements/backgrounds/stone.png"),
                 AdvancementType.TASK, true, true, false);
     }

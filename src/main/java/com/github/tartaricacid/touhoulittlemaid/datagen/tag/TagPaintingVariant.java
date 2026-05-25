@@ -1,23 +1,26 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen.tag;
 
-import com.github.tartaricacid.touhoulittlemaid.init.InitPaintingVariants;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.PaintingVariantTags;
-import net.minecraft.world.entity.decoration.PaintingVariant;
+import net.minecraft.world.entity.decoration.painting.PaintingVariant;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TagPaintingVariant extends FabricTagProvider<PaintingVariant> {
-    public TagPaintingVariant(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+public class TagPaintingVariant extends FabricTagsProvider<PaintingVariant> {
+    public static final ResourceKey<PaintingVariant> WINE_FOX = ResourceKey.create(Registries.PAINTING_VARIANT, ResourceLocationUtil.getResourceLocation("wine_fox"));
+
+    public TagPaintingVariant(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.PAINTING_VARIANT, lookupProvider);
     }
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        getOrCreateTagBuilder(PaintingVariantTags.PLACEABLE).add(InitPaintingVariants.WINE_FOX);
+        this.builder(PaintingVariantTags.PLACEABLE).add(WINE_FOX);
     }
 }

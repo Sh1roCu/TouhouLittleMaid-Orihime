@@ -13,9 +13,6 @@ public class DataGenerator implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
-        // Model
-        pack.addProvider(ItemModelGenerator::new);
-
         // Advancements
         pack.addProvider(AdvancementDataGen::new);
 
@@ -37,7 +34,6 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(TagBlock::new);
         pack.addProvider(TagEnchantment::new);
         pack.addProvider(TagItem::new);
-        pack.addProvider(TagRecipeSerializer::new);
         pack.addProvider(TagPaintingVariant::new);
 
         // Registry Based Stuff

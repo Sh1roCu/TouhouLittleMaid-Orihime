@@ -1,20 +1,22 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen.advancement;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.advancements.altar.AltarCraftTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemEntityPlaceholder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.PickedUpItemTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.PickedUpItemTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -23,7 +25,7 @@ import java.util.function.Consumer;
 
 
 public class MaidBaseAdvancement {
-    public static void generate(Consumer<AdvancementHolder> saver) {
+    public static void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {
         AdvancementHolder root = make(Items.FEATHER, "switch_task")
                 .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.SWITCH_TASK))
                 .save(saver, id("maid_base/switch_task").toString());
@@ -34,7 +36,7 @@ public class MaidBaseAdvancement {
 
         generateBauble(root, saver);
 
-        generatePhoto(root, saver);
+        generatePhoto(registries, root, saver);
 
         generateFind(saver, root);
 
@@ -125,7 +127,9 @@ public class MaidBaseAdvancement {
                 .save(saver, id("maid_base/use_wireless_io").toString());
     }
 
-    private static void generatePhoto(AdvancementHolder root, Consumer<AdvancementHolder> saver) {
+    private static void generatePhoto(HolderLookup.Provider registries, AdvancementHolder root, Consumer<AdvancementHolder> saver) {
+        HolderLookup<Item> items = registries.lookupOrThrow(Registries.ITEM);
+
         AdvancementHolder photoRoot = make(InitItems.CAMERA, "photo_maid").parent(root)
                 .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.PHOTO_MAID))
                 .save(saver, id("maid_base/photo_maid").toString());
@@ -137,20 +141,20 @@ public class MaidBaseAdvancement {
         make(InitItems.GARAGE_KIT, "pickup_garage_kit").parent(statue)
                 .addCriterion("pickup_item", PickedUpItemTrigger.TriggerInstance.thrownItemPickedUpByPlayer(
                         Optional.empty(),
-                        Optional.of(ItemPredicate.Builder.item().of(InitItems.GARAGE_KIT).build()),
+                        Optional.of(ItemPredicate.Builder.item().of(items, InitItems.GARAGE_KIT).build()),
                         Optional.empty()))
                 .save(saver, id("maid_base/pickup_garage_kit").toString());
     }
 
     private static void generateReborn(AdvancementHolder root, Consumer<AdvancementHolder> saver) {
-        ItemStack stack = ItemEntityPlaceholder.setRecipeId(new ItemStack(InitItems.ENTITY_PLACEHOLDER), "reborn_maid");
-        AdvancementHolder rebornRoot = make(stack, "reborn_maid").parent(root)
-                .addCriterion("altar_craft", AltarCraftTrigger.Instance.recipe(id("altar_recipe/reborn_maid")))
-                .save(saver, id("maid_base/reborn_maid").toString());
-
-        makeGoal(InitItems.SHRINE, "shrine_reborn_maid").parent(rebornRoot)
-                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.SHRINE_REBORN_MAID))
-                .save(saver, id("maid_base/shrine_reborn_maid").toString());
+//        ItemStack stack = ItemEntityPlaceholder.setRecipeId(new ItemStack(InitItems.ENTITY_PLACEHOLDER), "reborn_maid");
+//        AdvancementHolder rebornRoot = make(stack, "reborn_maid").parent(root)
+//                .addCriterion("altar_craft", AltarCraftTrigger.Instance.recipe(id("altar_recipe/reborn_maid")))
+//                .save(saver, id("maid_base/reborn_maid").toString());
+//
+//        makeGoal(InitItems.SHRINE, "shrine_reborn_maid").parent(rebornRoot)
+//                .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.SHRINE_REBORN_MAID))
+//                .save(saver, id("maid_base/shrine_reborn_maid").toString());
     }
 
     private static Advancement.Builder make(ItemLike item, String key) {
@@ -166,7 +170,7 @@ public class MaidBaseAdvancement {
         MutableComponent title = Component.translatable(String.format("advancements.touhou_little_maid.maid_base.%s.title", key));
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.maid_base.%s.description", key));
 
-        return Advancement.Builder.advancement().display(item, title, desc,
+        return Advancement.Builder.advancement().display(ItemStackTemplate.fromNonEmptyStack(item), title, desc,
                 Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/advancements/backgrounds/stone.png"),
                 AdvancementType.TASK, true, true, false);
     }

@@ -9,13 +9,14 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.loot.RandomBoardStateFunction;
 import com.github.tartaricacid.touhoulittlemaid.loot.SetInitMaidOwnerFunction;
 import com.github.tartaricacid.touhoulittlemaid.loot.SetTankCountFunction;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -68,10 +69,10 @@ public class LootTableGenerator {
         return ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name));
     }
 
-    public static class ChestLootTables extends SimpleFabricLootTableProvider {
+    public static class ChestLootTables extends SimpleFabricLootTableSubProvider {
         private final HolderLookup.Provider registries;
 
-        public ChestLootTables(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        public ChestLootTables(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
             super(output, registryLookup, LootContextParamSets.CHEST);
             this.registries = registryLookup.join();
         }
@@ -199,8 +200,8 @@ public class LootTableGenerator {
         }
     }
 
-    public static class AdvancementLootTables extends SimpleFabricLootTableProvider {
-        public AdvancementLootTables(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+    public static class AdvancementLootTables extends SimpleFabricLootTableSubProvider {
+        public AdvancementLootTables(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
             super(output, registryLookup, LootContextParamSets.ADVANCEMENT_REWARD);
         }
 
@@ -223,26 +224,25 @@ public class LootTableGenerator {
         }
     }
 
-    public static class EntityLootTables extends SimpleFabricLootTableProvider {
-        public EntityLootTables(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
-            super(output, registryLookup, LootContextParamSets.ENTITY);
+    public static class EntityLootTables extends FabricEntityLootSubProvider {
+        public EntityLootTables(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+            super(output, registryLookup);
         }
 
         @Override
-        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
-            consumer.accept(InitEntities.BOX.getDefaultLootTable(), LootTable.lootTable().withPool(LootPool.lootPool()
+        public void generate() {
+            add(InitEntities.BOX, LootTable.lootTable().withPool(LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.PAPER))));
         }
     }
 
-    public static class BlockLootTables extends FabricBlockLootTableProvider {
+    public static class BlockLootTables extends FabricBlockLootSubProvider {
         public final Set<Block> knownBlocks = new HashSet<>();
 
-        protected BlockLootTables(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        protected BlockLootTables(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
             super(dataOutput, registryLookup);
         }
-
 
         @Override
         public void generate() {
