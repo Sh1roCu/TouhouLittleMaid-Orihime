@@ -47,7 +47,7 @@
     "compat.tacz.AbstractGunItemMixin",
     "compat.tacz.GunAnimationStateContextMixin",
     "compat.tacz.LivingEntityShootMixin",
-    "compat.tacz.ModernKineticGunScriptAPIMixin",
+    "compat.tacz.ModernKineticGunScriptAPIMixin"
   ],
   "client": [
     "accessor.AbstractContainerScreenAccessor",
@@ -59,6 +59,7 @@
     "client.ClientLevelMixin",
     "client.ClientLevelMixin$EntityCallbacksMixin",
     "client.CreateWorldScreenMixin",
+    "client.EntityMixin",
     "client.ItemInHandRendererMixin",
     "client.KeyboardHandlerMixin",
     "client.LocalPlayerMixin",
