@@ -64,6 +64,7 @@
     "client.ClientLevelMixin",
     "client.ClientLevelMixin$EntityCallbacksMixin",
     "client.CreateWorldScreenMixin",
+    "client.EntityMixin",
     "client.ItemInHandRendererMixin",
     "client.KeyboardHandlerMixin",
     "client.LocalPlayerMixin",
