@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.EquipmentSlot;

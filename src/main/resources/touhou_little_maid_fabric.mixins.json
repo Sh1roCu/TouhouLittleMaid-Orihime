@@ -17,6 +17,7 @@
     "accessor.ReloadableResourceManagerAccessor",
     "accessor.SnapshotParticipantAccessor",
     "accessor.TagValueOutputAccessor",
+    "client.EntityMixin",
     "common.AbstractArrowMixin",
     "common.AbstractHurtingProjectileMixin",
     "common.BlockBehaviourMixin",
