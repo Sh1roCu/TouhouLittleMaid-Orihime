@@ -137,8 +137,8 @@ public final class ItemUtil {
             ItemStack stack,
             boolean simulate,
             @Nullable TransactionContext transaction) {
-        if (handler instanceof ResourceHandler<ItemVariant>) {
-            return insertItemReturnRemaining(handler, index, stack, simulate, transaction);
+        if (handler instanceof ResourceHandler<ItemVariant> resourceHandler) {
+            return insertItemReturnRemaining(resourceHandler, index, stack, simulate, transaction);
         }
 
         return insertItemReturnRemaining(handler.getSlots(), index, stack, simulate, transaction);

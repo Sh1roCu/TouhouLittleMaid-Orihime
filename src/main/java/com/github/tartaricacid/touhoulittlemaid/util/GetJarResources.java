@@ -16,6 +16,7 @@ public final class GetJarResources {
     private GetJarResources() {
     }
 
+    // Fabric: 26.1的实现方式与原版女仆的不一样，注意cherry-pick时不要修改（
     public static void copyFolder(String sourcePath, Path targetPath) throws IOException, URISyntaxException {
         URL url = TouhouLittleMaid.class.getResource(sourcePath);
         if (url == null) {
