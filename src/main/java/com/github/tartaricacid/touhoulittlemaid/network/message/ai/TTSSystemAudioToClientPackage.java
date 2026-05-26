@@ -5,8 +5,6 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSConfig;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSite;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSystemServices;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -39,12 +37,10 @@ public record TTSSystemAudioToClientPackage(String siteName, String chatText, TT
         }
     };
 
-    @Environment(EnvType.CLIENT)
     public static void handle(TTSSystemAudioToClientPackage message, ClientPlayNetworking.Context context) {
         context.client().execute(() -> onHandle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(TTSSystemAudioToClientPackage message) {
         TTSSite ttsSite = AvailableSites.getTTSSite(message.siteName);
         if (ttsSite == null || !ttsSite.enabled()) {

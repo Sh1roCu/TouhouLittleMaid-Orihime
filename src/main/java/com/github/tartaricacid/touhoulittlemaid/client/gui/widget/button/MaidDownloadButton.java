@@ -5,7 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.ModelDownloadG
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.TipsHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -18,7 +18,7 @@ public class MaidDownloadButton extends TouhouImageButton {
         });
     }
 
-    public void renderExtraTips(GuiGraphics graphics) {
+    public void renderExtraTips(GuiGraphicsExtractor graphics) {
         TipsHelper.renderTips(graphics, this, getText());
     }
 

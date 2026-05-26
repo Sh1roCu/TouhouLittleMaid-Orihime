@@ -1,8 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -38,7 +36,6 @@ public record SendEffectPackage(int id, Collection<MobEffectInstance> effects) i
         context.client().execute(() -> handle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handle(SendEffectPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

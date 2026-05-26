@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.block.ModelSwitcherGui;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityModelSwitcher;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -26,7 +24,6 @@ public record OpenSwitcherGuiPackage(BlockPos pos) implements CustomPacketPayloa
         context.client().execute(() -> handleOpenGui(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleOpenGui(OpenSwitcherGuiPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

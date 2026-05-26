@@ -3,10 +3,8 @@ package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ContainerRef;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ExtraContainerManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import io.wispforest.accessories.api.AccessoriesCapability;
+import eu.pb4.trinkets.api.TrinketsApi;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Optional;
 
 public abstract class CuriosSlotRef implements ContainerRef {
     public final String slotType;
@@ -20,16 +18,14 @@ public abstract class CuriosSlotRef implements ContainerRef {
     }
 
     protected ItemStack getCuriosStack(EntityMaid maid) {
-        var inventory = AccessoriesCapability.getOptionally(maid);
-        return inventory.map(handler -> Optional.ofNullable(handler.getContainers().get(slotType))
-                .map(stacksHandler -> {
-                    var stacks = stacksHandler.getAccessories();
-                    if (slotIndex >= stacks.getContainerSize()) {
+        return TrinketsApi.getAttachment(maid).getAllEquipped().stream()
+                .filter(t -> t.getA().slotType().getId().equals(slotType))
+                .map(tuple -> {
+                    if (slotIndex >= tuple.getA().inventory().getContainerSize()) {
                         return ItemStack.EMPTY;
                     }
-                    return stacks.getItem(slotIndex);
-                }).orElse(ItemStack.EMPTY)
-        ).orElse(ItemStack.EMPTY);
+                    return tuple.getA().inventory().getItem(slotIndex);
+                }).findFirst().orElse(ItemStack.EMPTY);
     }
 
     public int compareTo(CuriosSlotRef other) {

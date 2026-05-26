@@ -13,14 +13,14 @@ public class FarmlandTrampleEvent extends CancellableEvent {
     private final BlockPos pos;
     private final BlockState state;
     private final Entity entity;
-    private final float fallDistance;
+    private final double fallDistance;
 
     public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> event -> {
         for (Callback callback : callbacks)
             callback.post(event);
     });
 
-    public FarmlandTrampleEvent(Level level, BlockPos pos, BlockState state, float fallDistance, Entity entity) {
+    public FarmlandTrampleEvent(Level level, BlockPos pos, BlockState state, double fallDistance, Entity entity) {
         this.level = level;
         this.pos = pos;
         this.state = state;
@@ -44,7 +44,7 @@ public class FarmlandTrampleEvent extends CancellableEvent {
         return entity;
     }
 
-    public float getFallDistance() {
+    public double getFallDistance() {
         return fallDistance;
     }
 

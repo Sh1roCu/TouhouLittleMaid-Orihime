@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.other.CheckSchedulePosGui;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -26,7 +24,6 @@ public record CheckSchedulePosPacket(String tips) implements CustomPacketPayload
         context.client().execute(() -> onHandle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(CheckSchedulePosPacket message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {

@@ -9,12 +9,9 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.item.WirelessIOContai
 import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.init.InitContainer;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
 
-@Environment(EnvType.CLIENT)
 public final class InitContainerGui {
     public static void clientSetup() {
         MenuScreens.register(InitContainer.MAID_EMPTY_BACKPACK_CONTAINER, EmptyBackpackContainerScreen::new);
@@ -35,7 +32,7 @@ public final class InitContainerGui {
         MenuScreens.register(InitContainer.ATTACK_TASK_CONFIG, AttackTaskConfigGui::new);
 
         // accessories 兼容
-        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.ACCESSORIES)) {
+        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.TRINKETS)) {
             CuriosCompat.registerScreen();
         }
     }

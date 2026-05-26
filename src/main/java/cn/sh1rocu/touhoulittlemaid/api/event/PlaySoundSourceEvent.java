@@ -14,7 +14,7 @@ public class PlaySoundSourceEvent {
 
     public PlaySoundSourceEvent(SoundEngine engine, SoundInstance sound, Channel channel) {
         this.engine = engine;
-        this.name = sound.getLocation().getPath();
+        this.name = sound.getIdentifier().getPath();
         this.sound = sound;
         this.channel = channel;
     }

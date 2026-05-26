@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message.ai;
 import com.github.tartaricacid.touhoulittlemaid.ai.manager.site.AvailableSites;
 import com.github.tartaricacid.touhoulittlemaid.util.GameModeUtil;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,7 +20,6 @@ public record OpenAIConfigPacket() implements CustomPacketPayload {
     public static final OpenAIConfigPacket INSTANCE = new OpenAIConfigPacket();
     public static final StreamCodec<ByteBuf, OpenAIConfigPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    @Environment(EnvType.CLIENT)
     public static void sendToServer() {
         ClientPlayNetworking.send(new OpenAIConfigPacket());
     }

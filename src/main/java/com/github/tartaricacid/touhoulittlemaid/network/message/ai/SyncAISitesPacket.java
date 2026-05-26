@@ -13,8 +13,6 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.settin
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.settings.AIChatSettingsLLMSiteScreen;
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -88,12 +86,10 @@ public record SyncAISitesPacket(
         return TYPE;
     }
 
-    @Environment(EnvType.CLIENT)
     public static void handle(SyncAISitesPacket message, ClientPlayNetworking.Context context) {
         context.client().execute(() -> onHandle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(SyncAISitesPacket message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen instanceof LLMSiteEditorScreen editor) {

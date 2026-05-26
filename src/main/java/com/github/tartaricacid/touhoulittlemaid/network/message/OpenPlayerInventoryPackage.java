@@ -1,7 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -28,7 +26,6 @@ public record OpenPlayerInventoryPackage(int action) implements CustomPacketPayl
         context.client().execute(() -> onHandle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(OpenPlayerInventoryPackage message) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {

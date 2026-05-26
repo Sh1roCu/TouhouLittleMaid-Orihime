@@ -28,7 +28,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ChainedJsonException;
 import net.minecraft.util.GsonHelper;
-import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -155,7 +154,7 @@ public class GeckoContainerBuilder {
             }
         }
 
-        NeoForge.EVENT_BUS.post(new DefaultGeckoAnimationEvent(animationFiles));
+        DefaultGeckoAnimationEvent.CALLBACK.invoker().onDefaultGeckoAnimation(new DefaultGeckoAnimationEvent(animationFiles));
 
         for (var type : DEFAULT_ANIMATION_FILES.keySet()) {
             if (type == CHAIR) {

@@ -1,7 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -28,7 +26,6 @@ public record ItemBreakPackage(int id, ItemStack item) implements CustomPacketPa
         context.client().execute(() -> handleBreakItem(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleBreakItem(ItemBreakPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

@@ -1,20 +1,19 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.handler;
 
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
-import net.minecraft.core.HolderLookup;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +54,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
      */
     public BaubleItemHandler(NonNullList<ItemStack> stacks) {
         super(stacks);
-        IntStream.range(0, getSlots()).forEach(this::onContentsChanged);
+        IntStream.range(0, size()).forEach(index -> this.onContentsChanged(index, stacks.get(index)));
     }
 
     /**
@@ -81,7 +80,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
      */
     @Nullable
     public IMaidBauble getBaubleInSlot(int slot) {
-        ItemStack stack = getStackInSlot(slot);
+        ItemStack stack = ItemUtil.getStack(this, slot);
         if (stack.isEmpty()) {
             return null;
         } else {
@@ -92,10 +91,11 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
     /**
      * 当内容改变时触发的方法
      *
-     * @param slot 触发的格子
+     * @param slot          触发的格子
+     * @param previousStack 内容改变前的物品堆
      */
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(int slot, @Nonnull ItemStack previousStack) {
         // 更新饰品信息
         this.updateBaubles(slot);
         // 更新物品缓存
@@ -108,7 +108,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
      * @param slot 指定的格子
      */
     protected void updateBaubles(int slot) {
-        ItemStack stack = getStackInSlot(slot);
+        ItemStack stack = ItemUtil.getStack(this, slot);
         if (stack.isEmpty()) {
             setBaubleInSlot(slot, null);
         } else {
@@ -119,7 +119,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
     protected void updateBaublesCache() {
         baubleItemsCache.clear();
         for (int baubleSlot : baubles.keySet()) {
-            ItemStack stack = getStackInSlot(baubleSlot);
+            ItemStack stack = ItemUtil.getStack(this, baubleSlot);
             if (!stack.isEmpty()) {
                 baubleItemsCache.add(stack.getItem());
             }
@@ -129,36 +129,35 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
     /**
      * 物品是否合法
      *
-     * @param slot  格子
-     * @param stack 传入的物品堆
+     * @param slot     格子
+     * @param resource 传入的ItemVariant
      * @return 物品是否合法
      */
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return BaubleManager.getBauble(stack) != null;
+    public boolean isValid(int slot, @Nonnull ItemVariant resource) {
+        return BaubleManager.getBauble(resource.toStack()) != null;
     }
 
     /**
      * 插入物品时的逻辑
      */
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (isItemValid(slot, stack)) {
-            return super.insertItem(slot, stack, simulate);
+    public int insert(int slot, @Nonnull ItemVariant resource, int amount, @Nonnull TransactionContext parent) {
+        if (isValid(slot, resource)) {
+            return super.insert(slot, resource, amount, parent);
         } else {
-            return stack;
+            return 0;
         }
     }
 
-    /**
-     * 处理反序列化时的饰品加载
-     */
-    @Override
-    protected void onLoad() {
-        IntStream.range(0, getSlots()).forEach(this::updateBaubles);
-        this.updateBaublesCache();
-    }
+//    /**
+//     * 处理反序列化时的饰品加载
+//     */
+//    @Override
+//    protected void onLoad() {
+//        IntStream.range(0, size()).forEach(this::updateBaubles);
+//        this.updateBaublesCache();
+//    }
 
     public boolean fireEvent(BiPredicate<IMaidBauble, ItemStack> function) {
         var iterator = baubles.int2ObjectEntrySet().iterator();
@@ -167,7 +166,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
             int slot = entry.getIntKey();
 
             IMaidBauble bauble = entry.getValue();
-            ItemStack stack = getStackInSlot(slot);
+            ItemStack stack = ItemUtil.getStack(this, slot);
 
             if (stack.isEmpty()) {
                 // 删除不存在物品的映射
@@ -211,7 +210,7 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
         Int2ObjectSortedMap<ItemStack> sync = new Int2ObjectRBTreeMap<>();
         for (var entry : baubles.int2ObjectEntrySet()) {
             int index = entry.getIntKey();
-            ItemStack stack = getStackInSlot(index);
+            ItemStack stack = ItemUtil.getStack(this, index);
             if (entry.getValue().syncClient(maid, stack)) {
                 sync.put(index, stack);
             }
@@ -219,18 +218,8 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
         return sync;
     }
 
-    @Override
-    public void readFromNbt(CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        if (tag.contains(TAG_INVENTORY)) {
-            CompoundTag baubleTag = tag.getCompound(TAG_INVENTORY);
-            if (baubleTag.contains("Size", Tag.TAG_INT)) {
-                // 1.4.2 版本起，饰品栏拓展了数量，需要在这里进行修正
-                int oldSize = baubleTag.getInt("Size");
-                if (oldSize < EntityMaid.BAUBLE_INV_SIZE) {
-                    baubleTag.putInt("Size", EntityMaid.BAUBLE_INV_SIZE);
-                }
-            }
-            this.deserializeNBT(provider, baubleTag);
-        }
+    protected void validateSlotIndex(int slot) {
+        if (slot < 0 || slot >= stacks.size())
+            throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size() + ")");
     }
 }

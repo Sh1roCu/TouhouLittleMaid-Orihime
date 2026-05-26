@@ -115,7 +115,7 @@ public class MaidFishingHookRenderer<T extends MaidFishingHook, S extends MaidFi
                         colors[0], colors[1], colors[2]
                 );
             }
-            if (IrisCompat.isOculusInstalled()) {
+            if (IrisCompat.isInstalled()) {
                 buffer.addVertex(pose, 0.0f, 0.0f, 0.0f)
                         .setColor(0, 0, 0, 255)
                         .setNormal(pose, 0.0F, 0.0F, 0.0F);

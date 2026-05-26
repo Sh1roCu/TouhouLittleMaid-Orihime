@@ -1,11 +1,13 @@
 package com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.molang.functions;
 
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.IContext;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.function.entity.LivingEntityFunction;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.MolangUtils;
 import com.github.tartaricacid.touhoulittlemaid.molang.runtime.ExecutionContext;
 import com.github.tartaricacid.touhoulittlemaid.util.EquipmentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.Identifier;
@@ -43,9 +45,9 @@ public class DumpEquippedItem extends LivingEntityFunction {
             context.entity().debugPrint(Component.literal("Tag ").append(ComponentUtils.copyOnClickText(key.location().toString())));
         });
 
-        var lookup = net.neoforged.neoforge.common.CommonHooks.resolveLookup(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        var lookup = CommonHooks.resolveLookup(Registries.ENCHANTMENT);
         if (lookup != null) {
-            for (var enchantmentEntry : itemStack.getAllEnchantments(lookup).entrySet()) {
+            for (var enchantmentEntry : itemStack.getEnchantments().entrySet()) {
                 enchantmentEntry.getKey().unwrapKey().ifPresent(key -> {
                     context.entity().debugPrint(Component.literal("Enchantment: display ")
                             .append(ComponentUtils.copyOnClickText(Enchantment.getFullname(enchantmentEntry.getKey(), enchantmentEntry.getIntValue()).getString(99)))

@@ -1,8 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -49,7 +47,6 @@ public record MaidAnimationPackage(int maidId, int animationId) implements Custo
         context.client().execute(() -> handle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handle(MaidAnimationPackage message) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {

@@ -87,7 +87,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
                         public boolean mayPickup(Player playerIn) {
                             ItemStack itemstack = this.getItem();
                             boolean curseEnchant = !itemstack.isEmpty() && !playerIn.isCreative()
-                                                   && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
+                                    && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE);
                             return !curseEnchant && super.mayPickup(playerIn);
                         }
 

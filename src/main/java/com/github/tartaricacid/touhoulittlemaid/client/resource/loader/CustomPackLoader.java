@@ -11,8 +11,8 @@ import com.github.tartaricacid.touhoulittlemaid.util.IdentifierAdapter;
 import com.github.tartaricacid.touhoulittlemaid.util.ZipFileCheck;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
-import net.neoforged.fml.loading.FMLPaths;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -28,7 +28,7 @@ public class CustomPackLoader {
             .registerTypeAdapter(CubesItem.class, new CubesItem.Deserializer())
             .create();
 
-    public static final Path PACK_FOLDER = FMLPaths.GAMEDIR.get().resolve("tlm_custom_pack");
+    public static final Path PACK_FOLDER = FabricLoader.getInstance().getGameDir().resolve("tlm_custom_pack");
 
     public static final MaidModels MAID_MODELS = MaidModels.getInstance();
     public static final ChairModels CHAIR_MODELS = ChairModels.getInstance();

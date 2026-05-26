@@ -3,19 +3,19 @@ package com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.ExtraContainerManager;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.MaidContainerCache;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import io.wispforest.accessories.api.events.SlotStateChange;
-import io.wispforest.accessories.api.slot.SlotReference;
+import eu.pb4.trinkets.api.TrinketSlotAccess;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class ExtraContainerEquipHandler {
 
-    public static void onCurioChange(ItemStack from, ItemStack to, SlotReference reference, SlotStateChange stateChange) {
-        if (!(reference.entity() instanceof EntityMaid maid)) {
+    public static void onCurioChange(ItemStack from, ItemStack to, TrinketSlotAccess reference, LivingEntity entity) {
+        if (!(entity instanceof EntityMaid maid)) {
             return;
         }
 
-        String slotType = reference.slotName();
-        int slotIndex = reference.slot();
+        String slotType = reference.slotType().getId();
+        int slotIndex = reference.index();
 
         boolean wasBackpack = ExtraContainerManager.isAnyBackpack(from);
         boolean isBackpack = ExtraContainerManager.isAnyBackpack(to);

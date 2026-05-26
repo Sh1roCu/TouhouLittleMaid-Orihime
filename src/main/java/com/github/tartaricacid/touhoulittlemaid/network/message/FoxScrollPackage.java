@@ -1,8 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.FoxScrollScreen;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -46,7 +44,6 @@ public record FoxScrollPackage(Map<String, List<FoxScrollData>> data) implements
         context.client().execute(() -> onHandle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(FoxScrollPackage message) {
         Minecraft.getInstance().setScreen(new FoxScrollScreen(message.data));
     }

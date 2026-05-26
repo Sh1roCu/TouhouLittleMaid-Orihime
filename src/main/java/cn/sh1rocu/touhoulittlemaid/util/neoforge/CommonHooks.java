@@ -1,7 +1,12 @@
 package cn.sh1rocu.touhoulittlemaid.util.neoforge;
 
+import cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric;
 import cn.sh1rocu.touhoulittlemaid.api.event.FarmlandTrampleEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -16,6 +22,14 @@ import java.util.Optional;
  * From NeoForge
  */
 public class CommonHooks {
+    public static <T> HolderLookup.@Nullable RegistryLookup<T> resolveLookup(ResourceKey<? extends Registry<T>> key) {
+        MinecraftServer server = TouhouLittleMaidFabric.getServer();
+        if (server != null) {
+            return server.registryAccess().lookup(key).orElse(null);
+        }
+        return null;
+    }
+
     public static Optional<BlockPos> isLivingOnLadder(BlockState state, Level level, BlockPos pos, LivingEntity entity) {
         boolean isSpectator = (entity instanceof Player && entity.isSpectator());
         if (isSpectator)
@@ -48,7 +62,7 @@ public class CommonHooks {
         return state.is(BlockTags.CLIMBABLE);
     }
 
-    public static boolean onFarmlandTrample(Level level, BlockPos pos, BlockState state, float fallDistance, Entity entity) {
+    public static boolean onFarmlandTrample(Level level, BlockPos pos, BlockState state, double fallDistance, Entity entity) {
         FarmlandTrampleEvent event = new FarmlandTrampleEvent(level, pos, state, fallDistance, entity);
         FarmlandTrampleEvent.CALLBACK.invoker().post(event);
         return !event.isCanceled();

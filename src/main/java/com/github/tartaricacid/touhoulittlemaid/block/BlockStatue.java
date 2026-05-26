@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlock;
-import cn.sh1rocu.touhoulittlemaid.util.particle.ParticleUtil;
+import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityGarageKit;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityStatue;
@@ -29,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class BlockStatue extends Block implements EntityBlock, IBlock {
+public class BlockStatue extends Block implements EntityBlock, IBlockExploded {
     public static final BooleanProperty IS_TINY = BooleanProperty.create("is_tiny");
 
     public BlockStatue(Identifier id) {
@@ -60,7 +59,7 @@ public class BlockStatue extends Block implements EntityBlock, IBlock {
         if (!world.isClientSide()) {
             this.getStatue(world, pos).ifPresent(statue -> this.restoreClayBlock(world, pos, statue));
         }
-        IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
+        IBlockExploded.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Override

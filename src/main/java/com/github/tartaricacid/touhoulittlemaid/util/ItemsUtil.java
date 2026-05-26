@@ -1,10 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.util;
 
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.NonNullListUtil;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerUtil;
-import cn.sh1rocu.touhoulittlemaid.util.transfer.StacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.*;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -35,13 +32,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public final class ItemsUtil {
     private ItemsUtil() {
     }
+
     /**
      * 直接设置对应槽位的物品堆
      */
@@ -78,6 +74,9 @@ public final class ItemsUtil {
     public static ItemStack extractItem(SlottedStorage<ItemVariant> itemHandler, int index, int amount, boolean simulate, @Nullable TransactionContext parent) {
         try (Transaction tx = Transaction.openNested(parent)) {
             ItemVariant resource = itemHandler.getSlot(index).getResource();
+            if (resource.isBlank()) {
+                return ItemStack.EMPTY;
+            }
             long extracted = itemHandler.getSlot(index).extract(resource, amount, tx);
             if (!simulate) {
                 tx.commit();
@@ -317,5 +316,10 @@ public final class ItemsUtil {
 
     public static ItemStacksResourceHandler createDummyHandler(List<ItemStack> stack) {
         return new ItemStacksResourceHandler(NonNullListUtil.copyOf(stack));
+    }
+
+    public static IndexModifier<ItemVariant> createIndexModifier(ResourceHandler<ItemVariant> handler) {
+        return (index, resource, amount) ->
+                setStackInSlot(handler, index, resource.isBlank() || amount <= 0 ? ItemStack.EMPTY : resource.toStack(amount));
     }
 }

@@ -1,6 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.item.bauble;
 
-import cn.sh1rocu.touhoulittlemaid.util.transfer.IItemHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IChestType;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
@@ -12,6 +14,7 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -19,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,22 +30,21 @@ import java.util.List;
 public class WirelessIOBauble implements IMaidBauble {
     private static final int SLOT_NUM = 38;
 
-    @Nonnull
-    public static ItemStack insertItemStacked(IItemHandler inventory, @Nonnull ItemStack stack, boolean simulate, @Nullable List<Boolean> slotConfig) {
+    public static ItemStack insertItemStacked(ResourceHandler<ItemVariant> inventory, ItemStack stack, boolean simulate, @Nullable List<Boolean> slotConfig) {
         if (stack.isEmpty()) {
             return stack;
         }
         if (!stack.isStackable()) {
             return insertItem(inventory, stack, simulate, slotConfig);
         }
-        int sizeInventory = inventory.getSlots();
+        int sizeInventory = inventory.size();
         for (int i = 0; i < sizeInventory; i++) {
-            ItemStack slot = inventory.getStackInSlot(i);
+            ItemStack slot = ItemUtil.getStack(inventory, i);
             if (slotConfig != null && i < slotConfig.size() && slotConfig.get(i)) {
                 continue;
             }
             if (ItemStack.isSameItemSameComponents(slot, stack) && !slot.isEmpty() && slot.isStackable()) {
-                stack = inventory.insertItem(i, stack, simulate);
+                stack = ItemUtil.insertItemReturnRemaining(inventory, i, stack, simulate, null);
                 if (stack.isEmpty()) {
                     break;
                 }
@@ -55,8 +56,8 @@ public class WirelessIOBauble implements IMaidBauble {
                 if (slotConfig != null && i < slotConfig.size() && slotConfig.get(i)) {
                     continue;
                 }
-                if (inventory.getStackInSlot(i).isEmpty()) {
-                    stack = inventory.insertItem(i, stack, simulate);
+                if (ItemUtil.getStack(inventory, i).isEmpty()) {
+                    stack = ItemUtil.insertItemReturnRemaining(inventory, i, stack, simulate, null);
                     if (stack.isEmpty()) {
                         break;
                     }
@@ -67,15 +68,15 @@ public class WirelessIOBauble implements IMaidBauble {
         return stack;
     }
 
-    public static ItemStack insertItem(IItemHandler dest, @Nonnull ItemStack stack, boolean simulate, @Nullable List<Boolean> slotConfig) {
+    public static ItemStack insertItem(ResourceHandler<ItemVariant> dest, ItemStack stack, boolean simulate, @Nullable List<Boolean> slotConfig) {
         if (stack.isEmpty()) {
             return stack;
         }
-        for (int i = 0; i < dest.getSlots(); i++) {
+        for (int i = 0; i < dest.size(); i++) {
             if (slotConfig != null && i < slotConfig.size() && slotConfig.get(i)) {
                 continue;
             }
-            stack = dest.insertItem(i, stack, simulate);
+            stack = ItemUtil.insertItemReturnRemaining(dest, i, stack, simulate, null);
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
@@ -106,22 +107,21 @@ public class WirelessIOBauble implements IMaidBauble {
                 if (openCount > 0) {
                     return;
                 }
-                //IItemHandler chestInv = maid.level.getCapability(Capabilities.ItemHandler.BLOCK, te.getBlockPos(), null);
                 Storage<ItemVariant> chestInv = ItemStorage.SIDED.find(maid.level, te.getBlockPos(), te.getBlockState(), te, null);
                 if (chestInv != null) {
-                    IItemHandler maidInv = maid.getAvailableInv(false);
+                    ResourceHandler<ItemVariant> maidInv = maid.getAvailableInv(false);
                     boolean isMaidToChest = ItemWirelessIO.isMaidToChest(baubleItem);
                     boolean isBlacklist = ItemWirelessIO.isBlacklist(baubleItem);
                     List<Boolean> slotConfig = ItemWirelessIO.getSlotConfig(baubleItem);
                     List<Boolean> slotConfigData;
                     if (slotConfig != null) {
                         slotConfigData = new ArrayList<>(slotConfig);
-                        slotConfigData.set(maidInv.getSlots() - 2, slotConfig.get(SLOT_NUM - 2));
-                        slotConfigData.set(maidInv.getSlots() - 1, slotConfig.get(SLOT_NUM - 1));
+                        slotConfigData.set(maidInv.size() - 2, slotConfig.get(SLOT_NUM - 2));
+                        slotConfigData.set(maidInv.size() - 1, slotConfig.get(SLOT_NUM - 1));
                     } else {
                         slotConfigData = new ArrayList<>(Collections.nCopies(SLOT_NUM, false));
                     }
-                    IItemHandler filterList = ItemWirelessIO.getFilterList(maid.registryAccess(), baubleItem);
+                    ItemStacksResourceHandler filterList = ItemWirelessIO.getFilterList(maid.registryAccess(), baubleItem);
 
                     if (isMaidToChest) {
                         var event = new MaidWirelessIOEvent.MaidToChest(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);
@@ -145,17 +145,17 @@ public class WirelessIOBauble implements IMaidBauble {
         }
     }
 
-    private void maidToChest(IItemHandler maid, Storage<ItemVariant> chest, boolean isBlacklist, IItemHandler filterList, List<Boolean> slotConfig) {
-        for (int i = 0; i < maid.getSlots(); i++) {
+    private void maidToChest(ResourceHandler<ItemVariant> maid, Storage<ItemVariant> chest, boolean isBlacklist, ResourceHandler<ItemVariant> filterList, List<Boolean> slotConfig) {
+        for (int i = 0; i < maid.size(); i++) {
             if (i < slotConfig.size() && slotConfig.get(i)) {
                 continue;
             }
-            ItemStack maidInvItem = maid.getStackInSlot(i);
+            ItemStack maidInvItem = ItemUtil.getStack(maid, i);
             if (maidInvItem.isEmpty())
                 continue;
             boolean allowMove = isBlacklist;
-            for (int j = 0; j < filterList.getSlots(); j++) {
-                ItemStack filterItem = filterList.getStackInSlot(j);
+            for (int j = 0; j < filterList.size(); j++) {
+                ItemStack filterItem = ItemUtil.getStack(filterList, j);
                 boolean isEqual = ItemStack.isSameItem(maidInvItem, filterItem);
                 if (isEqual) {
                     allowMove = !isBlacklist;
@@ -164,16 +164,11 @@ public class WirelessIOBauble implements IMaidBauble {
             }
             if (allowMove) {
                 int beforeCount = maidInvItem.getCount();
-/*                ItemStack after = ItemHandlerHelper.insertItemStacked(chest, maidInvItem.copy(), false);
-                int afterCount = after.getCount();
-                // Sync Client & Server
-                if (beforeCount != afterCount) {
-                    maid.extractItem(i, beforeCount - afterCount, false);
-                }*/
                 try (Transaction transaction = Transaction.openOuter()) {
-                    long inserted = chest.insert(ItemVariant.of(maidInvItem.copy()), beforeCount, transaction);
+                    var variant = ItemVariant.of(maidInvItem.copy());
+                    long inserted = StorageUtil.tryInsertStacking(chest, variant, beforeCount, transaction);
                     if (inserted > 0) {
-                        maid.extractItem(i, (int) inserted, false);
+                        maid.extract(i, variant, (int) inserted, transaction);
                         transaction.commit();
                     }
                 }
@@ -181,12 +176,12 @@ public class WirelessIOBauble implements IMaidBauble {
         }
     }
 
-    private void chestToMaid(Storage<ItemVariant> chest, IItemHandler maid, boolean isBlacklist, IItemHandler filterList, List<Boolean> slotConfig) {
+    private void chestToMaid(Storage<ItemVariant> chest, ResourceHandler<ItemVariant> maid, boolean isBlacklist, ResourceHandler<ItemVariant> filterList, List<Boolean> slotConfig) {
         for (StorageView<ItemVariant> view : chest.nonEmptyViews()) {
             ItemVariant chestInvStack = view.getResource();
             boolean allowMove = isBlacklist;
-            for (int j = 0; j < filterList.getSlots(); j++) {
-                ItemStack filterItem = filterList.getStackInSlot(j);
+            for (int j = 0; j < filterList.size(); j++) {
+                ItemStack filterItem = ItemUtil.getStack(filterList, j);
                 boolean isEqual = ItemStack.isSameItem(chestInvStack.toStack(), filterItem);
                 if (isEqual) {
                     allowMove = !isBlacklist;
@@ -199,7 +194,6 @@ public class WirelessIOBauble implements IMaidBauble {
                 int afterCount = after.getCount();
                 // Sync Client & Server
                 if (beforeCount != afterCount) {
-                    //chest.extractItem(i, beforeCount - afterCount, false);
                     try (Transaction transaction = Transaction.openOuter()) {
                         chest.extract(view.getResource(), beforeCount - afterCount, transaction);
                         transaction.commit();

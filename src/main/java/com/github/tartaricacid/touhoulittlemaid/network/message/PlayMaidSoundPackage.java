@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInstance;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,7 +32,6 @@ public record PlayMaidSoundPackage(Identifier soundEvent, String id,
         context.client().execute(() -> playSound(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void playSound(PlayMaidSoundPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

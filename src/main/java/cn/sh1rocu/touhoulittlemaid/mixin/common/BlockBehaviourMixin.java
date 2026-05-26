@@ -1,13 +1,12 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlock;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,25 +19,29 @@ public class BlockBehaviourMixin {
             method = "onExplosionHit",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/Block;wasExploded(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Explosion;)V"
+                    target = "Lnet/minecraft/world/level/block/Block;wasExploded(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/Explosion;)V"
             )
     )
-    private void tlm$onBlockExploded(Block instance, Level level, BlockPos blockPos, Explosion explosion, Operation<Void> original, @Local(argsOnly = true) BlockState state) {
-        if (state.getBlock() instanceof IBlock block) {
+    private void tlm$onBlockExploded(Block instance, ServerLevel level, BlockPos blockPos, Explosion explosion, Operation<Void> original, @Local(argsOnly = true) BlockState state) {
+        if (state.getBlock() instanceof IBlockExploded block) {
             block.tlm$onBlockExploded(state, level, blockPos, explosion);
         } else {
             original.call(instance, level, blockPos, explosion);
         }
     }
 
-    @WrapWithCondition(
+    @WrapOperation(
             method = "onExplosionHit",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"
+                    target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"
             )
     )
-    private boolean tlm$dontJust2Air(Level level, BlockPos pos, BlockState airState, int flag, @Local(argsOnly = true) BlockState state) {
-        return !(state.getBlock() instanceof IBlock);
+    private boolean tlm$dontJust2Air(ServerLevel instance, BlockPos pos, BlockState airState, int i, Operation<Boolean> original, @Local(argsOnly = true) BlockState state) {
+        if (!(state.getBlock() instanceof IBlockExploded)) {
+            return original.call(instance, pos, airState, i);
+        } else {
+            return false;
+        }
     }
 }

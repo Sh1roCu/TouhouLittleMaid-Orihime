@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 
 public class MaidFindSitTask extends MaidCheckRateTask {
     private static final int MAX_DELAY_TIME = 12;
@@ -45,7 +45,7 @@ public class MaidFindSitTask extends MaidCheckRateTask {
 
         if (sitEntity != null && sitEntity.isAlive() && sitEntity.closerThan(maid, 2)) {
             if (sitEntity.getPassengers().isEmpty()) {
-                maid.startRiding(this.sitEntity, true,true);
+                maid.startRiding(this.sitEntity, true, true);
             }
             this.sitEntity = null;
         }

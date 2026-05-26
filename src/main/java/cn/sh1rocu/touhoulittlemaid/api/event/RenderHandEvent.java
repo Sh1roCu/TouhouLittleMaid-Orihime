@@ -1,22 +1,19 @@
 package cn.sh1rocu.touhoulittlemaid.api.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
-@Environment(EnvType.CLIENT)
 public class RenderHandEvent extends CancellableEvent {
     private final AbstractClientPlayer player;
     private final InteractionHand hand;
     private final ItemStack stack;
     private final PoseStack matrices;
-    private final MultiBufferSource vertexConsumers;
+    private final SubmitNodeCollector submitNodeCollector;
     private final float tickDelta;
     private final float pitch;
     private final float swingProgress;
@@ -29,12 +26,12 @@ public class RenderHandEvent extends CancellableEvent {
         }
     });
 
-    public RenderHandEvent(AbstractClientPlayer player, InteractionHand hand, ItemStack stack, PoseStack matrices, MultiBufferSource vertexConsumers, float tickDelta, float pitch, float swingProgress, float equipProgress, int light) {
+    public RenderHandEvent(AbstractClientPlayer player, InteractionHand hand, ItemStack stack, PoseStack matrices, SubmitNodeCollector submitNodeCollector, float tickDelta, float pitch, float swingProgress, float equipProgress, int light) {
         this.player = player;
         this.hand = hand;
         this.stack = stack;
         this.matrices = matrices;
-        this.vertexConsumers = vertexConsumers;
+        this.submitNodeCollector = submitNodeCollector;
         this.tickDelta = tickDelta;
         this.pitch = pitch;
         this.swingProgress = swingProgress;
@@ -54,8 +51,8 @@ public class RenderHandEvent extends CancellableEvent {
         return matrices;
     }
 
-    public MultiBufferSource getMultiBufferSource() {
-        return vertexConsumers;
+    public SubmitNodeCollector getSubmitNodeCollector() {
+        return submitNodeCollector;
     }
 
     public int getPackedLight() {

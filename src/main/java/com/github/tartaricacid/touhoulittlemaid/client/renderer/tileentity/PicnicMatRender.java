@@ -1,12 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.block.BlockPicnicMat;
+import com.github.tartaricacid.touhoulittlemaid.block.BlockExplodedPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity.state.PicnicMatRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
-import com.github.tartaricacid.touhoulittlemaid.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -46,8 +45,8 @@ public class PicnicMatRender implements BlockEntityRenderer<TileEntityPicnicMat,
     public void extractRenderState(TileEntityPicnicMat picnicMat, PicnicMatRenderState state, float partialTick,
                                    Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(picnicMat, state, partialTick, cameraPos, breakProgress);
-        state.isCenter = picnicMat.getBlockState().getValue(BlockPicnicMat.PART).isCenter();
-        state.facing = picnicMat.getBlockState().getValue(BlockPicnicMat.FACING);
+        state.isCenter = picnicMat.getBlockState().getValue(BlockExplodedPicnicMat.PART).isCenter();
+        state.facing = picnicMat.getBlockState().getValue(BlockExplodedPicnicMat.FACING);
         for (int i = 0; i < 9; i++) {
             state.slotItems[i] = picnicMat.getStorageItem(i);
         }

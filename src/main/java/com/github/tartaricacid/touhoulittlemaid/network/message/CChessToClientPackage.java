@@ -4,15 +4,13 @@ import com.github.tartaricacid.touhoulittlemaid.api.game.xqwlight.Position;
 import com.github.tartaricacid.touhoulittlemaid.api.game.xqwlight.Search;
 import com.github.tartaricacid.touhoulittlemaid.util.CChessUtil;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.Util;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,7 +35,6 @@ public record CChessToClientPackage(BlockPos pos, String fenData) implements Cus
         context.client().execute(() -> CompletableFuture.runAsync(() -> onHandle(message), Util.backgroundExecutor()));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(CChessToClientPackage message) {
         int levelTime = 1000;
         long timeStart = System.currentTimeMillis();

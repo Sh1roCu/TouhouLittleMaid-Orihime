@@ -346,7 +346,7 @@ public class MaidFishingHook extends Projectile {
 
     public int retrieve(ItemStack stack) {
         EntityMaid maid = this.getMaidOwner();
-        if (!this.level.isClientSide && maid != null && !this.shouldStopFishing(maid)) {
+        if (!this.level.isClientSide() && maid != null && !this.shouldStopFishing(maid)) {
             MaidFishedEvent event = null;
             MinecraftServer server = this.level.getServer();
             int rodDamage = 0;

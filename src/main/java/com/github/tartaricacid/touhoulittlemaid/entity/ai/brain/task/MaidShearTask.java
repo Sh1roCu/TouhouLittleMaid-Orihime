@@ -65,7 +65,7 @@ public class MaidShearTask extends MaidCheckRateTask {
             });*/
 
             // Fabric:
-            ((Shearable) shearableEntity).shear(SoundSource.BLOCKS);
+            ((Shearable) shearableEntity).shear(worldIn, SoundSource.BLOCKS, mainHandItem);
 
             maid.swing(InteractionHand.MAIN_HAND);
             mainHandItem.hurtAndBreak(1, maid, EquipmentSlot.MAINHAND);

@@ -2,13 +2,13 @@ package com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.conditio
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemHakureiGohei;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MaceItem;
 import net.minecraft.world.item.ThrowablePotionItem;
-import net.neoforged.neoforge.common.Tags;
 
 public class InnerClassify {
     private static final String EMPTY = "";
@@ -51,20 +51,20 @@ public class InnerClassify {
         if (itemInHand.is(ItemTags.HOES)) {
             return "hoe";
         }
-        if (itemInHand.is(Tags.Items.TOOLS_SHIELD)) {
+        if (itemInHand.is(ConventionalItemTags.SHIELD_TOOLS)) {
             return "shield";
         }
-        if (itemInHand.is(Tags.Items.TOOLS_CROSSBOW)) {
+        if (itemInHand.is(ConventionalItemTags.CROSSBOW_TOOLS)) {
             return "crossbow";
         }
-        if (itemInHand.is(Tags.Items.TOOLS_BOW)) {
+        if (itemInHand.is(ConventionalItemTags.BOW_TOOLS)) {
             return "bow";
         }
-        if (itemInHand.is(Tags.Items.TOOLS_FISHING_ROD)) {
+        if (itemInHand.is(ConventionalItemTags.FISHING_ROD_TOOLS)) {
             return "fishing_rod";
         }
         // 因为在更新矛之前，mojang 把三叉戟命名为此名称，故为了保证兼容性，仍然使用此名称
-        if (itemInHand.is(Tags.Items.TOOLS_TRIDENT)) {
+        if (itemInHand.is(ConventionalItemTags.TRIDENT_TOOLS)) {
             return "spear";
         }
         // 因为命名冲突问题，故将其修改为 lance 骑枪

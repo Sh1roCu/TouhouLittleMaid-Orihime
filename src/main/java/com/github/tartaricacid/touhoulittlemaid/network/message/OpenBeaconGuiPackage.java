@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.block.MaidBeaconGui;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -26,7 +24,6 @@ public record OpenBeaconGuiPackage(BlockPos pos) implements CustomPacketPayload 
         context.client().execute(() -> handleOpenGui(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleOpenGui(OpenBeaconGuiPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

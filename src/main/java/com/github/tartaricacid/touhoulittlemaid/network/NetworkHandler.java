@@ -3,8 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.network;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.AdvancedAddEntityPayload;
 import com.github.tartaricacid.touhoulittlemaid.network.message.*;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -33,7 +31,6 @@ public class NetworkHandler {
         PayloadTypeRegistry.clientboundPlay().register(type, streamCodec);
     }
 
-    @Environment(EnvType.CLIENT)
     public static <T extends CustomPacketPayload> void registerClientReceivers() {
         ClientPlayNetworking.registerGlobalReceiver(OpenChairGuiPackage.TYPE, OpenChairGuiPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(ItemBreakPackage.TYPE, ItemBreakPackage::handle);
@@ -51,8 +48,6 @@ public class NetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(CChessToClientPackage.TYPE, CChessToClientPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(WChessToClientPackage.TYPE, WChessToClientPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(TTSAudioToClientPackage.TYPE, TTSAudioToClientPackage::handle);
-        // 仅安装 YSM 后才会发送此包
-        ClientPlayNetworking.registerGlobalReceiver(SyncYsmMaidDataPackage.TYPE, SyncYsmMaidDataPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(TTSSystemAudioToClientPackage.TYPE, TTSSystemAudioToClientPackage::handle);
 
         ClientPlayNetworking.registerGlobalReceiver(AdvancedAddEntityPayload.TYPE, AdvancedAddEntityPayload::handle);
@@ -84,8 +79,6 @@ public class NetworkHandler {
         registerS2CPacket(CChessToClientPackage.TYPE, CChessToClientPackage.STREAM_CODEC);
         registerS2CPacket(WChessToClientPackage.TYPE, WChessToClientPackage.STREAM_CODEC);
         registerS2CPacket(TTSAudioToClientPackage.TYPE, TTSAudioToClientPackage.STREAM_CODEC);
-        // 仅安装 YSM 后才会发送此包
-        registerS2CPacket(SyncYsmMaidDataPackage.TYPE, SyncYsmMaidDataPackage.STREAM_CODEC);
         registerS2CPacket(TTSSystemAudioToClientPackage.TYPE, TTSSystemAudioToClientPackage.STREAM_CODEC);
 
         registerS2CPacket(AdvancedAddEntityPayload.TYPE, AdvancedAddEntityPayload.STREAM_CODEC);
@@ -124,8 +117,6 @@ public class NetworkHandler {
         registerC2SPacket(CChessToServerPackage.TYPE, CChessToServerPackage.STREAM_CODEC, CChessToServerPackage::handle);
         registerC2SPacket(WChessToServerPackage.TYPE, WChessToServerPackage.STREAM_CODEC, WChessToServerPackage::handle);
         registerC2SPacket(SendUserChatPackage.TYPE, SendUserChatPackage.STREAM_CODEC, SendUserChatPackage::handle);
-        // 仅安装 YSM 后才会发送此包
-        registerC2SPacket(YsmMaidModelPackage.TYPE, YsmMaidModelPackage.STREAM_CODEC, YsmMaidModelPackage::handle);
         registerC2SPacket(SaveMaidAIDataPackage.TYPE, SaveMaidAIDataPackage.STREAM_CODEC, SaveMaidAIDataPackage::handle);
         registerC2SPacket(ClearMaidAIDataPacket.TYPE, ClearMaidAIDataPacket.STREAM_CODEC, ClearMaidAIDataPacket::handle);
         registerC2SPacket(OpenMaidGuiPackage.TYPE, OpenMaidGuiPackage.STREAM_CODEC, OpenMaidGuiPackage::handle);

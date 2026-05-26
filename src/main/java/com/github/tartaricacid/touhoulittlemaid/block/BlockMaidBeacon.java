@@ -79,7 +79,7 @@ public class BlockMaidBeacon extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide() ? null : createTickerHelper(type, InitBlocks.MAID_BEACON_TE.get(), TileEntityMaidBeacon::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, InitBlocks.MAID_BEACON_TE, TileEntityMaidBeacon::serverTick);
     }
 
     @Override

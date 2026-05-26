@@ -20,13 +20,13 @@ public class EntityMixin {
     @Inject(method = "setPosRaw", at = @At("TAIL"))
     private void tlm$setPosRaw(double x, double y, double z, CallbackInfo ci) {
         Entity self = (Entity) (Object) this;
-        if (self instanceof IEntity entity && entity.isAddedToLevel() && !self.level.isClientSide && !self.isRemoved())
+        if (self instanceof IEntity entity && entity.isAddedToLevel() && !self.level.isClientSide() && !self.isRemoved())
             //强加载区块
             self.level.getChunk((int) Math.floor(x) >> 4, (int) Math.floor(z) >> 4);
     }
 
     @Inject(
-            method = "startRiding(Lnet/minecraft/world/entity/Entity;Z)Z",
+            method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/entity/Entity;canRide(Lnet/minecraft/world/entity/Entity;)Z",
@@ -34,8 +34,8 @@ public class EntityMixin {
             ),
             cancellable = true
     )
-    public void tlm$startRiding(Entity entity, boolean bl, CallbackInfoReturnable<Boolean> cir) {
-        if (!EventHooks.canMountEntity((Entity) (Object) this, entity, true))
+    public void tlm$startRiding(Entity entityToRide, boolean force, boolean sendEventAndTriggers, CallbackInfoReturnable<Boolean> cir) {
+        if (!EventHooks.canMountEntity((Entity) (Object) this, entityToRide, true))
             cir.setReturnValue(false);
     }
 

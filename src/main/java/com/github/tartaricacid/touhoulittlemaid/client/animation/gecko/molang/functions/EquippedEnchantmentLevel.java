@@ -36,7 +36,7 @@ public class EquippedEnchantmentLevel extends LivingEntityFunction {
             if (id != null) {
                 var holder = enchantments.get(id);
                 if (holder.isPresent()) {
-                    sum += EnchantmentHelper.getTagEnchantmentLevel(holder.get(), itemStack);
+                    sum += EnchantmentHelper.getItemEnchantmentLevel(holder.get(), itemStack);
                 }
             }
         }

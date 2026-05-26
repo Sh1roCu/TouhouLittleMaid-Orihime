@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IPickedResult;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -14,7 +13,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractEntityFromItem extends LivingEntity implements IPickedResult {
+public abstract class AbstractEntityFromItem extends LivingEntity {
     public AbstractEntityFromItem(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
     }

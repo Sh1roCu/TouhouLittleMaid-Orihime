@@ -15,12 +15,12 @@ import com.github.tartaricacid.touhoulittlemaid.entity.projectile.EntityDanmaku;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.EntityThrowPowerPoint;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.MaidFishingHook;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.attribute.AttributeTypes;
 import net.minecraft.world.attribute.EnvironmentAttribute;
@@ -38,7 +38,6 @@ import java.util.UUID;
 
 public final class InitEntities {
     public static void init() {
-        registerSerializers();
         addEntityAttributes();
         addEntitySpawnPlacements();
     }
@@ -89,6 +88,11 @@ public final class InitEntities {
 
     public static EntityDataSerializer<Optional<UUID>> SERIALIZER_OPTIONAL_UUID = EntityDataSerializer.forValueType(ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC));
 
+    public static EntityDataSerializer<?> MAID_SCHEDULE_DATA_SERIALIZERS = registerDataSerializer("maid_schedule", MaidSchedule.DATA);
+    public static EntityDataSerializer<?> MAID_CHAT_BUBBLE_DATA_SERIALIZERS = registerDataSerializer("maid_chat_bubble", ChatBubbleRegister.INSTANCE);
+    public static EntityDataSerializer<?> OPTIONAL_UUID_SERIALIZERS = registerDataSerializer("optional_uuid", SERIALIZER_OPTIONAL_UUID);
+    public static EntityDataSerializer<?> MAID_GAME_WIN_COUNTS = registerDataSerializer("maid_game_win_counts", MaidGameRecordManager.WIN_COUNT_SERIALIZER);
+
     private static <T extends EntityType<?>> T registerEntityType(String id, T eType) {
         return Registry.register(BuiltInRegistries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), eType);
     }
@@ -109,11 +113,9 @@ public final class InitEntities {
         return Registry.register(BuiltInRegistries.ACTIVITY, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), activity);
     }
 
-    private static void registerSerializers() {
-        EntityDataSerializers.registerSerializer(MaidSchedule.DATA);
-        EntityDataSerializers.registerSerializer(ChatBubbleRegister.INSTANCE);
-        EntityDataSerializers.registerSerializer(SERIALIZER_OPTIONAL_UUID);
-        EntityDataSerializers.registerSerializer(MaidGameRecordManager.WIN_COUNT_SERIALIZER);
+    private static EntityDataSerializer<?> registerDataSerializer(String id, EntityDataSerializer<?> serializer) {
+        FabricEntityDataRegistry.register(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), serializer);
+        return serializer;
     }
 
     private static void addEntityAttribute(EntityType<? extends LivingEntity> type, AttributeSupplier.Builder builder) {

@@ -1,14 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.kaleidoscope.edible;
 
 import com.github.tartaricacid.touhoulittlemaid.api.block.IMaidEdibleBlock;
-import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagBlock;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.food.FoodBiteBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.BowlFoodBlockItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -51,15 +48,5 @@ public class BlockFoodEdible implements IMaidEdibleBlock {
     @Override
     public boolean canPlaceAsFood(EntityMaid maid, ItemStack stack, int slotIndex) {
         return stack.getItem() instanceof BowlFoodBlockItem;
-    }
-
-    @Override
-    public boolean placeAsFood(EntityMaid maid, BlockPos pos, ItemStack stack, int slotIndex) {
-        ItemStack stackExtra = maid.getAvailableInv(true).extractItem(slotIndex, 1, false);
-        if (stackExtra.isEmpty()) {
-            return false;
-        }
-        Direction facing = maid.getDirection();
-        return maid.placeItemBlock(pos, facing, stackExtra);
     }
 }

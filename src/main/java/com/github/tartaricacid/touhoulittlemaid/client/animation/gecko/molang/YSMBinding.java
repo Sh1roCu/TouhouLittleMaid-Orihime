@@ -11,6 +11,7 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.binding.Co
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.IContext;
 import com.github.tartaricacid.touhoulittlemaid.util.EquipmentUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.LazyValue;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -152,10 +153,10 @@ public class YSMBinding extends ContextBinding {
 
         playerVar("block_reach", ctx -> ctx.entity().getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE));
         playerVar("entity_reach", ctx -> ctx.entity().getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE));
-        playerVar("swim_speed", ctx -> ctx.entity().getAttributeValue(NeoForgeMod.SWIM_SPEED));
+        playerVar("swim_speed", ctx -> 1 /*ctx.entity().getAttributeValue(NeoForgeMod.SWIM_SPEED)*/);
         playerVar("entity_gravity", ctx -> ctx.entity().getAttributeValue(Attributes.GRAVITY));
         playerVar("step_height_addition", ctx -> ctx.entity().getAttributeValue(Attributes.STEP_HEIGHT) - 0.6);
-        playerVar("nametag_distance", ctx -> ctx.entity().getAttributeValue(NeoForgeMod.NAMETAG_DISTANCE));
+        playerVar("nametag_distance", ctx -> 64 /*ctx.entity().getAttributeValue(NeoForgeMod.NAMETAG_DISTANCE)*/);
 
         clientPlayerVar("elytra_rot_x", ctx -> Math.toDegrees(ctx.entity().elytraAnimationState.getRotX(ctx.animationEvent().getRequestedPartialTick())));
         clientPlayerVar("elytra_rot_y", ctx -> Math.toDegrees(ctx.entity().elytraAnimationState.getRotY(ctx.animationEvent().getRequestedPartialTick())));
@@ -307,9 +308,9 @@ public class YSMBinding extends ContextBinding {
             return null;
         }
 
-        ModList.get().getMods().stream().sorted(Comparator.comparing(IModInfo::getDisplayName)).forEach(mod -> {
-            context.debugPrint(Component.literal("Mod: display ").append(ComponentUtils.copyOnClickText(mod.getDisplayName()))
-                    .append(Component.literal("  id ").append(ComponentUtils.copyOnClickText(mod.getModId()))));
+        FabricLoader.getInstance().getAllMods().stream().sorted(Comparator.comparing(m -> m.getMetadata().getName())).forEach(mod -> {
+            context.debugPrint(Component.literal("Mod: display ").append(ComponentUtils.copyOnClickText(mod.getMetadata().getName()))
+                    .append(Component.literal("  id ").append(ComponentUtils.copyOnClickText(mod.getMetadata().getId()))));
         });
         return null;
     }

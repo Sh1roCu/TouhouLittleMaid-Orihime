@@ -45,7 +45,7 @@
   ],
   "accessWidener": "touhou_little_maid.classtweaker",
   "depends": {
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": ">=26.1",
     "forgeconfigapiport": "*"
   }

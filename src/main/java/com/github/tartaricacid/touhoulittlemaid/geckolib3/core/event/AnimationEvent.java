@@ -7,7 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.model.provider.data.En
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class AnimationEvent<T extends AnimatableEntity<?>>  {
+public class AnimationEvent<T extends AnimatableEntity<?>> {
     private final T animatable;
     private final float limbSwing;
     private final float limbSwingAmount;
@@ -63,7 +63,7 @@ public class AnimationEvent<T extends AnimatableEntity<?>>  {
     }
 
     public float getRequestedPartialTick() {
-        return renderState.partialTick;
+        return renderState.tlm$partialTick();
     }
 
     public float getPartialTick() {

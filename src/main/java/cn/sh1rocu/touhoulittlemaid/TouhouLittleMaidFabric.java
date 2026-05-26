@@ -1,6 +1,7 @@
 package cn.sh1rocu.touhoulittlemaid;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.*;
+import cn.sh1rocu.touhoulittlemaid.api.extension.IBedBlock;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.event.*;
 import com.github.tartaricacid.touhoulittlemaid.config.GeneralConfig;
@@ -21,14 +22,23 @@ import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
+import net.fabricmc.fabric.api.util.EventResult;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.neoforged.fml.config.ModConfig;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.ref.WeakReference;
 
 public class TouhouLittleMaidFabric implements ModInitializer {
     public static final Identifier HIGHEST = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "event_highest_priority");
@@ -37,6 +47,17 @@ public class TouhouLittleMaidFabric implements ModInitializer {
     // public static final Identifier NORMAL = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "event_normal_priority");
     public static final Identifier LOW = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "event_low_priority");
     public static final Identifier LOWEST = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "event_lowest_priority");
+
+    @Nullable
+    private static WeakReference<MinecraftServer> server;
+
+    @Nullable
+    public static MinecraftServer getServer() {
+        if (server == null) {
+            return null;
+        }
+        return server.get();
+    }
 
     @Override
     public void onInitialize() {
@@ -57,6 +78,28 @@ public class TouhouLittleMaidFabric implements ModInitializer {
     }
 
     private void subscribeEvents() {
+        ServerLifecycleEvents.SERVER_STARTING.register((server) -> TouhouLittleMaidFabric.server = new WeakReference<>(server));
+
+        EntitySleepEvents.SET_BED_OCCUPATION_STATE.register((entity, sleepingPos, bedState, occupied) -> {
+            if (bedState.getBlock() instanceof IBedBlock bedBlock && bedBlock.tlm$isBed(bedState, entity.level(), sleepingPos, entity)) {
+                entity.level().setBlock(sleepingPos, bedState.setValue(BedBlock.OCCUPIED, true), 3);
+                return true;
+            }
+            return false;
+        });
+        EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, direction) -> {
+            var bedState = entity.level().getBlockState(sleepingPos);
+            if (bedState.getBlock() instanceof IBedBlock bedBlock && bedBlock.tlm$isBed(bedState, entity.level(), sleepingPos, entity)) {
+                return bedState.getValue(HorizontalDirectionalBlock.FACING);
+            }
+            return direction;
+        });
+        EntitySleepEvents.ALLOW_BED.register((entity, sleepingPos, bedState, vanillaResult) -> {
+            if (bedState.getBlock() instanceof IBedBlock bedBlock && bedBlock.tlm$isBed(bedState, entity.level(), sleepingPos, entity)) {
+                return EventResult.ALLOW;
+            }
+            return EventResult.PASS;
+        });
         EntityDeathEvent.onEntityDeath();
         EntityDeathEvent.onPlayerCloned();
         PotentialSpawnsEvent.CALLBACK.register(MobSpawnInfoRegistry::addMobSpawnInfo);

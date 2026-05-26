@@ -2,8 +2,6 @@ package cn.sh1rocu.touhoulittlemaid.util.neoforge.network;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -53,7 +51,6 @@ public record AdvancedAddEntityPayload(int entityId, byte[] customPayload) imple
         }
     }
 
-    @Environment(EnvType.CLIENT)
     public static void handle(AdvancedAddEntityPayload message, ClientPlayNetworking.Context context) {
         context.client().execute(() -> {
             try {

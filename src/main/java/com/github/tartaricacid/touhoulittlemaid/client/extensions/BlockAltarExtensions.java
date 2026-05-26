@@ -1,5 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.extensions;
 
+import cn.sh1rocu.touhoulittlemaid.api.extension.client.IClientBlockExtensions;
+import cn.sh1rocu.touhoulittlemaid.util.particle.ParticleUtil;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityAltar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 
 import java.util.Optional;
 
@@ -80,7 +81,7 @@ public class BlockAltarExtensions implements IClientBlockExtensions {
                 x = posX + aabb.maxX + 0.1;
             }
             TerrainParticle diggingParticle = new TerrainParticle(world, x, y, z, 0, 0, 0, state);
-            Minecraft.getInstance().particleEngine.add(diggingParticle.updateSprite(state, pos).setPower(0.2f).scale(0.6f));
+            Minecraft.getInstance().particleEngine.add(ParticleUtil.updateSprite(diggingParticle, state, pos).setPower(0.2f).scale(0.6f));
         }
     }
 }

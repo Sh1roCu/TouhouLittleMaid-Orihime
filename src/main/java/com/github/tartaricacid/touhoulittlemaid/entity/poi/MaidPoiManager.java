@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.poi;
 
-import com.github.tartaricacid.touhoulittlemaid.block.BlockPicnicMat;
+import com.github.tartaricacid.touhoulittlemaid.block.BlockExplodedPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.block.BlockScarecrow;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.google.common.collect.ImmutableList;
@@ -25,7 +25,7 @@ public final class MaidPoiManager {
             .collect(ImmutableSet.toImmutableSet());
     private static final Set<BlockState> HOME_MEAL = ImmutableList.of(InitBlocks.PICNIC_MAT)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
-            .filter(blockState -> blockState.getValue(BlockPicnicMat.PART).isCenter())
+            .filter(blockState -> blockState.getValue(BlockExplodedPicnicMat.PART).isCenter())
             .collect(ImmutableSet.toImmutableSet());
     private static final Set<BlockState> SCARECROW = ImmutableList.of(InitBlocks.SCARECROW)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())

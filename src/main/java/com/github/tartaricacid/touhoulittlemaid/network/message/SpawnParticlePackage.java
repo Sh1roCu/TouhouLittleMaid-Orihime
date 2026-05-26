@@ -2,15 +2,13 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +40,6 @@ public record SpawnParticlePackage(int entityId, Type particleType, int delayTic
         }
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleSpawnParticleDelay(SpawnParticlePackage message, int delayTicks) {
         try {
             Thread.sleep(delayTicks * 50L);
@@ -52,7 +49,6 @@ public record SpawnParticlePackage(int entityId, Type particleType, int delayTic
         }
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleSpawnParticle(SpawnParticlePackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

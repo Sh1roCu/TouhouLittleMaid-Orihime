@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlock;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.GomokuCodec;
@@ -22,10 +21,7 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.SpawnParticlePac
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityGomoku;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityJoy;
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -48,7 +44,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -62,7 +57,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -71,7 +65,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 
-public class BlockGomoku extends BlockJoy implements IBoardGameBlock, IBlock {
+public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
     public static final EnumProperty<GomokuPart> PART = EnumProperty.create("part", GomokuPart.class);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -219,18 +213,6 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock, IBlock {
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         handleGomokuRemove(world, pos, state);
         return super.playerWillDestroy(world, pos, state, player);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public boolean tlm$addHitEffects(BlockState state, Level world, HitResult target, ParticleEngine manager) {
-        return false;
-    }
-
-    @Override
-    public void tlm$onBlockExploded(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion) {
-        handleGomokuRemove(world, pos, state);
-        IBlock.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Nullable

@@ -4,11 +4,11 @@ import cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidPickupEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidRequestItemEvent;
 import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
+import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerEquipHandler;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerPickupHandler;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerRequestHandler;
-import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.ExtraContainerEquipHandler;
 import com.google.common.collect.Lists;
-import io.wispforest.accessories.api.events.AccessoryChangeCallback;
+import eu.pb4.trinkets.api.event.TrinketEquipmentChangedCallback;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ public class ExtraContainerManager {
     public static void register(BackpackProvider provider) {
         PROVIDERS.add(provider);
         if (!CURIOS_HANDLERS_REGISTERED && CuriosCompat.isLoadedOrEnable()) {
-            AccessoryChangeCallback.EVENT.register(ExtraContainerEquipHandler::onCurioChange);
+            TrinketEquipmentChangedCallback.EVENT.register(ExtraContainerEquipHandler::onCurioChange);
             MaidPickupEvent.ITEM_RESULT_PRE.register(TouhouLittleMaidFabric.HIGH, ExtraContainerPickupHandler::onMaidPickupPre);
             MaidRequestItemEvent.EVENT.register(ExtraContainerRequestHandler::onMaidRequestItem);
             CURIOS_HANDLERS_REGISTERED = true;

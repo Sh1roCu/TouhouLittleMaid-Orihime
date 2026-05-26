@@ -3,7 +3,6 @@ package cn.sh1rocu.touhoulittlemaid.util.neoforge;
 import cn.sh1rocu.touhoulittlemaid.api.event.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -31,7 +30,7 @@ public class EventHooks {
         EntityMountEvent event = new EntityMountEvent(entityMounting, entityBeingMounted, entityMounting.level(), isMounting);
         EntityMountEvent.CALLBACK.invoker().post(event);
         if (event.isCanceled()) {
-            entityMounting.absMoveTo(entityMounting.getX(), entityMounting.getY(), entityMounting.getZ(), entityMounting.yRotO, entityMounting.xRotO);
+            entityMounting.absSnapTo(entityMounting.getX(), entityMounting.getY(), entityMounting.getZ(), entityMounting.yRotO, entityMounting.xRotO);
             return false;
         } else
             return true;

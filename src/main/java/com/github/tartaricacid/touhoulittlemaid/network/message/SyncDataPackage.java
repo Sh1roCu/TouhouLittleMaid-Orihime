@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -33,7 +31,6 @@ public record SyncDataPackage(float power, int maidNum) implements CustomPacketP
         context.client().execute(() -> handleData(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleData(SyncDataPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) {

@@ -2,8 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityPowerPoint;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -28,7 +26,6 @@ public record BeaconAbsorbPackage(float x, float y, float z) implements CustomPa
         context.client().execute(() -> spawnParticle(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void spawnParticle(BeaconAbsorbPackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null) {

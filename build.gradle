@@ -141,6 +141,11 @@ repositories {
         name = "Greenhouse Maven"
         url = 'https://maven.greenhouse.lgbt/releases/'
     }
+    maven {
+        name = "Nucleoid"
+        url = 'https://maven.nucleoid.xyz/releases'
+    }
+
 }
 
 configurations {
@@ -217,10 +222,8 @@ dependencies {
     // Simple Hats
 //    compileOnly "maven.modrinth:simple-hats:nV0q5j3l"
 
-    // Accessories
-//    compileOnly "io.wispforest:accessories-fabric:1.1.0-beta.48+1.21.1"
-//    runtimeOnly("maven.modrinth:potion-ring-reforged:LpwbSRNh")
-//    runtimeOnly("maven.modrinth:accessories-tc-layer:3.10.0+beta.28")
+    // Trinkets
+    implementation "eu.pb4:trinkets:4.0.0-beta.1+26.1"
 
     // Immersive Melodies
 //    compileOnly "immersive_melodies:immersive_melodies-fabric:0.6.2+1.21.1"

@@ -4,8 +4,6 @@ import com.github.tartaricacid.touhoulittlemaid.api.game.chess.Position;
 import com.github.tartaricacid.touhoulittlemaid.api.game.chess.Search;
 import com.github.tartaricacid.touhoulittlemaid.util.WChessUtil;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -37,7 +35,6 @@ public record WChessToClientPackage(BlockPos pos, String fenData) implements Cus
         context.client().execute(() -> CompletableFuture.runAsync(() -> onHandle(message), Util.backgroundExecutor()));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void onHandle(WChessToClientPackage message) {
         int levelTime = 1000;
         long timeStart = System.currentTimeMillis();

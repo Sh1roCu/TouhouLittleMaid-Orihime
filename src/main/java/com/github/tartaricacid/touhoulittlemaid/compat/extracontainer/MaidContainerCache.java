@@ -4,8 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.compat.curios.CuriosCompat;
 import com.github.tartaricacid.touhoulittlemaid.compat.extracontainer.curios.CuriosSlotRef;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.Lists;
-import io.wispforest.accessories.api.AccessoriesCapability;
-import io.wispforest.accessories.api.AccessoriesContainer;
+import eu.pb4.trinkets.api.TrinketsApi;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -86,21 +85,29 @@ public class MaidContainerCache {
         }
 
         List<CuriosSlotRef> slotRefs = Lists.newArrayList();
-        AccessoriesCapability.getOptionally(maid).ifPresent(handler -> {
-            for (var entry : handler.getContainers().entrySet()) {
-                String slotType = entry.getKey();
-                AccessoriesContainer stacksHandler = entry.getValue();
-                var stacks = stacksHandler.getAccessories();
+//        AccessoriesCapability.getOptionally(maid).ifPresent(handler -> {
+//            for (var entry : handler.getContainers().entrySet()) {
+//                String slotType = entry.getKey();
+//                AccessoriesContainer stacksHandler = entry.getValue();
+//                var stacks = stacksHandler.getAccessories();
+//
+//                for (int i = 0; i < stacks.getContainerSize(); i++) {
+//                    ItemStack stack = stacks.getItem(i);
+//                    ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(stack, slotType, i);
+//                    if (ref instanceof CuriosSlotRef curiosRef) {
+//                        slotRefs.add(curiosRef);
+//                    }
+//                }
+//            }
+//        });
 
-                for (int i = 0; i < stacks.getContainerSize(); i++) {
-                    ItemStack stack = stacks.getItem(i);
-                    ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(stack, slotType, i);
-                    if (ref instanceof CuriosSlotRef curiosRef) {
-                        slotRefs.add(curiosRef);
-                    }
-                }
+        for (var equipped : TrinketsApi.getAttachment(maid).getAllEquipped()) {
+            var access = equipped.getA();
+            ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(equipped.getB(), access.slotType().getId(), access.index());
+            if (ref instanceof CuriosSlotRef curiosRef) {
+                slotRefs.add(curiosRef);
             }
-        });
+        }
 
         for (CuriosSlotRef newRef : slotRefs) {
             int insertIndex = containers.size();

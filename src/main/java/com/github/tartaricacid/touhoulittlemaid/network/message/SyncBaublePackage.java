@@ -6,8 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.util.ByteBufUtils;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -57,7 +55,6 @@ public record SyncBaublePackage(boolean isFull, int entityId,
         context.client().execute(() -> handleClient(message));
     }
 
-    @Environment(EnvType.CLIENT)
     private static void handleClient(SyncBaublePackage message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {

@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.compat.curios.menu.CuriosContainer;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.*;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;
@@ -17,8 +16,9 @@ import net.minecraft.world.inventory.MenuType;
 
 public final class InitContainer {
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.ACCESSORIES)) {
-            register("curios_container", CuriosContainer.TYPE);
+        // TODO
+        if (FabricLoader.getInstance().isModLoaded(CompatRegistry.TRINKETS)) {
+            // register("curios_container", CuriosContainer.TYPE);
         }
     }
 

@@ -1,8 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.client;
 
 import cn.sh1rocu.touhoulittlemaid.api.event.KeyInputCallback;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.input.KeyEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * From Porting_Lib
  */
-@Environment(EnvType.CLIENT)
 @Mixin(KeyboardHandler.class)
 public abstract class KeyboardHandlerMixin {
     // First return opcode is jumped over if condition is met.

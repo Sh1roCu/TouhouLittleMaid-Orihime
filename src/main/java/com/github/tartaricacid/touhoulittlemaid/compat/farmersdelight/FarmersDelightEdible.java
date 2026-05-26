@@ -36,7 +36,7 @@ public class FarmersDelightEdible implements IMaidEdibleBlock {
     public boolean consume(EntityMaid maid, BlockPos pos, BlockState state) {
         Block block = state.getBlock();
         Level level = maid.level;
-        ItemStack stack = block.getCloneItemStack(level, pos, state);
+        ItemStack stack = state.getCloneItemStack(level, pos, true);
 
         if (block instanceof PieBlock pieBlock) {
             // 糕点

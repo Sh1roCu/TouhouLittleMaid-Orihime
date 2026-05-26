@@ -22,7 +22,7 @@ public class PlaySoundEvent {
     public PlaySoundEvent(SoundEngine manager, SoundInstance sound) {
         this.engine = manager;
         this.originalSound = sound;
-        this.name = sound.getLocation().getPath();
+        this.name = sound.getIdentifier().getPath();
         this.setSound(sound);
     }
 

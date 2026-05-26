@@ -89,7 +89,7 @@ public class ItemKappaCompass extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack compass, Player player, LivingEntity livingEntity, InteractionHand hand) {
-        if (livingEntity instanceof EntityMaid maid && !maid.level.isClientSide) {
+        if (livingEntity instanceof EntityMaid maid && !maid.level.isClientSide()) {
             if (player.isDiscrete()) {
                 maid.getSchedulePos().clear(maid);
                 player.sendSystemMessage(Component.translatable("message.touhou_little_maid.kappa_compass.maid_clear"));
@@ -207,7 +207,7 @@ public class ItemKappaCompass extends Item {
     }
 
     private void sendMessage(Player player, Component component) {
-        if (!player.level.isClientSide) {
+        if (!player.level.isClientSide()) {
             player.sendSystemMessage(component);
         }
     }
