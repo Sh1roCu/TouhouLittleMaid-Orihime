@@ -1,4 +1,4 @@
-//package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.layer;
+package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.layer;//package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.layer;
 //
 //import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 //import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;

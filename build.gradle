@@ -299,7 +299,7 @@ shadowJar {
         exclude(dependency('junit:junit'))
     }
 
-    archiveClassifier.set("shadow")
+    archiveClassifier.set("")
 
     enableAutoRelocation = true
     relocationPrefix = "com.github.tartaricacid.touhoulittlemaid.libs"

@@ -13,7 +13,7 @@ public class RotationValue implements IValue {
 
     public static float processValue(double value, boolean flip) {
         float ret = (float) Math.toRadians(value);
-        if (flip) {
+        if(flip) {
             ret = -ret;
         }
         return ret;

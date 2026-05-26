@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.geckolib3.core.controller;
 
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.controller.IAnimationPredicate;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.molang.CtrlBinding;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimationState;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.PlayState;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.builder.LoopType;
@@ -17,7 +18,6 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.Mo
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.value.IValue;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.snapshot.BoneTopLevelSnapshot;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.util.MathUtil;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.molang.runtime.ExpressionEvaluator;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import org.jetbrains.annotations.Nullable;

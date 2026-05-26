@@ -21,7 +21,7 @@ public class TextChatBubbleRenderer implements IChatBubbleRenderer {
     private final int height;
     private final Identifier bg;
 
-    public TextChatBubbleRenderer(Component text, Identifier bg, IChatBubbleRenderer.Position position) {
+    public TextChatBubbleRenderer(Component text, Identifier bg, Position position) {
         this.font = Minecraft.getInstance().font;
         if (position == Position.CENTER) {
             this.split = font.split(text, MAX_CENTER_WIDTH);

@@ -20,12 +20,12 @@ public class ItemNameAny extends LivingEntityFunction {
         }
 
         ItemStack itemStack = EquipmentUtil.getEquippedItem(context.entity().entity(), slotType);
-        if (itemStack.isEmpty()) {
+        if(itemStack.isEmpty()) {
             return false;
         }
 
         Identifier actualId = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-        if (actualId.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
+        if(actualId == BuiltInRegistries.ITEM.getDefaultKey()) {
             return false;
         }
 
@@ -34,7 +34,7 @@ public class ItemNameAny extends LivingEntityFunction {
             if (id == null) {
                 return null;
             }
-            if (id.equals(actualId)) {
+            if(id.equals(actualId)) {
                 return true;
             }
         }

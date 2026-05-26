@@ -82,7 +82,7 @@ public class SoundInstanceManager {
 
     public void stopAllPlayingSounds() {
         instanceMap.values().forEach(IStoppableSound::setStopped);
-        for (var instance : unnamedInstanceList) {
+        for (var instance: unnamedInstanceList) {
             instance.setStopped();
         }
         instanceMap.clear();

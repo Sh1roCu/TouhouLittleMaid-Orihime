@@ -2,7 +2,10 @@ package com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context;
 
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.event.AnimationEvent;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.storage.*;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.storage.IContextVariableStorage;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.storage.IScopedVariableStorage;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.storage.ITempVariableStorage;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.storage.MolangMemory;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.value.IValue;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.model.provider.data.EntityModelData;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.sound.instance.SoundInstanceManager;

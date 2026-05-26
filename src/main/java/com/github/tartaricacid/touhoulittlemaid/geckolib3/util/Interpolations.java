@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.geckolib3.util;
 
+
 public class Interpolations {
     /**
      * 线性插值

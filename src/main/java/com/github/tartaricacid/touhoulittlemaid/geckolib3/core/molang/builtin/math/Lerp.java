@@ -3,11 +3,10 @@ package com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.builtin.m
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.Interpolations;
 import com.github.tartaricacid.touhoulittlemaid.molang.runtime.ExecutionContext;
 import com.github.tartaricacid.touhoulittlemaid.molang.runtime.Function;
-import org.jetbrains.annotations.NotNull;
 
 public class Lerp implements Function {
     @Override
-    public Object evaluate(@NotNull ExecutionContext<?> context, ArgumentCollection arguments) {
+    public Object evaluate(ExecutionContext<?> context, ArgumentCollection arguments) {
         return Interpolations.lerp(arguments.getAsFloat(context, 0),
                 arguments.getAsFloat(context, 1),
                 arguments.getAsFloat(context, 2));

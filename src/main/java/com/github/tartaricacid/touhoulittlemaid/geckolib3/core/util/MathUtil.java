@@ -75,7 +75,6 @@ public class MathUtil {
         return ((2 * begin - 2 * end + v0 + v1) * t3 + (-3 * begin + 3 * end - 2 * v0 - v1) * t2 + v0 * percent + begin);
     }
 
-
     public static float degreesToRadians(float degrees) {
         return degrees * DEGREES_TO_RADIANS;
     }

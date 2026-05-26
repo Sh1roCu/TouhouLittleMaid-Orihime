@@ -11,8 +11,8 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built.GeoMo
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.VectorUtils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-import org.joml.Vector3f;
 import org.joml.Math;
+import org.joml.Vector3f;
 
 public class GeoBuilder {
     public static GeoModel constructGeoModel(RawGeometryTree geometryTree) {

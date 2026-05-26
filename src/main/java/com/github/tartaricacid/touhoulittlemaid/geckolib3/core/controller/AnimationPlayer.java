@@ -5,6 +5,7 @@
 
 package com.github.tartaricacid.touhoulittlemaid.geckolib3.core.controller;
 
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimationState;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.builder.Animation;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.builder.LoopType;
@@ -12,16 +13,18 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.controller.transi
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.controller.transition.LinearBlendTransition;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.eventframe.InstructionKeyFrameExecutor;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.eventframe.SoundKeyframeExecutor;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.*;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.BoneAnimation;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.BoneAnimationQueue;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.bone.BoneKeyFrame;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.bone.TransitionKeyFrame;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.point.*;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.point.BeginningTransitionPoint;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.point.EndingTransitionPoint;
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.keyframe.point.KeyFramePoint;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.manager.AnimationData;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.AnimationContext;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.molang.context.MolangContext;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.snapshot.BoneSnapshot;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.snapshot.BoneTopLevelSnapshot;
-import com.github.tartaricacid.touhoulittlemaid.geckolib3.core.AnimatableEntity;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.OrderedSegmentSearcher;
 import com.github.tartaricacid.touhoulittlemaid.molang.runtime.ExpressionEvaluator;
 import com.mojang.datafixers.util.Pair;

@@ -73,7 +73,7 @@ public interface IGeoRenderer<TState extends EntityRenderState, TData extends Ge
 
     default void renderCubesOfBone(GeoBone bone, PoseStack.Pose poseState, VertexConsumer buffer, TState state, GeckoRenderData data) {
         GeoMesh mesh = bone.cubes();
-
+        
         var packedLight = bone.glow() ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords;
         var packedOverlay = data.overlayUV;
         var color = data.color;

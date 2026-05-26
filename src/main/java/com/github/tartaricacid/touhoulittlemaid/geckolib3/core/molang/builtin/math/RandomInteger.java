@@ -14,7 +14,7 @@ public class RandomInteger extends ContextFunction<Object> {
     protected Object eval(ExecutionContext<IContext<Object>> context, ArgumentCollection arguments) {
         int min = arguments.getAsInt(context, 0);
         int range = arguments.getAsInt(context, 1);
-        if (min > range) {
+        if(min > range) {
             int temp = min;
             min = range;
             range = temp - range;

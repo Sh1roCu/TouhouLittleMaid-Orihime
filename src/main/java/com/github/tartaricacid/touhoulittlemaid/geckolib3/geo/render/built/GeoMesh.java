@@ -2,10 +2,10 @@ package com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.render.built;
 
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.raw.pojo.*;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.VectorUtils;
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.joml.Math;
 
 public class GeoMesh {
     /**

@@ -19,7 +19,7 @@ public class RelativeBlockHasAnyTag extends EntityFunction {
         }
         for (int i = 3; i < arguments.size(); i++) {
             Identifier tagId = arguments.getAsResourceLocation(ctx, i);
-            if (tagId == null) {
+            if(tagId == null) {
                 return null;
             }
 

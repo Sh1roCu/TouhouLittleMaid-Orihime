@@ -38,9 +38,7 @@ public class ChatBubbleRenderer {
 
         // 其他的在两边
         ObjectIterator<IChatBubbleData> iterator = chatBubble.iterator();
-        for (
-                int i = 0;
-                i < sideNum; i++) {
+        for (int i = 0; i < sideNum; i++) {
             if (!iterator.hasNext()) {
                 break;
             }
