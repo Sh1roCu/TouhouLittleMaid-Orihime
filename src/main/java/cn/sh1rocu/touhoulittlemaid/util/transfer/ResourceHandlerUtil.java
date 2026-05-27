@@ -187,8 +187,8 @@ public final class ResourceHandlerUtil {
             @Nullable TransactionContext transaction) {
         if (handler == null || amount == 0) return 0;
 
-        if (handler instanceof ResourceHandler<T>) {
-            return insertStacking(handler, resource, amount, transaction);
+        if (handler instanceof ResourceHandler<T> resourceHandler) {
+            return insertStacking(resourceHandler, resource, amount, transaction);
         }
 
         try (Transaction tx = Transaction.openNested(transaction)) {

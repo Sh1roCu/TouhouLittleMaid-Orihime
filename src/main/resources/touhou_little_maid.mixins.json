@@ -29,6 +29,7 @@
   "client": [
     "client.ClientPacketListenerMixin",
     "client.HumanoidModelMixin",
+    "client.InventoryScreenMixin",
     "client.ItemPropertiesMixin",
     "client.LanguageMixin",
     "client.LevelRendererMixin",

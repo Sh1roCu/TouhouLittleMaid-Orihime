@@ -46,6 +46,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
 import java.text.DecimalFormat;
@@ -525,7 +526,7 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
             list.add(Component.literal(prefix).withStyle(ChatFormatting.WHITE)
                     .append(Component.translatable("block.touhou_little_maid.gomoku")
                             .append(": ").withStyle(ChatFormatting.AQUA))
-                    .append(Component.translatable("tooltips.touhou_little_maid.info.game_skill.gomoku", maid.getGameRecordManager().getGomokuWinCount(), MaidGomokuAI.getRank(maid))));
+                    .append(Component.translatable("tooltips.touhou_little_maid.info.game_skill.gomoku", maid.getGameManager().getGomokuWinCount(), MaidGomokuAI.getRank(maid))));
 
             graphics.text(font, FormattedCharSequence.fromList(list.stream().map(Component::getVisualOrderText).toList()), mouseX, mouseY, 0xFFFFFFFF);
         }

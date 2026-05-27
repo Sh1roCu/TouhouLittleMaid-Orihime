@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
+import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.GomokuCodec;
@@ -44,6 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -65,7 +67,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 
-public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
+public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExploded{
     public static final EnumProperty<GomokuPart> PART = EnumProperty.create("part", GomokuPart.class);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -215,6 +217,12 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
         return super.playerWillDestroy(world, pos, state, player);
     }
 
+    @Override
+    public void tlm$onBlockExploded(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion) {
+        handleGomokuRemove(world, pos, state);
+        IBlockExploded.super.tlm$onBlockExploded(state, world, pos, explosion);
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -298,7 +306,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
                 // 重置女仆棋类动画
                 Entity sitEntity = serverLevel.getEntity(gomoku.getSitId());
                 if (sitEntity != null && sitEntity.isAlive() && sitEntity.getFirstPassenger() instanceof EntityMaid maid) {
-                    maid.getGameRecordManager().resetStatue();
+                    maid.getGameManager().resetStatue();
                 }
 
                 return InteractionResult.SUCCESS;
@@ -328,9 +336,9 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
                 // 但是和其他人的女仆对弈不加好感哦
                 if (statue == Statue.WIN && maid.isOwnedBy(player)) {
                     maid.getFavorabilityManager().apply(Type.GOMOKU_WIN);
-                    maid.getGameRecordManager().markStatue(false);
+                    maid.getGameManager().markStatue(false);
                     int rankBefore = MaidGomokuAI.getRank(maid);
-                    maid.getGameRecordManager().increaseGomokuWinCount();
+                    maid.getGameManager().increaseGomokuWinCount();
                     int rankAfter = MaidGomokuAI.getRank(maid);
                     // 女仆升段啦
                     if (rankBefore < rankAfter) {
@@ -346,7 +354,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock {
                 level.playSound(null, pos, InitSounds.GOMOKU, SoundSource.BLOCKS, 1.0f, 0.8F + level.getRandom().nextFloat() * 0.4F);
                 if (gomoku.getStatue() == Statue.IN_PROGRESS && player instanceof ServerPlayer serverPlayer) {
                     gomoku.setPlayerTurn(false);
-                    ServerPlayNetworking.send(serverPlayer, new GomokuClientPackage(centerPos, chessData, playerPoint, maid.getGameRecordManager().getGomokuWinCount()));
+                    ServerPlayNetworking.send(serverPlayer, new GomokuClientPackage(centerPos, chessData, playerPoint, maid.getGameManager().getGomokuWinCount()));
                 }
                 gomoku.refresh();
                 return InteractionResult.SUCCESS;

@@ -54,8 +54,8 @@ import java.util.function.Supplier;
 import static com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble.RANDOM;
 
 
-public class BlockExplodedAltar extends Block implements EntityBlock, IBlockExploded, HasClientExtensionsBlock {
-    public BlockExplodedAltar(Identifier id) {
+public class BlockAltar extends Block implements EntityBlock, IBlockExploded, HasClientExtensionsBlock {
+    public BlockAltar(Identifier id) {
         super(BlockBehaviour.Properties.of()
                 .setId(ResourceKey.create(Registries.BLOCK, id))
                 .sound(SoundType.STONE)

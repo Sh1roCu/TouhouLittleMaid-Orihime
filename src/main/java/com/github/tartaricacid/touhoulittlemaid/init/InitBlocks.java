@@ -19,15 +19,15 @@ public final class InitBlocks {
     }
 
     public static Block MAID_BED = registerBlock("maid_bed", BlockMaidBed::new);
-    public static Block ALTAR = registerBlock("altar", BlockExplodedAltar::new);
+    public static Block ALTAR = registerBlock("altar", BlockAltar::new);
     public static Block STATUE = registerBlock("statue", BlockStatue::new);
     public static Block GARAGE_KIT = registerBlock("garage_kit", BlockGarageKit::new);
     public static Block MAID_BEACON = registerBlock("maid_beacon", BlockMaidBeacon::new);
     public static Block MODEL_SWITCHER = registerBlock("model_switcher", BlockModelSwitcher::new);
-    public static Block PICNIC_MAT = registerBlock("picnic_mat", BlockExplodedPicnicMat::new);
+    public static Block PICNIC_MAT = registerBlock("picnic_mat", BlockPicnicMat::new);
     public static Block GOMOKU = registerBlock("gomoku", BlockGomoku::new);
-    public static Block CCHESS = registerBlock("cchess", BlockExplodedCChess::new);
-    public static Block WCHESS = registerBlock("wchess", BlockExplodedWChess::new);
+    public static Block CCHESS = registerBlock("cchess", BlockCChess::new);
+    public static Block WCHESS = registerBlock("wchess", BlockWChess::new);
     public static Block KEYBOARD = registerBlock("keyboard", BlockKeyboard::new);
     public static Block BOOKSHELF = registerBlock("bookshelf", BlockBookshelf::new);
     public static Block COMPUTER = registerBlock("computer", BlockComputer::new);

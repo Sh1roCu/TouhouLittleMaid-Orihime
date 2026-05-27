@@ -48,12 +48,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class BlockExplodedPicnicMat extends Block implements EntityBlock, IBlockExploded {
+public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded {
     public static final EnumProperty<PicnicMatPart> PART = EnumProperty.create("part", PicnicMatPart.class);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final VoxelShape AABB = Block.box(0, 0, 0, 16, 1, 16);
 
-    public BlockExplodedPicnicMat(Identifier id) {
+    public BlockPicnicMat(Identifier id) {
         super(BlockBehaviour.Properties.of()
                 .setId(ResourceKey.create(Registries.BLOCK, id))
                 .mapColor(MapColor.WOOD)
@@ -66,7 +66,7 @@ public class BlockExplodedPicnicMat extends Block implements EntityBlock, IBlock
                 .setValue(PART, PicnicMatPart.CENTER));
     }
 
-    public BlockExplodedPicnicMat(Properties properties) {
+    public BlockPicnicMat(Properties properties) {
         super(properties);
     }
 

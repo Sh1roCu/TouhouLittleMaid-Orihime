@@ -60,12 +60,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class BlockExplodedCChess extends BlockJoy implements IBoardGameBlock, IBlockExploded {
+public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExploded {
     public static final EnumProperty<GomokuPart> PART = EnumProperty.create("part", GomokuPart.class);
     public static final VoxelShape AABB = Block.box(0, 0, 0, 16, 2, 16);
-    private static final MapCodec<BlockExplodedCChess> CODEC = simpleCodec(BlockExplodedCChess::new);
+    private static final MapCodec<BlockCChess> CODEC = simpleCodec(BlockCChess::new);
 
-    public BlockExplodedCChess(Identifier id) {
+    public BlockCChess(Identifier id) {
         super(BlockBehaviour.Properties.of()
                 .setId(ResourceKey.create(Registries.BLOCK, id))
                 .mapColor(MapColor.WOOD)
@@ -78,7 +78,7 @@ public class BlockExplodedCChess extends BlockJoy implements IBoardGameBlock, IB
                 .setValue(FACING, Direction.NORTH));
     }
 
-    public BlockExplodedCChess(Properties properties) {
+    public BlockCChess(Properties properties) {
         super(properties);
     }
 
@@ -117,7 +117,7 @@ public class BlockExplodedCChess extends BlockJoy implements IBoardGameBlock, IB
                         && sit.getFirstPassenger() instanceof EntityMaid maid && maid.isOwnedBy(player)) {
                     // TODO: 暂时不加段位系统
                     maid.getFavorabilityManager().apply(Type.CCHESS_WIN);
-                    maid.getGameRecordManager().markStatue(false);
+                    maid.getGameManager().markStatue(false);
                     InitTrigger.MAID_EVENT.trigger(player, TriggerType.WIN_CCHESS);
                 }
 
@@ -148,7 +148,7 @@ public class BlockExplodedCChess extends BlockJoy implements IBoardGameBlock, IB
                     && sit.getFirstPassenger() instanceof EntityMaid maid) {
                 maid.swing(InteractionHand.MAIN_HAND);
                 if (playerLost) {
-                    maid.getGameRecordManager().markStatue(true);
+                    maid.getGameManager().markStatue(true);
                 }
             }
             level.playSound(null, pos, InitSounds.GOMOKU, SoundSource.BLOCKS,
@@ -275,7 +275,7 @@ public class BlockExplodedCChess extends BlockJoy implements IBoardGameBlock, IB
                 Entity sitEntity = serverLevel.getEntity(chess.getSitId());
                 if (sitEntity != null && sitEntity.isAlive()
                         && sitEntity.getFirstPassenger() instanceof EntityMaid maid) {
-                    maid.getGameRecordManager().resetStatue();
+                    maid.getGameManager().resetStatue();
                 }
 
                 return InteractionResult.SUCCESS;

@@ -3,15 +3,12 @@ package com.github.tartaricacid.touhoulittlemaid.entity.backpack.data;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IBackpackData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SyncFluidAmountPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.MaidFluidUtil;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ContainerData;
@@ -27,18 +24,20 @@ public class TankBackpackData extends SimpleContainer implements IBackpackData {
     private final SingleFluidStorage tank = SingleFluidStorage.withFixedCapacity(CAPACITY, () -> {
     });
     private final ContainerData dataAccess = new ContainerData() {
+        // Fabric: 由于莫名其妙的客户端同步问题，只能让返回的流体数量单位是mB从而适配int类型
         @Override
         public int get(int index) {
             if (index == 0) {
-                return (int) TankBackpackData.this.tankFluidCount;
+                return (int) (TankBackpackData.this.tankFluidCount / 81);
             }
             return 0;
         }
 
+        // value: mB
         @Override
         public void set(int index, int value) {
             if (index == 0) {
-                TankBackpackData.this.tankFluidCount = value;
+                TankBackpackData.this.tankFluidCount = value * 81L;
             }
         }
 
@@ -58,19 +57,15 @@ public class TankBackpackData extends SimpleContainer implements IBackpackData {
     public void setItem(int index, ItemStack stack) {
         if (!this.maid.level().isClientSide()) {
             ResourceHandler<ItemVariant> availableInv = this.maid.getAvailableInv(false);
-            boolean moved = false;
+            long moved = 0;
             if (index == INPUT_INDEX) {
                 moved = MaidFluidUtil.bucketToTank(stack, tank, availableInv);
             }
             if (index == OUTPUT_INDEX) {
                 moved = MaidFluidUtil.tankToBucket(stack, tank, availableInv);
             }
-            if (moved) {
+            if (moved > 0) {
                 this.tankFluidCount = tank.getAmount();
-                // amount改变时发包同步客户端流体amount
-                if (TankBackpackData.this.maid.getOwner() instanceof ServerPlayer serverPlayer) {
-                    ServerPlayNetworking.send(serverPlayer, new SyncFluidAmountPackage(this.tankFluidCount));
-                }
             }
             Identifier key = BuiltInRegistries.FLUID.getKey(tank.getResource().getFluid());
             this.maid.setBackpackFluid(!key.equals(BuiltInRegistries.FLUID.getDefaultKey()) ? key.toString() : "");

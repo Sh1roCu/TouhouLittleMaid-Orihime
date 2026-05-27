@@ -52,7 +52,7 @@ public class TankBackpackContainerScreen extends AbstractMaidContainerGui<TankBa
         super.extractBackground(graphics, mouseX, mouseY, pPartialTick);
         GuiTools.guiBlit(graphics, BACKPACK, leftPos + 85, topPos + 36, 0, 0, 165, 128);
 
-        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getClientFluidAmount(), TankBackpackData.CAPACITY);
+        MaidFluidRender.drawFluid(graphics, leftPos + 200, topPos + 108, 29, 50, maid.getBackpackFluid(), this.menu.getFluidCount(), TankBackpackData.CAPACITY);
         GuiTools.guiBlit(graphics, BACKPACK, leftPos + 197, topPos + 104, 165, 0, 34, 50);
 
         boolean xInRange = leftPos + 196 <= mouseX && mouseX <= leftPos + 196 + 29;
@@ -60,8 +60,8 @@ public class TankBackpackContainerScreen extends AbstractMaidContainerGui<TankBa
         if (xInRange && yInRange) {
             // Fabric单位转为mB
             MutableComponent fluidInfo = Component.translatable("tooltips.touhou_little_maid.tank_backpack.fluid",
-                    MaidFluidRender.getFluidName(maid.getBackpackFluid(), this.menu.getClientFluidAmount() / 81),
-                    this.menu.getClientFluidAmount() / 81).withStyle(ChatFormatting.GRAY);
+                    MaidFluidRender.getFluidName(maid.getBackpackFluid(), this.menu.getFluidCount() / 81),
+                    this.menu.getFluidCount() / 81).withStyle(ChatFormatting.GRAY);
             MutableComponent capacityInfo = Component.translatable("tooltips.touhou_little_maid.tank_backpack.capacity", TankBackpackData.CAPACITY / 81)
                     .withStyle(ChatFormatting.GRAY);
             graphics.text(font, FormattedCharSequence.fromList(Lists.newArrayList(

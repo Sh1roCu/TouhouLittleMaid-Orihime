@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.block.BlockExplodedCChess;
+import com.github.tartaricacid.touhoulittlemaid.block.BlockCChess;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -35,7 +35,7 @@ public record CChessToServerPackage(BlockPos pos, int move, boolean maidLost,
             if (!level.isLoaded(message.pos)) {
                 return;
             }
-            BlockExplodedCChess.maidMove(sender, level, message.pos, message.move, message.maidLost, message.playerLost);
+            BlockCChess.maidMove(sender, level, message.pos, message.move, message.maidLost, message.playerLost);
         });
     }
 }

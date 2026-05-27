@@ -13,12 +13,10 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaid
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.TankBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemTankBackpack;
-import com.github.tartaricacid.touhoulittlemaid.network.message.SyncFluidAmountPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -111,13 +109,6 @@ public class TankBackpack extends IMaidBackpack {
 
             @Override
             public AbstractMaidContainer createMenu(int index, Inventory playerInventory, Player player) {
-                // 打开GUI时发包同步客户端流体amount
-                if (player instanceof ServerPlayer serverPlayer && player.level.getEntity(entityId) instanceof EntityMaid maid) {
-                    IBackpackData backpackData = maid.getBackpackData();
-                    if (backpackData instanceof TankBackpackData tankBackpackData) {
-                        ServerPlayNetworking.send(serverPlayer, new SyncFluidAmountPackage((int) tankBackpackData.getTank().amount));
-                    }
-                }
                 return new TankBackpackContainer(index, playerInventory, entityId);
             }
 

@@ -10,7 +10,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.init.InitAttribute;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -43,78 +41,95 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.github.tartaricacid.touhoulittlemaid.datagen.EnchantmentKeys.getEnchantmentLevel;
+import static com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem.MAID_VANISHING_BLOCKLIST_ITEM;
+import static net.minecraft.world.item.enchantment.EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP;
 
+/**
+ * 物品管理类，各种形式的物品存入与取出
+ */
 public class MaidItemManager {
-
-    public static final String MAID_INVENTORY_TAG = EntityMaid.MAID_INVENTORY_TAG;
-    public static final String MAID_BAUBLE_INVENTORY_TAG = EntityMaid.MAID_BAUBLE_INVENTORY_TAG;
-    public static final String MAID_HIDE_INVENTORY_TAG = EntityMaid.MAID_HIDE_INVENTORY_TAG;
-    public static final String MAID_TASK_INVENTORY_TAG = EntityMaid.MAID_TASK_INVENTORY_TAG;
+    private static final String MAID_INVENTORY_TAG = EntityMaid.MAID_INVENTORY_TAG;
+    private static final String MAID_BAUBLE_INVENTORY_TAG = EntityMaid.MAID_BAUBLE_INVENTORY_TAG;
+    private static final String MAID_HIDE_INVENTORY_TAG = EntityMaid.MAID_HIDE_INVENTORY_TAG;
+    private static final String MAID_TASK_INVENTORY_TAG = EntityMaid.MAID_TASK_INVENTORY_TAG;
 
     private final EntityMaid maid;
-
-    // 物品存储相关
+    /**
+     * 护甲栏包装类
+     */
     private final ResourceHandler<ItemVariant> armorInvWrapper;
+    /**
+     * 主副手包装类
+     */
     private final ResourceHandler<ItemVariant> handsInvWrapper;
-    final ItemStacksResourceHandler maidInv;
-    final BaubleItemHandler maidBauble = new BaubleItemHandler(EntityMaid.BAUBLE_INV_SIZE);
-    // 用于暂存副手物品的物品栏
-    private final ItemStacksResourceHandler hideInv = new ItemStacksResourceHandler(1);
-    // 用于工作任务可能需要的物品栏
-    private final ItemStacksResourceHandler taskInv = new ItemStacksResourceHandler(9);
+    /**
+     * 女仆主背包
+     */
+    private final ItemStacksResourceHandler maidInv;
+    /**
+     * 女仆饰品栏
+     */
+    private final BaubleItemHandler maidBauble;
+    /**
+     * 用于暂存副手物品的物品栏
+     */
+    private final ItemStacksResourceHandler hideInv;
+    /**
+     * 用于工作任务可能需要的物品栏
+     */
+    private final ItemStacksResourceHandler taskInv;
 
     public MaidItemManager(EntityMaid entityMaid) {
-        maid = entityMaid;
-        armorInvWrapper = InitCapabilities.MAID_ARMOR.get(maid);
-        handsInvWrapper = InitCapabilities.MAID_HAND.get(maid);
-        maidInv = new MaidBackpackHandler(36, maid);
-    }
-
-    public void addAdditionalSaveData(ValueOutput output) {
-        maidInv.serialize(output.child(MAID_INVENTORY_TAG));
-        maidBauble.serialize(output.child(MAID_BAUBLE_INVENTORY_TAG));
-        hideInv.serialize(output.child(MAID_HIDE_INVENTORY_TAG));
-        taskInv.serialize(output.child(MAID_TASK_INVENTORY_TAG));
-    }
-
-    public void readAdditionalSaveData(ValueInput input) {
-        maidInv.deserialize(input.childOrEmpty(MAID_INVENTORY_TAG));
-        maidBauble.deserialize(input.childOrEmpty(MAID_BAUBLE_INVENTORY_TAG));
-        hideInv.deserialize(input.childOrEmpty(MAID_HIDE_INVENTORY_TAG));
-        taskInv.deserialize(input.childOrEmpty(MAID_TASK_INVENTORY_TAG));
-    }
-
-    /**
-     * 获取隐藏物品栏
-     */
-    public ItemStacksResourceHandler getHideInv() {
-        return hideInv;
-    }
-
-    /**
-     * 获取任务物品栏
-     */
-    public ItemStacksResourceHandler getTaskInv() {
-        return taskInv;
-    }
-
-    public BaubleItemHandler getMaidBauble() {
-        return maidBauble;
-    }
-
-    public ResourceHandler<ItemVariant> getHandsInvWrapper() {
-        return handsInvWrapper;
+        this.maid = entityMaid;
+        this.armorInvWrapper = InitCapabilities.MAID_ARMOR.get(maid);
+        this.handsInvWrapper = InitCapabilities.MAID_HAND.get(maid);
+        this.maidInv = InitCapabilities.MAID_INV.get(maid);
+        this.maidBauble = InitCapabilities.MAID_BAUBLE.get(maid);
+        this.hideInv = new ItemStacksResourceHandler(1);
+        this.taskInv = new ItemStacksResourceHandler(9);
     }
 
     public ResourceHandler<ItemVariant> getArmorInvWrapper() {
         return armorInvWrapper;
     }
 
-    public CombinedResourceHandler<ItemVariant> getAllInv() {
-        return new CombinedResourceHandler<>(getArmorInvWrapper(), getHandsInvWrapper(), getMaidInv(), getMaidBauble());
+    public ResourceHandler<ItemVariant> getHandsInvWrapper() {
+        return handsInvWrapper;
+    }
+
+    public ItemStacksResourceHandler getMaidInv() {
+        return maidInv;
+    }
+
+    public BaubleItemHandler getMaidBauble() {
+        return maidBauble;
+    }
+
+    public ItemStacksResourceHandler getHideInv() {
+        return hideInv;
+    }
+
+    public ItemStacksResourceHandler getTaskInv() {
+        return taskInv;
     }
 
     /**
+     * 获取女仆的全部物品栏（不考虑任何限制）
+     * <p>
+     * 一般情况下不应该调用此访问
+     */
+    public CombinedResourceHandler<ItemVariant> getAllInv() {
+        return new CombinedResourceHandler<>(
+                getArmorInvWrapper(),
+                getHandsInvWrapper(),
+                getMaidInv(),
+                getMaidBauble()
+        );
+    }
+
+    /**
+     * 获取可用的背包物品栏（因为女仆背包是可变大小的）
+     * <p>
      * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
      */
     public CombinedResourceHandler<ItemVariant> getAvailableBackpackInv() {
@@ -123,56 +138,44 @@ public class MaidItemManager {
         return new MaidInvWrapper(maid, rangedWrapper);
     }
 
-    public ItemStacksResourceHandler getMaidInv() {
-        return maidInv;
-    }
-
     /**
+     * 获取可用的背包物品栏 + 主手物品栏（因为女仆背包是可变大小的）
+     * <p>
      * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
      *
-     * @param handsFirst
+     * @param handsFirst 是否将手持物品栏放在前面，放在前面会优先使用手持物品栏的物品
      */
     public CombinedResourceHandler<ItemVariant> getAvailableInv(boolean handsFirst) {
         int maxContainerIndex = maid.getMaidBackpackType().getAvailableMaxContainerIndex();
         var combinedInvWrapper = RangedResourceHandler.of(maidInv, 0, maxContainerIndex);
-        return handsFirst ? new MaidInvWrapper(maid, handsInvWrapper, combinedInvWrapper)
-                : new MaidInvWrapper(maid, combinedInvWrapper, handsInvWrapper);
+        if (handsFirst) {
+            return new MaidInvWrapper(maid, handsInvWrapper, combinedInvWrapper);
+        } else {
+            return new MaidInvWrapper(maid, combinedInvWrapper, handsInvWrapper);
+        }
     }
 
+    /**
+     * 直接将指定坐标处方块的掉落物放入女仆背包里，如果放不下了就掉落在地上
+     *
+     * @param state       准备被挖掘的方块状态
+     * @param level       世界
+     * @param pos         方块坐标
+     * @param blockEntity 方块实体（可能为 null）
+     * @param tool        挖掘方块使用的工具
+     */
     public void dropResourcesToMaidInv(BlockState state, Level level, BlockPos pos, @Nullable BlockEntity blockEntity, ItemStack tool) {
-        if (level instanceof ServerLevel serverLevel) {
-            var availableInv = getAvailableInv(false);
-            Block.getDrops(state, serverLevel, pos, blockEntity, maid, tool).forEach(stack -> {
-                ItemStack remindItemStack = ItemsUtil.insertItemStacked(availableInv, stack, false, null);
-                if (!remindItemStack.isEmpty()) {
-                    Block.popResource(level, pos, remindItemStack);
-                }
-            });
-            state.spawnAfterBreak(serverLevel, pos, tool, true);
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
         }
-    }
-
-    private ItemStack getRandomItemWithMendingEnchantments(ResourceHandler<ItemVariant> handler) {
-        RegistryAccess access = maid.level.registryAccess();
-        List<ItemStack> stacks = Lists.newArrayList();
-        for (int i = 0; i < handler.size(); i++) {
-            ItemStack stackInSlot = ItemUtil.getStack(handler, i);
-            if (!stackInSlot.isEmpty() && getEnchantmentLevel(access, Enchantments.MENDING, stackInSlot) > 0
-                    && stackInSlot.isDamaged() && !stackInSlot.is(TagItem.MAID_MENDING_BLOCKLIST_ITEM)) {
-                stacks.add(stackInSlot);
+        var availableInv = getAvailableInv(false);
+        Block.getDrops(state, serverLevel, pos, blockEntity, maid, tool).forEach(stack -> {
+            ItemStack remindItemStack = ItemsUtil.insertItemStacked(availableInv, stack, false, null);
+            if (!remindItemStack.isEmpty()) {
+                Block.popResource(level, pos, remindItemStack);
             }
-        }
-        return stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(maid.getRandom().nextInt(stacks.size()));
-    }
-
-    @SuppressWarnings("ReferenceToMixin")
-    private ItemStack getArrowFromEntity(AbstractArrow entity) {
-        if (entity instanceof ArrowAccessor mixinArrow) {
-            if (mixinArrow.tlmInGround() || entity.isNoPhysics()) {
-                return mixinArrow.getTlmPickupItem();
-            }
-        }
-        return ItemStack.EMPTY;
+        });
+        state.spawnAfterBreak(serverLevel, pos, tool, true);
     }
 
     public boolean pickupArrow(AbstractArrow arrow, boolean simulate) {
@@ -191,7 +194,9 @@ public class MaidItemManager {
             if (stack.isEmpty()) {
                 return false;
             }
-            if (!ItemsUtil.insertItemStacked(getAvailableInv(false), stack, simulate, null).isEmpty()) {
+            var inv = getAvailableInv(false);
+            ItemStack inserted = ItemsUtil.insertItemStacked(inv, stack, simulate, null);
+            if (!inserted.isEmpty()) {
                 return false;
             }
             // 非模拟状态下，清除实体箭
@@ -221,7 +226,8 @@ public class MaidItemManager {
             }
             // 获取数量，为后面方面用
             int count = itemstack.getCount();
-            itemstack = ItemsUtil.insertItemStacked(getAvailableInv(false), itemstack, simulate, null);
+            var inv = getAvailableInv(false);
+            itemstack = ItemsUtil.insertItemStacked(inv, itemstack, simulate, null);
             if (count == itemstack.getCount()) {
                 return false;
             }
@@ -256,7 +262,7 @@ public class MaidItemManager {
             maid.take(entityXPOrb, 1);
             maid.tryPlayMaidPickupSound();
 
-            // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
+            // 普通的经验球可以修补护甲栏，主副手和女仆饰品栏
             var allItems = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidBauble);
             ItemStack itemstack = getRandomItemWithMendingEnchantments(allItems);
             if (!itemstack.isEmpty() && itemstack.isDamaged()) {
@@ -282,7 +288,7 @@ public class MaidItemManager {
             powerPoint.take(maid, 1);
             maid.tryPlayMaidPickupSound();
 
-            // 对经验修补的应用，因为全部来自于原版，所以效果也是相同的
+            // P 点则可以修补女仆身上所有的物品栏（包括背包）
             var allItems = getAllInv();
             ItemStack itemstack = getRandomItemWithMendingEnchantments(allItems);
             int xpValue = EntityPowerPoint.transPowerValueToXpValue(powerPoint.getValue());
@@ -298,8 +304,27 @@ public class MaidItemManager {
         }
     }
 
-    public void pickupEntities() {
+    public boolean canPickup(Entity pickupEntity, boolean checkInWater) {
+        if (maid.isPickup()) {
+            if (checkInWater && pickupEntity.isInWater()) {
+                return false;
+            }
+            PickType pickupType = maid.getConfigManager().getPickupType();
+            if (pickupType.canPickItem() && pickupEntity instanceof ItemEntity entity) {
+                return pickupItem(entity, true);
+            }
+            if (pickupType.canPickItem() && pickupEntity instanceof AbstractArrow entity) {
+                return pickupArrow(entity, true);
+            }
+            if (pickupType.canPickXp() && pickupEntity instanceof ExperienceOrb) {
+                return true;
+            }
+            return pickupType.canPickXp() && pickupEntity instanceof EntityPowerPoint;
+        }
+        return false;
+    }
 
+    void pickupEntities() {
         AABB pickupBox;
         AttributeInstance attribute = maid.getAttribute(InitAttribute.MAID_PICKUP_RANGE);
         if (attribute != null) {
@@ -312,57 +337,39 @@ public class MaidItemManager {
         if (!entityList.isEmpty() && maid.isAlive()) {
             for (Entity entityPickup : entityList) {
                 // 如果是物品
-                if (entityPickup instanceof ItemEntity) {
-                    pickupItem((ItemEntity) entityPickup, false);
+                if (entityPickup instanceof ItemEntity entity) {
+                    pickupItem(entity, false);
                 }
                 // 如果是经验
-                if (entityPickup instanceof ExperienceOrb) {
-                    pickupXPOrb((ExperienceOrb) entityPickup);
+                if (entityPickup instanceof ExperienceOrb entity) {
+                    pickupXPOrb(entity);
                 }
                 // 如果是 P 点
-                if (entityPickup instanceof EntityPowerPoint) {
-                    pickupPowerPoint((EntityPowerPoint) entityPickup);
+                if (entityPickup instanceof EntityPowerPoint entity) {
+                    pickupPowerPoint(entity);
                 }
                 // 如果是箭
-                if (entityPickup instanceof AbstractArrow) {
-                    pickupArrow((AbstractArrow) entityPickup, false);
+                if (entityPickup instanceof AbstractArrow entity) {
+                    pickupArrow(entity, false);
                 }
             }
         }
     }
 
-    public boolean canPickup(Entity pickupEntity, boolean checkInWater) {
-        if (maid.isPickup()) {
-            if (checkInWater && pickupEntity.isInWater()) {
-                return false;
-            }
-            PickType pickupType = maid.getConfigManager().getPickupType();
-            if (pickupType.canPickItem() && pickupEntity instanceof ItemEntity) {
-                return pickupItem((ItemEntity) pickupEntity, true);
-            }
-            if (pickupType.canPickItem() && pickupEntity instanceof AbstractArrow) {
-                return pickupArrow((AbstractArrow) pickupEntity, true);
-            }
-            if (pickupType.canPickXp() && pickupEntity instanceof ExperienceOrb) {
-                return true;
-            }
-            return pickupType.canPickXp() && pickupEntity instanceof EntityPowerPoint;
-        }
-        return false;
-    }
-
-    public void addItemsToTomb(EntityTombstone tombstone) {
+    void addItemsToTomb(EntityTombstone tombstone) {
         // 女仆物品栏
-        CombinedResourceHandler<ItemVariant> invWrapper = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidInv, maidBauble, hideInv, taskInv);
+        var allInv = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidInv, maidBauble, hideInv, taskInv);
         // 需要考虑消失诅咒附魔
-        destroyVanishingCursedItems(invWrapper);
-        for (int i = 0; i < invWrapper.size(); i++) {
-            ItemVariant resource = invWrapper.getResource(i);
-            // TODO resource不能为空，否则会报错
-            if (resource.isBlank())
+        this.destroyVanishingCursedItems(allInv);
+        // 将物品栏里的物品都放入墓碑里
+        for (int i = 0; i < allInv.size(); i++) {
+            ItemVariant resource = allInv.getResource(i);
+            if (resource.isBlank()) {
                 continue;
-            int size = invWrapper.getCapacityAsInt(i, resource);
-            tombstone.insertItem(ItemsUtil.extractItem(invWrapper, i, size, false, null));
+            }
+            int size = allInv.getCapacityAsInt(i, resource);
+            ItemStack extractItem = ItemsUtil.extractItem(allInv, i, size, false, null);
+            tombstone.insertItem(extractItem);
         }
         // 背包额外数据
         IMaidBackpack maidBackpack = maid.getMaidBackpackType();
@@ -379,7 +386,7 @@ public class MaidItemManager {
         }
         for (int i = 0; i < invWrapper.size(); ++i) {
             ItemStack stack = ItemUtil.getStack(invWrapper, i);
-            if (!stack.isEmpty() && EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP) && !stack.is(TagItem.MAID_VANISHING_BLOCKLIST_ITEM)) {
+            if (!stack.isEmpty() && EnchantmentHelper.has(stack, PREVENT_EQUIPMENT_DROP) && !stack.is(MAID_VANISHING_BLOCKLIST_ITEM)) {
                 ItemsUtil.extractItem(invWrapper, i, stack.getCount(), false, null);
             }
         }
@@ -388,21 +395,37 @@ public class MaidItemManager {
     /**
      * 将之前临时存在背包里的物品再次放在对应的手上
      *
-     * @param maid
      */
     void backCurrentHandItemStack(EntityMaid maid) {
         // 先看看副手是否为空？
         ItemStack offhandItem = maid.getItemInHand(InteractionHand.OFF_HAND);
         if (!offhandItem.isEmpty()) {
-            ItemStack stack = ItemsUtil.insertItemStacked(getAvailableBackpackInv(), offhandItem.copy(), false, null);
+            var backpackInv = getAvailableBackpackInv();
+            ItemStack stack = ItemsUtil.insertItemStacked(backpackInv, offhandItem.copy(), false, null);
             if (!stack.isEmpty()) {
                 ItemEntity itemEntity = new ItemEntity(maid.level(), maid.getX(), maid.getY() + 0.5, maid.getZ(), stack);
                 maid.level.addFreshEntity(itemEntity);
             }
         }
         // 副手此时为空，那么插入我们的物品
-        ItemStack output = ItemsUtil.extractItem(getHideInv(), 0, ItemUtil.getStack(getHideInv(), 0).getCount(), false, null);
+        var hide = this.getHideInv();
+        ItemStack stack = ItemUtil.getStack(hide, 0);
+        ItemStack output = ItemsUtil.extractItem(hide, 0, stack.getCount(), false, null);
         maid.setItemInHand(InteractionHand.OFF_HAND, output);
+    }
+
+    void addAdditionalSaveData(ValueOutput output) {
+        maidInv.serialize(output.child(MAID_INVENTORY_TAG));
+        maidBauble.serialize(output.child(MAID_BAUBLE_INVENTORY_TAG));
+        hideInv.serialize(output.child(MAID_HIDE_INVENTORY_TAG));
+        taskInv.serialize(output.child(MAID_TASK_INVENTORY_TAG));
+    }
+
+    void readAdditionalSaveData(ValueInput input) {
+        maidInv.deserialize(input.childOrEmpty(MAID_INVENTORY_TAG));
+        maidBauble.deserialize(input.childOrEmpty(MAID_BAUBLE_INVENTORY_TAG));
+        hideInv.deserialize(input.childOrEmpty(MAID_HIDE_INVENTORY_TAG));
+        taskInv.deserialize(input.childOrEmpty(MAID_TASK_INVENTORY_TAG));
     }
 
     /**
@@ -412,74 +435,83 @@ public class MaidItemManager {
      * @param itemStack 当前手上的物品（必须是能使用--需要持续使用的物品）
      */
     public void memoryHandItemStack(ItemStack itemStack) {
+        var hide = getHideInv();
         // 先检查内部存储是否已经有物品了，有就掉落
-        ItemStack hideItemStack = ItemUtil.getStack(getHideInv(), 0);
+        ItemStack hideItemStack = ItemUtil.getStack(hide, 0);
         if (!hideItemStack.isEmpty()) {
-            ItemStack extractItem = ItemsUtil.extractItem(getHideInv(), 0, hideItemStack.getCount(), false, null);
+            ItemStack extractItem = ItemsUtil.extractItem(hide, 0, hideItemStack.getCount(), false, null);
             if (!extractItem.isEmpty()) {
                 ItemEntity itemEntity = new ItemEntity(maid.level(), maid.getX(), maid.getY() + 0.5, maid.getZ(), extractItem);
                 maid.level.addFreshEntity(itemEntity);
             }
         }
         // 然后存入我们的物品
-        ItemsUtil.insertItemStacked(getHideInv(), itemStack, false, null);
+        ItemsUtil.insertItemStacked(hide, itemStack, false, null);
+    }
+
+    private ItemStack getRandomItemWithMendingEnchantments(ResourceHandler<ItemVariant> handler) {
+        RegistryAccess access = maid.level.registryAccess();
+        List<ItemStack> stacks = Lists.newArrayList();
+        for (int i = 0; i < handler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(handler, i);
+            if (!stackInSlot.isEmpty() && getEnchantmentLevel(access, Enchantments.MENDING, stackInSlot) > 0
+                    && stackInSlot.isDamaged() && !stackInSlot.is(TagItem.MAID_MENDING_BLOCKLIST_ITEM)) {
+                stacks.add(stackInSlot);
+            }
+        }
+        return stacks.isEmpty() ? ItemStack.EMPTY : stacks.get(maid.getRandom().nextInt(stacks.size()));
+    }
+
+    private ItemStack getArrowFromEntity(AbstractArrow entity) {
+        if (entity instanceof ArrowAccessor mixinArrow) {
+            if (mixinArrow.tlmInGround() || entity.isNoPhysics()) {
+                return mixinArrow.getTlmPickupItem();
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public interface View {
-
         MaidItemManager getItemManager();
 
-        /**
-         * 获取隐藏物品栏
-         */
-        default ItemStacksResourceHandler getHideInv() {
-            return getItemManager().getHideInv();
-        }
-
-        /**
-         * 获取任务物品栏
-         */
-        default ItemStacksResourceHandler getTaskInv() {
-            return getItemManager().getTaskInv();
-        }
-
-        default BaubleItemHandler getMaidBauble() {
-            return getItemManager().getMaidBauble();
+        default ResourceHandler<ItemVariant> getArmorInvWrapper() {
+            return getItemManager().getArmorInvWrapper();
         }
 
         default ResourceHandler<ItemVariant> getHandsInvWrapper() {
             return getItemManager().getHandsInvWrapper();
         }
 
-        default ResourceHandler<ItemVariant> getArmorInvWrapper() {
-            return getItemManager().getArmorInvWrapper();
+        default ItemStacksResourceHandler getMaidInv() {
+            return getItemManager().getMaidInv();
+        }
+
+        default BaubleItemHandler getMaidBauble() {
+            return getItemManager().getMaidBauble();
+        }
+
+        default ItemStacksResourceHandler getHideInv() {
+            return getItemManager().getHideInv();
+        }
+
+        default ItemStacksResourceHandler getTaskInv() {
+            return getItemManager().getTaskInv();
         }
 
         default CombinedResourceHandler<ItemVariant> getAllInv() {
             return getItemManager().getAllInv();
         }
 
-        /**
-         * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
-         */
         default CombinedResourceHandler<ItemVariant> getAvailableBackpackInv() {
             return getItemManager().getAvailableBackpackInv();
         }
 
-        default ItemStacksResourceHandler getMaidInv() {
-            return getItemManager().getMaidInv();
-        }
-
-        /**
-         * 返回 MaidInvWrapper，方便触发 MaidRequestItemEvent 事件时使用
-         *
-         * @param handsFirst
-         */
         default CombinedResourceHandler<ItemVariant> getAvailableInv(boolean handsFirst) {
             return getItemManager().getAvailableInv(handsFirst);
         }
 
-        default void dropResourcesToMaidInv(BlockState state, Level level, BlockPos pos, @Nullable BlockEntity blockEntity, EntityMaid maid, ItemStack tool) {
+        default void dropResourcesToMaidInv(BlockState state, Level level, BlockPos pos,
+                                            @Nullable BlockEntity blockEntity, ItemStack tool) {
             getItemManager().dropResourcesToMaidInv(state, level, pos, blockEntity, tool);
         }
 
@@ -506,7 +538,5 @@ public class MaidItemManager {
         default void memoryHandItemStack(ItemStack itemStack) {
             getItemManager().memoryHandItemStack(itemStack);
         }
-
     }
-
 }

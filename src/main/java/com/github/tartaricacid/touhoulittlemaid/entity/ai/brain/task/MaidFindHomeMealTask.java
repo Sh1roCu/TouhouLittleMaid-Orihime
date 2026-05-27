@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import com.github.tartaricacid.touhoulittlemaid.block.BlockExplodedPicnicMat;
+import com.github.tartaricacid.touhoulittlemaid.block.BlockPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitPoi;
@@ -57,7 +57,7 @@ public class MaidFindHomeMealTask extends MaidCheckRateTask {
         maid.getBrain().getMemory(InitEntities.TARGET_POS).ifPresent((targetPos) -> {
             BlockPos pos = targetPos.currentBlockPosition();
             BlockState blockState = worldIn.getBlockState(pos);
-            if (blockState.getBlock() instanceof BlockExplodedPicnicMat picnicMat) {
+            if (blockState.getBlock() instanceof BlockPicnicMat picnicMat) {
                 picnicMat.startMaidSit(maid, blockState, worldIn, pos);
             }
         });
