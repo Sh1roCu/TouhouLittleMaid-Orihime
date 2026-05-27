@@ -16,8 +16,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class TankBackpackContainer extends MaidMainContainer {
     public static final MenuType<TankBackpackContainer> TYPE = new ExtendedMenuType<>(TankBackpackContainer::new, ByteBufCodecs.INT);
-    private static final Identifier INPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_input_slot");
-    private static final Identifier OUTPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "slot/tank_output_slot");
+    private static final Identifier INPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "container/slot/tank_input");
+    private static final Identifier OUTPUT_SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "container/slot/tank_output");
     private final ContainerData data;
     private long clientFluidAmount;
 

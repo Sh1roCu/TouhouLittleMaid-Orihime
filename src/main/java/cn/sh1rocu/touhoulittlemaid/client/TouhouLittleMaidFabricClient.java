@@ -45,6 +45,7 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         InfoGetManager.onClientSetup();
 
         ClientReloadListenerRegistry.onRegisterClientReloadListeners();
+        RegisterSpecialModelEvent.registerSpecialModelRenderers();
 
         ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         ItemTooltipCallback.EVENT.addPhaseOrdering(LOW, LOWEST);

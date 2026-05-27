@@ -38,6 +38,6 @@ public class ShowPowerOverlay implements HudElement {
         }
         guiGraphics.item(POWER_POINT, 5, 5);
         PowerAttachment cap = player.getAttachedOrCreate(InitDataAttachment.POWER_NUM, () -> new PowerAttachment(0));
-        guiGraphics.text(font, String.format("%s×%.2f", ChatFormatting.BOLD, cap.get()), 20, 10, 0xffffff);
+        guiGraphics.text(font, String.format("%s×%.2f", ChatFormatting.BOLD, cap.get()), 20, 10, 0xFFFFFFFF);
     }
 }

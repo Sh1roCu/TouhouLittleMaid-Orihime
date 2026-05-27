@@ -142,7 +142,7 @@
 /// /        RenderSystem.setShaderTexture(0, CURIOS_BG);
 //
 //        // 护甲、主手、副手背景
-//        GuiTools.blit(graphics, CURIOS_BG, leftPos + 85, topPos + 36, 0, 0, 57, 58);
+//        GuiTools.guiBlit(graphics, CURIOS_BG, leftPos + 85, topPos + 36, 0, 0, 57, 58);
 //
 //        // Curios 背景
 //        if (this.slotCount > 0) {
@@ -151,11 +151,11 @@
 //            if (rows > 0) {
 //                // 绘制前 n-1 行完整行
 //                int height = rows * 18;
-//                GuiTools.blit(graphics, CURIOS_BG, leftPos + 142, topPos + 36, 57, 0, 108, height);
+//                GuiTools.guiBlit(graphics, CURIOS_BG, leftPos + 142, topPos + 36, 57, 0, 108, height);
 //                // 绘制最后一行
-//                GuiTools.blit(graphics, CURIOS_BG, leftPos + 142, topPos + 36 + height, 57, height, width, 18);
+//                GuiTools.guiBlit(graphics, CURIOS_BG, leftPos + 142, topPos + 36 + height, 57, height, width, 18);
 //            } else {
-//                GuiTools.blit(graphics, CURIOS_BG, leftPos + 142, topPos + 36, 57, 0, width, 18);
+//                GuiTools.guiBlit(graphics, CURIOS_BG, leftPos + 142, topPos + 36, 57, 0, width, 18);
 //            }
 //        }
 //    }

@@ -35,7 +35,7 @@ public class EnderChestBackpackContainerScreen extends AbstractMaidContainerGui<
         BaubleButton button = this.getBaubleButton(maid, leftPos, topPos);
         this.addRenderableWidget(button);
 
-        // 添加 accessories 兼容按钮
+        // 添加 trinkets 兼容按钮
         if (CuriosCompat.isLoadedOrEnable()) {
             this.addRenderableWidget(this.getCuriosButton(maid, leftPos, topPos));
         }
@@ -44,6 +44,6 @@ public class EnderChestBackpackContainerScreen extends AbstractMaidContainerGui<
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float pPartialTick) {
         super.extractBackground(graphics, mouseX, mouseY, pPartialTick);
-        GuiTools.blit(graphics, BACKPACK, leftPos + 85, topPos + 36, 0, 0, 165, 128);
+        GuiTools.guiBlit(graphics, BACKPACK, leftPos + 85, topPos + 36, 0, 0, 165, 128);
     }
 }

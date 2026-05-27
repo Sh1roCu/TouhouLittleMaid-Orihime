@@ -6,6 +6,7 @@
 package cn.sh1rocu.touhoulittlemaid.util.transfer;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.LivingEntityAccessor;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.MapMaker;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
@@ -156,6 +157,10 @@ public class LivingEntityEquipmentWrapper {
 
         @Override
         protected boolean isValid(ItemVariant resource) {
+            // 适配女仆的黑名单检查
+            if (entity instanceof EntityMaid) {
+                return EntityMaid.canInsertItem(resource.toStack());
+            }
             return entity.isEquippableInSlot(resource.toStack(), slot);
         }
 

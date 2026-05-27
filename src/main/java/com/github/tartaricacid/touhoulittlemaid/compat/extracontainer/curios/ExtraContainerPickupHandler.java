@@ -7,7 +7,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * 允许女仆在拾取物品时放入 Accessories 槽位中的背包
+ * 允许女仆在拾取物品时放入 Trinkets 槽位中的背包
  * <p>
  * 拾取优先级：
  * 1. 优先放入已有相同物品的容器（物品栏 > back背包 > 其他背包，按优先级排序）

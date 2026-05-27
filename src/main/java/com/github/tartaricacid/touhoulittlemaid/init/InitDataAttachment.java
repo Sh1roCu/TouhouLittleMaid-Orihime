@@ -3,8 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 import com.github.tartaricacid.touhoulittlemaid.data.ChatTokensAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
-import com.github.tartaricacid.touhoulittlemaid.entity.data.ProfileData;
-import com.github.tartaricacid.touhoulittlemaid.entity.data.TaskData;
+import com.github.tartaricacid.touhoulittlemaid.entity.data.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public interface InitDataAttachment {
@@ -21,9 +20,12 @@ public interface InitDataAttachment {
 
     // 模型和声音包 ID
     AttachmentType<ProfileData> PROFILE = ProfileData.TYPE;
+    // 饥饿值、好感度、经验和雷击状态
+    AttachmentType<StatsData> STATS = StatsData.TYPE;
     // 工作模式相关
     AttachmentType<TaskData> TASK = TaskData.TYPE;
-
+    // 动画状态相关
+    AttachmentType<AnimationData> ANIMATION = AnimationData.TYPE;
+    // 女仆行为配置
+    AttachmentType<ConfigData> CONFIG = ConfigData.TYPE;
 }
-
-
