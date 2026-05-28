@@ -7,14 +7,10 @@ import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -217,20 +213,5 @@ public class BaubleItemHandler extends ItemStackHandler {
             }
         }
         return sync;
-    }
-
-    @Override
-    public void readFromNbt(CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        if (tag.contains(TAG_INVENTORY)) {
-            CompoundTag baubleTag = tag.getCompound(TAG_INVENTORY);
-            if (baubleTag.contains("Size", Tag.TAG_INT)) {
-                // 1.4.2 版本起，饰品栏拓展了数量，需要在这里进行修正
-                int oldSize = baubleTag.getInt("Size");
-                if (oldSize < EntityMaid.BAUBLE_INV_SIZE) {
-                    baubleTag.putInt("Size", EntityMaid.BAUBLE_INV_SIZE);
-                }
-            }
-            this.deserializeNBT(provider, baubleTag);
-        }
     }
 }

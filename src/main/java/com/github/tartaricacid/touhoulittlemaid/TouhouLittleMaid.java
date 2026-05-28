@@ -44,8 +44,7 @@ public final class TouhouLittleMaid {
         InitLootModifier.init();
 
         NetworkHandler.registerPackets();
-        // CCA init by Entrypoint
-        //InitCapabilities.registerGenericItemHandlers();
+        InitCapabilities.registerGenericItemHandlers();
 
         CommandRegistrationCallback.EVENT.register(
                 (dispatcher, context, selection) ->

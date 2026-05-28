@@ -1,9 +1,8 @@
 package cn.sh1rocu.touhoulittlemaid.util.itemhandler;
 
 import net.minecraft.world.item.ItemStack;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-public interface IItemHandler extends AutoSyncedComponent {
+public interface IItemHandler {
     String TAG_INVENTORY = "Inventory";
 
     int getSlots();

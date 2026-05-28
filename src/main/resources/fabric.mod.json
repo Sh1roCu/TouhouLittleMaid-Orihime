@@ -21,9 +21,6 @@
     "main": [
       "cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric"
     ],
-    "cardinal-components-entity": [
-      "com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities"
-    ],
     "modmenu": [
       "cn.sh1rocu.touhoulittlemaid.compat.modmenu.ModMenuApiImpl"
     ],
@@ -38,14 +35,6 @@
     ],
     "rei_client": [
       "com.github.tartaricacid.touhoulittlemaid.compat.rei.MaidREIClientPlugin"
-    ]
-  },
-  "custom": {
-    "cardinal-components": [
-      "touhou_little_maid:maid_hand",
-      "touhou_little_maid:maid_armor",
-      "touhou_little_maid:maid_inv",
-      "touhou_little_maid:maid_bauble"
     ]
   },
   "mixins": [

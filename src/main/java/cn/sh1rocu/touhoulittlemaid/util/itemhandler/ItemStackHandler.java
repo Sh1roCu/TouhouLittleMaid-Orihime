@@ -7,7 +7,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
     protected NonNullList<ItemStack> stacks;
@@ -22,18 +21,6 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
 
     public ItemStackHandler(NonNullList<ItemStack> stacks) {
         this.stacks = stacks;
-    }
-
-    @Override
-    public void readFromNbt(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registryLookup) {
-        if (tag.contains(TAG_INVENTORY)) {
-            this.deserializeNBT(registryLookup, tag.getCompound(TAG_INVENTORY));
-        }
-    }
-
-    @Override
-    public void writeToNbt(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registryLookup) {
-        tag.put(TAG_INVENTORY, this.serializeNBT(registryLookup));
     }
 
     public void setSize(int size) {
