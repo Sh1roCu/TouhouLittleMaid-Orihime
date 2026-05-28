@@ -11,6 +11,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +45,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidHandInv() {
-        ResourceHandler<ItemVariant> capability = InitCapabilities.MAID_HAND.getNullable(maid);
+        ResourceHandler<ItemVariant> capability = InitCapabilities.HAND_ITEM.find(maid, Direction.DOWN);
         if (capability != null) {
             var indexModifier = ItemsUtil.createIndexModifier(capability);
 
@@ -65,7 +66,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidArmorInv() {
-        ResourceHandler<ItemVariant> capability = InitCapabilities.MAID_ARMOR.getNullable(maid);
+        ResourceHandler<ItemVariant> capability = InitCapabilities.ARMOR_ITEM.find(maid, Direction.DOWN);
         if (capability != null) {
             var indexModifier = ItemsUtil.createIndexModifier(capability);
 

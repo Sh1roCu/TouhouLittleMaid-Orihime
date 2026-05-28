@@ -21,22 +21,11 @@
     "main": [
       "cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric"
     ],
-    "cardinal-components-entity": [
-      "com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities"
-    ],
     "modmenu": [
       "cn.sh1rocu.touhoulittlemaid.compat.modmenu.ModMenuApiImpl"
     ],
     "jade": [
       "com.github.tartaricacid.touhoulittlemaid.compat.jade.JadePlugin"
-    ]
-  },
-  "custom": {
-    "cardinal-components": [
-      "touhou_little_maid:maid_hand",
-      "touhou_little_maid:maid_armor",
-      "touhou_little_maid:maid_inv",
-      "touhou_little_maid:maid_bauble"
     ]
   },
   "mixins": [

@@ -8,8 +8,8 @@ import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityPowerPoint;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.init.InitAttribute;
-import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
@@ -21,6 +21,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -81,10 +82,10 @@ public class MaidItemManager {
 
     public MaidItemManager(EntityMaid entityMaid) {
         this.maid = entityMaid;
-        this.armorInvWrapper = InitCapabilities.MAID_ARMOR.get(maid);
-        this.handsInvWrapper = InitCapabilities.MAID_HAND.get(maid);
-        this.maidInv = InitCapabilities.MAID_INV.get(maid);
-        this.maidBauble = InitCapabilities.MAID_BAUBLE.get(maid);
+        this.armorInvWrapper = (ResourceHandler<ItemVariant>) LivingEntityEquipmentWrapper.of(maid, EquipmentSlot.Type.HUMANOID_ARMOR);
+        this.handsInvWrapper = (ResourceHandler<ItemVariant>) LivingEntityEquipmentWrapper.of(maid, EquipmentSlot.Type.HAND);
+        this.maidInv = new MaidBackpackHandler(36, maid);
+        this.maidBauble = new BaubleItemHandler(30);
         this.hideInv = new ItemStacksResourceHandler(1);
         this.taskInv = new ItemStacksResourceHandler(9);
     }

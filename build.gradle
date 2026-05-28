@@ -207,12 +207,6 @@ dependencies {
     compileOnly "maven.modrinth:sodium:mc26.1.2-0.8.12-beta.1-fabric"
     compileOnly "maven.modrinth:iris:1.10.9+26.1-fabric"
 
-    // CCA
-    implementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-    implementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
-    include "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-    include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
-
     // Forge Config API Port
     implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:26.1.4"
 

@@ -13,16 +13,12 @@ import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -101,36 +97,13 @@ public class LivingEntityEquipmentWrapper {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public class EquipmentTypeWrapper extends CombinedResourceHandler<ItemVariant> implements AutoSyncedComponent {
+    private class EquipmentTypeWrapper extends CombinedResourceHandler<ItemVariant> {
         EquipmentTypeWrapper(SlotWrapper... handlers) {
             super(handlers);
         }
 
         SlotWrapper getSlotWrapper(int index) {
             return (SlotWrapper) getHandlerFromIndex(index);
-        }
-
-        @Override
-        public void readData(ValueInput input) {
-            int size = input.getIntOr("Size", this.size());
-            input.listOrEmpty("Items", ItemStackWithSlot.CODEC).forEach(slot -> {
-                if (slot.isValidInContainer(size)) {
-                    this.getSlotWrapper(slot.slot()).setStack(slot.stack());
-                }
-            });
-        }
-
-        @Override
-        public void writeData(ValueOutput output) {
-            ValueOutput.TypedOutputList<ItemStackWithSlot> itemList = output.list("Items", ItemStackWithSlot.CODEC);
-            for (int i = 0; i < this.size(); i++) {
-                var stack = this.getSlotWrapper(i).getStack();
-                if (!stack.isEmpty()) {
-                    itemList.add(new ItemStackWithSlot(i, stack));
-                }
-            }
-            output.putInt("Size", this.size());
         }
     }
 
