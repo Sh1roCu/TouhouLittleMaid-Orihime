@@ -9,14 +9,8 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.NonNull;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-
-@SuppressWarnings("UnstableApiUsage")
-public class ItemStacksResourceHandler extends StacksResourceHandler<ItemStack, ItemVariant> implements AutoSyncedComponent {
+public class ItemStacksResourceHandler extends StacksResourceHandler<ItemStack, ItemVariant> {
     public ItemStacksResourceHandler(int size) {
         super(size, ItemStack.EMPTY, ItemStack.OPTIONAL_CODEC);
     }
@@ -53,15 +47,5 @@ public class ItemStacksResourceHandler extends StacksResourceHandler<ItemStack, 
     @Override
     public boolean matches(ItemStack stack, ItemVariant resource) {
         return resource.matches(stack);
-    }
-
-    @Override
-    public void readData(@NonNull ValueInput input) {
-        this.deserialize(input);
-    }
-
-    @Override
-    public void writeData(@NonNull ValueOutput output) {
-        this.serialize(output);
     }
 }
