@@ -74,24 +74,12 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(ConventionalItemTags.DIAMOND_GEMS)
                     .save(recipeOutput);
 
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.CRAFTING_TABLE_BACKPACK)
-                    .power(0.2F)
-                    .requires(InitItems.MAID_BACKPACK_MIDDLE)
-                    .requires(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
-                    .save(recipeOutput);
-
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.DROWN_PROTECT_BAUBLE)
-                    .power(0.2F)
-                    .requires(ConventionalItemTags.NETHER_WART_CROPS)
-                    .requires(ConventionalItemTags.LIME_DYES)
-                    .requires(4, ItemTags.FISHES)
-                    .save(recipeOutput);
-
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.ENDER_CHEST_BACKPACK)
-                    .power(0.2F)
-                    .requires(InitItems.MAID_BACKPACK_MIDDLE)
-                    .requires(Items.ENDER_CHEST)
-                    .save(recipeOutput);
+        AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.DROWN_PROTECT_BAUBLE)
+                .power(0.2F)
+                .requires(ConventionalItemTags.NETHER_WART_CROPS)
+                .requires(ConventionalItemTags.LIME_DYES)
+                .requires(4, ItemTags.FISHES)
+                .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.EXPLOSION_PROTECT_BAUBLE)
                     .power(0.2F)
@@ -114,18 +102,12 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(4, ConventionalItemTags.FEATHERS)
                     .save(recipeOutput);
 
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.FIRE_PROTECT_BAUBLE)
-                    .power(0.2F)
-                    .requires(ConventionalItemTags.NETHER_WART_CROPS)
-                    .requires(ConventionalItemTags.RED_DYES)
-                    .requires(4, Items.BLAZE_POWDER)
-                    .save(recipeOutput);
-
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.FURNACE_BACKPACK)
-                    .power(0.2F)
-                    .requires(InitItems.MAID_BACKPACK_MIDDLE)
-                    .requires(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
-                    .save(recipeOutput);
+        AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.FIRE_PROTECT_BAUBLE)
+                .power(0.2F)
+                .requires(ConventionalItemTags.NETHER_WART_CROPS)
+                .requires(ConventionalItemTags.RED_DYES)
+                .requires(4, Items.BLAZE_POWDER)
+                .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.GOMOKU)
                     .power(0.1F)
@@ -260,18 +242,12 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(2, Items.PAPER)
                     .save(recipeOutput);
 
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.SCARECROW)
-                    .power(0.2F)
-                    .requires(2, Items.HAY_BLOCK)
-                    .requires(2, Items.GRANITE)
-                    .requires(2, ConventionalItemTags.REDSTONE_DUSTS)
-                    .save(recipeOutput);
-
-            AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.TANK_BACKPACK)
-                    .power(0.2F)
-                    .requires(InitItems.MAID_BACKPACK_MIDDLE)
-                    .requires(Items.BUCKET)
-                    .save(recipeOutput);
+        AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.SCARECROW)
+                .power(0.2F)
+                .requires(2, Items.HAY_BLOCK)
+                .requires(2, Items.GRANITE)
+                .requires(2, ConventionalItemTags.REDSTONE_DUSTS)
+                .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, RecipeCategory.MISC, InitItems.TRUMPET)
                     .power(0.2F)
@@ -371,16 +347,15 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .unlockedBy(getHasName(Items.DIAMOND), has(ConventionalItemTags.DIAMOND_GEMS))
                     .save(recipeOutput);
 
-
-//            ResourceCondition modLoadedCondition = ResourceConditions.allModsLoaded(CompatRegistry.PATCHOULI);
-//            ItemStack patchouliBook = new ItemStack(PatchouliItems.BOOK);
-//            patchouliBook.set(PatchouliDataComponents.BOOK, InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
-//            ItemStackShapelessRecipeBuilder.shapeless(items, RecipeCategory.MISC, patchouliBook)
-//                    .requires(ConventionalItemTags.WHITE_DYES)
-//                    .requires(ConventionalItemTags.RED_DYES)
-//                    .requires(Items.BOOK)
-//                    .unlockedBy(getHasName(Items.BOOK), has(Items.BOOK))
-//                    .save(withConditions(recipeOutput, modLoadedCondition), InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
+//        ModLoadedCondition modLoadedCondition = new ModLoadedCondition(CompatRegistry.PATCHOULI);
+//        ItemStack patchouliBook = new ItemStack(PatchouliItems.BOOK);
+//        patchouliBook.set(PatchouliDataComponents.BOOK, InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
+//        this.shapeless(RecipeCategory.MISC, patchouliBook)
+//                .requires(Tags.Items.DYES_WHITE)
+//                .requires(Tags.Items.DYES_RED)
+//                .requires(Items.BOOK)
+//                .unlockedBy(getHasName(Items.BOOK), has(Items.BOOK))
+//                .save(recipeOutput.withConditions(modLoadedCondition), InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
 
             ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, InitItems.CHAIR)
                     .pattern("   ")

@@ -26,10 +26,6 @@ public final class InitItems {
     public static Item MAID_BACKPACK_SMALL = register("maid_backpack_small", ItemMaidBackpack::new);
     public static Item MAID_BACKPACK_MIDDLE = register("maid_backpack_middle", ItemMaidBackpack::new);
     public static Item MAID_BACKPACK_BIG = register("maid_backpack_big", ItemMaidBackpack::new);
-    public static Item CRAFTING_TABLE_BACKPACK = register("crafting_table_backpack", ItemMaidBackpack::new);
-    public static Item ENDER_CHEST_BACKPACK = register("ender_chest_backpack", ItemMaidBackpack::new);
-    public static Item FURNACE_BACKPACK = register("furnace_backpack", ItemMaidBackpack::new);
-    public static Item TANK_BACKPACK = register("tank_backpack", ItemTankBackpack::new);
     public static Item CHAIR = register("chair", ItemChair::new);
     public static Item HAKUREI_GOHEI = register("hakurei_gohei", ItemHakureiGohei::new);
     public static Item SANAE_GOHEI = register("sanae_gohei", ItemHakureiGohei::new);
@@ -96,9 +92,6 @@ public final class InitItems {
     public static Item OWNER_CONVERSION_TOOL = register("owner_conversion_tool", id ->
             new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).setId(ResourceKey.create(Registries.ITEM, id))));
 
-    public static Item GOMOKU_BOARD_STATE = register("gomoku_board_state", ItemBoardState::new);
-    public static Item CCHESS_BOARD_STATE = register("cchess_board_state", ItemBoardState::new);
-    public static Item WCHESS_BOARD_STATE = register("wchess_board_state", ItemBoardState::new);
     public static Item SNACK_CABINET = register("snack_cabinet", ItemSnackCabinet::new);
 
     public static Item MAID_SPAWN_EGG = register("maid_spawn_egg", id ->

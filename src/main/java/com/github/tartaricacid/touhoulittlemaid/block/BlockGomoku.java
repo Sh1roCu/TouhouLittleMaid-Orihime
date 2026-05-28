@@ -3,7 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.block;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameBlock;
-import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.GomokuCodec;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Point;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Statue;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.GomokuPart;
@@ -15,7 +14,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemBoardState;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemHakureiGohei;
 import com.github.tartaricacid.touhoulittlemaid.network.message.GomokuClientPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SpawnParticlePackage;
@@ -28,8 +26,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -277,22 +273,6 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
                 }
             }
 
-            // 如果是残局道具，那么直接设置残局
-            ItemStack heldItem = player.getMainHandItem();
-            if (heldItem.is(InitItems.GOMOKU_BOARD_STATE)) {
-                String[] boardState = ItemBoardState.getState(heldItem);
-                if (boardState == null) {
-                    return InteractionResult.FAIL;
-                }
-                String data = boardState[0];
-                if (StringUtils.isEmpty(data)) {
-                    return InteractionResult.FAIL;
-                }
-                gomoku.setStateData(GomokuCodec.decode(data));
-                level.playSound(null, pos, InitSounds.GOMOKU_RESET, SoundSource.BLOCKS, 1.0f, 1.0f);
-                return InteractionResult.SUCCESS;
-            }
-
             // 然后是下棋，必须空手
             if (!itemStack.isEmpty()) {
                 return InteractionResult.PASS;
@@ -378,15 +358,6 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
 
         // 如果是木棍，那么就是预设棋局模式
         if (item == Items.STICK) {
-            // 如果玩家点击的是棋盒，导出
-            if (isClickChessBox(location.x, location.z, part, facing)) {
-                String result = GomokuCodec.encode(gomoku.getStateData());
-                MutableComponent component = ComponentUtils.copyOnClickText(result);
-                player.sendSystemMessage(component);
-                return InteractionResult.SUCCESS;
-            }
-
-            // 否则就是预设棋局
             int[] clickPos = getChessPos(location.x, location.z, part);
             if (clickPos == null) {
                 return InteractionResult.FAIL;

@@ -31,10 +31,6 @@ public final class InitEntitiesRender {
         EntityRenderers.register(EntityBroom.TYPE, EntityBroomRender::new);
         EntityRenderers.register(MaidFishingHook.TYPE, MaidFishingHookRenderer::new);
 
-        EntityRenderers.register(EntityType.SLIME, EntityYukkuriSlimeRender::new);
-        EntityRenderers.register(EntityType.MAGMA_CUBE, EntityMarisaYukkuriSlimeRender::new);
-        EntityRenderers.register(EntityType.EXPERIENCE_ORB, ReplaceExperienceOrbRenderer::new);
-
         BlockEntityRenderers.register(InitBlocks.ALTAR_TE, TileEntityAltarRenderer::new);
         BlockEntityRenderers.register(InitBlocks.STATUE_TE, TileEntityStatueRenderer::new);
         BlockEntityRenderers.register(InitBlocks.GARAGE_KIT_TE, TileEntityGarageKitRenderer::new);

@@ -56,18 +56,12 @@ public final class InternalBedrockModelRegistry {
     public static final Identifier BABY_MAID_FAIRY = addEntityModel("baby_maid_fairy", NewEntityFairyModel::new);
     public static final Identifier BROOM = addEntityModel("broom", BroomModel::new);
 
-    public static final Identifier REIMU_YUKKURI = addEntityModel("reimu_yukkuri");
-    public static final Identifier MARISA_YUKKURI = addEntityModel("marisa_yukkuri");
     public static final Identifier TOMBSTONE = addEntityModel("tombstone");
     public static final Identifier MAID_BANNER = addEntityModel("maid_banner");
 
     public static final Identifier BIG_BACKPACK = addEntityModel("backpack/big_backpack");
-    public static final Identifier CRAFTING_TABLE_BACKPACK = addEntityModel("backpack/crafting_table_backpack");
-    public static final Identifier END_CHEST_BACKPACK = addEntityModel("backpack/end_chest_backpack");
-    public static final Identifier FURNACE_BACKPACK = addEntityModel("backpack/furnace_backpack");
     public static final Identifier MIDDLE_BACKPACK = addEntityModel("backpack/middle_backpack");
     public static final Identifier SMALL_BACKPACK = addEntityModel("backpack/small_backpack");
-    public static final Identifier TANK_BACKPACK = addEntityModel("backpack/tank_backpack");
 
     public static Identifier addModel(String name) {
         Identifier location = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "bedrock/block/" + name);

@@ -26,12 +26,8 @@ public final class InitContainer {
     public static final MenuType<SmallBackpackContainer> MAID_SMALL_BACKPACK_CONTAINER = register("maid_small_backpack_container", SmallBackpackContainer.TYPE);
     public static final MenuType<MiddleBackpackContainer> MAID_MIDDLE_BACKPACK_CONTAINER = register("maid_middle_backpack_container", MiddleBackpackContainer.TYPE);
     public static final MenuType<BigBackpackContainer> MAID_BIG_BACKPACK_CONTAINER = register("maid_big_backpack_container", BigBackpackContainer.TYPE);
-    public static final MenuType<CraftingTableBackpackContainer> MAID_CRAFTING_TABLE_BACKPACK_CONTAINER = register("maid_crafting_table_backpack_container", CraftingTableBackpackContainer.TYPE);
-    public static final MenuType<EnderChestBackpackContainer> MAID_ENDER_CHEST_CONTAINER = register("maid_ender_chest_container", EnderChestBackpackContainer.TYPE);
-    public static final MenuType<FurnaceBackpackContainer> MAID_FURNACE_CONTAINER = register("maid_furnace_container", FurnaceBackpackContainer.TYPE);
-    public static final MenuType<TankBackpackContainer> MAID_TANK_CONTAINER = register("maid_tank_container", TankBackpackContainer.TYPE);
-
     public static final MenuType<BaubleContainer> MAID_BAUBLE_CONTAINER = register("maid_bauble_container", BaubleContainer.TYPE);
+
     public static final MenuType<MaidConfigContainer> MAID_CONFIG_CONTAINER = register("maid_config_container", MaidConfigContainer.TYPE);
     public static final MenuType<WirelessIOContainer> WIRELESS_IO_CONTAINER = register("wireless_io_container", WirelessIOContainer.TYPE);
     public static final MenuType<PicnicBasketContainer> PICNIC_BASKET_CONTAINER = register("picnic_basket_container", PicnicBasketContainer.TYPE);

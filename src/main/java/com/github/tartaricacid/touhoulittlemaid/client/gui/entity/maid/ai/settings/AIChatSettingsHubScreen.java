@@ -66,6 +66,15 @@ public abstract class AIChatSettingsHubScreen extends Screen {
         this(parent, SharedState.create(llmSites, ttsSites), insufficientPermissions);
     }
 
+    public static AIChatSettingsHubScreen openDefault(
+            @Nullable Screen parent,
+            Map<String, LLMSite> llmSites,
+            Map<String, TTSSite> ttsSites,
+            boolean insufficientPermissions
+    ) {
+        return new AIChatSettingsLLMSiteScreen(parent, llmSites, ttsSites, insufficientPermissions);
+    }
+
     @Override
     protected void init() {
         this.clearWidgets();
@@ -229,12 +238,6 @@ public abstract class AIChatSettingsHubScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-    }
-
-    @Override
     public void onClose() {
         if (this.parent instanceof AIChatScreen chatScreen && chatScreen.getMaid().isAlive()) {
             ClientPlayNetworking.send(new OpenMaidAIChatPacket(chatScreen.getMaid()));
@@ -248,13 +251,11 @@ public abstract class AIChatSettingsHubScreen extends Screen {
         return false;
     }
 
-    public static AIChatSettingsHubScreen openDefault(
-            @Nullable Screen parent,
-            Map<String, LLMSite> llmSites,
-            Map<String, TTSSite> ttsSites,
-            boolean insufficientPermissions
-    ) {
-        return new AIChatSettingsLLMSiteScreen(parent, llmSites, ttsSites, insufficientPermissions);
+    public enum Type {
+        LLM_SITE,
+        TTS_SITE,
+        STT_CONFIG,
+        STT_SITE
     }
 
     public static final class SharedState {
@@ -314,12 +315,5 @@ public abstract class AIChatSettingsHubScreen extends Screen {
                     0, 0, 0, null
             );
         }
-    }
-
-    public enum Type {
-        LLM_SITE,
-        TTS_SITE,
-        STT_CONFIG,
-        STT_SITE
     }
 }

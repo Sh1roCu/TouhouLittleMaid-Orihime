@@ -18,10 +18,6 @@ public final class InitContainerGui {
         MenuScreens.register(InitContainer.MAID_SMALL_BACKPACK_CONTAINER, SmallBackpackContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_MIDDLE_BACKPACK_CONTAINER, MiddleBackpackContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_BIG_BACKPACK_CONTAINER, BigBackpackContainerScreen::new);
-        MenuScreens.register(InitContainer.MAID_CRAFTING_TABLE_BACKPACK_CONTAINER, CraftingTableBackpackContainerScreen::new);
-        MenuScreens.register(InitContainer.MAID_ENDER_CHEST_CONTAINER, EnderChestBackpackContainerScreen::new);
-        MenuScreens.register(InitContainer.MAID_FURNACE_CONTAINER, FurnaceBackpackContainerScreen::new);
-        MenuScreens.register(InitContainer.MAID_TANK_CONTAINER, TankBackpackContainerScreen::new);
 
         MenuScreens.register(InitContainer.MAID_BAUBLE_CONTAINER, BaubleContainerScreen::new);
         MenuScreens.register(InitContainer.MAID_CONFIG_CONTAINER, MaidConfigContainerGui::new);
@@ -31,7 +27,7 @@ public final class InitContainerGui {
         MenuScreens.register(InitContainer.DEFAULT_MAIK_TASK_CONFIG, DefaultMaidTaskConfigGui::new);
         MenuScreens.register(InitContainer.ATTACK_TASK_CONFIG, AttackTaskConfigGui::new);
 
-        // accessories 兼容
+        // trinkets 兼容
         if (FabricLoader.getInstance().isModLoaded(CompatRegistry.TRINKETS)) {
             CuriosCompat.registerScreen();
         }

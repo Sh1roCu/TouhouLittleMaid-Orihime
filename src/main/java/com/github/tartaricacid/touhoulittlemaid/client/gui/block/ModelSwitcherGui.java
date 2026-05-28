@@ -13,7 +13,6 @@ import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityModelSwitch
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -90,7 +89,7 @@ public class ModelSwitcherGui extends Screen {
             ClientPlayNetworking.send(new SaveSwitcherDataPackage(pos, this.infoList));
         }).pos(leftPos + 12, topPos + 135).size(121, 20).build());
 
-        this.description = new EditBox(Screens.getFont(this), leftPos + 12, topPos + 65, 119, 20,
+        this.description = new EditBox(this.getFont(), leftPos + 12, topPos + 65, 119, 20,
                 Component.translatable("gui.touhou_little_maid.name_tag.edit_box"));
         this.description.setValue(info.getText());
         this.addWidget(this.description);
@@ -165,7 +164,7 @@ public class ModelSwitcherGui extends Screen {
             return;
         }
         this.extractBackground(graphics, pMouseX, pMouseY, pPartialTick);
-        GuiTools.blit(graphics, BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        GuiTools.guiBlit(graphics, BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         if (bindUuid != null) {
             graphics.centeredText(font, bindUuid.toString(), leftPos + 128, topPos - 10, 0xffffff);
         } else {

@@ -19,11 +19,9 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class HistoryAIChatScreen extends Screen {
@@ -57,10 +52,9 @@ public class HistoryAIChatScreen extends Screen {
 
     private final EntityMaid maid;
     private final @Nullable Screen parent;
-    private final Identifier playerSkin;
     private final List<LLMMessage> history = Lists.newArrayList();
     private final List<Renderable> historyWidgets = Lists.newArrayList();
-
+    private PlayerSkin playerSkin;
     private String summaryText = StringUtils.EMPTY;
 
     private double scroll = 0;
@@ -85,7 +79,8 @@ public class HistoryAIChatScreen extends Screen {
         super(Component.literal("Maid History AI Chat Screen"));
         this.parent = parent;
         this.maid = maid;
-        this.playerSkin = this.getPlayerSkin();
+        this.playerSkin = DefaultPlayerSkin.getDefaultSkin();
+        this.loadPlayerSkinAsync();
         this.summaryText = maid.getAiChatManager().getCompressedSummary();
         this.transformMessage();
     }
@@ -393,17 +388,15 @@ public class HistoryAIChatScreen extends Screen {
         return lines;
     }
 
-    private Identifier getPlayerSkin() {
+    private void loadPlayerSkinAsync() {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) {
-            return DefaultPlayerSkin.getDefaultTexture();
+            return;
         }
-        CompletableFuture<Optional<PlayerSkin>> completableFuture = mc.getSkinManager().get(player.getGameProfile());
-        try {
-            return completableFuture.get().map(PlayerSkin::body).map(ClientAsset.Texture::texturePath).orElse(DefaultPlayerSkin.getDefaultTexture());
-        } catch (InterruptedException | ExecutionException e) {
-            return DefaultPlayerSkin.getDefaultTexture();
-        }
+        mc.getSkinManager().get(player.getGameProfile())
+                .thenAcceptAsync(optionalSkin -> {
+                    this.playerSkin = optionalSkin.orElse(DefaultPlayerSkin.getDefaultSkin());
+                }, mc);
     }
 }
