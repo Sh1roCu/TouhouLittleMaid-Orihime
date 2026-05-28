@@ -28,6 +28,8 @@ public interface InitDataAttachment {
     AttachmentType<AnimationData> ANIMATION = AnimationData.TYPE;
     // 女仆行为配置
     AttachmentType<ConfigData> CONFIG = ConfigData.TYPE;
+    // 背包类型
+    AttachmentType<BackpackData> BACKPACK = BackpackData.TYPE;
     // 对弈记录和当前对弈状态
     AttachmentType<GameData> GAME = GameData.TYPE;
 }

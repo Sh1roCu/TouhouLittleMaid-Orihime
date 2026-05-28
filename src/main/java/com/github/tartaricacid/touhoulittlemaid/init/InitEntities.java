@@ -1,7 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidSchedule;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidHostilesSensor;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidNearestLivingEntitySensor;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.sensor.MaidPickupEntitiesSensor;
@@ -87,7 +86,6 @@ public final class InitEntities {
 
     public static EntityDataSerializer<Optional<UUID>> SERIALIZER_OPTIONAL_UUID = EntityDataSerializer.forValueType(ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC));
 
-    public static EntityDataSerializer<?> MAID_SCHEDULE_DATA_SERIALIZERS = registerDataSerializer("maid_schedule", MaidSchedule.DATA);
     public static EntityDataSerializer<?> MAID_CHAT_BUBBLE_DATA_SERIALIZERS = registerDataSerializer("maid_chat_bubble", ChatBubbleRegister.INSTANCE);
     public static EntityDataSerializer<?> OPTIONAL_UUID_SERIALIZERS = registerDataSerializer("optional_uuid", SERIALIZER_OPTIONAL_UUID);
 
