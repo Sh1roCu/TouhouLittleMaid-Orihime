@@ -1,28 +1,21 @@
 package com.github.tartaricacid.touhoulittlemaid.init;
 
-import cn.sh1rocu.touhoulittlemaid.util.itemhandler.entity.EntityArmorInvWrapper;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
-import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidHandsInvWrapper;
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
-import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
+import cn.sh1rocu.touhoulittlemaid.util.itemhandler.IItemHandler;
+import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
+import net.minecraft.core.Direction;
 
 import static cn.sh1rocu.touhoulittlemaid.TouhouLittleMaidFabric.getResourceLocation;
 
-public class InitCapabilities implements EntityComponentInitializer {
-    public static final ComponentKey<MaidHandsInvWrapper> MAID_HAND = ComponentRegistry.getOrCreate(getResourceLocation("maid_hand"), MaidHandsInvWrapper.class);
-    public static final ComponentKey<EntityArmorInvWrapper> MAID_ARMOR = ComponentRegistry.getOrCreate(getResourceLocation("maid_armor"), EntityArmorInvWrapper.class);
-    public static final ComponentKey<MaidBackpackHandler> MAID_INV = ComponentRegistry.getOrCreate(getResourceLocation("maid_inv"), MaidBackpackHandler.class);
-    public static final ComponentKey<BaubleItemHandler> MAID_BAUBLE = ComponentRegistry.getOrCreate(getResourceLocation("maid_bauble"), BaubleItemHandler.class);
+public class InitCapabilities {
+    public static final EntityApiLookup<IItemHandler, Direction> ENTITY_ITEM = EntityApiLookup.get(getResourceLocation("entity_item"), IItemHandler.class, Direction.class);
 
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerFor(EntityMaid.class, MAID_HAND, MaidHandsInvWrapper::new);
-        registry.registerFor(EntityMaid.class, MAID_ARMOR, EntityArmorInvWrapper::new);
-        registry.registerFor(EntityMaid.class, MAID_INV, maid -> new MaidBackpackHandler(36, maid));
-        registry.registerFor(EntityMaid.class, MAID_BAUBLE, maid -> new BaubleItemHandler(EntityMaid.BAUBLE_INV_SIZE));
+    public static final EntityApiLookup<IItemHandler, Direction> HAND_ITEM = EntityApiLookup.get(getResourceLocation("hand_item"), IItemHandler.class, Direction.class);
+    public static final EntityApiLookup<IItemHandler, Direction> ARMOR_ITEM = EntityApiLookup.get(getResourceLocation("armor_item"), IItemHandler.class, Direction.class);
+
+    public static void registerGenericItemHandlers() {
+        HAND_ITEM.registerForType((maid, direction) -> maid.getHandsInvWrapper(), InitEntities.MAID);
+        ARMOR_ITEM.registerForType((maid, direction) -> maid.getArmorInvWrapper(), InitEntities.MAID);
+
+        ENTITY_ITEM.registerForType((maid, direction) -> maid.getAllInv(), InitEntities.MAID);
     }
 }

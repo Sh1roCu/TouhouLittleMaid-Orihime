@@ -1,8 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.util.itemhandler;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class EmptyItemHandler implements IItemHandlerModifiable {
     public static final IItemHandler INSTANCE = new EmptyItemHandler();
@@ -40,15 +38,5 @@ public class EmptyItemHandler implements IItemHandlerModifiable {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return false;
-    }
-
-    @Override
-    public void readFromNbt(@NotNull CompoundTag tag) {
-
-    }
-
-    @Override
-    public void writeToNbt(@NotNull CompoundTag tag) {
-
     }
 }

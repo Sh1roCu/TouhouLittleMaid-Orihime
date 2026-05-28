@@ -8,8 +8,6 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -25,7 +23,6 @@ public class BaubleItemHandler extends ItemStackHandler {
      * 存储 IMaidBauble 对象的数组，该数组和饰品栏不同等大小
      */
     private final Int2ObjectSortedMap<IMaidBauble> baubles = new Int2ObjectRBTreeMap<>();
-
     /**
      * 存储所有物品的缓存集合，用于提高查询效率
      */
@@ -216,20 +213,5 @@ public class BaubleItemHandler extends ItemStackHandler {
             }
         }
         return sync;
-    }
-
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-        if (tag.contains(TAG_INVENTORY)) {
-            CompoundTag baubleTag = tag.getCompound(TAG_INVENTORY);
-            if (baubleTag.contains("Size", Tag.TAG_INT)) {
-                // 1.4.2 版本起，饰品栏拓展了数量，需要在这里进行修正
-                int oldSize = baubleTag.getInt("Size");
-                if (oldSize < EntityMaid.BAUBLE_INV_SIZE) {
-                    baubleTag.putInt("Size", EntityMaid.BAUBLE_INV_SIZE);
-                }
-            }
-            this.deserializeNBT(baubleTag);
-        }
     }
 }

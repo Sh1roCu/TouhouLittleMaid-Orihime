@@ -7,18 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-        if (tag.contains(TAG_INVENTORY)) {
-            this.deserializeNBT(tag.getCompound(TAG_INVENTORY));
-        }
-    }
-
-    @Override
-    public void writeToNbt(CompoundTag tag) {
-        tag.put(TAG_INVENTORY, this.serializeNBT());
-    }
-
     protected NonNullList<ItemStack> stacks;
 
     public ItemStackHandler() {
@@ -37,21 +25,25 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         this.stacks = NonNullList.withSize(size, ItemStack.EMPTY);
     }
 
+    @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         this.validateSlotIndex(slot);
         this.stacks.set(slot, stack);
         this.onContentsChanged(slot);
     }
 
+    @Override
     public int getSlots() {
         return this.stacks.size();
     }
 
+    @Override
     public @NotNull ItemStack getStackInSlot(int slot) {
         this.validateSlotIndex(slot);
         return this.stacks.get(slot);
     }
 
+    @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -88,6 +80,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         }
     }
 
+    @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (amount == 0) {
             return ItemStack.EMPTY;
@@ -118,6 +111,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         }
     }
 
+    @Override
     public int getSlotLimit(int slot) {
         return 64;
     }
@@ -126,10 +120,12 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         return Math.min(this.getSlotLimit(slot), stack.getMaxStackSize());
     }
 
+    @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return true;
     }
 
+    @Override
     public CompoundTag serializeNBT() {
         ListTag nbtTagList = new ListTag();
 
@@ -148,6 +144,7 @@ public class ItemStackHandler implements IItemHandler, IItemHandlerModifiable, I
         return nbt;
     }
 
+    @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.setSize(nbt.contains("Size", 3) ? nbt.getInt("Size") : this.stacks.size());
         ListTag tagList = nbt.getList("Items", 10);

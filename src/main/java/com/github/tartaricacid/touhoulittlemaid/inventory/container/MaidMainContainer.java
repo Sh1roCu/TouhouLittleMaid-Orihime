@@ -10,6 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitCapabilities;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,8 +21,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnull;
 
 import static net.minecraft.world.inventory.InventoryMenu.*;
 
@@ -44,7 +43,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidHandInv() {
-        IItemHandler handler = InitCapabilities.MAID_HAND.getNullable(maid);
+        IItemHandler handler = InitCapabilities.HAND_ITEM.find(maid, Direction.DOWN);
         if (handler == null) {
             return;
         }
@@ -65,7 +64,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
     }
 
     protected void addMaidArmorInv() {
-        IItemHandler handler = InitCapabilities.MAID_ARMOR.getNullable(maid);
+        IItemHandler handler = InitCapabilities.ARMOR_ITEM.find(maid, Direction.DOWN);
         if (handler != null) {
             for (int i = 0; i < 2; ++i) {
                 for (int j = 0; j < 2; j++) {
@@ -77,7 +76,7 @@ public abstract class MaidMainContainer extends AbstractMaidContainer {
                         }
 
                         @Override
-                        public boolean mayPlace(@Nonnull ItemStack stack) {
+                        public boolean mayPlace(ItemStack stack) {
                             return maid != null && LivingEntity.getEquipmentSlotForItem(stack) == equipmentSlot && stack.getItem().canFitInsideContainerItems();
                         }
 

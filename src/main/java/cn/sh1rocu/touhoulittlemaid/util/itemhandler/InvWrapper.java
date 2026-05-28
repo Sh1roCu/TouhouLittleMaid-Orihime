@@ -1,8 +1,5 @@
 package cn.sh1rocu.touhoulittlemaid.util.itemhandler;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
@@ -153,45 +150,5 @@ public class InvWrapper implements IItemHandlerModifiable {
 
     public Container getInv() {
         return inv;
-    }
-
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-        if (tag.contains(TAG_INVENTORY)) {
-            this.deserializeNBT(tag.getCompound(TAG_INVENTORY));
-        }
-    }
-
-    @Override
-    public void writeToNbt(CompoundTag tag) {
-        tag.put(TAG_INVENTORY, this.serializeNBT());
-    }
-
-    public CompoundTag serializeNBT() {
-        ListTag nbtTagList = new ListTag();
-        for (int i = 0; i < getSlots(); i++) {
-            if (!getStackInSlot(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                nbtTagList.add(getStackInSlot(i).save(itemTag));
-            }
-        }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("Items", nbtTagList);
-        nbt.putInt("Size", getSlots());
-        return nbt;
-    }
-
-    public void deserializeNBT(CompoundTag nbt) {
-        int size = nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : getSlots();
-        ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
-        for (int i = 0; i < tagList.size(); i++) {
-            CompoundTag itemTags = tagList.getCompound(i);
-            int slot = itemTags.getInt("Slot");
-
-            if (slot >= 0 && slot < size) {
-                setStackInSlot(slot, ItemStack.of(itemTags));
-            }
-        }
     }
 }

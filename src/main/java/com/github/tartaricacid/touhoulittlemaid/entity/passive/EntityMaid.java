@@ -58,6 +58,7 @@ import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.Bau
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.config.MaidConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidHandsInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidInvWrapper;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
 import com.github.tartaricacid.touhoulittlemaid.mixin.accessor.ArrowAccessor;
@@ -256,11 +257,10 @@ public class EntityMaid extends TamableAnimal implements CrossbowAttackMob, IMai
     public final ItemStack[] handItemsForAnimation = new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY};
 
     // 物品存储相关
-    private final EntityArmorInvWrapper armorInvWrapper = InitCapabilities.MAID_ARMOR.get(this) /*new EntityArmorInvWrapper(this)*/;
-    private final EntityHandsInvWrapper handsInvWrapper = InitCapabilities.MAID_HAND.get(this) /*new MaidHandsInvWrapper(this)*/;
-    //private final ItemStackHandler maidInv = new MaidBackpackHandler(36, this);
-    private final MaidBackpackHandler maidInv = InitCapabilities.MAID_INV.get(this);
-    private final BaubleItemHandler maidBauble = InitCapabilities.MAID_BAUBLE.get(this) /*new BaubleItemHandler(BAUBLE_INV_SIZE)*/;
+    private final EntityArmorInvWrapper armorInvWrapper = new EntityArmorInvWrapper(this);
+    private final EntityHandsInvWrapper handsInvWrapper = new MaidHandsInvWrapper(this);
+    private final ItemStackHandler maidInv = new MaidBackpackHandler(36, this);
+    private final BaubleItemHandler maidBauble = new BaubleItemHandler(BAUBLE_INV_SIZE);
     // 用于暂存副手物品的物品栏
     private final ItemStackHandler hideInv = new ItemStackHandler(1);
     // 用于工作任务可能需要的物品栏

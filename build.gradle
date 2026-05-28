@@ -195,10 +195,14 @@ dependencies {
     // 又合并回来了
     // modImplementation(include("libs:simplebedrockmodel:1.3.0-fabric-1.20.1"))
 
+    // 其他mod所需
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.3"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.3"
+
     // 拔刀剑
     modImplementation "libs:SlashBlade-Refabricated-1.20.1:0.0.6"
     modImplementation "io.github.fabricators_of_create.Porting-Lib:obj_loader:2.3.8+1.20.1" // 加载obj模型
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-item:${project.cca_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-item:5.2.3"
 
     // JEI
     modImplementation "maven.modrinth:jei:${jei_version}"
@@ -223,12 +227,6 @@ dependencies {
 
     modCompileOnly "maven.modrinth:sodium:mc1.20.1-0.5.13-fabric"
     modCompileOnly "maven.modrinth:iris:1.7.6+1.20.1-fabric"
-
-    // CCA
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
     // Forge Config API Port
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:8.0.2"
