@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -29,10 +30,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.FireworkRocketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -45,11 +43,19 @@ import java.util.function.BiPredicate;
 
 public class MaidCombatManager {
     private final EntityMaid maid;
+    private final ItemCooldowns cooldowns;
 
     private int passiveUseShieldTick = 0;
 
     public MaidCombatManager(EntityMaid maid) {
         this.maid = maid;
+        this.cooldowns = new ItemCooldowns();
+    }
+
+    void tick() {
+        Profiler.get().push("maidCooldowns");
+        this.cooldowns.tick();
+        Profiler.get().pop();
     }
 
     void aiStep() {
@@ -176,7 +182,7 @@ public class MaidCombatManager {
     boolean canUseShield() {
         ItemStack offhandItem = maid.getOffhandItem();
         return offhandItem.has(DataComponents.BLOCKS_ATTACKS)
-                && !maid.getCooldowns().isOnCooldown(offhandItem.getItem().getDefaultInstance());
+                && !cooldowns.isOnCooldown(offhandItem.getItem().getDefaultInstance());
     }
 
     @Nullable

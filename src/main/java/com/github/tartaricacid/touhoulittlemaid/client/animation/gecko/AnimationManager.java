@@ -45,7 +45,7 @@ public final class AnimationManager {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends AnimatableEntity<?>> IAnimationPredicate<T> empty(){
+    public static <T extends AnimatableEntity<?>> IAnimationPredicate<T> empty() {
         return (IAnimationPredicate<T>) EMPTY;
     }
 
@@ -226,11 +226,11 @@ public final class AnimationManager {
             return playAnimation(event, "beg", LoopType.LOOP);
         }
         // 其他杂项动画，目前仅捡雪球
-        if (maid.animationId == MaidAnimationPackage.PICK_UP_SNOWBALL) {
+        if (maid.getAnimationManager().animationId == MaidAnimationPackage.PICK_UP_SNOWBALL) {
             // 捡雪球动画默认 1750 毫秒
-            if (System.currentTimeMillis() - maid.animationRecordTime > 1750) {
-                maid.animationId = MaidAnimationPackage.NONE;
-                maid.animationRecordTime = -1L;
+            if (System.currentTimeMillis() - maid.getAnimationManager().animationRecordTime > 1750) {
+                maid.getAnimationManager().animationId = MaidAnimationPackage.NONE;
+                maid.getAnimationManager().animationRecordTime = -1L;
                 // 利用空动画重置 PLAY_ONCE 动画
                 return playAnimation(event, "empty", LoopType.PLAY_ONCE);
             }
@@ -329,7 +329,7 @@ public final class AnimationManager {
                 // 从 INSTANT 或 END 过渡到 NONE 时，继续播放直到动画结束
                 // TODO: 待验证
                 if ((lastPhase == IMagicCastingState.CastingPhase.INSTANT || lastPhase == IMagicCastingState.CastingPhase.END)
-                    && !controller.isAnimFinished()) {
+                        && !controller.isAnimFinished()) {
                     return PlayState.CONTINUE;
                 }
                 // 从 START 或 CASTING 过渡到 NONE 时，允许终止

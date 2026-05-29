@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.inventory.handler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidItemManager;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,7 +20,7 @@ public class MaidBackpackHandler extends ItemStacksResourceHandler {
 
     @Override
     public boolean isValid(int slot, @Nonnull ItemVariant variant) {
-        return EntityMaid.canInsertItem(variant.toStack());
+        return MaidItemManager.canInsertItem(variant.toStack());
     }
 
     @Override

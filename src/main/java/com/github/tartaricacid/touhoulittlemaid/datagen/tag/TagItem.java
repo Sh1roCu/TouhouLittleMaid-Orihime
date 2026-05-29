@@ -36,6 +36,13 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
     public static final TagKey<Item> MAID_TAMED_ITEM = createTagKey("maid_tamed_item");
 
     /**
+     * 能够吸引女仆的物品
+     * <p>
+     * 默认已经把所有带有 <code>#forge:cakes</code> 和 <code>#c:cakes</code> 标签的物品加入其中了
+     */
+    public static final TagKey<Item> MAID_TEMPTATION_ITEM = createTagKey("maid_temptation_item");
+
+    /**
      * 物品拥有经验修补后，女仆在吸收经验或者 P 点时能够进行修复；
      * <p>
      * 但是部分物品不能这么做，可将其加入此 tag 下
@@ -94,19 +101,8 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
                 .addOptionalTag(createTagKey(Identifier.parse("kaleidoscope_cookery:cookery_mod_seeds")));
         this.valueLookupBuilder(MAID_PLANTABLE_SEEDS).add(Items.NETHER_WART);
 
-        this.valueLookupBuilder(MAID_TAMED_ITEM)
-                .add(Items.CAKE)
-                .addOptionalTag(createTagKey(Identifier.parse("forge:cakes")))
-                .addOptionalTag(createTagKey(Identifier.parse("c:cakes")))
-                .addOptionalTag(createTagKey(Identifier.parse("jmc:cakes")));
-        this.builder(MAID_TAMED_ITEM)
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:cheese_cake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:honey_cheese_cake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:chocolate_cheese_cake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_cake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_cheesecake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_chocolate_cheesecake")))
-                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_honey_cheesecake")));
+        this.addCakeItems(MAID_TAMED_ITEM);
+        this.addCakeItems(MAID_TEMPTATION_ITEM);
 
         this.valueLookupBuilder(MAID_MENDING_BLOCKLIST_ITEM).add(InitItems.ULTRAMARINE_ORB_ELIXIR);
         this.valueLookupBuilder(MAID_VANISHING_BLOCKLIST_ITEM).add(InitItems.ULTRAMARINE_ORB_ELIXIR);
@@ -115,5 +111,21 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
         this.builder(MAID_EAT_BLOCKLIST_ITEM)
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:red_chili")))
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:green_chili")));
+    }
+
+    private void addCakeItems(TagKey<Item> tagKey) {
+        this.valueLookupBuilder(tagKey)
+                .add(Items.CAKE)
+                .addOptionalTag(createTagKey(Identifier.parse("forge:cakes")))
+                .addOptionalTag(createTagKey(Identifier.parse("c:cakes")))
+                .addOptionalTag(createTagKey(Identifier.parse("jmc:cakes")));
+        this.builder(tagKey)
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:cheese_cake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:honey_cheese_cake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:chocolate_cheese_cake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_cake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_cheesecake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_chocolate_cheesecake")))
+                .addOptional(createResourceKey(Identifier.parse("kawaiidishes:piece_of_honey_cheesecake")));
     }
 }

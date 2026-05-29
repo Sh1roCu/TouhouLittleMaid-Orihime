@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegi
 import com.github.tartaricacid.touhoulittlemaid.entity.item.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidConstant;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.EntityDanmaku;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.EntityThrowPowerPoint;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.MaidFishingHook;
@@ -119,7 +120,7 @@ public final class InitEntities {
     }
 
     private static void addEntityAttributes() {
-        addEntityAttribute(EntityMaid.TYPE, EntityMaid.createAttributes());
+        addEntityAttribute(EntityMaid.TYPE, MaidConstant.createAttributes());
         addEntityAttribute(EntityChair.TYPE, LivingEntity.createLivingAttributes());
         addEntityAttribute(EntityBroom.TYPE, LivingEntity.createLivingAttributes());
         addEntityAttribute(EntityFairy.TYPE, EntityFairy.createFairyAttributes());

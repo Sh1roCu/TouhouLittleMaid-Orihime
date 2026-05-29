@@ -6,6 +6,7 @@ import cn.sh1rocu.touhoulittlemaid.util.transfer.*;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidPickupEvent;
+import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityPowerPoint;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
@@ -24,6 +25,8 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -57,10 +60,10 @@ import static net.minecraft.world.item.enchantment.EnchantmentEffectComponents.P
  * 物品管理类，各种形式的物品存入与取出
  */
 public class MaidItemManager {
-    private static final String MAID_INVENTORY_TAG = EntityMaid.MAID_INVENTORY_TAG;
-    private static final String MAID_BAUBLE_INVENTORY_TAG = EntityMaid.MAID_BAUBLE_INVENTORY_TAG;
-    private static final String MAID_HIDE_INVENTORY_TAG = EntityMaid.MAID_HIDE_INVENTORY_TAG;
-    private static final String MAID_TASK_INVENTORY_TAG = EntityMaid.MAID_TASK_INVENTORY_TAG;
+    public static final String MAID_INVENTORY_TAG = "MaidInventory";
+    public static final String MAID_BAUBLE_INVENTORY_TAG = "MaidBaubleInventory";
+    public static final String MAID_HIDE_INVENTORY_TAG = "MaidHideInventory";
+    public static final String MAID_TASK_INVENTORY_TAG = "MaidTaskInventory";
 
     private final EntityMaid maid;
     /**
@@ -96,6 +99,15 @@ public class MaidItemManager {
         this.maidBauble = new BaubleItemHandler(30);
         this.hideInv = new ItemStacksResourceHandler(1);
         this.taskInv = new ItemStacksResourceHandler(9);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static boolean canInsertItem(ItemStack stack) {
+        Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (MaidConfig.MAID_BACKPACK_BLACKLIST.get().contains(key.toString())) {
+            return false;
+        }
+        return stack.getItem().canFitInsideContainerItems();
     }
 
     public ResourceHandler<ItemVariant> getArmorInvWrapper() {
@@ -243,7 +255,7 @@ public class MaidItemManager {
             // 获取实体的物品堆
             ItemStack itemstack = entityItem.getItem();
             // 检查物品是否合法
-            if (!EntityMaid.canInsertItem(itemstack)) {
+            if (!MaidItemManager.canInsertItem(itemstack)) {
                 return false;
             }
             // 获取数量，为后面方面用
@@ -288,7 +300,8 @@ public class MaidItemManager {
             var allItems = new CombinedResourceHandler<>(armorInvWrapper, handsInvWrapper, maidBauble);
             ItemStack itemstack = getRandomItemWithMendingEnchantments(allItems);
             if (!itemstack.isEmpty() && itemstack.isDamaged()) {
-                int i = Math.min((int) (entityXPOrb.getValue() /** itemstack.getXpRepairRatio()*/), itemstack.getDamageValue());
+                /** itemstack.getXpRepairRatio()*/
+                int i = Math.min(entityXPOrb.getValue(), itemstack.getDamageValue());
                 ((ExperienceOrbAccessor) entityXPOrb).tlm$setValue(entityXPOrb.getValue() - (i / 2));
                 itemstack.setDamageValue(itemstack.getDamageValue() - i);
             }
@@ -315,7 +328,8 @@ public class MaidItemManager {
             ItemStack itemstack = getRandomItemWithMendingEnchantments(allItems);
             int xpValue = EntityPowerPoint.transPowerValueToXpValue(powerPoint.getValue());
             if (!itemstack.isEmpty() && itemstack.isDamaged()) {
-                int i = Math.min((int) (xpValue /** itemstack.getXpRepairRatio()*/), itemstack.getDamageValue());
+                /** itemstack.getXpRepairRatio()*/
+                int i = Math.min(xpValue, itemstack.getDamageValue());
                 xpValue -= (i / 2);
                 itemstack.setDamageValue(itemstack.getDamageValue() - i);
             }
@@ -618,6 +632,10 @@ public class MaidItemManager {
 
         default boolean canPickup(Entity pickupEntity, boolean checkInWater) {
             return getItemManager().canPickup(pickupEntity, checkInWater);
+        }
+
+        default boolean canPickup(Entity pickupEntity) {
+            return getItemManager().canPickup(pickupEntity, false);
         }
 
         default void memoryHandItemStack(ItemStack itemStack) {

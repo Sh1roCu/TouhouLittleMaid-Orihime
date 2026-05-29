@@ -7,9 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.model.WChessPiecesModel;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity.state.WChessRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.InternalBedrockModelRegistry;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBed;
 import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityWChess;
-import com.github.tartaricacid.touhoulittlemaid.util.RenderHelper;
 import com.github.tartaricacid.touhoulittlemaid.util.WChessUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -30,7 +28,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Unit;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -197,8 +194,10 @@ public class TileEntityWChessRenderer implements BlockEntityRenderer<TileEntityW
         }
         RenderType renderType = RenderTypes.entityCutout(TEXTURE);
         submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+            poseStack.pushPose();
             poseStack.last().set(pose);
             chessModel.renderToBuffer(poseStack, buffer, lightCoords, OverlayTexture.NO_OVERLAY);
+            poseStack.popPose();
         });
         poseStack.popPose();
     }

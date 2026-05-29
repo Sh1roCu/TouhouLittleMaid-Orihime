@@ -73,8 +73,8 @@ public class MaidModelGui extends AbstractModelGui<EntityMaid, MaidModelInfo> {
                 ClientPlayNetworking.send(new SetMaidSoundIdPackage(maid.getId(), useSoundPackId));
             }
             // 切换模型时，重置手部动作
-            maid.handItemsForAnimation[0] = ItemStack.EMPTY;
-            maid.handItemsForAnimation[1] = ItemStack.EMPTY;
+            maid.getAnimationManager().handItemsForAnimation[0] = ItemStack.EMPTY;
+            maid.getAnimationManager().handItemsForAnimation[1] = ItemStack.EMPTY;
         }
     }
 
