@@ -20,12 +20,18 @@ public final class MaidKillRecordManager {
     private static final String WITHER_COUNT = "Wither";
     private static final String ENDER_DRAGON_COUNT = "EnderDragon";
 
+    private final EntityMaid maid;
+
     private int totalCount;
     private int slimeCount;
     private int witherCount;
     private int enderDragonCount;
 
-    void addAdditionalSaveData(ValueOutput output) {
+    public MaidKillRecordManager(EntityMaid maid) {
+        this.maid = maid;
+    }
+
+    void save(ValueOutput output) {
         ValueOutput child = output.child(KILL_RECORD);
         child.store(TOTAL_COUNT, Codec.INT, totalCount);
         child.store(SLIME_COUNT, Codec.INT, slimeCount);
@@ -33,7 +39,7 @@ public final class MaidKillRecordManager {
         child.store(ENDER_DRAGON_COUNT, Codec.INT, enderDragonCount);
     }
 
-    void readAdditionalSaveData(ValueInput input) {
+    void read(ValueInput input) {
         ValueInput child = input.childOrEmpty(KILL_RECORD);
         child.read(TOTAL_COUNT, Codec.INT).ifPresent(v -> totalCount = v);
         child.read(SLIME_COUNT, Codec.INT).ifPresent(v -> slimeCount = v);

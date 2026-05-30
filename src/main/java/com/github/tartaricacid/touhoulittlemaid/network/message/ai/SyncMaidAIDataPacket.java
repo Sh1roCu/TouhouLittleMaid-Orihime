@@ -52,7 +52,7 @@ public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int cur
 
     public SyncMaidAIDataPacket(EntityMaid maid, ServerPlayer player) {
         var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.level.registryAccess());
-        maid.getAiChatManager().saveValue(output);
+        maid.getAiChatManager().save(output);
         this(maid.getId(), output.buildResult(),
                 player.getAttachedOrCreate(InitDataAttachment.CHAT_TOKENS).get(),
                 AIConfig.MAX_TOKENS_PER_PLAYER.get()
@@ -78,7 +78,7 @@ public record SyncMaidAIDataPacket(int entityId, CompoundTag configData, int cur
         Entity entity = level.getEntity(message.entityId);
         if (entity instanceof EntityMaid maid) {
             var input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), message.configData);
-            maid.getAiChatManager().loadValue(input);
+            maid.getAiChatManager().read(input);
             AIChatScreen chatScreen = new AIChatScreen(maid);
             chatScreen.updateTokens(message.currentTokens, message.maxTokens);
             Minecraft.getInstance().setScreen(chatScreen);

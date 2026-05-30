@@ -26,6 +26,9 @@
     ],
     "jade": [
       "com.github.tartaricacid.touhoulittlemaid.compat.jade.JadePlugin"
+    ],
+    "jei_mod_plugin": [
+      "com.github.tartaricacid.touhoulittlemaid.compat.jei.MaidJeiPlugin"
     ]
   },
   "mixins": [

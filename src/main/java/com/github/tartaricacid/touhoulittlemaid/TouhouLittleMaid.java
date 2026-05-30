@@ -28,8 +28,12 @@ public final class TouhouLittleMaid {
     }
 
     private static void initRegister() {
-        InitEntities.init();
         InitAttribute.init();
+
+        InitEntities.init();
+
+        InitBrains.init();
+
         InitBlocks.init();
         InitItems.init();
         InitCreativeTabs.init();

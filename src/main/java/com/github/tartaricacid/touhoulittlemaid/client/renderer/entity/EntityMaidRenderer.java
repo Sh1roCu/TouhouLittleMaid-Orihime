@@ -1,10 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.client.renderer.entity;
 
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.ClientHooks;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.EntityMaidModel;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.ChatBubbleRenderer;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.chatbubble.EntityGraphics;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.gecko.GeckoEntityMaidRenderer;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.gecko.GeckoMaidRenderData;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.layer.LayerMaidBackItem;
@@ -59,7 +61,7 @@ public class EntityMaidRenderer extends MobRenderer<EntityMaid, EntityMaidRender
      * 女仆模组自带的 GeckoLib 模型渲染
      */
     private final GeckoEntityMaidRenderer geckoEntityMaidRenderer;
-    private ChatBubbleRenderer chatBubbleRenderer2;
+    private ChatBubbleRenderer chatBubbleRenderer;
     private CameraRenderState cameraRenderState;
 
     public EntityMaidRenderer(EntityRendererProvider.Context manager) {
@@ -73,7 +75,7 @@ public class EntityMaidRenderer extends MobRenderer<EntityMaid, EntityMaidRender
         // this.addLayer(new LayerMaidBanner(this));
         this.addAdditionMaidLayer(manager);
         this.geckoEntityMaidRenderer = new GeckoEntityMaidRenderer(manager);
-        this.chatBubbleRenderer2 = new ChatBubbleRenderer(this);
+        this.chatBubbleRenderer = new ChatBubbleRenderer(this);
     }
 
     @Override
@@ -154,9 +156,13 @@ public class EntityMaidRenderer extends MobRenderer<EntityMaid, EntityMaidRender
         // 暂定只能女仆显示
         if (MaidConfig.GLOBAL_MAID_SHOW_CHAT_BUBBLE.get() && entity.getConfigManager().isChatBubbleShow()) {
             Vec3 vec3 = entity.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, entity.getViewYRot(partialTicks));
-            if (vec3 != null) {
-                state.showBubble = true;
-                state.bubbleOffset = vec3;
+            if (vec3 != null && ClientHooks.isNameplateInRenderDistance(entity, state.distanceToCameraSq)) {
+                var chatBubble = entity.getChatBubbleManager().getChatBubbleDataCollection();
+                if (chatBubble != null && !chatBubble.isEmpty()) {
+                    state.showBubble = true;
+                    state.bubbleOffset = vec3;
+                    state.chatBubble = chatBubble;
+                }
             }
         }
 
@@ -208,7 +214,7 @@ public class EntityMaidRenderer extends MobRenderer<EntityMaid, EntityMaidRender
         this.cameraRenderState = camera;
 
         // 暂定只能女仆显示
-        if (state.showBubble) {
+        if (state.showBubble && state.chatBubble != null) {
             poseStack.pushPose();
             double offsetY = state.bubbleOffset.y() + 0.5f;
             if (state.sitting) {
@@ -219,9 +225,8 @@ public class EntityMaidRenderer extends MobRenderer<EntityMaid, EntityMaidRender
             poseStack.mulPose(Axis.YP.rotationDegrees(180));
             poseStack.scale(-0.025F, -0.025F, 0.025F);
 
-            // TODO
-            // EntityGraphics graphics = new EntityGraphics(poseStack, maidEntity, state.lightCoords, state.partialTick);
-            // this.chatBubbleRenderer2.submit(submitNodeCollector, graphics);
+            EntityGraphics graphics = new EntityGraphics(submitNodeCollector, poseStack, state, state.lightCoords, state.tlm$partialTick());
+            this.chatBubbleRenderer.submit(graphics);
             poseStack.popPose();
         }
 

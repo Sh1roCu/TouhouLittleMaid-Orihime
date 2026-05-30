@@ -179,10 +179,9 @@ public final class MaidBackupsManager {
         for (String s : indexTag.keySet()) {
             UUID maidUuid = UUID.fromString(s);
             CompoundTag maidTag = indexTag.getCompoundOrEmpty(s);
-            IndexData indexData = IndexData.CODEC.parse(NbtOps.INSTANCE, maidTag)
+            IndexData.CODEC.parse(NbtOps.INSTANCE, maidTag)
                     .resultOrPartial(LOGGER::error)
-                    .orElse(new IndexData(Component.empty(), BlockPos.ZERO, "minecraft:unknown", -1L));
-            map.put(maidUuid, indexData);
+                    .ifPresent(indexData -> map.put(maidUuid, indexData));
         }
         return map;
     }

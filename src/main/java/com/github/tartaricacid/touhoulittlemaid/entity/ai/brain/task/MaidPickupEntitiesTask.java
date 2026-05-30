@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidPathFindingBFS;
-import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.github.tartaricacid.touhoulittlemaid.init.InitBrains;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -28,7 +28,7 @@ public class MaidPickupEntitiesTask extends Behavior<EntityMaid> {
     }
 
     public MaidPickupEntitiesTask(Predicate<EntityMaid> predicate, float speedModifier) {
-        super(ImmutableMap.of(InitEntities.VISIBLE_PICKUP_ENTITIES, MemoryStatus.VALUE_PRESENT,
+        super(ImmutableMap.of(InitBrains.VISIBLE_PICKUP_ENTITIES, MemoryStatus.VALUE_PRESENT,
                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
         this.predicate = predicate;
         this.speedModifier = speedModifier;
@@ -46,9 +46,9 @@ public class MaidPickupEntitiesTask extends Behavior<EntityMaid> {
         for (Entity entity : items) {
             BlockPos blockPos = entity.blockPosition();
             if (maid.isWithinHome(blockPos)
-                    && entity.isAlive()
-                    && !entity.isInWater()
-                    && pathFinding.canPathReach(blockPos)) {
+                && entity.isAlive()
+                && !entity.isInWater()
+                && pathFinding.canPathReach(blockPos)) {
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, entity, this.speedModifier, 0);
                 break;
             }
@@ -57,6 +57,6 @@ public class MaidPickupEntitiesTask extends Behavior<EntityMaid> {
     }
 
     private List<Entity> getItems(EntityMaid maid) {
-        return maid.getBrain().getMemory(InitEntities.VISIBLE_PICKUP_ENTITIES).orElse(Lists.newArrayList());
+        return maid.getBrain().getMemory(InitBrains.VISIBLE_PICKUP_ENTITIES).orElse(Lists.newArrayList());
     }
 }

@@ -1,5 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.embeddium;
 
+import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.animated.AnimatedGeoBone;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class EmbeddiumCompat {
@@ -14,12 +17,8 @@ public class EmbeddiumCompat {
         return IS_EMBEDDIUM_INSTALLED;
     }
 
-    // 暂无Fabric1.21的emb
-/*    public static boolean embeddiumRenderCubesOfBone(AnimatedGeoBone bone, PoseStack poseStack, VertexConsumer buffer, int cubePackedLight,
+    public static boolean embeddiumRenderCubesOfBone(AnimatedGeoBone bone, PoseStack poseStack, VertexConsumer buffer, int cubePackedLight,
                                                      int packedOverlay, float red, float green, float blue, float alpha) {
-        if (EmbeddiumCompat.isEmbeddiumInstalled()) {
-            return EmbeddiumGeoRenderer.renderCubesOfBone(bone, poseStack, buffer, cubePackedLight, packedOverlay, red, green, blue, alpha);
-        }
         return false;
-    }*/
+    }
 }

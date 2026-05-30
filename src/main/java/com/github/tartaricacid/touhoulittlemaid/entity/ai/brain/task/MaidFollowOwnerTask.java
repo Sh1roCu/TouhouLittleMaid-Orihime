@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.github.tartaricacid.touhoulittlemaid.init.InitBrains;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,11 +43,11 @@ public class MaidFollowOwnerTask extends Behavior<EntityMaid> {
         // 如果女仆在前往呼吸点快要淹死了，那必须就近传送
         // 这个传送会鬼畜，但是没办法，为了救女仆只能这样了
         if (maid.getSwimManager().isGoingToBreath() && ownerStateConditions(owner, maid)
-                && maidStateConditions(maid) && maid.teleportToOwner(owner)) {
+            && maidStateConditions(maid) && maid.teleportToOwner(owner)) {
             maid.getNavigationManager().resetNavigation();
             maid.getSwimManager().setGoingToBreath(false);
             maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-            maid.getBrain().eraseMemory(InitEntities.TARGET_POS);
+            maid.getBrain().eraseMemory(InitBrains.TARGET_POS);
             this.doStop(worldIn, maid, gameTimeIn);
             return;
         }
@@ -71,9 +71,9 @@ public class MaidFollowOwnerTask extends Behavior<EntityMaid> {
 
     private boolean ownerStateConditions(@Nullable LivingEntity owner, EntityMaid maid) {
         return owner != null && !owner.isSpectator() && !owner.isDeadOrDying() &&
-                // 修复一个过去很多年没解决的 bug —— 女仆神秘传送问题
-                // 这个 bug 的原因是，传送时没有检查女仆和主人是否在同一个维度
-                maid.level == owner.level;
+               // 修复一个过去很多年没解决的 bug —— 女仆神秘传送问题
+               // 这个 bug 的原因是，传送时没有检查女仆和主人是否在同一个维度
+               maid.level == owner.level;
     }
 
     private boolean ownerIsWalkTarget(EntityMaid maid, LivingEntity owner) {

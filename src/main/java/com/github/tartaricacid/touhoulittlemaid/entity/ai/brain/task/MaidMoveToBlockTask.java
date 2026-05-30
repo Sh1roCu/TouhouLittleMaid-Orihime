@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidPathFindingBFS;
-import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.github.tartaricacid.touhoulittlemaid.init.InitBrains;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -32,7 +32,7 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
         this(
                 ImmutableMap.of(
                         MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
-                        InitEntities.TARGET_POS, MemoryStatus.VALUE_ABSENT
+                        InitBrains.TARGET_POS, MemoryStatus.VALUE_ABSENT
                 ),
                 movementSpeed, verticalSearchRange
         );
@@ -56,9 +56,9 @@ public abstract class MaidMoveToBlockTask extends MaidCheckRateTask {
                     for (int z = x < i && x > -i ? i : 0; z <= i; z = z > 0 ? -z : 1 - z) {
                         mutableBlockPos.setWithOffset(centrePos, x, y - 1, z);
                         if (maid.isWithinHome(mutableBlockPos) && shouldMoveTo(worldIn, maid, mutableBlockPos) && checkPathReach(maid, pathFinding, mutableBlockPos)
-                                && checkOwnerPos(maid, mutableBlockPos)) {
+                            && checkOwnerPos(maid, mutableBlockPos)) {
                             BehaviorUtils.setWalkAndLookTargetMemories(maid, mutableBlockPos, this.movementSpeed, 0);
-                            maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(mutableBlockPos));
+                            maid.getBrain().setMemory(InitBrains.TARGET_POS, new BlockPosTracker(mutableBlockPos));
                             this.currentWorkPos = mutableBlockPos;
                             this.setNextCheckTickCount(5);
                             this.clearCurrentArrivalMap(pathFinding);

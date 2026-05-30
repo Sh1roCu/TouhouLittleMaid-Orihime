@@ -3,22 +3,27 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipe;
 import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipeSerializer;
-import com.github.tartaricacid.touhoulittlemaid.crafting.FallbackIngredient;
-import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-public final class InitRecipes {
-    public static void init() {
-        CustomIngredientSerializer.register(FallbackIngredient.Serializer.INSTANCE);
+public interface InitRecipes {
+    static void init() {
     }
 
-    public static final RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe_serializers", AltarRecipeSerializer.SERIALIZER);
-    public static final RecipeType<AltarRecipe> ALTAR_CRAFTING = registerType("altar_recipe", simple(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "altar_crafting")));
+    RecipeBookCategory ALTAR_RECIPE_CATEGORY = registerCategory("altar", new RecipeBookCategory());
+
+    RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe_serializers", AltarRecipeSerializer.SERIALIZER);
+
+    RecipeType<AltarRecipe> ALTAR_RECIPE = registerType("altar_recipe", simple(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "altar_crafting")));
+
+    private static <T extends RecipeBookCategory> T registerCategory(String id, T category) {
+        return Registry.register(BuiltInRegistries.RECIPE_BOOK_CATEGORY, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), category);
+    }
 
     private static <T extends RecipeSerializer<?>> T registerSerializer(String id, T serializer) {
         return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), serializer);

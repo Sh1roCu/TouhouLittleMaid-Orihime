@@ -17,6 +17,7 @@ public class RegistryDataGenerator extends FabricDynamicRegistryProvider {
         entries.addAll(provider.lookupOrThrow(Registries.ENCHANTMENT));
         entries.addAll(provider.lookupOrThrow(Registries.DAMAGE_TYPE));
         entries.addAll(provider.lookupOrThrow(Registries.PAINTING_VARIANT));
+        entries.addAll(provider.lookupOrThrow(Registries.TIMELINE));
     }
 
     @Override

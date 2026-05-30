@@ -30,6 +30,7 @@ public class DataGenerator implements DataGeneratorEntrypoint {
 
         // Tags
         pack.addProvider(TagDamage::new);
+        pack.addProvider(TagTimeline::new);
         pack.addProvider(TagEntity::new);
         pack.addProvider(TagBlock::new);
         pack.addProvider(TagEnchantment::new);
@@ -45,5 +46,6 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         registryBuilder.add(Registries.ENCHANTMENT, EnchantmentKeys::bootstrap);
         registryBuilder.add(Registries.DAMAGE_TYPE, InitDamage::bootstrap);
         registryBuilder.add(Registries.PAINTING_VARIANT, InitPaintingVariants::bootstrap);
+        registryBuilder.add(Registries.TIMELINE, TimelinesProvider::bootstrap);
     }
 }

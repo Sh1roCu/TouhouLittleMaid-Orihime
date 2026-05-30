@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
 import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.github.tartaricacid.touhoulittlemaid.init.InitBrains;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
@@ -38,7 +38,7 @@ public class MaidCollectHoneyTask extends MaidCheckRateTask {
 
     public MaidCollectHoneyTask(float speed, int closeEnoughDist) {
         super(ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
-                InitEntities.TARGET_POS, MemoryStatus.VALUE_ABSENT));
+                InitBrains.TARGET_POS, MemoryStatus.VALUE_ABSENT));
         this.speed = speed;
         this.closeEnoughDist = closeEnoughDist;
         this.setMaxCheckRate(MAX_DELAY_TIME);
@@ -50,13 +50,13 @@ public class MaidCollectHoneyTask extends MaidCheckRateTask {
             BlockPos beehivePos = findBeehive(worldIn, maid);
             if (beehivePos != null && maid.isWithinHome(beehivePos)) {
                 if (beehivePos.distToCenterSqr(maid.position()) < Math.pow(this.closeEnoughDist, 2)) {
-                    maid.getBrain().setMemory(InitEntities.TARGET_POS, new BlockPosTracker(beehivePos));
+                    maid.getBrain().setMemory(InitBrains.TARGET_POS, new BlockPosTracker(beehivePos));
                     return true;
                 }
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, beehivePos, speed, 1);
                 this.setNextCheckTickCount(5);
             } else {
-                maid.getBrain().eraseMemory(InitEntities.TARGET_POS);
+                maid.getBrain().eraseMemory(InitBrains.TARGET_POS);
             }
         }
         return false;
@@ -64,7 +64,7 @@ public class MaidCollectHoneyTask extends MaidCheckRateTask {
 
     @Override
     protected void start(ServerLevel level, EntityMaid maid, long gameTime) {
-        maid.getBrain().getMemory(InitEntities.TARGET_POS).ifPresent(target -> {
+        maid.getBrain().getMemory(InitBrains.TARGET_POS).ifPresent(target -> {
             BlockPos hivePos = target.currentBlockPosition();
             BlockState hiveBlockState = level.getBlockState(hivePos);
             if (!hiveBlockState.hasProperty(BeehiveBlock.HONEY_LEVEL)) {
@@ -78,7 +78,7 @@ public class MaidCollectHoneyTask extends MaidCheckRateTask {
                 this.collectHoneyBottle(level, maid, maidAvailableInv, hiveBlockState, hivePos);
             }
         });
-        maid.getBrain().eraseMemory(InitEntities.TARGET_POS);
+        maid.getBrain().eraseMemory(InitBrains.TARGET_POS);
         maid.getBrain().eraseMemory(MemoryModuleType.LOOK_TARGET);
         maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
     }
