@@ -15,7 +15,6 @@ import com.github.tartaricacid.touhoulittlemaid.client.input.STTChatKey;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.DebugClientRenderEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.ClientExtensionsEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.ClientTickEvent;
-import com.github.tartaricacid.touhoulittlemaid.event.maid.UseNameTagEvent;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;

@@ -1,9 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
+import com.github.tartaricacid.touhoulittlemaid.network.client.OpenPlayerInventoryPackageProxy;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,18 +21,7 @@ public record OpenPlayerInventoryPackage(int action) implements CustomPacketPayl
     );
 
     public static void handle(OpenPlayerInventoryPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> onHandle(message));
-    }
-
-    private static void onHandle(OpenPlayerInventoryPackage message) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        if (message.action == OPEN_PLAYER_INVENTORY) {
-            // 打开玩家背包
-            Minecraft.getInstance().setScreen(new InventoryScreen(player));
-        }
+        context.client().execute(() -> OpenPlayerInventoryPackageProxy.handle(message));
     }
 
     @Override

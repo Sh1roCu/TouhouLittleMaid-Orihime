@@ -6,15 +6,10 @@ import com.github.tartaricacid.touhoulittlemaid.ai.service.ServiceType;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.Site;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.llm.LLMSite;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSite;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.AIChatScreen;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.editor.LLMSiteEditorScreen;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.editor.TTSSiteEditorScreen;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.settings.AIChatSettingsHubScreen;
-import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.settings.AIChatSettingsLLMSiteScreen;
+import com.github.tartaricacid.touhoulittlemaid.network.client.ai.SyncAISitesPacketProxy;
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -29,7 +24,7 @@ public record SyncAISitesPacket(
         Map<String, TTSSite> ttsSites,
         boolean insufficientPermissions
 ) implements CustomPacketPayload {
-    public static final Type<SyncAISitesPacket> TYPE = new Type<>(getResourceLocation("sync_ai_sites"));
+    public static final CustomPacketPayload.Type<SyncAISitesPacket> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("sync_ai_sites"));
     public static final StreamCodec<ByteBuf, SyncAISitesPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public SyncAISitesPacket decode(ByteBuf byteBuf) {
@@ -87,22 +82,7 @@ public record SyncAISitesPacket(
     }
 
     public static void handle(SyncAISitesPacket message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> onHandle(message));
-    }
-
-    private static void onHandle(SyncAISitesPacket message) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen instanceof LLMSiteEditorScreen editor) {
-            editor.getParentHub().reopenSelf(message.llmSites, message.ttsSites);
-        } else if (mc.screen instanceof TTSSiteEditorScreen editor) {
-            editor.getParentHub().reopenSelf(message.llmSites, message.ttsSites);
-        } else if (mc.screen instanceof AIChatSettingsHubScreen hubScreen) {
-            hubScreen.reopenSelf(message.llmSites, message.ttsSites);
-        } else if (mc.screen instanceof AIChatScreen screen) {
-            mc.setScreen(new AIChatSettingsLLMSiteScreen(screen, message.llmSites, message.ttsSites, message.insufficientPermissions));
-        } else {
-            mc.setScreen(AIChatSettingsHubScreen.openDefault(null, message.llmSites, message.ttsSites, message.insufficientPermissions));
-        }
+        context.client().execute(() -> SyncAISitesPacketProxy.handle(message));
     }
 
     @SuppressWarnings("unchecked")

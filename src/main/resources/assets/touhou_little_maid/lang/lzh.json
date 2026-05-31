@@ -444,7 +444,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "小女子唯臥舟榻者上以漁也！",
   "message.touhou_little_maid.missing_patchouli.title": "[東方丫鬟]",
   "message.touhou_little_maid.missing_patchouli.click_here": "擊以措置廣藿曆之義補以得書冊",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[東方丫鬟] 型傳耗時：%.2f ms",
   "message.touhou_little_maid.change_model.disabled": "易型未啟",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "君之匱學不足知此物之用",

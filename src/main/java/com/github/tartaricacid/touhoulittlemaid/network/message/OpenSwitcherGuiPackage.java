@@ -1,14 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.client.gui.block.ModelSwitcherGui;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityModelSwitcher;
+import com.github.tartaricacid.touhoulittlemaid.network.client.OpenSwitcherGuiPackageProxy;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
@@ -21,18 +18,7 @@ public record OpenSwitcherGuiPackage(BlockPos pos) implements CustomPacketPayloa
     );
 
     public static void handle(OpenSwitcherGuiPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> handleOpenGui(message));
-    }
-
-    private static void handleOpenGui(OpenSwitcherGuiPackage message) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return;
-        }
-        BlockEntity te = mc.level.getBlockEntity(message.pos);
-        if (mc.player != null && mc.player.isAlive() && te instanceof TileEntityModelSwitcher) {
-            mc.setScreen(new ModelSwitcherGui((TileEntityModelSwitcher) te));
-        }
+        context.client().execute(() -> OpenSwitcherGuiPackageProxy.handle(message));
     }
 
     @Override

@@ -1,15 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInstanceAtPos;
+import com.github.tartaricacid.touhoulittlemaid.network.client.PlayMaidSoundAtPosPackageProxy;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundEvent;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
@@ -39,20 +36,7 @@ public record PlayMaidSoundAtPosPackage(Identifier soundEvent, String id,
     );
 
     public static void handle(PlayMaidSoundAtPosPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> playSound(message));
-    }
-
-    private static void playSound(PlayMaidSoundAtPosPackage message) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return;
-        }
-        SoundEvent event = BuiltInRegistries.SOUND_EVENT.getValue(message.soundEvent);
-        if (event == null) {
-            return;
-        }
-        mc.getSoundManager().play(new MaidSoundInstanceAtPos(event, message.id,
-                message.x, message.y, message.z, message.volume, message.pitch));
+        context.client().execute(() -> PlayMaidSoundAtPosPackageProxy.handle(message));
     }
 
     @Override

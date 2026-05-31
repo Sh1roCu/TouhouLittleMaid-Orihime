@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.client.event.MaidAreaRenderEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.SchedulePos;
+import com.github.tartaricacid.touhoulittlemaid.network.client.SyncMaidAreaPackageProxy;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -21,11 +21,7 @@ public record SyncMaidAreaPackage(int id, SchedulePos schedulePos) implements Cu
     );
 
     public static void handle(SyncMaidAreaPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> writePos(message));
-    }
-
-    private static void writePos(SyncMaidAreaPackage message) {
-        MaidAreaRenderEvent.addSchedulePos(message.id, message.schedulePos);
+        context.client().execute(() -> SyncMaidAreaPackageProxy.handle(message));
     }
 
     @Override

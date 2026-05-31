@@ -385,7 +385,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "椅子やボートに座りながら釣りがしたいです！",
   "message.touhou_little_maid.missing_patchouli.title": "[TLM]",
   "message.touhou_little_maid.missing_patchouli.click_here": "覚えやすい幻想郷を手に入れるための Patchouli Mod をインストールするには、ここをクリックしてください。",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.change_model.disabled": "メイドのモデルの変更が無効化されています。",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "知識不足のためアイテムの使い方がわかりません。",
   "message.touhou_little_maid.altar.not_enough_power": "P点が足りません。",

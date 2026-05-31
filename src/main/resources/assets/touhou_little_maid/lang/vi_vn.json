@@ -585,7 +585,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "Em phải ngồi trên ghế hoặc thuyền mới câu cá được!",
   "message.touhou_little_maid.missing_patchouli.title": "[TLM]",
   "message.touhou_little_maid.missing_patchouli.click_here": "Nhấn vào đây để cài mod Patchouli để có hướng dẫn",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] Thời gian tải model: %.2f ms",
   "message.touhou_little_maid.change_model.disabled": "Đã tắt chuyển đổi model.",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "Bạn thiếu kiến thức để sử dụng vật phẩm này",

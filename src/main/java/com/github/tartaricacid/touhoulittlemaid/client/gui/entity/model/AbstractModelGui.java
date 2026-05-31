@@ -479,7 +479,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
         List<FormattedText> packSplitName = font.getSplitter().splitLines(packName, (middleX - 256 / 2) - 20, Style.EMPTY);
         for (FormattedText properties : packSplitName) {
             offsetY += 10;
-            graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0xffffff);
+            graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0xFFffffff);
         }
 
         // 如果描述不为空，逐行绘制描述
@@ -487,7 +487,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             List<FormattedText> split = font.getSplitter().splitLines(str, (middleX - 256 / 2) - 20, Style.EMPTY);
             for (FormattedText properties : split) {
                 offsetY += 10;
-                graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0x777777);
+                graphics.centeredText(font, properties.getString(), sideMiddleX, middleY + offsetY, 0xFF777777);
             }
         }
 
@@ -496,7 +496,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             for (List<String> textList : Lists.partition(pack.getAuthor(), 2)) {
                 offsetY += 10;
                 graphics.centeredText(font, Component.literal(textList.toString()).withStyle(ChatFormatting.GOLD),
-                        sideMiddleX, middleY + offsetY, 0xffffff);
+                        sideMiddleX, middleY + offsetY, 0xFFffffff);
             }
         }
 
@@ -505,7 +505,7 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             offsetY += 10;
             graphics.centeredText(font, Component.translatable("gui.touhou_little_maid.skin.text.version", pack.getVersion())
                             .withStyle(ChatFormatting.DARK_AQUA),
-                    sideMiddleX, middleY + offsetY, 0xffffff);
+                    sideMiddleX, middleY + offsetY, 0xFFffffff);
         }
 
         // 绘制日期信息
@@ -513,11 +513,11 @@ public abstract class AbstractModelGui<T extends LivingEntity, E extends IModelI
             offsetY += 10;
             graphics.centeredText(font, Component.translatable("gui.touhou_little_maid.skin.text.date", pack.getDate())
                             .withStyle(ChatFormatting.GREEN),
-                    sideMiddleX, middleY + offsetY, 0xffffff);
+                    sideMiddleX, middleY + offsetY, 0xFFffffff);
         }
 
         // 绘制最后的翻页数
-        graphics.centeredText(font, String.format("%s/%s", getPageIndex() + 1, guiNumber.getPageSize()), middleX, middleY - 118, 0xffffff);
+        graphics.centeredText(font, String.format("%s/%s", getPageIndex() + 1, guiNumber.getPageSize()), middleX, middleY - 118, 0xFFffffff);
     }
 
     /**

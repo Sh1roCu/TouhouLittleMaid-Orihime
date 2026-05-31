@@ -587,7 +587,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "I have to sit on a chair or boat to fish!",
   "message.touhou_little_maid.missing_patchouli.title": "[TLM]",
   "message.touhou_little_maid.missing_patchouli.click_here": "Click Here To Install Patchouli Mod To Get The Manual",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] Model loading time: %.2f ms",
   "message.touhou_little_maid.change_model.disabled": "Model switch is disabled.",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "You lack the knowledge to use this item",

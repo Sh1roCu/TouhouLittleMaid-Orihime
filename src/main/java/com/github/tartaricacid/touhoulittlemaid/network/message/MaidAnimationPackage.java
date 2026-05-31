@@ -1,9 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.network.client.MaidAnimationPackageProxy;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,18 +43,6 @@ public record MaidAnimationPackage(int maidId, int animationId) implements Custo
     }
 
     public static void handle(MaidAnimationPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> handle(message));
-    }
-
-    private static void handle(MaidAnimationPackage message) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) {
-            return;
-        }
-        if (level.getEntity(message.maidId) instanceof EntityMaid maid) {
-            maid.getAnimationManager().animationId = message.animationId;
-            maid.getAnimationManager().animationRecordTime = System.currentTimeMillis();
-            maid.getAnimationManager().shouldReset = true;
-        }
+        context.client().execute(() -> MaidAnimationPackageProxy.handle(message));
     }
 }

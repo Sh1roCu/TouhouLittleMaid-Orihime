@@ -434,7 +434,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "낚시를 하려면 의자나 배에 앉아야 해요!",
   "message.touhou_little_maid.missing_patchouli.title": "[TLM]",
   "message.touhou_little_maid.missing_patchouli.click_here": "여기를 클릭해 Patchouli 모드를 설치하고 메뉴얼 받기",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] 모델 로딩 시간: %.2f ms",
   "message.touhou_little_maid.change_model.disabled": "모델 변경이 비활성화되어 있습니다.",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "아직 이 아이템을 어떻게 사용해야할지 모릅니다.",

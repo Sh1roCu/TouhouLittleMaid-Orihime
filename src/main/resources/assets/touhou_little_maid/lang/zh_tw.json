@@ -524,7 +524,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "我必須坐在椅子或船上才能釣魚！",
   "message.touhou_little_maid.missing_patchouli.title": "[車萬女僕]",
   "message.touhou_little_maid.missing_patchouli.click_here": "點擊這裡安裝帕秋莉手冊模組來獲取手冊",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] 模型載入耗時：%.2f ms",
   "message.touhou_little_maid.change_model.disabled": "模型切換功能已禁用",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "你匱乏的知識並不瞭解這物品該如何使用",

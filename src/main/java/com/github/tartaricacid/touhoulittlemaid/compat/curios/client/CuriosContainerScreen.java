@@ -1,6 +1,5 @@
 //package com.github.tartaricacid.touhoulittlemaid.compat.curios.client;
 //
-//import cn.sh1rocu.touhoulittlemaid.mixin.accessor.AbstractContainerScreenAccessor;
 //import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 //import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 //import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.backpack.IBackpackContainerScreen;
@@ -12,8 +11,6 @@
 //import com.github.tartaricacid.touhoulittlemaid.entity.passive.TabIndex;
 //import com.github.tartaricacid.touhoulittlemaid.network.message.OpenMaidGuiPackage;
 //import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
-//import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-//import net.fabricmc.fabric.api.client.screen.v1.Screens;
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.gui.GuiGraphicsExtractor;
 //import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -23,9 +20,12 @@
 //import net.minecraft.resources.Identifier;
 //import net.minecraft.world.entity.player.Inventory;
 //import net.minecraft.world.inventory.Slot;
+//import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 //import org.anti_ad.mc.ipn.api.IPNButton;
 //import org.anti_ad.mc.ipn.api.IPNGuiHint;
 //import org.anti_ad.mc.ipn.api.IPNPlayerSideOnly;
+//import top.theillusivec4.curios.api.CuriosApi;
+//import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 //
 //@IPNPlayerSideOnly
 //@IPNGuiHint(button = IPNButton.SORT, horizontalOffset = -36, bottom = -12)
@@ -50,28 +50,18 @@
 //        super(container, inv, titleIn);
 //        this.maid = menu.getMaid();
 //
-//        this.maxSlots = getMaxSlots();
+//        this.maxSlots = CuriosApi.getCuriosInventory(this.maid).map(ICuriosItemHandler::getVisibleSlots).orElse(0);
 //        this.maxPages = (maxSlots - 1) / 36;
 //        this.page = Math.min(page, this.maxPages);
 //        this.slotCount = Math.min(maxSlots - this.page * 36, 36);
-//    }
-//
-//    private int getMaxSlots() {
-//        return AccessoriesCapability.getOptionally(this.maid).map(handler -> {
-//            int totalSlots = 0;
-//            for (AccessoriesContainer container : handler.getContainers().values()) {
-//                totalSlots += container.getSize();
-//            }
-//            return totalSlots;
-//        }).orElse(0);
 //    }
 //
 //    public void updatePage(int page) {
-//        this.maxSlots = getMaxSlots();
+//        this.maxSlots = CuriosApi.getCuriosInventory(this.maid).map(ICuriosItemHandler::getVisibleSlots).orElse(0);
 //        this.maxPages = (maxSlots - 1) / 36;
 //        this.page = Math.min(page, this.maxPages);
 //        this.slotCount = Math.min(maxSlots - this.page * 36, 36);
-//        this.getMenu().updatePage(page, Screens.getMinecraft(this).player);
+//        this.getMenu().updatePage(page, getMinecraft().player);
 //
 //        // 更新按钮信息
 //        this.init();
@@ -83,22 +73,24 @@
 //        this.addRenderableWidget(button);
 //
 //        // 添加 curios 兼容按钮
-//        CuriosButton curiosButton = new CuriosButton(leftPos, topPos, true, btn ->
-//                ClientPlayNetworking.send(new OpenMaidGuiPackage(maid.getId(), TabIndex.MAIN)));
+//        CuriosButton curiosButton = new CuriosButton(leftPos, topPos, true, btn -> {
+//            OpenMaidGuiPackage message = new OpenMaidGuiPackage(maid.getId(), TabIndex.MAIN);
+//            ClientPacketDistributor.sendToServer(message);
+//        });
 //        this.addRenderableWidget(curiosButton);
 //
 //        // 如果有翻页，添加翻页按钮
 //        if (this.maxPages > 0) {
 //            TouhouImageButton prevButton = new TouhouImageButton(leftPos + 168, topPos + 147, 11, 12,
 //                    166, 0, 12, CURIOS_BG, b -> {
-//                MultiPlayerGameMode gameMode = Screens.getMinecraft(this).gameMode;
+//                MultiPlayerGameMode gameMode = this.getMinecraft().gameMode;
 //                if (gameMode != null && this.page > 0) {
 //                    gameMode.handleInventoryButtonClick(this.menu.containerId, PREV);
 //                }
 //            });
 //            TouhouImageButton nextButton = new TouhouImageButton(leftPos + 214, topPos + 147, 11, 12,
 //                    177, 0, 12, CURIOS_BG, b -> {
-//                MultiPlayerGameMode gameMode = Screens.getMinecraft(this).gameMode;
+//                MultiPlayerGameMode gameMode = this.getMinecraft().gameMode;
 //                if (gameMode != null && this.page < this.maxPages) {
 //                    gameMode.handleInventoryButtonClick(this.menu.containerId, NEXT);
 //                }
@@ -114,19 +106,19 @@
 //        if (this.maxPages > 0) {
 //            MutableComponent page = Component.literal("%d/%d".formatted(this.page + 1, maxPages + 1));
 //            int width = font.width(page);
-//            graphics.text(font, page, (leftPos + 197) - width / 2, topPos + 150, 0x555555, false);
+//            graphics.text(font, page, (leftPos + 197) - width / 2, topPos + 150, 0xFF555555, false);
 //        } else {
 //            MutableComponent name = Component.translatable("curios.name");
 //            int width = font.width(name);
-//            graphics.text(font, name, (leftPos + 197) - width / 2, topPos + 150, 0x555555, false);
+//            graphics.text(font, name, (leftPos + 197) - width / 2, topPos + 150, 0xFF555555, false);
 //        }
 //    }
 //
 //    @Override
 //    protected void renderAdditionTransTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 //        LocalPlayer clientPlayer = Minecraft.getInstance().player;
-//        if (clientPlayer != null && clientPlayer.inventoryMenu.getCarried().isEmpty() && ((AbstractContainerScreenAccessor) this).tlm$getSlotUnderMouse() != null) {
-//            Slot slot = ((AbstractContainerScreenAccessor) this).tlm$getSlotUnderMouse();
+//        if (clientPlayer != null && clientPlayer.inventoryMenu.getCarried().isEmpty() && this.getHoveredSlot() != null) {
+//            Slot slot = this.getHoveredSlot();
 //            if (slot instanceof MaidCurioSlot slotCurio && !slot.hasItem()) {
 //                MutableComponent name = Component.literal(slotCurio.getSlotName());
 //                graphics.setTooltipForNextFrame(this.font, name, x, y);
@@ -137,9 +129,6 @@
 //    @Override
 //    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 //        super.extractBackground(graphics, mouseX, mouseY, a);
-//
-/// /        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-/// /        RenderSystem.setShaderTexture(0, CURIOS_BG);
 //
 //        // 护甲、主手、副手背景
 //        GuiTools.guiBlit(graphics, CURIOS_BG, leftPos + 85, topPos + 36, 0, 0, 57, 58);

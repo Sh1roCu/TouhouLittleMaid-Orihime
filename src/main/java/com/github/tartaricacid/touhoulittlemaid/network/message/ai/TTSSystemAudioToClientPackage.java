@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.ai.manager.site.AvailableSites;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSConfig;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSite;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSystemServices;
+import com.github.tartaricacid.touhoulittlemaid.network.client.ai.TTSSystemAudioToClientPackageProxy;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,7 +16,7 @@ import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil
 
 public record TTSSystemAudioToClientPackage(String siteName, String chatText, TTSConfig config,
                                             TTSSystemServices services) implements CustomPacketPayload {
-    public static final Type<TTSSystemAudioToClientPackage> TYPE = new Type<>(getResourceLocation("tts_system_audio_to_client"));
+    public static final CustomPacketPayload.Type<TTSSystemAudioToClientPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("tts_system_audio_to_client"));
     public static final StreamCodec<ByteBuf, TTSSystemAudioToClientPackage> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public TTSSystemAudioToClientPackage decode(ByteBuf byteBuf) {
@@ -38,15 +39,7 @@ public record TTSSystemAudioToClientPackage(String siteName, String chatText, TT
     };
 
     public static void handle(TTSSystemAudioToClientPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> onHandle(message));
-    }
-
-    private static void onHandle(TTSSystemAudioToClientPackage message) {
-        TTSSite ttsSite = AvailableSites.getTTSSite(message.siteName);
-        if (ttsSite == null || !ttsSite.enabled()) {
-            return;
-        }
-        ttsSite.client().play(message.chatText, message.config, null);
+        context.client().execute(() -> TTSSystemAudioToClientPackageProxy.handle(message));
     }
 
     @Override

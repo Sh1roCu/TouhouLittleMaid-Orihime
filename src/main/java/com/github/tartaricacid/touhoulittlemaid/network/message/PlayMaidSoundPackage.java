@@ -1,17 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.client.sound.data.MaidSoundInstance;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.network.client.PlayMaidSoundPackageProxy;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
 
 import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
 
@@ -29,23 +24,7 @@ public record PlayMaidSoundPackage(Identifier soundEvent, String id,
     );
 
     public static void handle(PlayMaidSoundPackage message, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> playSound(message));
-    }
-
-    private static void playSound(PlayMaidSoundPackage message) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return;
-        }
-        Entity entity = mc.level.getEntity(message.entityId);
-        if (!(entity instanceof EntityMaid maid)) {
-            return;
-        }
-        SoundEvent event = BuiltInRegistries.SOUND_EVENT.getValue(message.soundEvent);
-        if (event == null) {
-            return;
-        }
-        mc.getSoundManager().play(new MaidSoundInstance(event, message.id, maid));
+        context.client().execute(() -> PlayMaidSoundPackageProxy.handle(message));
     }
 
     @Override

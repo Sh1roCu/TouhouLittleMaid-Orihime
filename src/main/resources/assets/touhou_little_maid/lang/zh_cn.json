@@ -587,7 +587,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "我必须坐在椅子或船上才能钓鱼！",
   "message.touhou_little_maid.missing_patchouli.title": "[车万女仆]",
   "message.touhou_little_maid.missing_patchouli.click_here": "点击这里安装帕秋莉手册模组来获取手册",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] 模型加载耗时：%.2f ms",
   "message.touhou_little_maid.change_model.disabled": "模型切换功能已禁用",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "你匮乏的知识并不了解这物品该如何使用",

@@ -453,7 +453,7 @@
   "chat_bubble.touhou_little_maid.inner.fishing.no_sit": "Saya harus duduk di kursi atau di perahu untuk memancing!",
   "message.touhou_little_maid.missing_patchouli.title": "[TLM]",
   "message.touhou_little_maid.missing_patchouli.click_here": "Klik di sini untuk menginstal mod Pathcouli untuk mendapatkan Manual",
-  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli",
+  "message.touhou_little_maid.missing_patchouli.url": "https://www.curseforge.com/minecraft/mc-mods/patchouli-fabric",
   "message.touhou_little_maid.reload.tip": "[TLM] Waktu memuat model: %.2f ms",
   "message.touhou_little_maid.change_model.disabled": "Pergantian model dinon-aktifkan.",
   "message.touhou_little_maid.extinguisher.player_cannot_use": "Anda tidak tahu cara menggunakan barang ini",
