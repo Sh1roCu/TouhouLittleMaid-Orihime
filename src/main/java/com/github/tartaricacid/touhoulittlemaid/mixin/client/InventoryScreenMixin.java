@@ -1,5 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.mixin.client;
 
+import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
+import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityChair;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.geckolib3.geo.RenderContextManager;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -23,7 +26,19 @@ public class InventoryScreenMixin {
     }
 
     @Inject(at = @At("RETURN"), method = "extractEntityInInventoryFollowsMouse")
-    private static void afterRenderEntityInInventoryFollowsAngle(GuiGraphicsExtractor p_282802_, int p_275688_, int p_275245_, int p_275535_, int p_294406_, int p_294663_, float p_275604_, float angleXComponent, float angleYComponent, LivingEntity p_275689_, CallbackInfo ci) {
+    private static void afterRenderEntityInInventoryFollowsAngle(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int size, float offsetY, float xAngle, float yAngle, LivingEntity entity, CallbackInfo ci) {
+        // 以后如果移除了 EntityCache 机制，可以删掉这段
+        if (entity instanceof EntityMaid maid) {
+            var animatable = maid.getAttached(GeckoMaidEntity.TYPE);
+            if (animatable != null && animatable.getLastUpdateTask() != null) {
+                animatable.getLastUpdateTask().start();
+            }
+        } else if (entity instanceof EntityChair chair) {
+            if (chair.getAnimatableEntity().getLastUpdateTask() != null) {
+                chair.getAnimatableEntity().getLastUpdateTask().start();
+            }
+        }
+
         RenderContextManager.setRenderingInInventory(false);
     }
 }
