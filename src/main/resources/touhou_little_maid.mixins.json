@@ -28,12 +28,12 @@
   ],
   "client": [
     "client.ClientPacketListenerMixin",
-    "client.HumanoidModelMixin",
-    "client.InventoryScreenMixin",
-    "client.ItemPropertiesMixin",
+    // "client.HumanoidModelMixin",
+    "client.FishingRodCastMixin",
     "client.LanguageMixin",
-    "client.LevelRendererMixin",
-    "client.LivingEntityRendererMixin"
+    "client.LivingEntityRendererMixin",
+    "client.InventoryScreenMixin",
+    "client.LevelRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
