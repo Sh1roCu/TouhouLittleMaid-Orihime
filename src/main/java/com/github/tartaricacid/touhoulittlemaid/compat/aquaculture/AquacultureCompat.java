@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.aquaculture;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.compat.aquaculture.client.AquacultureClientRegister;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.fishing.FishingTypeManager;
 import net.fabricmc.api.EnvType;
@@ -32,7 +32,7 @@ public class AquacultureCompat {
     }
 
     private static void register() {
-        Identifier location = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "aquaculture_fishing_hook");
-        //Registry.register(BuiltInRegistries.ENTITY_TYPE, location, AquacultureFishingHook.TYPE);
+        Identifier id = IdentifierUtil.modLoc("aquaculture_fishing_hook");
+        //Registry.register(BuiltInRegistries.ENTITY_TYPE, id, AquacultureFishingHook.TYPE);
     }
 }

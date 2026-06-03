@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.download.InfoGetManager;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadInfo;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadStatus;
@@ -43,7 +44,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 public class ModelDownloadGui extends Screen {
-    private static final Identifier BG = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/download_background.png");
+    private static final Identifier BG = IdentifierUtil.modLoc("textures/gui/download_background.png");
     private static final String PACK_FILE_SUFFIX = ".zip";
     private final Map<Long, String> crc32Infos = Maps.newHashMap();
     private final List<DownloadInfo> showInfos = Lists.newArrayList();

@@ -9,10 +9,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record RequestEffectPackage(int id) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<RequestEffectPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("request_effect"));
+    public static final CustomPacketPayload.Type<RequestEffectPackage> TYPE = new CustomPacketPayload.Type<>(modLoc("request_effect"));
     public static final StreamCodec<ByteBuf, RequestEffectPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             RequestEffectPackage::id,

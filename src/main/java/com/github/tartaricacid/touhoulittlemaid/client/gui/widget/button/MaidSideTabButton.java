@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 // Accessories的loom注入导致的错误，不用管
 public class MaidSideTabButton extends Button implements ITooltipButton {
-    private static final Identifier SIDE = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/maid_gui_side.png");
+    private static final Identifier SIDE = IdentifierUtil.modLoc("textures/gui/maid_gui_side.png");
     private static final int V_OFFSET = 107;
     private final List<Component> tooltips;
     private final int top;

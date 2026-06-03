@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.block;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.DirectButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.ImageButtonWithId;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
@@ -17,10 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ModelSwitcherGui extends Screen {
-    private static final Identifier BG = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/model_switcher.png");
+    private static final Identifier BG = IdentifierUtil.modLoc("textures/gui/model_switcher.png");
     private static final Identifier DEFAULT_MODEL_ID = Identifier.parse("touhou_little_maid:hakurei_reimu");
     private final List<TileEntityModelSwitcher.ModeInfo> infoList;
     private final BlockPos pos;
@@ -163,8 +163,7 @@ public class ModelSwitcherGui extends Screen {
         if (this.maid == null) {
             return;
         }
-        this.extractBackground(graphics, pMouseX, pMouseY, pPartialTick);
-        GuiTools.guiBlit(graphics, BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        GuiTools.guiBlit(graphics,BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         if (bindUuid != null) {
             graphics.centeredText(font, bindUuid.toString(), leftPos + 128, topPos - 10, 0xFFffffff);
         } else {

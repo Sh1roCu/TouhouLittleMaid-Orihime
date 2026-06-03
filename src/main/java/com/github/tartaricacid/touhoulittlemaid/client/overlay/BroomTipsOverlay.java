@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.overlay;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class BroomTipsOverlay implements HudElement {
-    private static final Identifier BG = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/download_background.png");
+    private static final Identifier BG = IdentifierUtil.modLoc("textures/gui/download_background.png");
 
     public static final BroomTipsOverlay INSTANCE = new BroomTipsOverlay();
 
@@ -41,7 +41,7 @@ public class BroomTipsOverlay implements HudElement {
             Component tip = Component.translatable("message.touhou_little_maid.broom.unable_fly");
             List<FormattedCharSequence> split = minecraft.font.split(tip, 150);
             int offset = (screenHeight / 2 - 5) - split.size() * 10;
-            GuiTools.blit(guiGraphics,BG, screenWidth / 2 - 8, offset - 2, 48, 16, 16, 16);
+            GuiTools.guiBlit(guiGraphics,BG, screenWidth / 2 - 8, offset - 2, 48, 16, 16, 16);
             offset += 18;
             for (FormattedCharSequence sequence : split) {
                 int width = minecraft.font.width(sequence);

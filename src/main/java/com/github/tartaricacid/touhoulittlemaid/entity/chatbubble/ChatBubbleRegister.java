@@ -55,7 +55,7 @@ public class ChatBubbleRegister {
 
         @Override
         public @NotNull ChatBubbleDataCollection copy(@NotNull ChatBubbleDataCollection value) {
-            return value;
+            return value.copy();
         }
     };
 

@@ -11,11 +11,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record SyncBaublePackage(boolean isFull, int entityId,
                                 Int2ObjectSortedMap<ItemStack> baubles) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncBaublePackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("sync_bauble"));
+    public static final CustomPacketPayload.Type<SyncBaublePackage> TYPE = new CustomPacketPayload.Type<>(modLoc("sync_bauble"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBaublePackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
             SyncBaublePackage::isFull,

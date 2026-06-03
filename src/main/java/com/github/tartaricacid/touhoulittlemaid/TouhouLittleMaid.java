@@ -48,7 +48,7 @@ public final class TouhouLittleMaid {
         InitLootModifier.init();
 
         NetworkHandler.registerPackets();
-        InitCapabilities.registerGenericItemHandlers();
+        InitCapabilities.register();
 
         CommandRegistrationCallback.EVENT.register(
                 (dispatcher, context, selection) ->

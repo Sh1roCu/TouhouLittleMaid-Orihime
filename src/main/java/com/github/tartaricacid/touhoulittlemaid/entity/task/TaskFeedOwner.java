@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFeedTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidFeedOwnerTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -11,7 +11,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
@@ -34,7 +32,7 @@ import java.util.List;
 //FIXME EffectCures API removed, need to find replacement for milk cure check
 
 public class TaskFeedOwner implements IFeedTask {
-    public static final Identifier UID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "feed");
+    public static final Identifier UID = IdentifierUtil.modLoc("feed");
 
     @Override
     public Identifier getUid() {
@@ -49,8 +47,9 @@ public class TaskFeedOwner implements IFeedTask {
     private boolean canRemoveEffect(List<ConsumeEffect> consumeEffects, MobEffectInstance effect) {
         for (ConsumeEffect consumeEffect : consumeEffects) {
             if (consumeEffect instanceof RemoveStatusEffectsConsumeEffect(var effects)) {
-                if (effects.contains(effect.getEffect()))
+                if (effects.contains(effect.getEffect())) {
                     return true;
+                }
             } else if (consumeEffect instanceof ClearAllStatusEffectsConsumeEffect c) {
                 return true;
             }
@@ -61,6 +60,10 @@ public class TaskFeedOwner implements IFeedTask {
     @Override
     public boolean isFood(ItemStack stack, Player owner) {
         Consumable consumable = stack.get(DataComponents.CONSUMABLE);
+        if (consumable == null) {
+            return false;
+        }
+
         List<ConsumeEffect> el = consumable.onConsumeEffects();
         if (stack.getItem() == Items.MILK_BUCKET) {
             for (MobEffectInstance effect : owner.getActiveEffects()) {
@@ -71,13 +74,11 @@ public class TaskFeedOwner implements IFeedTask {
             return false;
         }
         if (stack.has(DataComponents.FOOD)) {
-            if (el
-                    .stream()
+            return el.stream()
                     .noneMatch(t ->
                             t instanceof ApplyStatusEffectsConsumeEffect a &&
-                                    a.effects().stream().anyMatch(this::isHarmfulEffect)
-                    ))
-                return true;
+                            a.effects().stream().anyMatch(this::isHarmfulEffect)
+                    );
         }
         return false;
     }

@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
 import cn.sh1rocu.touhoulittlemaid.util.transfer.CombinedResourceHandler;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidAttackStrafingTask;
@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 import static com.github.tartaricacid.touhoulittlemaid.datagen.EnchantmentKeys.getEnchantmentLevel;
 
 public class TaskBowAttack implements IRangedAttackTask {
-    public static final Identifier UID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "ranged_attack");
+    public static final Identifier UID = IdentifierUtil.modLoc("ranged_attack");
 
     @Override
     public Identifier getUid() {

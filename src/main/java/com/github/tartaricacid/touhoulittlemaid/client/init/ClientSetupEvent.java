@@ -17,7 +17,7 @@ import com.github.tartaricacid.touhoulittlemaid.compat.sodium.SodiumCompat;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public class ClientSetupEvent {
     public static void onClientSetup() {
@@ -39,8 +39,8 @@ public class ClientSetupEvent {
     }
 
     public static void onRegisterGuiLayers() {
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, getResourceLocation("tlm_maid_tips"), MaidTipsOverlay.INSTANCE);
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, getResourceLocation("tlm_broom_tips"), BroomTipsOverlay.INSTANCE);
-        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, getResourceLocation("tlm_show_power"), ShowPowerOverlay.INSTANCE);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, modLoc("tlm_maid_tips"), MaidTipsOverlay.INSTANCE);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, modLoc("tlm_broom_tips"), BroomTipsOverlay.INSTANCE);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, modLoc("tlm_show_power"), ShowPowerOverlay.INSTANCE);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.sound;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.FlatColorButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.SoundElementButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.SoundPackButton;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MaidSoundPackGui extends Screen {
-    private static final Identifier ICON = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/maid_custom_sound.png");
+    private static final Identifier ICON = IdentifierUtil.modLoc("textures/gui/maid_custom_sound.png");
     private final int packPerSize = 4;
     private final int soundPerSize = 13;
     private final EntityMaid maid;

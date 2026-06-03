@@ -17,10 +17,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record MaidTaskPackage(int id, Identifier uid) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MaidTaskPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("maid_task"));
+    public static final CustomPacketPayload.Type<MaidTaskPackage> TYPE = new CustomPacketPayload.Type<>(modLoc("maid_task"));
     public static final StreamCodec<ByteBuf, MaidTaskPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             MaidTaskPackage::id,

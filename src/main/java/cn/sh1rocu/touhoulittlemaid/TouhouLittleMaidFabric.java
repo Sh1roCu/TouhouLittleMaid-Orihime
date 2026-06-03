@@ -7,7 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDamageEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidDeathEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidFavorabilityLevelChangeEvent;
-import com.github.tartaricacid.touhoulittlemaid.config.GeneralConfig;
+import com.github.tartaricacid.touhoulittlemaid.config.CommonConfig;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.debug.event.DebugStickClickEvent;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.SendMaidDebugDataEvent;
@@ -72,7 +72,7 @@ public class TouhouLittleMaidFabric implements ModInitializer {
     }
 
     private static void registerConfiguration() {
-        ConfigRegistry.INSTANCE.register(TouhouLittleMaid.MOD_ID, ModConfig.Type.COMMON, GeneralConfig.getConfigSpec());
+        ConfigRegistry.INSTANCE.register(TouhouLittleMaid.MOD_ID, ModConfig.Type.COMMON, CommonConfig.init());
         ConfigRegistry.INSTANCE.register(TouhouLittleMaid.MOD_ID, ModConfig.Type.SERVER, ServerConfig.init());
     }
 

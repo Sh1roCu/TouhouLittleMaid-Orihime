@@ -19,11 +19,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record MaidConfigPackage(int id, boolean home, boolean pick, boolean ride,
                                 MaidSchedule schedule) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MaidConfigPackage> TYPE = new CustomPacketPayload.Type<>(getResourceLocation("maid_config"));
+    public static final CustomPacketPayload.Type<MaidConfigPackage> TYPE = new CustomPacketPayload.Type<>(modLoc("maid_config"));
     public static final StreamCodec<ByteBuf, MaidConfigPackage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT,
             MaidConfigPackage::id,

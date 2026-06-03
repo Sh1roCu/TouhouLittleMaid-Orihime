@@ -16,11 +16,11 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record SaveLLMSitePacket(Action action, @Nullable String siteId, boolean enabled,
                                 @Nullable LLMSite site) implements CustomPacketPayload {
-    public static final Type<SaveLLMSitePacket> TYPE = new Type<>(getResourceLocation("save_llm_site"));
+    public static final CustomPacketPayload.Type<SaveLLMSitePacket> TYPE = new CustomPacketPayload.Type<>(modLoc("save_llm_site"));
     public static final StreamCodec<ByteBuf, SaveLLMSitePacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public SaveLLMSitePacket decode(ByteBuf byteBuf) {

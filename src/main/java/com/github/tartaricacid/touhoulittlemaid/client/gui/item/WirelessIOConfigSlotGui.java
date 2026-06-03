@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.item;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.WirelessIOSlotButton;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import com.github.tartaricacid.touhoulittlemaid.network.message.WirelessIOSlotConfigPackage;
@@ -19,7 +19,7 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.List;
 
 public class WirelessIOConfigSlotGui extends Screen {
-    private static final Identifier SLOT = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "textures/gui/wireless_io_slot_config.png");
+    private static final Identifier SLOT = IdentifierUtil.modLoc("textures/gui/wireless_io_slot_config.png");
     private static final int SLOT_NUM = 38;
     private List<Boolean> configData;
     protected int imageWidth = 155;

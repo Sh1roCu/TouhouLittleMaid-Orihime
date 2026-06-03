@@ -1,19 +1,18 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.block.BlockMaidBed;
 import com.github.tartaricacid.touhoulittlemaid.block.BlockScarecrow;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.loot.SetInitMaidOwnerFunction;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -58,7 +57,7 @@ public class LootTableGenerator {
     public static final ResourceKey<LootTable> MAID_BURIED_TREASURE = getLootTableKey("chest/maid_buried_treasure");
 
     public static ResourceKey<LootTable> getLootTableKey(String name) {
-        return ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, name));
+        return ResourceKey.create(Registries.LOOT_TABLE, IdentifierUtil.modLoc(name));
     }
 
     public static class ChestLootTables extends SimpleFabricLootTableSubProvider {

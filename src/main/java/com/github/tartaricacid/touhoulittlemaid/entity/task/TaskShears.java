@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidShearTask;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class TaskShears implements IMaidTask {
-    public static final Identifier UID = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "shears");
+    public static final Identifier UID = IdentifierUtil.modLoc("shears");
 
     @Override
     public Identifier getUid() {

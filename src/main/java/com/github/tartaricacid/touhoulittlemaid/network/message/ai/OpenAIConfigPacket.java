@@ -12,13 +12,15 @@ import net.minecraft.server.level.ServerPlayer;
 import javax.annotation.Nullable;
 import java.util.Collections;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public record OpenAIConfigPacket() implements CustomPacketPayload {
-    public static final Type<OpenAIConfigPacket> TYPE = new Type<>(getResourceLocation("open_ai_config"));
-
-    public static final OpenAIConfigPacket INSTANCE = new OpenAIConfigPacket();
-    public static final StreamCodec<ByteBuf, OpenAIConfigPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final CustomPacketPayload.Type<OpenAIConfigPacket> TYPE = new CustomPacketPayload.Type<>(modLoc("open_ai_config"));
+    public static final StreamCodec<ByteBuf, OpenAIConfigPacket> STREAM_CODEC = StreamCodec.of(
+            (byteBuf, message) -> {
+            },
+            byteBuf -> new OpenAIConfigPacket()
+    );
 
     public static void sendToServer() {
         ClientPlayNetworking.send(new OpenAIConfigPacket());

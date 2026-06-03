@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
@@ -41,7 +41,7 @@ import static com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment.P
 public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn, IEntityExtension {
     public static final EntityType<EntityPowerPoint> TYPE = EntityType.Builder.<EntityPowerPoint>of(EntityPowerPoint::new, MobCategory.MISC)
             .sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20)
-            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "power_point")));
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, IdentifierUtil.modLoc("power_point")));
     private static final int MAX_AGE = 6000;
     public int tickCount;
     public int age;

@@ -34,11 +34,11 @@ import org.joml.Math;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.github.tartaricacid.touhoulittlemaid.util.ResourceLocationUtil.getResourceLocation;
+import static com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil.modLoc;
 
 public class GeckoMaidEntity<T extends EntityMaid> extends AnimatableEntity<T> {
     @SuppressWarnings({"rawtypes"})
-    public static final AttachmentType<GeckoMaidEntity> TYPE = AttachmentRegistry.create(getResourceLocation("gecko_maid"),
+    public static final AttachmentType<GeckoMaidEntity> TYPE = AttachmentRegistry.create(modLoc("gecko_maid"),
             AttachmentRegistry.Builder::copyOnDeath);
 
     private final EntityMaid maid;
