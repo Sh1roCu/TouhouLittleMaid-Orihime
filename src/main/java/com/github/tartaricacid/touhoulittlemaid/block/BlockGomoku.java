@@ -6,6 +6,8 @@ import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Point;
 import com.github.tartaricacid.touhoulittlemaid.api.game.gomoku.Statue;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.GomokuPart;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityGomoku;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityJoy;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidGomokuAI;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
@@ -17,8 +19,6 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemGohei;
 import com.github.tartaricacid.touhoulittlemaid.network.message.GomokuClientPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SpawnParticlePackage;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityGomoku;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityJoy;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -59,11 +59,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 
-public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExploded{
+public class BlockGomoku extends BlockJoy implements IBoardGameBlock, IBlockExploded {
     public static final EnumProperty<GomokuPart> PART = EnumProperty.create("part", GomokuPart.class);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -112,7 +111,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
         }
 
         BlockEntity te = world.getBlockEntity(centerPos);
-        if (!(te instanceof TileEntityGomoku)) {
+        if (!(te instanceof BlockEntityGomoku)) {
             return;
         }
 
@@ -281,7 +280,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
         BlockPos centerPos = pos.subtract(new Vec3i(part.getPosX(), 0, part.getPosY()));
         BlockEntity te = level.getBlockEntity(centerPos);
 
-        if (!(te instanceof TileEntityGomoku gomoku)) {
+        if (!(te instanceof BlockEntityGomoku gomoku)) {
             return InteractionResult.FAIL;
         }
 
@@ -391,7 +390,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
     }
 
     @Nullable
-    private InteractionResult onCreativePlayerClick(Level level, BlockPos pos, Player player, TileEntityGomoku gomoku,
+    private InteractionResult onCreativePlayerClick(Level level, BlockPos pos, Player player, BlockEntityGomoku gomoku,
                                                     BlockPos centerPos, Vec3 location, GomokuPart part) {
         Item item = player.getMainHandItem().getItem();
 
@@ -427,7 +426,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (!(level.getBlockEntity(pos) instanceof TileEntityJoy joy)) {
+        if (!(level.getBlockEntity(pos) instanceof BlockEntityJoy joy)) {
             return;
         }
 
@@ -458,7 +457,7 @@ public class BlockGomoku extends BlockJoy implements IBoardGameBlock ,IBlockExpl
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         if (state.getValue(PART).isCenter()) {
-            return new TileEntityGomoku(pos, state);
+            return new BlockEntityGomoku(pos, state);
         }
         return null;
     }

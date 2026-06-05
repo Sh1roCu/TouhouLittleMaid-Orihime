@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.block.*;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.*;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,21 +35,21 @@ public final class InitBlocks {
     public static Block SCARECROW = registerBlock("scarecrow", BlockScarecrow::new);
     public static Block SNACK_CABINET = registerBlock("snack_cabinet", BlockSnackCabinet::new);
 
-    public static BlockEntityType<TileEntityAltar> ALTAR_TE = registerBlockEntityType("altar", TileEntityAltar::new, ALTAR);
-    public static BlockEntityType<TileEntityStatue> STATUE_TE = registerBlockEntityType("statue", TileEntityStatue::new, STATUE);
-    public static BlockEntityType<TileEntityGarageKit> GARAGE_KIT_TE = registerBlockEntityType("garage_kit", TileEntityGarageKit::new, GARAGE_KIT);
-    public static BlockEntityType<TileEntityMaidBeacon> MAID_BEACON_TE = registerBlockEntityType("maid_beacon", TileEntityMaidBeacon::new, MAID_BEACON);
-    public static BlockEntityType<TileEntityModelSwitcher> MODEL_SWITCHER_TE = registerBlockEntityType("model_switcher", TileEntityModelSwitcher::new, MODEL_SWITCHER);
-    public static BlockEntityType<TileEntityGomoku> GOMOKU_TE = registerBlockEntityType("gomoku", TileEntityGomoku::new, GOMOKU);
-    public static BlockEntityType<TileEntityCChess> CCHESS_TE = registerBlockEntityType("cchess", TileEntityCChess::new, CCHESS);
-    public static BlockEntityType<TileEntityWChess> WCHESS_TE = registerBlockEntityType("wchess", TileEntityWChess::new, WCHESS);
-    public static BlockEntityType<TileEntityKeyboard> KEYBOARD_TE = registerBlockEntityType("keyboard", TileEntityKeyboard::new, KEYBOARD);
-    public static BlockEntityType<TileEntityBookshelf> BOOKSHELF_TE = registerBlockEntityType("bookshelf", TileEntityBookshelf::new, BOOKSHELF);
-    public static BlockEntityType<TileEntityComputer> COMPUTER_TE = registerBlockEntityType("computer", TileEntityComputer::new, COMPUTER);
-    public static BlockEntityType<TileEntityShrine> SHRINE_TE = registerBlockEntityType("shrine", TileEntityShrine::new, SHRINE);
-    public static BlockEntityType<TileEntityPicnicMat> PICNIC_MAT_TE = registerBlockEntityType("picnic_mat", TileEntityPicnicMat::new, PICNIC_MAT);
-    public static BlockEntityType<TileEntityMaidBed> MAID_BED_TE = registerBlockEntityType("maid_bed", TileEntityMaidBed::new, MAID_BED);
-    public static BlockEntityType<TileEntitySnackCabinet> SNACK_CABINET_TE = registerBlockEntityType("snack_cabinet", TileEntitySnackCabinet::new, SNACK_CABINET);
+    public static BlockEntityType<BlockEntityAltar> ALTAR_TE = registerBlockEntityType("altar", BlockEntityAltar::new, ALTAR);
+    public static BlockEntityType<BlockEntityStatue> STATUE_TE = registerBlockEntityType("statue", BlockEntityStatue::new, STATUE);
+    public static BlockEntityType<BlockEntityGarageKit> GARAGE_KIT_TE = registerBlockEntityType("garage_kit", BlockEntityGarageKit::new, GARAGE_KIT);
+    public static BlockEntityType<BlockEntityMaidBeacon> MAID_BEACON_TE = registerBlockEntityType("maid_beacon", BlockEntityMaidBeacon::new, MAID_BEACON);
+    public static BlockEntityType<BlockEntityModelSwitcher> MODEL_SWITCHER_TE = registerBlockEntityType("model_switcher", BlockEntityModelSwitcher::new, MODEL_SWITCHER);
+    public static BlockEntityType<BlockEntityGomoku> GOMOKU_TE = registerBlockEntityType("gomoku", BlockEntityGomoku::new, GOMOKU);
+    public static BlockEntityType<BlockEntityCChess> CCHESS_TE = registerBlockEntityType("cchess", BlockEntityCChess::new, CCHESS);
+    public static BlockEntityType<BlockEntityWChess> WCHESS_TE = registerBlockEntityType("wchess", BlockEntityWChess::new, WCHESS);
+    public static BlockEntityType<BlockEntityKeyboard> KEYBOARD_TE = registerBlockEntityType("keyboard", BlockEntityKeyboard::new, KEYBOARD);
+    public static BlockEntityType<BlockEntityBookshelf> BOOKSHELF_TE = registerBlockEntityType("bookshelf", BlockEntityBookshelf::new, BOOKSHELF);
+    public static BlockEntityType<BlockEntityComputer> COMPUTER_TE = registerBlockEntityType("computer", BlockEntityComputer::new, COMPUTER);
+    public static BlockEntityType<BlockEntityShrine> SHRINE_TE = registerBlockEntityType("shrine", BlockEntityShrine::new, SHRINE);
+    public static BlockEntityType<BlockEntityPicnicMat> PICNIC_MAT_TE = registerBlockEntityType("picnic_mat", BlockEntityPicnicMat::new, PICNIC_MAT);
+    public static BlockEntityType<BlockEntityMaidBed> MAID_BED_TE = registerBlockEntityType("maid_bed", BlockEntityMaidBed::new, MAID_BED);
+    public static BlockEntityType<BlockEntitySnackCabinet> SNACK_CABINET_TE = registerBlockEntityType("snack_cabinet", BlockEntitySnackCabinet::new, SNACK_CABINET);
 
     private static <B extends Block> B registerBlock(String id, Function<Identifier, ? extends B> func) {
         Identifier loc = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id);

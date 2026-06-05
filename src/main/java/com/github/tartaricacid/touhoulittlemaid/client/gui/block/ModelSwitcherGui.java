@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.block;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityModelSwitcher;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.DirectButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.ImageButtonWithId;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
@@ -9,18 +9,18 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPac
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SaveSwitcherDataPackage;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityModelSwitcher;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class ModelSwitcherGui extends Screen {
     private static final Identifier BG = IdentifierUtil.modLoc("textures/gui/model_switcher.png");
     private static final Identifier DEFAULT_MODEL_ID = Identifier.parse("touhou_little_maid:hakurei_reimu");
-    private final List<TileEntityModelSwitcher.ModeInfo> infoList;
+    private final List<BlockEntityModelSwitcher.ModeInfo> infoList;
     private final BlockPos pos;
     private final int maxRow = 6;
     private final UUID bindUuid;
@@ -46,7 +46,7 @@ public class ModelSwitcherGui extends Screen {
     private int selectedIndex = -1;
     private int page;
 
-    public ModelSwitcherGui(TileEntityModelSwitcher switcher) {
+    public ModelSwitcherGui(BlockEntityModelSwitcher switcher) {
         super(Component.literal("Model Switcher GUI"));
         this.infoList = switcher.getInfoList();
         this.pos = switcher.getBlockPos();
@@ -76,7 +76,7 @@ public class ModelSwitcherGui extends Screen {
     }
 
     private void addEditButton() {
-        TileEntityModelSwitcher.ModeInfo info = this.infoList.get(selectedIndex);
+        BlockEntityModelSwitcher.ModeInfo info = this.infoList.get(selectedIndex);
         maid.setModelId(info.getModelId().toString());
 
         this.addRenderableWidget(Button.builder(Component.translatable("gui.touhou_little_maid.button.skin"), b -> Minecraft.getInstance().setScreen(new ModelSwitcherModelGui(maid, info, this)))
@@ -133,7 +133,7 @@ public class ModelSwitcherGui extends Screen {
 
     private void addListChangeButton() {
         this.addRenderableWidget(Button.builder(Component.translatable("gui.touhou_little_maid.model_switcher.list.add"), b -> {
-            this.infoList.add(new TileEntityModelSwitcher.ModeInfo(DEFAULT_MODEL_ID, "", Direction.NORTH));
+            this.infoList.add(new BlockEntityModelSwitcher.ModeInfo(DEFAULT_MODEL_ID, "", Direction.NORTH));
             this.init();
         }).pos(leftPos + 141, topPos + 139).size(53, 20).build());
 
@@ -163,7 +163,7 @@ public class ModelSwitcherGui extends Screen {
         if (this.maid == null) {
             return;
         }
-        GuiTools.guiBlit(graphics,BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        GuiTools.guiBlit(graphics, BG, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         if (bindUuid != null) {
             graphics.centeredText(font, bindUuid.toString(), leftPos + 128, topPos - 10, 0xFFffffff);
         } else {

@@ -1,15 +1,15 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.block;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBeacon;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBeacon.BeaconEffect;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.BeaconEffectButton;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SetBeaconOverflowPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.StorageAndTakePowerPackage;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon.BeaconEffect;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 public class MaidBeaconGui extends Screen {
     private static final Identifier BG = IdentifierUtil.modLoc("textures/gui/maid_beacon.png");
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
-    private final TileEntityMaidBeacon beacon;
+    private final BlockEntityMaidBeacon beacon;
 
     protected int imageWidth = 300;
     protected int imageHeight = 113;
@@ -39,7 +39,7 @@ public class MaidBeaconGui extends Screen {
     private boolean overflowDelete;
     private int potionIndex;
 
-    public MaidBeaconGui(TileEntityMaidBeacon beacon) {
+    public MaidBeaconGui(BlockEntityMaidBeacon beacon) {
         super(Component.literal("Maid Beacon GUI"));
         this.beacon = beacon;
         this.overflowDelete = beacon.isOverflowDelete();

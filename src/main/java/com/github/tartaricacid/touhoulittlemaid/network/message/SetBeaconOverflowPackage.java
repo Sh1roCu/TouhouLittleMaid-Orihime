@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network.message;
 
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBeacon;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -29,8 +29,8 @@ public record SetBeaconOverflowPackage(BlockPos pos, boolean overflowDelete) imp
             Level world = sender.level();
             if (world.isLoaded(message.pos)) {
                 BlockEntity te = world.getBlockEntity(message.pos);
-                if (te instanceof TileEntityMaidBeacon) {
-                    ((TileEntityMaidBeacon) te).setOverflowDelete(message.overflowDelete);
+                if (te instanceof BlockEntityMaidBeacon) {
+                    ((BlockEntityMaidBeacon) te).setOverflowDelete(message.overflowDelete);
                 }
             }
         });

@@ -3,13 +3,13 @@ package com.github.tartaricacid.touhoulittlemaid.block;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.PicnicMatPart;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntitySit;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemPicnicBasket;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -74,7 +74,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         if (!(worldIn instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (!(worldIn.getBlockEntity(pos) instanceof TileEntityPicnicMat picnicMat)) {
+        if (!(worldIn.getBlockEntity(pos) instanceof BlockEntityPicnicMat picnicMat)) {
             return;
         }
         // 只能选中中心方块
@@ -132,11 +132,11 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         if (hand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
-        if (!(worldIn.getBlockEntity(pos) instanceof TileEntityPicnicMat picnicMat)) {
+        if (!(worldIn.getBlockEntity(pos) instanceof BlockEntityPicnicMat picnicMat)) {
             return InteractionResult.FAIL;
         }
         BlockPos centerPos = picnicMat.getCenterPos();
-        if (!(worldIn.getBlockEntity(centerPos) instanceof TileEntityPicnicMat picnicMatCenter)) {
+        if (!(worldIn.getBlockEntity(centerPos) instanceof BlockEntityPicnicMat picnicMatCenter)) {
             return InteractionResult.FAIL;
         }
         if (itemStack.get(DataComponents.FOOD) != null) {
@@ -148,7 +148,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         return InteractionResult.PASS;
     }
 
-    private static InteractionResult placeFood(ItemStack food, TileEntityPicnicMat picnicMatCenter) {
+    private static InteractionResult placeFood(ItemStack food, BlockEntityPicnicMat picnicMatCenter) {
         try (Transaction tx = Transaction.openOuter()) {
             ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
             int count = food.getCount();
@@ -165,7 +165,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         }
     }
 
-    private static InteractionResult takeFood(Player playerIn, TileEntityPicnicMat picnicMatCenter) {
+    private static InteractionResult takeFood(Player playerIn, BlockEntityPicnicMat picnicMatCenter) {
         try (Transaction tx = Transaction.openOuter()) {
             ItemStacksResourceHandler handler = picnicMatCenter.getHandler();
             int size = handler.size() - 1;
@@ -232,7 +232,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
                     worldIn.setBlock(searchPos, state.setValue(PART, PicnicMatPart.SIDE), Block.UPDATE_ALL);
                 }
                 BlockEntity blockEntity = worldIn.getBlockEntity(searchPos);
-                if (blockEntity instanceof TileEntityPicnicMat picnicMat) {
+                if (blockEntity instanceof BlockEntityPicnicMat picnicMat) {
                     picnicMat.setCenterPos(pos);
                 }
             }
@@ -240,7 +240,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
 
         // 给中心方块存入物品
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof TileEntityPicnicMat picnicMat && stack.is(InitItems.PICNIC_BASKET)) {
+        if (blockEntity instanceof BlockEntityPicnicMat picnicMat && stack.is(InitItems.PICNIC_BASKET)) {
             picnicMat.setHandler(ItemPicnicBasket.getContainer(stack));
         }
     }
@@ -259,7 +259,7 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new TileEntityPicnicMat(pos, state);
+        return new BlockEntityPicnicMat(pos, state);
     }
 
     @Override
@@ -286,12 +286,12 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         if (!(world instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (!(world.getBlockEntity(pos) instanceof TileEntityPicnicMat picnicMat)) {
+        if (!(world.getBlockEntity(pos) instanceof BlockEntityPicnicMat picnicMat)) {
             return;
         }
 
         BlockPos centerPos = picnicMat.getCenterPos();
-        if (world.getBlockEntity(centerPos) instanceof TileEntityPicnicMat picnicMatCenter) {
+        if (world.getBlockEntity(centerPos) instanceof BlockEntityPicnicMat picnicMatCenter) {
             ItemStack stack = InitItems.PICNIC_BASKET.getDefaultInstance();
             ItemPicnicBasket.setContainer(stack, picnicMatCenter.getHandler());
 

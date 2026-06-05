@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.extensions;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.client.IClientBlockExtensions;
 import cn.sh1rocu.touhoulittlemaid.util.particle.ParticleUtil;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityAltar;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityAltar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -44,10 +44,10 @@ public class BlockAltarExtensions implements IClientBlockExtensions {
         return true;
     }
 
-    private Optional<TileEntityAltar> getAltar(BlockGetter world, BlockPos pos) {
+    private Optional<BlockEntityAltar> getAltar(BlockGetter world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof TileEntityAltar) {
-            return Optional.of((TileEntityAltar) te);
+        if (te instanceof BlockEntityAltar) {
+            return Optional.of((BlockEntityAltar) te);
         }
         return Optional.empty();
     }

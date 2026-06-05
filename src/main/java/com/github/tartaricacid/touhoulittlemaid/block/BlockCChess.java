@@ -5,6 +5,8 @@ import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.block.IBoardGameBlock;
 import com.github.tartaricacid.touhoulittlemaid.api.game.xqwlight.Position;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.GomokuPart;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityCChess;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityJoy;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntitySit;
@@ -13,8 +15,6 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.message.CChessToClientPackage;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityCChess;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityJoy;
 import com.github.tartaricacid.touhoulittlemaid.util.CChessUtil;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -93,7 +93,7 @@ public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExpl
         }
 
         BlockEntity te = world.getBlockEntity(centerPos);
-        if (!(te instanceof TileEntityCChess)) {
+        if (!(te instanceof BlockEntityCChess)) {
             return;
         }
 
@@ -105,7 +105,7 @@ public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExpl
     }
 
     public static void maidMove(ServerPlayer player, Level level, BlockPos pos, int move, boolean maidLost, boolean playerLost) {
-        if (!(level.getBlockEntity(pos) instanceof TileEntityCChess chess)) {
+        if (!(level.getBlockEntity(pos) instanceof BlockEntityCChess chess)) {
             return;
         }
         if (chess.isPlayerTurn()) {
@@ -173,7 +173,7 @@ public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExpl
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        if (!(level.getBlockEntity(pos) instanceof TileEntityJoy joy)) {
+        if (!(level.getBlockEntity(pos) instanceof BlockEntityJoy joy)) {
             return;
         }
         Entity oldSitEntity = serverLevel.getEntity(joy.getSitId());
@@ -255,7 +255,7 @@ public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExpl
         BlockPos centerPos = pos.subtract(new Vec3i(part.getPosX(), 0, part.getPosY()));
         BlockEntity te = level.getBlockEntity(centerPos);
 
-        if (!(te instanceof TileEntityCChess chess)) {
+        if (!(te instanceof BlockEntityCChess chess)) {
             return InteractionResult.FAIL;
         }
         if (!chess.isPlayerTurn() && !chess.isCheckmate()) {
@@ -408,7 +408,7 @@ public class BlockCChess extends BlockJoy implements IBoardGameBlock, IBlockExpl
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         if (state.getValue(PART).isCenter()) {
-            return new TileEntityCChess(pos, state);
+            return new BlockEntityCChess(pos, state);
         }
         return null;
     }

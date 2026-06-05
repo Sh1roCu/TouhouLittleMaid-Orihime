@@ -1,8 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.client.init;
 
 import com.github.tartaricacid.touhoulittlemaid.client.model.DebugFloorModel;
+import com.github.tartaricacid.touhoulittlemaid.client.renderer.blockentity.*;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.*;
-import com.github.tartaricacid.touhoulittlemaid.client.renderer.tileentity.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.item.*;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.world.entity.EntityType;
 
 public final class InitEntitiesRender {
     public static void onEntityRenderers() {
@@ -31,19 +30,19 @@ public final class InitEntitiesRender {
         EntityRenderers.register(EntityBroom.TYPE, EntityBroomRender::new);
         EntityRenderers.register(MaidFishingHook.TYPE, MaidFishingHookRenderer::new);
 
-        BlockEntityRenderers.register(InitBlocks.ALTAR_TE, TileEntityAltarRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.STATUE_TE, TileEntityStatueRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.GARAGE_KIT_TE, TileEntityGarageKitRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.GOMOKU_TE, TileEntityGomokuRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.CCHESS_TE, TileEntityCChessRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.WCHESS_TE, TileEntityWChessRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.KEYBOARD_TE, TileEntityKeyboardRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.BOOKSHELF_TE, TileEntityBookshelfRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.COMPUTER_TE, TileEntityComputerRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.SHRINE_TE, TileEntityShrineRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.ALTAR_TE, BlockEntityAltarRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.STATUE_TE, BlockEntityStatueRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.GARAGE_KIT_TE, BlockEntityGarageKitRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.GOMOKU_TE, BlockEntityGomokuRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.CCHESS_TE, BlockEntityCChessRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.WCHESS_TE, BlockEntityWChessRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.KEYBOARD_TE, BlockEntityKeyboardRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.BOOKSHELF_TE, BlockEntityBookshelfRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.COMPUTER_TE, BlockEntityComputerRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.SHRINE_TE, BlockEntityShrineRenderer::new);
         BlockEntityRenderers.register(InitBlocks.PICNIC_MAT_TE, PicnicMatRender::new);
-        BlockEntityRenderers.register(InitBlocks.MAID_BED_TE, TileEntityMaidBedRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.SNACK_CABINET_TE, TileEntitySnackCabinetRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.MAID_BED_TE, BlockEntityMaidBedRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.SNACK_CABINET_TE, BlockEntitySnackCabinetRenderer::new);
     }
 
     public static void onRegisterLayers() {

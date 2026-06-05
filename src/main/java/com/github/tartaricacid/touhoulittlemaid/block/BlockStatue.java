@@ -1,9 +1,9 @@
 package com.github.tartaricacid.touhoulittlemaid.block;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityGarageKit;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityStatue;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityGarageKit;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityStatue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +70,7 @@ public class BlockStatue extends Block implements EntityBlock, IBlockExploded {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new TileEntityStatue(pos, state);
+        return new BlockEntityStatue(pos, state);
     }
 
     @Override
@@ -79,15 +78,15 @@ public class BlockStatue extends Block implements EntityBlock, IBlockExploded {
         return false;
     }
 
-    private Optional<TileEntityStatue> getStatue(BlockGetter world, BlockPos pos) {
+    private Optional<BlockEntityStatue> getStatue(BlockGetter world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof TileEntityStatue statue) {
+        if (te instanceof BlockEntityStatue statue) {
             return Optional.of(statue);
         }
         return Optional.empty();
     }
 
-    private void restoreClayBlock(Level worldIn, BlockPos pos, TileEntityStatue statue) {
+    private void restoreClayBlock(Level worldIn, BlockPos pos, BlockEntityStatue statue) {
         List<BlockPos> posList = statue.getAllBlocks();
         for (BlockPos storagePos : posList) {
             if (storagePos.equals(pos)) {
@@ -114,7 +113,7 @@ public class BlockStatue extends Block implements EntityBlock, IBlockExploded {
             level.setBlockAndUpdate(pos, InitBlocks.GARAGE_KIT.defaultBlockState());
             level.levelEvent(LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
             BlockEntity te = level.getBlockEntity(pos);
-            if (te instanceof TileEntityGarageKit kit && statue.getExtraMaidData() != null) {
+            if (te instanceof BlockEntityGarageKit kit && statue.getExtraMaidData() != null) {
                 kit.setData(statue.getFacing(), statue.getExtraMaidData());
             }
         });

@@ -1,8 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.network.client;
 
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBeacon;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.block.MaidBeaconGui;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenBeaconGuiPackage;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityMaidBeacon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -13,8 +13,8 @@ public final class OpenBeaconGuiPackageProxy {
             return;
         }
         BlockEntity te = mc.level.getBlockEntity(message.pos());
-        if (mc.player != null && mc.player.isAlive() && te instanceof TileEntityMaidBeacon) {
-            mc.setScreen(new MaidBeaconGui((TileEntityMaidBeacon) te));
+        if (mc.player != null && mc.player.isAlive() && te instanceof BlockEntityMaidBeacon) {
+            mc.setScreen(new MaidBeaconGui((BlockEntityMaidBeacon) te));
         }
     }
 }

@@ -1,14 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
 import com.github.tartaricacid.touhoulittlemaid.block.BlockPicnicMat;
+import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBrains;
 import com.github.tartaricacid.touhoulittlemaid.init.InitPoi;
-import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityPicnicMat;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -70,7 +70,7 @@ public class MaidFindHomeMealTask extends MaidCheckRateTask {
     private BlockPos findPicnicMat(ServerLevel world, EntityMaid maid) {
         BlockPos blockPos = maid.getBrainSearchPos();
         PoiManager poiManager = world.getPoiManager();
-        int range = (int) maid.getHomeRadius();
+        int range = maid.getHomeRadius();
         return poiManager.getInRange(type -> type.value().equals(InitPoi.HOME_MEAL_BLOCK), blockPos, range, PoiManager.Occupancy.ANY)
                 .map(PoiRecord::getPos).filter(pos -> !isOccupied(world, pos))
                 .min(Comparator.comparingDouble(pos -> pos.distSqr(maid.blockPosition()))).orElse(null);
@@ -78,7 +78,7 @@ public class MaidFindHomeMealTask extends MaidCheckRateTask {
 
     private boolean isOccupied(ServerLevel worldIn, BlockPos pos) {
         BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te instanceof TileEntityPicnicMat picnicMat) {
+        if (te instanceof BlockEntityPicnicMat picnicMat) {
             for (UUID uuid : picnicMat.getSitIds()) {
                 if (uuid.equals(Util.NIL_UUID)) {
                     return false;
