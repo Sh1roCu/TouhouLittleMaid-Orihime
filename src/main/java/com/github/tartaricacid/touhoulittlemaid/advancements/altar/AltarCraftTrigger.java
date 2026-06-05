@@ -13,28 +13,28 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class AltarCraftTrigger extends SimpleCriterionTrigger<AltarCraftTrigger.Instance> {
+    public static Criterion<Instance> create(Identifier recipeId) {
+        Instance instance = new Instance(Optional.empty(), recipeId);
+        return InitTrigger.ALTAR_CRAFT.createCriterion(instance);
+    }
+
     public void trigger(ServerPlayer serverPlayer, Identifier recipeId) {
         super.trigger(serverPlayer, instance -> instance.matches(recipeId));
     }
 
     @Override
-    public Codec<Instance> codec() {
-        return Instance.CODEC;
+    public Codec<AltarCraftTrigger.Instance> codec() {
+        return AltarCraftTrigger.Instance.CODEC;
     }
 
-    public record Instance(Optional<ContextAwarePredicate> player,
-                           Identifier recipeId) implements SimpleInstance {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
-                        Identifier.CODEC.fieldOf("recipe_id").forGetter(Instance::recipeId))
-                .apply(instance, Instance::new));
+    public record Instance(Optional<ContextAwarePredicate> player, Identifier recipeId) implements SimpleInstance {
+        public static final Codec<AltarCraftTrigger.Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(AltarCraftTrigger.Instance::player),
+                        Identifier.CODEC.fieldOf("recipe_id").forGetter(AltarCraftTrigger.Instance::recipeId))
+                .apply(instance, AltarCraftTrigger.Instance::new));
 
         public boolean matches(Identifier recipeIdIn) {
             return this.recipeId.equals(recipeIdIn);
-        }
-
-        public static Criterion<Instance> recipe(Identifier recipeId) {
-            return InitTrigger.ALTAR_CRAFT.createCriterion(new Instance(Optional.empty(), recipeId));
         }
     }
 }

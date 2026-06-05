@@ -7,6 +7,8 @@ import cn.sh1rocu.touhoulittlemaid.api.event.RenderHandEvent;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaidClient;
 import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
+import com.github.tartaricacid.touhoulittlemaid.api.event.client.MaidPackLoaderEvent;
+import com.github.tartaricacid.touhoulittlemaid.client.animation.special.HardcodedAnimation;
 import com.github.tartaricacid.touhoulittlemaid.client.download.InfoGetManager;
 import com.github.tartaricacid.touhoulittlemaid.client.event.*;
 import com.github.tartaricacid.touhoulittlemaid.client.init.*;
@@ -43,6 +45,8 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
 
         ClientReloadListenerRegistry.onRegisterClientReloadListeners();
         RegisterSpecialModelEvent.registerSpecialModelRenderers();
+
+        MaidPackLoaderEvent.LEGACY.register(HardcodedAnimation::onMaidPackLoader);
 
         ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, LOW);
         ItemTooltipCallback.EVENT.addPhaseOrdering(LOW, LOWEST);

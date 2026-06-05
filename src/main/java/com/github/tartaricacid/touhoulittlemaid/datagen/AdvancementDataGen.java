@@ -29,9 +29,9 @@ public class AdvancementDataGen extends FabricAdvancementProvider {
 
     private static void genGiveSmartSlabAdvancement(Consumer<AdvancementHolder> saver) {
         Advancement.Builder.advancement()
-                .addCriterion("tick", GiveSmartSlabConfigTrigger.Instance.instance())
+                .addCriterion("tick", GiveSmartSlabConfigTrigger.create())
                 .rewards(AdvancementRewards.Builder.loot(LootTableGenerator.GIVE_SMART_SLAB))
-                .save(saver, IdentifierUtil.modLoc("give_smart_slab").toString());
+                .save(saver, IdentifierUtil.modLoc("give_smart_slab"));
     }
 
     private static void genMainAdvancement(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver) {

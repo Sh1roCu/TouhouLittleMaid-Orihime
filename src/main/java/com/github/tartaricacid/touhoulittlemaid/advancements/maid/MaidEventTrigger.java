@@ -13,7 +13,8 @@ import java.util.Optional;
 
 public class MaidEventTrigger extends SimpleCriterionTrigger<MaidEventTrigger.Instance> {
     public static Criterion<Instance> create(String eventName) {
-        return InitTrigger.MAID_EVENT.createCriterion(new Instance(Optional.empty(), eventName));
+        Instance instance = new Instance(Optional.empty(), eventName);
+        return InitTrigger.MAID_EVENT.createCriterion(instance);
     }
 
     public void trigger(ServerPlayer serverPlayer, String eventName) {
@@ -21,15 +22,15 @@ public class MaidEventTrigger extends SimpleCriterionTrigger<MaidEventTrigger.In
     }
 
     @Override
-    public Codec<Instance> codec() {
-        return Instance.CODEC;
+    public Codec<MaidEventTrigger.Instance> codec() {
+        return MaidEventTrigger.Instance.CODEC;
     }
 
     public record Instance(Optional<ContextAwarePredicate> player, String eventName) implements SimpleInstance {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
-                        Codec.STRING.fieldOf("event").forGetter(Instance::eventName))
-                .apply(instance, Instance::new));
+        public static final Codec<MaidEventTrigger.Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(MaidEventTrigger.Instance::player),
+                        Codec.STRING.fieldOf("event").forGetter(MaidEventTrigger.Instance::eventName))
+                .apply(instance, MaidEventTrigger.Instance::new));
 
         public boolean matches(String eventNameIn) {
             return this.eventName.equals(eventNameIn);

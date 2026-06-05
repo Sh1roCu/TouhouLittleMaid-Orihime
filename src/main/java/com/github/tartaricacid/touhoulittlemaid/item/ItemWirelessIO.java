@@ -1,15 +1,15 @@
 package com.github.tartaricacid.touhoulittlemaid.item;
 
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
-import com.github.tartaricacid.touhoulittlemaid.api.bauble.IChestType;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
-import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -27,6 +27,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
@@ -78,8 +79,13 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
         if (stack.getItem() == InitItems.WIRELESS_IO) {
             List<ItemStack> itemStackList = stack.get(FILTER_LIST_TAG);
             if (itemStackList != null) {
-                for (int i = 0; i < itemStackList.size() && i < FILTER_LIST_SIZE; i++)
-                    handler.set(i, ItemVariant.of(itemStackList.get(i)), 1);
+                for (int i = 0; i < itemStackList.size() && i < FILTER_LIST_SIZE; i++) {
+                    ItemStack stackInList = itemStackList.get(i);
+                    if (stackInList.isEmpty()) {
+                        continue;
+                    }
+                    handler.set(i, ItemVariant.of(stackInList), 1);
+                }
             }
         }
         return handler;
@@ -139,16 +145,23 @@ public class ItemWirelessIO extends Item implements ExtendedMenuProvider<ItemSta
             return super.useOn(context);
         }
 
-        for (IChestType type : ChestManager.getAllChestTypes()) {
-            if (!type.isChest(te)) {
-                continue;
-            }
-            if (type.canOpenByPlayer(te, player)) {
-                ItemStack stack = player.getMainHandItem();
-                setBindingPos(stack, pos);
-                return worldIn.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
-            }
+        // 如果是 BaseContainerBlockEntity 需要检查权限
+        if (te instanceof BaseContainerBlockEntity baseContainer && !baseContainer.canOpen(player)) {
+            return super.useOn(context);
         }
+
+        // 依据输入输出，选择不同的朝向
+        ItemStack stack = player.getMainHandItem();
+        boolean isMaidToChest = ItemWirelessIO.isMaidToChest(stack);
+        Direction side = isMaidToChest ? Direction.UP : Direction.DOWN;
+
+        // 最后检查有无 cap
+        var capability = ItemStorage.SIDED.find(worldIn, pos, worldIn.getBlockState(pos), te, side);
+        if (capability != null) {
+            setBindingPos(stack, pos);
+            return worldIn.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+        }
+
         return super.useOn(context);
     }
 

@@ -4,13 +4,11 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * 女仆饰品变化事件
  * 当玩家给女仆佩戴或卸下饰品时触发
  */
-@ApiStatus.AvailableSince("1.4.3")
 public abstract class MaidBaubleChangeEvent {
     private final EntityMaid maid;
     private final ItemStack baubleItem;

@@ -1,11 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoChairEntity;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.ChairConfig;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemChair;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenChairGuiPackage;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.serialization.Codec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,7 +15,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -240,21 +239,6 @@ public class EntityChair extends AbstractEntityFromItem {
     public float getPassengerPitch() {
         if (!getPassengers().isEmpty()) {
             return getPassengers().getFirst().getXRot();
-        }
-        return 0;
-    }
-
-    @Deprecated
-    public int getDim() {
-        ResourceKey<Level> dim = this.level.dimension();
-        if (dim.equals(Level.OVERWORLD)) {
-            return 0;
-        }
-        if (dim.equals(Level.NETHER)) {
-            return -1;
-        }
-        if (dim.equals(Level.END)) {
-            return 1;
         }
         return 0;
     }

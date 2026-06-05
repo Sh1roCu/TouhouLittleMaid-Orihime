@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.resource.loader;
 
+import com.github.tartaricacid.touhoulittlemaid.api.event.client.MaidPackLoaderEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.EntityMaidModel;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.state.EntityMaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.accessor.ResourceAccessor;
@@ -33,12 +34,14 @@ final class MaidPackLoader {
     private static void loadMaidElement(ResourceAccessor accessor, MaidModelInfo info) throws IOException {
         if (info.isGeckoModel()) {
             loadGeckoMaidModelElement(accessor, info);
+            MaidPackLoaderEvent.GECKO.invoker().post(new MaidPackLoaderEvent.Gecko(info));
         } else {
-            loadMaidModelElement(accessor, info);
+            EntityMaidModel model = loadMaidModelElement(accessor, info);
+            MaidPackLoaderEvent.LEGACY.invoker().post(new MaidPackLoaderEvent.Legacy(info, model));
         }
     }
 
-    private static void loadMaidModelElement(ResourceAccessor accessor, MaidModelInfo info) {
+    private static EntityMaidModel loadMaidModelElement(ResourceAccessor accessor, MaidModelInfo info) {
         EntityMaidModel modelJson = CustomPackBedrockModelParser.loadMaidModel(accessor, info.getModel());
         CustomPackLoader.registerTexture(accessor, info.getTexture());
         if (modelJson != null) {
@@ -49,6 +52,7 @@ final class MaidPackLoader {
                 putModelData(info, modelJson);
             }
         }
+        return modelJson;
     }
 
     private static void loadGeckoMaidModelElement(ResourceAccessor accessor, MaidModelInfo info) throws IOException {

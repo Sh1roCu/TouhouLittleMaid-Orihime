@@ -19,14 +19,13 @@ import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -368,6 +367,11 @@ public class AIChatScreen extends Screen {
     }
 
     @Override
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        // 不渲染背景
+    }
+
+    @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (this.input != null) {
             int x = this.input.getX();
@@ -467,7 +471,7 @@ public class AIChatScreen extends Screen {
         graphics.pose().scale(scale);
         int scaledX = Math.round((left + right) / 2.0f / scale) - this.font.width(text) / 2;
         int scaledY = Math.round(tokenY / scale);
-        graphics.text(this.font, text, scaledX, scaledY, 0xFFADADAD, false);
+        graphics.text(this.font, text, scaledX, scaledY, 0xFFADADAD);
         graphics.pose().popMatrix();
     }
 
@@ -526,8 +530,8 @@ public class AIChatScreen extends Screen {
 
     private boolean isPopupTriggerHovered(double mouseX, double mouseY) {
         return this.isButtonHovered(this.llmButton, mouseX, mouseY)
-               || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
-               || this.isButtonHovered(this.langButton, mouseX, mouseY);
+                || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
+                || this.isButtonHovered(this.langButton, mouseX, mouseY);
     }
 
     private boolean isButtonHovered(FlatColorButton button, double mouseX, double mouseY) {
@@ -803,7 +807,7 @@ public class AIChatScreen extends Screen {
 
         private boolean contains(double mouseX, double mouseY) {
             return this.x <= mouseX && mouseX < this.x + this.width
-                   && this.y <= mouseY && mouseY < this.y + this.height();
+                    && this.y <= mouseY && mouseY < this.y + this.height();
         }
     }
 

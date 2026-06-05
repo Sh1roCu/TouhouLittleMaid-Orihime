@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,22 +35,6 @@ public class DefaultGeckoAnimationEvent {
         this.animationFiles = animationFiles;
     }
 
-    @Deprecated(since = "1.4.7")
-    public AnimationFile getMaidAnimationFile() {
-        return animationFiles.get(AnimationType.MAID);
-    }
-
-    @Deprecated(since = "1.4.7")
-    public AnimationFile getTacAnimationFile() {
-        return animationFiles.get(AnimationType.TAC);
-    }
-
-    @Deprecated(since = "1.4.7")
-    public AnimationFile getChairAnimationFile() {
-        return animationFiles.get(AnimationType.CHAIR);
-    }
-
-    @ApiStatus.AvailableSince("1.4.7")
     public AnimationFile getAnimationFile(AnimationType type) {
         return animationFiles.get(type);
     }
@@ -64,7 +47,6 @@ public class DefaultGeckoAnimationEvent {
         }
     }
 
-    @ApiStatus.AvailableSince("1.4.7")
     public void addAnimation(AnimationType type, Identifier file) {
         AnimationFile animationFile = animationFiles.get(type);
         if (animationFile != null) {

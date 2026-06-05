@@ -5,12 +5,10 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * 女仆近战伤害其他实体时触发此事件
  */
-@ApiStatus.AvailableSince("1.4.0")
 public abstract class MaidHurtTarget extends CancellableEvent {
     private final EntityMaid maid;
     private final Entity target;

@@ -15,23 +15,25 @@ import com.github.tartaricacid.touhoulittlemaid.tileentity.TileEntityAltar;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.PosListData;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -46,13 +48,14 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble.RANDOM;
-
+import static net.minecraft.sounds.SoundEvents.*;
+import static net.minecraft.sounds.SoundSource.BLOCKS;
+import static net.minecraft.sounds.SoundSource.PLAYERS;
 
 public class BlockAltar extends Block implements EntityBlock, IBlockExploded, HasClientExtensionsBlock {
     public BlockAltar(Identifier id) {
@@ -98,23 +101,25 @@ public class BlockAltar extends Block implements EntityBlock, IBlockExploded, Ha
 
     @Override
     public void tlm$onBlockExploded(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion) {
-        if (!world.isClientSide()) {
-            this.getAltar(world, pos).ifPresent(altar -> this.restoreStorageBlock(world, pos, altar.getBlockPosList()));
-        }
+        this.getAltar(world, pos).ifPresent(altar -> {
+            PosListData posList = altar.getBlockPosList();
+            this.restoreStorageBlock(world, pos, posList);
+        });
         IBlockExploded.super.tlm$onBlockExploded(state, world, pos, explosion);
     }
 
     @Override
     public BlockState playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        if (!worldIn.isClientSide()) {
-            this.getAltar(worldIn, pos).ifPresent(altar -> {
-                this.restoreStorageBlock(worldIn, pos, altar.getBlockPosList());
-                if (!player.isCreative()) {
-                    Block block = altar.getStorageState().getBlock();
-                    Block.popResource(worldIn, pos, new ItemStack(block));
-                }
-            });
+        if (worldIn.isClientSide()) {
+            return super.playerWillDestroy(worldIn, pos, state, player);
         }
+        this.getAltar(worldIn, pos).ifPresent(altar -> {
+            this.restoreStorageBlock(worldIn, pos, altar.getBlockPosList());
+            if (!player.isCreative()) {
+                Block block = altar.getStorageState().getBlock();
+                Block.popResource(worldIn, pos, new ItemStack(block));
+            }
+        });
         return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
@@ -130,9 +135,15 @@ public class BlockAltar extends Block implements EntityBlock, IBlockExploded, Ha
     public SoundType getSoundType(BlockState state) {
         // TODO
         return super.getSoundType(state);
-/*        return this.getAltar()
-                .map(altar -> altar.getStorageState().getSoundType())
-                .orElse(super.getSoundType(state, world, pos, entity));*/
+//        return this.getAltar(world, pos)
+//                .map(altar -> {
+//                    BlockState storageState = altar.getStorageState();
+//                    // 虽然不太可能，但是还是判断一下避免循环调用
+//                    if (storageState.getBlock() instanceof BlockAltar) {
+//                        return SoundType.STONE;
+//                    }
+//                    return storageState.getSoundType(world, pos, entity);
+//                }).orElse(super.getSoundType(state, world, pos, entity));
     }
 
     @Override
@@ -145,19 +156,20 @@ public class BlockAltar extends Block implements EntityBlock, IBlockExploded, Ha
             if (storagePos.equals(currentPos)) {
                 continue;
             }
-            this.getAltar(worldIn, storagePos).ifPresent(altar -> worldIn.setBlock(storagePos, altar.getStorageState(), Block.UPDATE_ALL));
+            this.getAltar(worldIn, storagePos).ifPresent(altar -> {
+                BlockState storageState = altar.getStorageState();
+                worldIn.setBlock(storagePos, storageState, Block.UPDATE_ALL);
+            });
         }
-        worldIn.playSound(null, currentPos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 1.5f, 1);
+        worldIn.playSound(null, currentPos, BEACON_DEACTIVATE, BLOCKS, 1.5f, 1);
     }
 
     private void takeOutItem(Level world, TileEntityAltar altar, Player player) {
-        if (altar.isCanPlaceItem()) {
-            if (!ItemUtil.getStack(altar.handler, 0).isEmpty()) {
-                ItemStack extractItem = ItemsUtil.extractItem(altar.handler, 0, 1, false, null);
-                player.getInventory().placeItemBackInInventory(extractItem);
-                world.playSound(null, altar.getBlockPos(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.PLAYERS, 1, 1);
-                altarCraft(world, altar, player);
-            }
+        if (altar.isCanPlaceItem() && !ItemUtil.getStack(altar.handler, 0).isEmpty()) {
+            ItemStack extractItem = ItemsUtil.extractItem(altar.handler, 0, 1, false, null);
+            player.getInventory().placeItemBackInInventory(extractItem);
+            world.playSound(null, altar.getBlockPos(), ITEM_FRAME_REMOVE_ITEM, PLAYERS, 1, 1);
+            altarCraft(world, altar, player);
         }
     }
 
@@ -167,58 +179,72 @@ public class BlockAltar extends Block implements EntityBlock, IBlockExploded, Ha
             if (!playerIn.isCreative()) {
                 playerIn.getMainHandItem().shrink(1);
             }
-            world.playSound(null, altar.getBlockPos(), SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.PLAYERS, 1, 1);
+            world.playSound(null, altar.getBlockPos(), ITEM_FRAME_ADD_ITEM, PLAYERS, 1, 1);
             altarCraft(world, altar, playerIn);
         }
     }
 
     private void altarCraft(Level world, TileEntityAltar altar, Player playerIn) {
-        List<ItemStack> arrayList = new ArrayList<>();
+        List<ItemStack> items = Lists.newArrayList();
         List<BlockPos> posList = altar.getCanPlaceItemPosList().getData();
+
         for (int i = 0; i < posList.size(); i++) {
             BlockEntity te = world.getBlockEntity(posList.get(i));
-            if (te instanceof TileEntityAltar) {
-                arrayList.add(i, ((TileEntityAltar) te).getStorageItem());
+            if (te instanceof TileEntityAltar altarOther) {
+                items.add(i, altarOther.getStorageItem());
             }
         }
-        if (arrayList.isEmpty()) {
+        if (items.isEmpty()) {
             return;
         }
-        CraftingInput craftingInput = CraftingInput.of(6, 1, arrayList);
-        PowerAttachment powerAttachment = playerIn.getAttachedOrCreate(InitDataAttachment.POWER_NUM);
+
+        CraftingInput craftingInput = CraftingInput.of(6, 1, items);
+        PowerAttachment powerNum = playerIn.getAttachedOrCreate(InitDataAttachment.POWER_NUM);
         if (world instanceof ServerLevel serverLevel) {
-            serverLevel.recipeAccess().getRecipeFor(InitRecipes.ALTAR_RECIPE, craftingInput, world)
-                    .ifPresent(recipe -> spawnResultEntity(world, playerIn, powerAttachment, recipe.id(), recipe.value(), arrayList, altar));
+            RecipeManager recipeManager = serverLevel.recipeAccess();
+            var recipeFor = recipeManager.getRecipeFor(InitRecipes.ALTAR_RECIPE, craftingInput, world);
+            recipeFor.ifPresent(recipe ->
+                    spawnResultEntity(world, playerIn, powerNum, recipe, items, altar)
+            );
         }
     }
 
     private Optional<TileEntityAltar> getAltar(BlockGetter world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof TileEntityAltar) {
-            return Optional.of((TileEntityAltar) te);
+        if (te instanceof TileEntityAltar altar) {
+            return Optional.of(altar);
         }
         return Optional.empty();
     }
 
-    private void spawnResultEntity(Level world, Player playerIn, PowerAttachment power, ResourceKey<Recipe<?>> altarId,
-                                   AltarRecipe altarRecipe, List<ItemStack> inventory, TileEntityAltar altar) {
-        if (power.get() >= altarRecipe.getPower()) {
-            power.min(altarRecipe.getPower());
-            playerIn.setAttached(InitDataAttachment.POWER_NUM, new PowerAttachment(power.get()));
-            BlockPos centrePos = getCentrePos(altar.getBlockPosList(), altar.getBlockPos());
-            if (world instanceof ServerLevel) {
-                altarRecipe.spawnOutputEntity((ServerLevel) world, centrePos.above(2), inventory);
-            }
-            removeAllAltarItem(world, altar);
-            spawnParticleInCentre(world, centrePos);
-            world.playSound(null, centrePos, InitSounds.ALTAR_CRAFT, SoundSource.VOICE, 1.0f, 1.0f);
-            if (playerIn instanceof ServerPlayer serverPlayer) {
-                InitTrigger.ALTAR_CRAFT.trigger(serverPlayer, altarId.identifier());
-            }
-        } else {
+    private void spawnResultEntity(Level world, Player playerIn, PowerAttachment power,
+                                   RecipeHolder<AltarRecipe> holder, List<ItemStack> inventory,
+                                   TileEntityAltar altar
+    ) {
+        ResourceKey<Recipe<?>> key = holder.id();
+        AltarRecipe recipe = holder.value();
+
+        if (power.get() < recipe.getPower()) {
             if (!world.isClientSide()) {
-                playerIn.sendSystemMessage(Component.translatable("message.touhou_little_maid.altar.not_enough_power"));
+                MutableComponent info = Component.translatable("message.touhou_little_maid.altar.not_enough_power");
+                playerIn.sendSystemMessage(info);
             }
+            return;
+        }
+
+        power.min(recipe.getPower());
+        playerIn.setAttached(InitDataAttachment.POWER_NUM, power.copy());
+
+        BlockPos centrePos = getCentrePos(altar.getBlockPosList(), altar.getBlockPos());
+        if (world instanceof ServerLevel serverLevel) {
+            recipe.spawnOutputEntity(serverLevel, centrePos.above(2), inventory);
+        }
+
+        removeAllAltarItem(world, altar);
+        spawnParticleInCentre(world, centrePos);
+        world.playSound(null, centrePos, InitSounds.ALTAR_CRAFT, PLAYERS, 1.0f, 1.0f);
+        if (playerIn instanceof ServerPlayer serverPlayer) {
+            InitTrigger.ALTAR_CRAFT.trigger(serverPlayer, key.identifier());
         }
     }
 

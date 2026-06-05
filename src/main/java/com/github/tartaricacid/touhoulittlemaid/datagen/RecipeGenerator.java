@@ -1,6 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen;
 
 import com.github.tartaricacid.touhoulittlemaid.datagen.builder.AltarRecipeBuilder;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -11,6 +13,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -286,41 +289,39 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(2, ConventionalItemTags.WOODEN_RODS)
                     .save(recipeOutput);
 
-//            ItemStack entityPlaceholder = new ItemStack(InitItems.ENTITY_PLACEHOLDER);
-//            entityPlaceholder.set(InitDataComponent.RECIPES_ID_TAG, "reborn_maid");
-//            AltarRecipeBuilder.shapeless(items, entityPlaceholder)
-//                    .power(0.5F)
-//                    .requires(InitItems.FILM)
-//                    .requires(ConventionalItemTags.LAPIS_GEMS)
-//                    .requires(ConventionalItemTags.GOLD_INGOTS)
-//                    .requires(ConventionalItemTags.REDSTONE_DUSTS)
-//                    .requires(ConventionalItemTags.IRON_INGOTS)
-//                    .requires(Items.COAL)
-//                    .entity(EntityType.getKey(InitEntities.MAID))
-//                    .langKey("jei.touhou_little_maid.altar_craft.reborn_maid.result")
-//                    .save(recipeOutput, "reborn_maid");
-//
-//            entityPlaceholder.set(InitDataComponent.RECIPES_ID_TAG, "spawn_box");
-//            AltarRecipeBuilder.shapeless(items, entityPlaceholder)
-//                    .power(0.5F)
-//                    .requires(ConventionalItemTags.DIAMOND_GEMS)
-//                    .requires(ConventionalItemTags.LAPIS_GEMS)
-//                    .requires(ConventionalItemTags.GOLD_INGOTS)
-//                    .requires(ConventionalItemTags.REDSTONE_DUSTS)
-//                    .requires(ConventionalItemTags.IRON_INGOTS)
-//                    .requires(Items.COAL)
-//                    .entity(EntityType.getKey(InitEntities.BOX))
-//                    .langKey("jei.touhou_little_maid.altar_craft.spawn_box.result")
-//                    .save(recipeOutput, "spawn_box");
-//
-//            entityPlaceholder.set(InitDataComponent.RECIPES_ID_TAG, "spawn_lightning_bolt");
-//            AltarRecipeBuilder.shapeless(items, entityPlaceholder)
-//                    .power(0.2F)
-//                    .requires(3, ConventionalItemTags.GUNPOWDERS)
-//                    .requires(3, Items.BLAZE_POWDER)
-//                    .entity(EntityType.getKey(EntityType.LIGHTNING_BOLT))
-//                    .langKey("jei.touhou_little_maid.altar_craft.spawn_lightning_bolt.result")
-//                    .save(recipeOutput, "spawn_lightning_bolt");
+            // TODO 生成普通实体的配方，需要一个更加可视化的物品占位符
+
+            AltarRecipeBuilder.shapeless(items, InitItems.MAID_SPAWN_EGG)
+                    .power(0.5F)
+                    .requires(InitItems.FILM)
+                    .requires(ConventionalItemTags.LAPIS_GEMS)
+                    .requires(ConventionalItemTags.GOLD_INGOTS)
+                    .requires(ConventionalItemTags.REDSTONE_DUSTS)
+                    .requires(ConventionalItemTags.IRON_INGOTS)
+                    .requires(Items.COAL)
+                    .entity(EntityMaid.ENTITY_ID)
+                    .langKey("jei.touhou_little_maid.altar_craft.reborn_maid.result")
+                    .save(recipeOutput, "reborn_maid");
+
+            AltarRecipeBuilder.shapeless(items, InitItems.MAID_SPAWN_EGG)
+                    .power(0.5F)
+                    .requires(ConventionalItemTags.DIAMOND_GEMS)
+                    .requires(ConventionalItemTags.LAPIS_GEMS)
+                    .requires(ConventionalItemTags.GOLD_INGOTS)
+                    .requires(ConventionalItemTags.REDSTONE_DUSTS)
+                    .requires(ConventionalItemTags.IRON_INGOTS)
+                    .requires(Items.COAL)
+                    .entity(EntityType.getKey(InitEntities.BOX))
+                    .langKey("jei.touhou_little_maid.altar_craft.spawn_box.result")
+                    .save(recipeOutput, "spawn_box");
+
+            AltarRecipeBuilder.shapeless(items, Items.LIGHT)
+                    .power(0.2F)
+                    .requires(3, ConventionalItemTags.GUNPOWDERS)
+                    .requires(3, Items.BLAZE_POWDER)
+                    .entity(EntityType.getKey(EntityType.LIGHTNING_BOLT))
+                    .langKey("jei.touhou_little_maid.altar_craft.spawn_lightning_bolt.result")
+                    .save(recipeOutput, "spawn_lightning_bolt");
 
             AltarRecipeBuilder.shapeless(items, InitItems.SNACK_CABINET)
                     .power(0.1F)
@@ -353,8 +354,8 @@ public class RecipeGenerator extends FabricRecipeProvider {
 //        ItemStack patchouliBook = new ItemStack(PatchouliItems.BOOK);
 //        patchouliBook.set(PatchouliDataComponents.BOOK, InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
 //        this.shapeless(patchouliBook)
-//                .requires(Tags.Items.DYES_WHITE)
-//                .requires(Tags.Items.DYES_RED)
+//                .requires(ConventionalItemTags.DYES_WHITE)
+//                .requires(ConventionalItemTags.DYES_RED)
 //                .requires(Items.BOOK)
 //                .unlockedBy(getHasName(Items.BOOK), has(Items.BOOK))
 //                .save(recipeOutput.withConditions(modLoadedCondition), InitItems.MEMORIZABLE_GENSOKYO_LOCATION);

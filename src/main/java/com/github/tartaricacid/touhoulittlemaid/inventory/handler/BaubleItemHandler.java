@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -190,12 +189,10 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
         return -1;
     }
 
-    @ApiStatus.AvailableSince("1.4.3")
     public boolean containsItem(Item item) {
         return baubleItemsCache.contains(item);
     }
 
-    @ApiStatus.AvailableSince("1.4.7")
     public void clearAll() {
         this.stacks.clear();
         this.baubles.clear();
@@ -205,7 +202,6 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
     /**
      * 获取需要同步到客户端饰品
      */
-    @ApiStatus.AvailableSince("1.4.7")
     public Int2ObjectSortedMap<ItemStack> getSyncClientBauble(EntityMaid maid) {
         Int2ObjectSortedMap<ItemStack> sync = new Int2ObjectRBTreeMap<>();
         for (var entry : baubles.int2ObjectEntrySet()) {

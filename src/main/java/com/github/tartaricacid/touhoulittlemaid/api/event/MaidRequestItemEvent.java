@@ -5,7 +5,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Predicate;
 
@@ -13,7 +12,6 @@ import java.util.function.Predicate;
  * 当女仆需要从外部获取物品到自己物品栏时触发此事件。
  * 此事件可取消。如果取消，表示已处理完毕，不再继续传递给其他处理器。
  */
-@ApiStatus.AvailableSince("1.5.1")
 public class MaidRequestItemEvent extends CancellableEvent {
     private final EntityMaid maid;
     private final Predicate<ItemStack> itemFilter;

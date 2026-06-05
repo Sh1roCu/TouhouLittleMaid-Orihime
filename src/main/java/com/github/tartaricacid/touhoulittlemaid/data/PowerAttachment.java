@@ -61,4 +61,8 @@ public class PowerAttachment {
     public float get() {
         return this.power;
     }
+
+    public PowerAttachment copy() {
+        return new PowerAttachment(this.power);
+    }
 }

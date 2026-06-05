@@ -17,7 +17,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.control.BroomControl
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.crop.SpecialCropManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.meal.MaidMealManager;
-import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
 import com.github.tartaricacid.touhoulittlemaid.util.AnnotatedInstanceUtil;
 
@@ -34,7 +33,6 @@ public final class CommonRegistry {
         BackpackManager.init();
         BaubleManager.init();
         MultiBlockManager.init();
-        ChestManager.init();
         MaidMealManager.init();
         FishingTypeManager.init();
         SerializerRegister.init();

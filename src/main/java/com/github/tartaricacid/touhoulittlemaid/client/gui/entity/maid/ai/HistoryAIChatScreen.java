@@ -18,12 +18,11 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.item.component.ResolvableProfile;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +53,7 @@ public class HistoryAIChatScreen extends Screen {
     private final @Nullable Screen parent;
     private final List<LLMMessage> history = Lists.newArrayList();
     private final List<Renderable> historyWidgets = Lists.newArrayList();
-    private PlayerSkin playerSkin;
+    private final ResolvableProfile playerProfile;
     private String summaryText = StringUtils.EMPTY;
 
     private double scroll = 0;
@@ -79,8 +78,7 @@ public class HistoryAIChatScreen extends Screen {
         super(Component.literal("Maid History AI Chat Screen"));
         this.parent = parent;
         this.maid = maid;
-        this.playerSkin = DefaultPlayerSkin.getDefaultSkin();
-        this.loadPlayerSkinAsync();
+        this.playerProfile = this.getPlayerResolvableProfile();
         this.summaryText = maid.getAiChatManager().getCompressedSummary();
         this.transformMessage();
     }
@@ -155,7 +153,7 @@ public class HistoryAIChatScreen extends Screen {
         // 工具消息
         if (isTool) {
             historyWidgets.add(new HistoryChatWidget(posX - TOOL_TEXT_WIDTH / 2, maxHeight,
-                    TOOL_TEXT_WIDTH, lineHeight, msg, playerSkin, message.gameTime(), true, true));
+                    TOOL_TEXT_WIDTH, lineHeight, msg, playerProfile, message.gameTime(), true, true));
             return lineHeight;
         }
 
@@ -163,19 +161,20 @@ public class HistoryAIChatScreen extends Screen {
         int width = Math.min(font.width(msg), CHAT_TEXT_WIDTH) + 10;
         if (isLeft) {
             historyWidgets.add(new HistoryChatWidget(posX - 100, maxHeight,
-                    width, lineHeight, msg, playerSkin, message.gameTime(), true, false));
+                    width, lineHeight, msg, playerProfile, message.gameTime(), true, false));
         } else {
             historyWidgets.add(new HistoryChatWidget(posX + 100 - width, maxHeight,
-                    width, lineHeight, msg, playerSkin, message.gameTime(), false, false));
+                    width, lineHeight, msg, playerProfile, message.gameTime(), false, false));
         }
         return lineHeight;
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.fillGradient(0, 0, this.width, this.height, 0xc0101010, 0xc0101010);
         super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
-
         graphics.centeredText(font, HISTORY_TITLE, posX + 210, 8, 0xFFFFFFFF);
+
         this.renderSummaryPanel(graphics);
 
         if (this.historyWidgets.isEmpty()) {
@@ -219,10 +218,8 @@ public class HistoryAIChatScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (this.minecraft != null) {
-            Screen screen = Objects.requireNonNullElse(this.parent, new AIChatScreen(this.maid));
-            this.minecraft.setScreen(screen);
-        }
+        Screen screen = Objects.requireNonNullElse(this.parent, new AIChatScreen(this.maid));
+        this.minecraft.setScreen(screen);
     }
 
     private void transformMessage() {
@@ -388,15 +385,12 @@ public class HistoryAIChatScreen extends Screen {
         return lines;
     }
 
-    private void loadPlayerSkinAsync() {
+    private ResolvableProfile getPlayerResolvableProfile() {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) {
-            return;
+            return ResolvableProfile.createUnresolved("alex");
         }
-        mc.getSkinManager().get(player.getGameProfile())
-                .thenAcceptAsync(optionalSkin -> {
-                    this.playerSkin = optionalSkin.orElse(DefaultPlayerSkin.getDefaultSkin());
-                }, mc);
+        return ResolvableProfile.createResolved(player.getGameProfile());
     }
 }

@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.item;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.TouhouImageButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.WirelessIOButton;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
@@ -10,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -33,7 +33,6 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
     @Override
     protected void init() {
         super.init();
-        this.clearWidgets();
 
         WirelessIOButton ioModeToggle = new WirelessIOButton(leftPos + 23, topPos + 34, 18, 18, isMaidToChest,
                 (x, y) -> {
@@ -59,17 +58,11 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
-        this.extractTooltip(graphics, mouseX, mouseY);
-    }
-
-    @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        super.extractTransparentBackground(graphics);
-        GuiTools.blit(graphics, MAIN, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+        GuiTools.guiBlit(graphics, MAIN, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         if (isBlacklist) {
-            GuiTools.blit(graphics, MAIN, leftPos + 61, topPos + 15, 0, 166, 54, 55);
+            GuiTools.guiBlit(graphics, MAIN, leftPos + 61, topPos + 15, 0, 166, 54, 55);
         }
     }
 

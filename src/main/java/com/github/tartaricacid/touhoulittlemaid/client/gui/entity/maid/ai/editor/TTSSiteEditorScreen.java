@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.editor;
 
-import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSite;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.FormField;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.layout.FieldDescriptor;
@@ -220,7 +219,6 @@ public class TTSSiteEditorScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        this.extractBackground(graphics, mouseX, mouseY, partialTick);
         graphics.fillGradient(0, 0, this.width, this.height, 0xc0101010, 0xc0101010);
 
         // 居中标题
@@ -237,9 +235,7 @@ public class TTSSiteEditorScreen extends Screen {
             this.renderModelArea(graphics, mouseX, mouseY, partialTick);
         }
 
-        for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        }
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         // 保存提示
         if (System.currentTimeMillis() - this.tipTimestamp < 2000) {
@@ -348,9 +344,7 @@ public class TTSSiteEditorScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (this.minecraft != null) {
-            this.minecraft.setScreen(this.parent);
-        }
+        this.minecraft.setScreen(this.parent);
     }
 
     private int getVisibleModelCount() {

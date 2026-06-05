@@ -1,8 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.client.init;
 
-import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.AnimationRegister;
-import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.magic.MagicCastingAnimationManager;
 import com.github.tartaricacid.touhoulittlemaid.client.event.ShowOptifineScreen;
 import com.github.tartaricacid.touhoulittlemaid.client.overlay.BroomTipsOverlay;
 import com.github.tartaricacid.touhoulittlemaid.client.overlay.MaidTipsOverlay;
@@ -24,8 +22,6 @@ public class ClientSetupEvent {
         AnimationRegister.registerAnimationState();
         MaidTipsOverlay.init();
         ShowOptifineScreen.checkOptifineIsLoaded();
-        HardcodedAnimationManger.init();
-        MagicCastingAnimationManager.init();
         KeyMappingRegister.onRegisterKeyMappings();
 
         // 客户端兼容

@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.compat.immersivemelodies.client;
 
-import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
+import com.github.tartaricacid.touhoulittlemaid.client.animation.special.HardcodedAnimation;
 import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.molang.CtrlBinding;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +13,7 @@ public class ImmersiveMelodiesCompat {
         IS_LOADED = FabricLoader.getInstance().isModLoaded(IMMERSIVE_MELODIES);
     }
 
-    public static void addAnimation(HardcodedAnimationManger manger) {
+    public static void addAnimation(HardcodedAnimation manger) {
     }
 
     public static void updateMelodyProgress(LivingEntity entity, ImmersiveMelodiesCompat.ImmersiveMelodiesData imData, float partialTicks) {

@@ -17,7 +17,7 @@ public interface InitRecipes {
 
     RecipeBookCategory ALTAR_RECIPE_CATEGORY = registerCategory("altar", new RecipeBookCategory());
 
-    RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe_serializers", AltarRecipeSerializer.SERIALIZER);
+    RecipeSerializer<AltarRecipe> ALTAR_RECIPE_SERIALIZER = registerSerializer("altar_recipe", AltarRecipeSerializer.SERIALIZER);
 
     RecipeType<AltarRecipe> ALTAR_RECIPE = registerType("altar_recipe", simple(Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "altar_crafting")));
 

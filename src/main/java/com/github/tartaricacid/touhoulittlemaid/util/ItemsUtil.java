@@ -28,7 +28,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -221,7 +220,6 @@ public final class ItemsUtil {
      * <p>
      * 此方法采用了缓存机制，性能为 O(1)，适合频繁调用
      */
-    @ApiStatus.AvailableSince("1.4.3")
     public static boolean hasBaubleItemInMaid(EntityMaid maid, Item bauble) {
         BaubleItemHandler handler = maid.getMaidBauble();
         return handler.containsItem(bauble);
@@ -232,7 +230,6 @@ public final class ItemsUtil {
      * <p>
      * 此方法采用了缓存机制，性能为 O(1)，适合频繁调用
      */
-    @ApiStatus.AvailableSince("1.4.3")
     public static boolean hasBaubleStackInMaid(EntityMaid maid, ItemStack bauble) {
         return hasBaubleItemInMaid(maid, bauble.getItem());
     }

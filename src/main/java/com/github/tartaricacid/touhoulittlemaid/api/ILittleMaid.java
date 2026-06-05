@@ -4,11 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.ai.agent.context.GameContextRegi
 import com.github.tartaricacid.touhoulittlemaid.ai.agent.tool.ToolRegister;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.SerializerRegister;
 import com.github.tartaricacid.touhoulittlemaid.block.multiblock.MultiBlockManager;
-import com.github.tartaricacid.touhoulittlemaid.client.animation.HardcodedAnimationManger;
-import com.github.tartaricacid.touhoulittlemaid.client.animation.gecko.magic.MagicCastingAnimationManager;
 import com.github.tartaricacid.touhoulittlemaid.client.overlay.MaidTipsOverlay;
-import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.EntityMaidRenderer;
-import com.github.tartaricacid.touhoulittlemaid.client.renderer.entity.gecko.GeckoEntityMaidRenderer;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.DebugTarget;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.ExtraMaidBrainManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.edible.MaidEdibleBlockManager;
@@ -19,11 +15,8 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.crop.SpecialCropManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.meal.MaidMealManager;
-import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.VisibleForDebug;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,14 +53,6 @@ public interface ILittleMaid {
      * @param manager 注册器
      */
     default void addMultiBlock(MultiBlockManager manager) {
-    }
-
-    /**
-     * 添加箱子类型，用于隙间饰品的箱子识别
-     *
-     * @param manager 注册器
-     */
-    default void addChestType(ChestManager manager) {
     }
 
     /**
@@ -109,7 +94,6 @@ public interface ILittleMaid {
      *
      * @param register 注册器
      */
-    @ApiStatus.AvailableSince("1.5.1")
     default void registerAITool(ToolRegister register) {
     }
 
@@ -129,7 +113,6 @@ public interface ILittleMaid {
      *
      * @param register 注册器
      */
-    @ApiStatus.AvailableSince("1.5.1")
     default void registerAIMaidContext(GameContextRegister register) {
     }
 
@@ -162,33 +145,6 @@ public interface ILittleMaid {
      * 有些物品在指向女仆时，能够在屏幕上显示相关提示文本
      */
     default void addMaidTips(MaidTipsOverlay maidTipsOverlay) {
-    }
-
-    /**
-     * 添加默认模型风格的实体 layer 渲染
-     */
-    default void addAdditionMaidLayer(EntityMaidRenderer renderer, EntityRendererProvider.Context context) {
-    }
-
-    /**
-     * 添加 Gecko 风格的实体 layer 渲染
-     */
-    default void addAdditionGeckoMaidLayer(GeckoEntityMaidRenderer renderer, EntityRendererProvider.Context context) {
-    }
-
-    /**
-     * 添加硬编码的动画
-     */
-    default void addHardcodeAnimation(HardcodedAnimationManger manger) {
-    }
-
-    /**
-     * 注册魔法咏唱动画提供器
-     *
-     * @param manager 注册管理器
-     */
-    @ApiStatus.AvailableSince("1.4.7")
-    default void registerMagicCastingAnimation(MagicCastingAnimationManager manager) {
     }
 
     @VisibleForDebug

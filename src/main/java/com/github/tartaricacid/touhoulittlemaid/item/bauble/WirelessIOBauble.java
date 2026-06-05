@@ -1,15 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.item.bauble;
 
-import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandler;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
-import com.github.tartaricacid.touhoulittlemaid.api.bauble.IChestType;
 import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidWirelessIOEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
-import com.github.tartaricacid.touhoulittlemaid.inventory.chest.ChestManager;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -18,6 +15,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -99,48 +97,42 @@ public class WirelessIOBauble implements IMaidBauble {
             if (te == null) {
                 return;
             }
-            for (IChestType type : ChestManager.getAllChestTypes()) {
-                if (!type.isChest(te)) {
-                    continue;
-                }
-                int openCount = type.getOpenCount(maid.level, bindingPos, te);
-                if (openCount > 0) {
-                    return;
-                }
-                Storage<ItemVariant> chestInv = ItemStorage.SIDED.find(maid.level, te.getBlockPos(), te.getBlockState(), te, null);
-                if (chestInv != null) {
-                    ResourceHandler<ItemVariant> maidInv = maid.getAvailableInv(false);
-                    boolean isMaidToChest = ItemWirelessIO.isMaidToChest(baubleItem);
-                    boolean isBlacklist = ItemWirelessIO.isBlacklist(baubleItem);
-                    List<Boolean> slotConfig = ItemWirelessIO.getSlotConfig(baubleItem);
-                    List<Boolean> slotConfigData;
-                    if (slotConfig != null) {
-                        slotConfigData = new ArrayList<>(slotConfig);
-                        slotConfigData.set(maidInv.size() - 2, slotConfig.get(SLOT_NUM - 2));
-                        slotConfigData.set(maidInv.size() - 1, slotConfig.get(SLOT_NUM - 1));
-                    } else {
-                        slotConfigData = new ArrayList<>(Collections.nCopies(SLOT_NUM, false));
-                    }
-                    ItemStacksResourceHandler filterList = ItemWirelessIO.getFilterList(maid.registryAccess(), baubleItem);
 
-                    if (isMaidToChest) {
-                        var event = new MaidWirelessIOEvent.MaidToChest(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);
-                        MaidWirelessIOEvent.MAID_TO_CHEST.invoker().post(event);
-                        if (!event.isCanceled()) {
-                            maidToChest(maidInv, chestInv, isBlacklist, filterList, slotConfigData);
-                        }
-                    } else {
-                        var event = new MaidWirelessIOEvent.ChestToMaid(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);
-                        MaidWirelessIOEvent.CHEST_TO_MAID.invoker().post(event);
-                        if (!event.isCanceled()) {
-                            chestToMaid(chestInv, maidInv, isBlacklist, filterList, slotConfigData);
-                        }
+            // 依据输入输出，选择不同的朝向
+            boolean isMaidToChest = ItemWirelessIO.isMaidToChest(baubleItem);
+            Direction side = isMaidToChest ? Direction.UP : Direction.DOWN;
+
+            var chestInv = ItemStorage.SIDED.find(maid.level, te.getBlockPos(), te.getBlockState(), te, side);
+            if (chestInv != null) {
+                var maidInv = maid.getAvailableInv(false);
+                boolean isBlacklist = ItemWirelessIO.isBlacklist(baubleItem);
+                List<Boolean> slotConfig = ItemWirelessIO.getSlotConfig(baubleItem);
+                List<Boolean> slotConfigData;
+                if (slotConfig != null) {
+                    slotConfigData = new ArrayList<>(slotConfig);
+                    slotConfigData.set(maidInv.size() - 2, slotConfig.get(SLOT_NUM - 2));
+                    slotConfigData.set(maidInv.size() - 1, slotConfig.get(SLOT_NUM - 1));
+                } else {
+                    slotConfigData = new ArrayList<>(Collections.nCopies(SLOT_NUM, false));
+                }
+                var filterList = ItemWirelessIO.getFilterList(maid.registryAccess(), baubleItem);
+
+                if (isMaidToChest) {
+                    var event = new MaidWirelessIOEvent.MaidToChest(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);
+                    MaidWirelessIOEvent.MAID_TO_CHEST.invoker().post(event);
+                    if (!event.isCanceled()) {
+                        maidToChest(maidInv, chestInv, isBlacklist, filterList, slotConfigData);
+                    }
+                } else {
+                    var event = new MaidWirelessIOEvent.ChestToMaid(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);
+                    MaidWirelessIOEvent.CHEST_TO_MAID.invoker().post(event);
+                    if (!event.isCanceled()) {
+                        chestToMaid(chestInv, maidInv, isBlacklist, filterList, slotConfigData);
                     }
                 }
-                if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
-                    InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.USE_WIRELESS_IO);
-                }
-                return;
+            }
+            if (maid.getOwner() instanceof ServerPlayer serverPlayer) {
+                InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.USE_WIRELESS_IO);
             }
         }
     }
@@ -178,19 +170,19 @@ public class WirelessIOBauble implements IMaidBauble {
 
     private void chestToMaid(Storage<ItemVariant> chest, ResourceHandler<ItemVariant> maid, boolean isBlacklist, ResourceHandler<ItemVariant> filterList, List<Boolean> slotConfig) {
         for (StorageView<ItemVariant> view : chest.nonEmptyViews()) {
-            ItemVariant chestInvStack = view.getResource();
+            ItemStack chestInvStack = view.getResource().toStack((int) view.getAmount());
             boolean allowMove = isBlacklist;
             for (int j = 0; j < filterList.size(); j++) {
                 ItemStack filterItem = ItemUtil.getStack(filterList, j);
-                boolean isEqual = ItemStack.isSameItem(chestInvStack.toStack(), filterItem);
+                boolean isEqual = ItemStack.isSameItem(chestInvStack, filterItem);
                 if (isEqual) {
                     allowMove = !isBlacklist;
                     break;
                 }
             }
             if (allowMove) {
-                int beforeCount = (int) view.getAmount();
-                ItemStack after = insertItemStacked(maid, chestInvStack.toStack(beforeCount).copy(), false, slotConfig);
+                int beforeCount = chestInvStack.getCount();
+                ItemStack after = insertItemStacked(maid, chestInvStack.copy(), false, slotConfig);
                 int afterCount = after.getCount();
                 // Sync Client & Server
                 if (beforeCount != afterCount) {

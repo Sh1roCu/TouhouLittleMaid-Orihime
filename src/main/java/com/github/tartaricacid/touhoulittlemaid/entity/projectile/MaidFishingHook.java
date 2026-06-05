@@ -1,12 +1,12 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.projectile;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidFishedEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskFishing;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,7 +17,6 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerEntity;
@@ -70,7 +69,7 @@ public class MaidFishingHook extends Projectile {
     protected int life;
     protected float fishAngle;
     protected boolean openWater = true;
-    protected FishHookState currentState = FishHookState.FLYING;
+    protected MaidFishingHook.FishHookState currentState = MaidFishingHook.FishHookState.FLYING;
 
     protected MaidFishingHook(EntityType<? extends MaidFishingHook> entityType, Level level, int luck, int lureSpeed) {
         super(entityType, level);
@@ -368,7 +367,7 @@ public class MaidFishingHook extends Projectile {
                 // 添加额外的物品
                 this.addExtraLoot(randomItems);
 
-                event = new MaidFishedEvent(randomItems, this.onGround() ? 2 : 1, this);
+                event = new MaidFishedEvent(randomItems, this.onGround() ? 2 : 1, maid, this);
                 MaidFishedEvent.CALLBACK.invoker().post(event);
                 if (event.isCanceled()) {
                     this.discard();
@@ -429,19 +428,19 @@ public class MaidFishingHook extends Projectile {
     }
 
     private boolean calculateOpenWater(BlockPos pos) {
-        OpenWaterType openWaterType = OpenWaterType.INVALID;
+        MaidFishingHook.OpenWaterType openWaterType = MaidFishingHook.OpenWaterType.INVALID;
         for (int y = -1; y <= 2; ++y) {
-            OpenWaterType openWaterTypeForArea = this.getOpenWaterTypeForArea(pos.offset(-2, y, -2), pos.offset(2, y, 2));
+            MaidFishingHook.OpenWaterType openWaterTypeForArea = this.getOpenWaterTypeForArea(pos.offset(-2, y, -2), pos.offset(2, y, 2));
             switch (openWaterTypeForArea) {
                 case INVALID:
                     return false;
                 case ABOVE_WATER:
-                    if (openWaterType == OpenWaterType.INVALID) {
+                    if (openWaterType == MaidFishingHook.OpenWaterType.INVALID) {
                         return false;
                     }
                     break;
                 case INSIDE_WATER:
-                    if (openWaterType == OpenWaterType.ABOVE_WATER) {
+                    if (openWaterType == MaidFishingHook.OpenWaterType.ABOVE_WATER) {
                         return false;
                     }
             }
@@ -450,21 +449,21 @@ public class MaidFishingHook extends Projectile {
         return true;
     }
 
-    private OpenWaterType getOpenWaterTypeForArea(BlockPos firstPos, BlockPos secondPos) {
+    private MaidFishingHook.OpenWaterType getOpenWaterTypeForArea(BlockPos firstPos, BlockPos secondPos) {
         return BlockPos.betweenClosedStream(firstPos, secondPos)
                 .map(this::getOpenWaterTypeForBlock)
                 .reduce((firstType, secondType) -> firstType == secondType ? firstType : OpenWaterType.INVALID)
-                .orElse(OpenWaterType.INVALID);
+                .orElse(MaidFishingHook.OpenWaterType.INVALID);
     }
 
-    private OpenWaterType getOpenWaterTypeForBlock(BlockPos blockPos) {
+    private MaidFishingHook.OpenWaterType getOpenWaterTypeForBlock(BlockPos blockPos) {
         BlockState blockState = this.level.getBlockState(blockPos);
         if (!blockState.isAir() && !blockState.is(Blocks.LILY_PAD)) {
             FluidState fluidState = blockState.getFluidState();
             return fluidState.is(FluidTags.WATER) && fluidState.isSource()
-                    && blockState.getCollisionShape(this.level(), blockPos).isEmpty() ? OpenWaterType.INSIDE_WATER : OpenWaterType.INVALID;
+                    && blockState.getCollisionShape(this.level(), blockPos).isEmpty() ? MaidFishingHook.OpenWaterType.INSIDE_WATER : MaidFishingHook.OpenWaterType.INVALID;
         } else {
-            return OpenWaterType.ABOVE_WATER;
+            return MaidFishingHook.OpenWaterType.ABOVE_WATER;
         }
     }
 

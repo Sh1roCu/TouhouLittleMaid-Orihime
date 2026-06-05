@@ -17,7 +17,7 @@ import net.minecraft.world.item.component.CustomData;
 
 import java.util.*;
 
-@SuppressWarnings({"removal", "deprecation"})
+@SuppressWarnings("deprecation")
 public class InitDataComponent {
     public static void init() {
 
@@ -25,12 +25,6 @@ public class InitDataComponent {
 
     public static final String ENTITY_ID_TAG_NAME = "id";
     public static final String OWNER_UUID_TAG_NAME = "owner_uuid";
-
-    public static final DataComponentType<String> RECIPES_ID_TAG =
-            register("recipe_id", DataComponentType.<String>builder()
-                    .persistent(Codec.STRING)
-                    .networkSynchronized(ByteBufCodecs.STRING_UTF8)
-                    .build());
 
     public static final DataComponentType<CustomData> MAID_INFO =
             register("maid_info", DataComponentType.<CustomData>builder()
@@ -103,7 +97,7 @@ public class InitDataComponent {
     public static final DataComponentType<List<ItemStack>> FILTER_LIST_TAG =
             register(FILTER_LIST_TAG_NAME, DataComponentType.<List<ItemStack>>builder()
                     .persistent(ItemStack.OPTIONAL_CODEC.listOf())
-                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC))
                     .build());
 
     public static final String BINDING_POS_NAME = "binding_pos";

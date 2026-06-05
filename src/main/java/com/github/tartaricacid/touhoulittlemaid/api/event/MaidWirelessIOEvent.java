@@ -92,13 +92,25 @@ public abstract class MaidWirelessIOEvent extends CancellableEvent {
     }
 
     public static class MaidToChest extends MaidWirelessIOEvent {
-        public MaidToChest(EntityMaid maid, ResourceHandler<ItemVariant> maidInv, Storage<ItemVariant> chestInv, ResourceHandler<ItemVariant> filterInv, boolean isBlacklist, List<Boolean> slotConfig) {
+        public MaidToChest(EntityMaid maid,
+                           ResourceHandler<ItemVariant> maidInv,
+                           Storage<ItemVariant> chestInv,
+                           ResourceHandler<ItemVariant> filterInv,
+                           boolean isBlacklist,
+                           List<Boolean> slotConfig
+        ) {
             super(maid, maidInv, chestInv, filterInv, isBlacklist, slotConfig);
         }
     }
 
     public static class ChestToMaid extends MaidWirelessIOEvent {
-        public ChestToMaid(EntityMaid maid, ResourceHandler<ItemVariant> maidInv, Storage<ItemVariant> chestInv, ResourceHandler<ItemVariant> filterInv, boolean isBlacklist, List<Boolean> slotConfig) {
+        public ChestToMaid(EntityMaid maid,
+                           ResourceHandler<ItemVariant> maidInv,
+                           Storage<ItemVariant> chestInv,
+                           ResourceHandler<ItemVariant> filterInv,
+                           boolean isBlacklist,
+                           List<Boolean> slotConfig
+        ) {
             super(maid, maidInv, chestInv, filterInv, isBlacklist, slotConfig);
         }
     }

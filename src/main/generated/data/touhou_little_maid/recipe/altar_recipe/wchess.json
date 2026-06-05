@@ -1,5 +1,5 @@
 {
-  "type": "touhou_little_maid:altar_recipe_serializers",
+  "type": "touhou_little_maid:altar_recipe",
   "entity": "minecraft:item",
   "ingredients": [
     "#minecraft:planks",

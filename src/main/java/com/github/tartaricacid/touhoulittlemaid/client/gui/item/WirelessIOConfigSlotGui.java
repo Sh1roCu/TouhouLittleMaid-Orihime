@@ -1,15 +1,13 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.item;
 
-import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.WirelessIOSlotButton;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import com.github.tartaricacid.touhoulittlemaid.network.message.WirelessIOSlotConfigPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -97,15 +95,8 @@ public class WirelessIOConfigSlotGui extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
-        for (Renderable renderable : ((ScreenAccessor) this).tlm$getRenderables()) {
-            renderable.extractRenderState(graphics, mouseX, mouseY, partialTicks);
-        }
-    }
-
-    @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        GuiTools.blit(guiGraphics, SLOT, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        GuiTools.guiBlit(guiGraphics, SLOT, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 }

@@ -13,6 +13,11 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class GiveSmartSlabConfigTrigger extends SimpleCriterionTrigger<GiveSmartSlabConfigTrigger.Instance> {
+    public static Criterion<GiveSmartSlabConfigTrigger.Instance> create() {
+        Instance instance = new Instance(Optional.empty());
+        return InitTrigger.GIVE_SMART_SLAB_CONFIG.createCriterion(instance);
+    }
+
     public void trigger(ServerPlayer serverPlayer) {
         super.trigger(serverPlayer, instance -> MiscConfig.GIVE_SMART_SLAB.get());
     }
@@ -23,12 +28,8 @@ public class GiveSmartSlabConfigTrigger extends SimpleCriterionTrigger<GiveSmart
     }
 
     public record Instance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player))
-                .apply(instance, Instance::new));
-
-        public static Criterion<Instance> instance() {
-            return InitTrigger.GIVE_SMART_SLAB_CONFIG.createCriterion(new Instance(Optional.empty()));
-        }
+        public static final Codec<GiveSmartSlabConfigTrigger.Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(GiveSmartSlabConfigTrigger.Instance::player))
+                .apply(instance, GiveSmartSlabConfigTrigger.Instance::new));
     }
 }
