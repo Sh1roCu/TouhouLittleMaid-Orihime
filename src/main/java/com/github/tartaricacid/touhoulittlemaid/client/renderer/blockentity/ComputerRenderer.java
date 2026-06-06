@@ -15,11 +15,11 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 
-public class BlockEntityComputerRenderer extends BlockEntityJoyRenderer<BlockEntityComputer> {
+public class ComputerRenderer extends JoyRenderer<BlockEntityComputer> {
     private static final Identifier TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/computer.png");
     private final SimpleBedrockModel<Unit> model;
 
-    public BlockEntityComputerRenderer(BlockEntityRendererProvider.Context context) {
+    public ComputerRenderer(BlockEntityRendererProvider.Context context) {
         model = InternalBedrockModelRegistry.getModel(InternalBedrockModelRegistry.COMPUTER);
     }
 

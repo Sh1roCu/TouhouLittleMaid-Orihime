@@ -24,12 +24,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class BlockEntityAltarRenderer implements BlockEntityRenderer<BlockEntityAltar, AltarRenderState> {
+public class AltarRenderer implements BlockEntityRenderer<BlockEntityAltar, AltarRenderState> {
     private static final Identifier TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/altar.png");
     private final SimpleBedrockModel<Unit> model;
     private final ItemModelResolver itemModelResolver;
 
-    public BlockEntityAltarRenderer(BlockEntityRendererProvider.Context context) {
+    public AltarRenderer(BlockEntityRendererProvider.Context context) {
         this.model = InternalBedrockModelRegistry.getModel(InternalBedrockModelRegistry.ALTAR);
         this.itemModelResolver = context.itemModelResolver();
     }

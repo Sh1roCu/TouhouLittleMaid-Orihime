@@ -3,9 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.passive;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IEntity;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
-import com.github.tartaricacid.touhoulittlemaid.ai.manager.entity.MaidAIChatManager;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidEquipEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTickEvent;
@@ -17,14 +15,13 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidBrain;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.control.MaidMoveControl;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.navigation.MaidPathNavigation;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleDataCollection;
-import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.ChatBubbleRegister;
-import com.github.tartaricacid.touhoulittlemaid.entity.favorability.FavorabilityManager;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.MaidFishingHook;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SendEffectPackage;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.world.backups.MaidBackupsManager;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidWorldData;
 import com.google.common.collect.Lists;
@@ -66,22 +63,12 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.List;
-import java.util.Stack;
 
 import static com.github.tartaricacid.touhoulittlemaid.config.ServerConfig.MAID_AI_TIME_DEBUG;
 import static com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidBrain.BRAIN_PROVIDER;
 import static com.github.tartaricacid.touhoulittlemaid.inventory.handler.MaidBackpackHandler.BACKPACK_ITEM_SLOT;
 
-public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttackMob,
-        MaidAnimationManager.View, MaidConfigManager.View, MaidItemManager.View,
-        MaidParticleManager.View, MaidProfileManager.View, MaidStatsManager.View,
-        MaidTaskManager.View, MaidBackpackManager.View, MaidWorldInteractionManager.View,
-        MaidTeleportManager.View, MaidCombatManager.View, MaidGameManager.View,
-        MaidDeathManager.View, MaidSoundManager.View, MaidClimbManager.View,
-        MaidMiscManager.View, MaidSwimManager.View {
-
-    private boolean isAddedToLevel;
-
+public class EntityMaid extends MaidManagerHost implements IEntity, CrossbowAttackMob {
     public static final Identifier ENTITY_ID = IdentifierUtil.modLoc("maid");
     public static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, ENTITY_ID);
     public static final EntityType<EntityMaid> TYPE = EntityType.
@@ -89,6 +76,8 @@ public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttack
             .sized(0.6f, 1.5f)
             .clientTrackingRange(10)
             .build(ENTITY_KEY);
+
+    private boolean isAddedToLevel;
 
     /**
      * AI 超时检测
@@ -102,35 +91,6 @@ public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttack
     private static final EntityDataAccessor<ItemStack> BACKPACK_ITEM_SHOW = SynchedEntityData.defineId(EntityMaid.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<ChatBubbleDataCollection> CHAT_BUBBLE = SynchedEntityData.defineId(EntityMaid.class, ChatBubbleRegister.INSTANCE);
 
-    /**
-     * 各个系统的管理器，负责处理女仆的不同功能模块，避免 EntityMaid 类过于臃肿
-     */
-    private final MaidProfileManager profileManager = new MaidProfileManager(this);
-    private final MaidTaskManager taskManager = new MaidTaskManager(this);
-    private final MaidStatsManager statsManager = new MaidStatsManager(this);
-    private final MaidItemManager itemManager = new MaidItemManager(this);
-    private final MaidParticleManager particleManager = new MaidParticleManager(this);
-    private final MaidWorldInteractionManager worldInteractionManager = new MaidWorldInteractionManager(this);
-    private final MaidTeleportManager teleportManager = new MaidTeleportManager(this);
-    private final MaidAnimationManager animationManager = new MaidAnimationManager(this);
-    private final MaidConfigManager configManager = new MaidConfigManager(this);
-    private final MaidGameManager gameManager = new MaidGameManager(this);
-    private final MaidBackpackManager backpackManager = new MaidBackpackManager(this);
-    private final MaidCombatManager combatManager = new MaidCombatManager(this);
-    private final MaidDeathManager deathManager = new MaidDeathManager(this);
-    private final MaidSoundManager soundManager = new MaidSoundManager(this);
-    private final MaidClimbManager climbManager = new MaidClimbManager(this);
-    private final MaidMiscManager miscManager = new MaidMiscManager(this);
-    private final MaidKillRecordManager killRecordManager = new MaidKillRecordManager(this);
-    private final ChatBubbleManager chatBubbleManager = new ChatBubbleManager(this);
-    private final FavorabilityManager favorabilityManager = new FavorabilityManager(this);
-    private final MaidSwimManager swimManager = new MaidSwimManager(this);
-    private final MaidAIChatManager aiChatManager = new MaidAIChatManager(this);
-
-    /**
-     * 控制不同的 navigation 切换的条件以及切换后变更女仆相关的 AI 控制参数
-     */
-    private final MaidNavigationManager navigationManager;
     /**
      * 检查玩家是否正在打开女仆的 GUI 的标志位，打开 GUI 后女仆会暂停 Brain 的执行
      */
@@ -150,8 +110,9 @@ public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttack
 
     protected EntityMaid(EntityType<EntityMaid> type, Level world) {
         super(type, world);
+        super.initMaidManagers(this);
+
         this.moveControl = new MaidMoveControl(this);
-        this.navigationManager = new MaidNavigationManager(this);
         // 启用实体持久化，也许能解决难以复现的女仆实体丢失问题
         this.setPersistenceRequired();
     }
@@ -162,111 +123,6 @@ public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttack
 
     public static EntityDataAccessor<ChatBubbleDataCollection> getChatBubbleKey() {
         return CHAT_BUBBLE;
-    }
-
-    @Override
-    public MaidConfigManager getConfigManager() {
-        return configManager;
-    }
-
-    @Override
-    public MaidAnimationManager getAnimationManager() {
-        return animationManager;
-    }
-
-    @Override
-    public MaidProfileManager getProfileManager() {
-        return profileManager;
-    }
-
-    @Override
-    public MaidParticleManager getParticleManager() {
-        return particleManager;
-    }
-
-    @Override
-    public MaidItemManager getItemManager() {
-        return itemManager;
-    }
-
-    @Override
-    public MaidWorldInteractionManager getWorldInteractionManager() {
-        return worldInteractionManager;
-    }
-
-    @Override
-    public MaidTeleportManager getTeleportManager() {
-        return teleportManager;
-    }
-
-    @Override
-    public MaidTaskManager getTaskManager() {
-        return taskManager;
-    }
-
-    @Override
-    public MaidStatsManager getStatsManager() {
-        return statsManager;
-    }
-
-    @Override
-    public MaidGameManager getGameManager() {
-        return gameManager;
-    }
-
-    @Override
-    public MaidBackpackManager getBackpackManager() {
-        return backpackManager;
-    }
-
-    @Override
-    public MaidSwimManager getSwimManager() {
-        return swimManager;
-    }
-
-    @Override
-    public MaidCombatManager getCombatManager() {
-        return combatManager;
-    }
-
-    @Override
-    public MaidDeathManager getDeathManager() {
-        return deathManager;
-    }
-
-    @Override
-    public MaidSoundManager getSoundManager() {
-        return soundManager;
-    }
-
-    @Override
-    public MaidClimbManager getClimbManager() {
-        return climbManager;
-    }
-
-    @Override
-    public MaidMiscManager getMiscManager() {
-        return miscManager;
-    }
-
-    public MaidAIChatManager getAiChatManager() {
-        return aiChatManager;
-    }
-
-    public MaidNavigationManager getNavigationManager() {
-        return navigationManager;
-    }
-
-    public MaidKillRecordManager getKillRecordManager() {
-        return killRecordManager;
-    }
-
-    public FavorabilityManager getFavorabilityManager() {
-        return favorabilityManager;
-    }
-
-    public ChatBubbleManager getChatBubbleManager() {
-        return chatBubbleManager;
     }
 
     @Override
@@ -833,9 +689,9 @@ public class EntityMaid extends TamableAnimal implements IEntity, CrossbowAttack
      */
     public boolean canBrainMoving() {
         return !this.isMaidInSittingPose()
-               && !this.isPassenger()
-               && !this.isSleeping()
-               && !this.isLeashed();
+                && !this.isPassenger()
+                && !this.isSleeping()
+                && !this.isLeashed();
     }
 
     public ItemStack getBackpackShowItem() {

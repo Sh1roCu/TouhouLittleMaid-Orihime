@@ -31,7 +31,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class BlockEntityGomokuRenderer implements BlockEntityRenderer<BlockEntityGomoku, GomokuRenderState> {
+public class GomokuRenderer implements BlockEntityRenderer<BlockEntityGomoku, GomokuRenderState> {
     private static final Identifier CHECKER_BOARD_TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/gomoku.png");
     private static final Identifier BLACK_PIECE_TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/gomoku_black_piece.png");
     private static final Identifier WHITE_PIECE_TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/gomoku_white_piece.png");
@@ -41,7 +41,7 @@ public class BlockEntityGomokuRenderer implements BlockEntityRenderer<BlockEntit
     private final SimpleBedrockModel<Unit> pieceModel;
     private final Font font;
 
-    public BlockEntityGomokuRenderer(BlockEntityRendererProvider.Context context) {
+    public GomokuRenderer(BlockEntityRendererProvider.Context context) {
         checkerBoardModel = InternalBedrockModelRegistry.getModel(InternalBedrockModelRegistry.GOMOKU);
         pieceModel = InternalBedrockModelRegistry.getModel(InternalBedrockModelRegistry.GOMOKU_PIECE);
         this.font = context.font();

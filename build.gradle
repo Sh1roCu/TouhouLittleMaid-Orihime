@@ -160,6 +160,12 @@ configurations {
     }
 }
 
+sourceSets.main {
+    java {
+        srcDir layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main")
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
@@ -168,6 +174,9 @@ dependencies {
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
+
+    annotationProcessor project(':maid-manager-codegen')
+    annotationProcessor 'com.squareup:javapoet:1.13.0'
 
     // Opus 音频解码库
     mcLib("org.gagravarr:vorbis-java-core:0.8")
@@ -350,6 +359,11 @@ java {
 
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.named('sourcesJar') {
+    // sourcesJar 会打包 annotationProcessor 生成的源码目录，显式依赖 compileJava
+    dependsOn tasks.named('compileJava')
 }
 
 jar {

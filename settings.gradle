@@ -7,3 +7,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+rootProject.name = 'touhoulittlemaid-fabric'
+include 'maid-manager-codegen'
+project(':maid-manager-codegen').projectDir = file('modules/maid-manager-codegen')

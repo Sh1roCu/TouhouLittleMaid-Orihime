@@ -1,4 +1,4 @@
-package com.github.tartaricacid.touhoulittlemaid.client.renderer.blockentity;
+package com.github.tartaricacid.touhoulittlemaid.client.renderer.item;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
@@ -42,16 +42,16 @@ import static com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil.clea
 /**
  * GarageKit 物品的特殊模型渲染器，替代旧版 BlockEntityWithoutLevelRenderer
  * <p>
- * 参考 BlockEntityGarageKitRenderer 的实体渲染模式实现。
+ * 参考 GarageKitRenderer 的实体渲染模式实现。
  * 底座模型（STATUE_BASE）通过 submitCustomGeometry 渲染。
  * 实体预览通过 EntityRenderDispatcher.submit() 渲染。
  */
-public class BlockEntityItemStackGarageKitRenderer implements SpecialModelRenderer<GarageKitRenderState> {
+public class GarageKitItemRenderer implements SpecialModelRenderer<GarageKitRenderState> {
     public static final Identifier GARAGE_KIT_ITEM_RENDERER = IdentifierUtil.modLoc("garage_kit_item");
     private static final Identifier TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/statue_base.png");
     private final SimpleBedrockModel<Unit> baseModel;
 
-    public BlockEntityItemStackGarageKitRenderer() {
+    public GarageKitItemRenderer() {
         this.baseModel = InternalBedrockModelRegistry.getModel(STATUE_BASE);
     }
 
@@ -158,16 +158,16 @@ public class BlockEntityItemStackGarageKitRenderer implements SpecialModelRender
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked<GarageKitRenderState> {
         public static final Identifier ID = IdentifierUtil.modLoc("garage_kit");
-        public static final MapCodec<BlockEntityItemStackGarageKitRenderer.Unbaked> MAP_CODEC = MapCodec.unit(BlockEntityItemStackGarageKitRenderer.Unbaked::new);
+        public static final MapCodec<GarageKitItemRenderer.Unbaked> MAP_CODEC = MapCodec.unit(GarageKitItemRenderer.Unbaked::new);
 
         @Override
-        public MapCodec<BlockEntityItemStackGarageKitRenderer.Unbaked> type() {
+        public MapCodec<GarageKitItemRenderer.Unbaked> type() {
             return MAP_CODEC;
         }
 
         @Override
-        public BlockEntityItemStackGarageKitRenderer bake(SpecialModelRenderer.BakingContext context) {
-            return new BlockEntityItemStackGarageKitRenderer();
+        public GarageKitItemRenderer bake(SpecialModelRenderer.BakingContext context) {
+            return new GarageKitItemRenderer();
         }
     }
 }

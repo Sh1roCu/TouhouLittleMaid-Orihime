@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Consumer;
 
+@MaidManagerDef(alias = "deathManager", exposeView = true)
 public class MaidDeathManager {
     private final EntityMaid maid;
     /**

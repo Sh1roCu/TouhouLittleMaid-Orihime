@@ -41,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+@MaidManagerDef(alias = "combatManager", exposeView = true)
 public class MaidCombatManager {
     private final EntityMaid maid;
     private final ItemCooldowns cooldowns;
