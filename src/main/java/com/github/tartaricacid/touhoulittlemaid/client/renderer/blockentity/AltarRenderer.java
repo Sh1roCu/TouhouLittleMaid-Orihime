@@ -109,7 +109,9 @@ public class AltarRenderer implements BlockEntityRenderer<BlockEntityAltar, Alta
     // TODO
 //    @Override
 //    public AABB getRenderBoundingBox(BlockEntityAltar te) {
-//        return RenderHelper.getAABB(te.getWorldPosition().offset(-9, -5, -9),
-//                te.getWorldPosition().offset(9, 5, 9));
+//        return RenderHelper.getAABB(
+//                te.getBlockPos().offset(-9, -5, -9),
+//                te.getBlockPos().offset(9, 5, 9)
+//        );
 //    }
 }

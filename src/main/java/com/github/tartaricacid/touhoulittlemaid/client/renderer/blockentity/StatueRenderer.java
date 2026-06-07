@@ -29,6 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -56,7 +57,7 @@ public class StatueRenderer implements BlockEntityRenderer<BlockEntityStatue, St
                                    ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(te, state, partialTick, cameraPos, breakProgress);
         state.isCoreBlock = te.isCoreBlock();
-        state.facing = te.getFacing();
+        state.facing = te.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         state.size = te.getSize().getScale();
         state.statueSize = te.getSize();
         state.extraMaidData = te.getExtraMaidData();

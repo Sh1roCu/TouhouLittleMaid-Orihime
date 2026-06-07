@@ -7,6 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemGarageKit;
 import com.google.common.collect.Lists;
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
@@ -30,15 +31,18 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -53,8 +57,9 @@ import java.util.Optional;
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.MODEL_ID_TAG_NAME;
 import static net.minecraft.world.entity.EntitySpawnReason.SPAWN_ITEM_USE;
 
-public class BlockGarageKit extends Block implements EntityBlock {
+public class BlockGarageKit extends HorizontalDirectionalBlock implements EntityBlock {
     public static final VoxelShape BLOCK_AABB = Block.box(4, 0, 4, 12, 16, 12);
+    private static final MapCodec<BlockGarageKit> CODEC = simpleCodec(BlockGarageKit::new);
 
     public BlockGarageKit(Identifier id) {
         super(BlockBehaviour.Properties.of()
@@ -62,6 +67,12 @@ public class BlockGarageKit extends Block implements EntityBlock {
                 .sound(SoundType.MUD)
                 .strength(1, 2)
                 .noOcclusion());
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH));
+    }
+
+    public BlockGarageKit(Properties properties) {
+        super(properties);
     }
 
     public static void fillItemCategory(CreativeModeTab.Output items) {
@@ -99,30 +110,39 @@ public class BlockGarageKit extends Block implements EntityBlock {
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         List<ItemStack> drops = Lists.newArrayList(super.getDrops(state, params));
         BlockEntity parameter = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (parameter instanceof BlockEntityGarageKit te) {
+        if (parameter instanceof BlockEntityGarageKit kit) {
             ItemStack stack = new ItemStack(InitBlocks.GARAGE_KIT);
-            stack.set(InitDataComponent.MAID_INFO, CustomData.of(te.getExtraData()));
+            stack.set(InitDataComponent.MAID_INFO, CustomData.of(kit.getExtraData()));
             drops.add(stack);
         }
         return drops;
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction opposite = context.getHorizontalDirection().getOpposite();
+        return this.defaultBlockState().setValue(FACING, opposite);
     }
 
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state,
                             @Nullable LivingEntity placer, ItemStack stack) {
         this.getGarageKit(worldIn, pos).ifPresent(te -> {
-            Direction facing = Direction.SOUTH;
-            if (placer != null) {
-                facing = placer.getDirection().getOpposite();
-            }
-            te.setData(facing, ItemGarageKit.getMaidData(stack).copyTag());
+            CustomData data = ItemGarageKit.getMaidData(stack);
+            te.setExtraData(data.copyTag());
         });
     }
 
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state,
                                        boolean includeData) {
-        return getGarageKitFromWorld(level, pos);
+        ItemStack stack = new ItemStack(InitBlocks.GARAGE_KIT);
+        this.getGarageKit(level, pos).ifPresent(te -> {
+            CustomData data = CustomData.of(te.getExtraData());
+            stack.set(InitDataComponent.MAID_INFO, data);
+        });
+        return stack;
     }
 
     @Override
@@ -158,17 +178,8 @@ public class BlockGarageKit extends Block implements EntityBlock {
             data.merge(context.buildResult());
         }
 
-        garageKit.setData(garageKit.getFacing(), data);
+        garageKit.setExtraData(data);
         return InteractionResult.SUCCESS;
-    }
-
-    private ItemStack getGarageKitFromWorld(BlockGetter world, BlockPos pos) {
-        ItemStack stack = new ItemStack(InitBlocks.GARAGE_KIT);
-        getGarageKit(world, pos).ifPresent(te -> {
-            CustomData data = CustomData.of(te.getExtraData());
-            stack.set(InitDataComponent.MAID_INFO, data);
-        });
-        return stack;
     }
 
     private Optional<BlockEntityGarageKit> getGarageKit(BlockGetter world, BlockPos pos) {
@@ -182,5 +193,15 @@ public class BlockGarageKit extends Block implements EntityBlock {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return BLOCK_AABB;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 }

@@ -29,6 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -55,7 +56,7 @@ public class GarageKitRenderer implements BlockEntityRenderer<BlockEntityGarageK
     public void extractRenderState(BlockEntityGarageKit te, GarageKitRenderState state, float partialTick, Vec3 cameraPos,
                                    ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(te, state, partialTick, cameraPos, breakProgress);
-        state.facing = te.getFacing();
+        state.facing = te.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         state.extraData = te.getExtraData();
         state.entityRenderState = null;
 

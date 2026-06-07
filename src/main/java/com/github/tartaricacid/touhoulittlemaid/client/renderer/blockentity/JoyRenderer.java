@@ -21,12 +21,12 @@ public abstract class JoyRenderer<T extends BlockEntityJoy> implements BlockEnti
         state.facing = entity.getBlockState().getValue(BlockGomoku.FACING);
     }
 
-//    // TODO
+    // TODO
 //    @Override
 //    public AABB getRenderBoundingBox(T te) {
 //        return RenderHelper.getAABB(
-//                te.getWorldPosition().offset(-2, 0, -2),
-//                te.getWorldPosition().offset(2, 1, 2)
+//                te.getBlockPos().offset(-2, 0, -2),
+//                te.getBlockPos().offset(2, 1, 2)
 //        );
 //    }
 

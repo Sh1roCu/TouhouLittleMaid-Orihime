@@ -1,49 +1,22 @@
 package com.github.tartaricacid.touhoulittlemaid.blockentity;
 
-import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockEntityPersistentData;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueInputUtil;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueOutputUtil;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
-import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.ShrineItemHandler;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-import javax.annotation.Nullable;
-
-public class BlockEntityShrine extends BlockEntity implements IBlockEntityPersistentData {
+public class BlockEntityShrine extends BlockEntityBase {
     private static final String STORAGE_ITEM = "StorageItem";
-    private final ItemStacksResourceHandler handler = new ItemStacksResourceHandler(1) {
-        @Override
-        protected void onContentsChanged(int index, ItemStack previousContents) {
-            // 当物品栏内容发生变化时，这个方法会被调用
-            // 我们需要在这里调用 refresh() 来通知 Minecraft 该方块实体的数据已更新，需要保存并同步到客户端
-            refresh();
-        }
-
-        @Override
-        public boolean isValid(int index, ItemVariant resource) {
-            return resource.is(InitItems.FILM);
-        }
-
-        @Override
-        protected int getCapacity(int index, ItemVariant resource) {
-            return 1;
-        }
-    };
+    private final ItemStacksResourceHandler handler = new ShrineItemHandler();
 
     public BlockEntityShrine(BlockPos pos, BlockState blockState) {
         super(InitBlocks.SHRINE_TE, pos, blockState);
@@ -51,33 +24,14 @@ public class BlockEntityShrine extends BlockEntity implements IBlockEntityPersis
 
     @Override
     protected void saveAdditional(ValueOutput output) {
-        ValueOutputUtil.putChild(output, STORAGE_ITEM, handler);
         super.saveAdditional(output);
+        ValueOutputUtil.putChild(output, STORAGE_ITEM, handler);
     }
 
     @Override
     public void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         ValueInputUtil.readChild(input, STORAGE_ITEM, handler);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return this.saveWithoutMetadata(pRegistries);
-    }
-
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    public void refresh() {
-        this.setChanged();
-        if (level != null) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
-        }
     }
 
     public ItemStack getStorageItem() {
@@ -89,8 +43,11 @@ public class BlockEntityShrine extends BlockEntity implements IBlockEntityPersis
             return;
         }
         try (Transaction tx = Transaction.openOuter()) {
-            handler.insert(ItemVariant.of(stack), stack.count(), tx);
-            tx.commit();
+            int insert = handler.insert(ItemVariant.of(stack), stack.count(), tx);
+            if (insert > 0) {
+                tx.commit();
+                this.refresh();
+            }
         }
     }
 
@@ -100,6 +57,7 @@ public class BlockEntityShrine extends BlockEntity implements IBlockEntityPersis
             int extract = handler.extract(0, resource, 1, tx);
             if (extract > 0) {
                 tx.commit();
+                this.refresh();
                 return resource.toStack(extract);
             } else {
                 return ItemStack.EMPTY;
