@@ -1,6 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.client.renderer.item;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.client.render.MaidRenderState;
 import com.github.tartaricacid.touhoulittlemaid.client.model.bedrock.SimpleBedrockModel;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.blockentity.state.GarageKitRenderState;
@@ -9,7 +10,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemGarageKit;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
@@ -94,7 +94,6 @@ public class GarageKitItemRenderer implements SpecialModelRenderer<GarageKitRend
         entity.load(TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), data));
         if (entity instanceof EntityMaid maid) {
             clearMaidDataResidue(maid, true);
-            maid.setModelId(data.getStringOr("model_id", "touhou_little_maid:hakurei_reimu"));
             maid.renderState = MaidRenderState.GARAGE_KIT_ITEM;
             maid.tickCount = 0;
         }

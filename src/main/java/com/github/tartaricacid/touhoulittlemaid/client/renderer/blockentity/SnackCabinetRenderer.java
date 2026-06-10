@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 public class SnackCabinetRenderer implements BlockEntityRenderer<BlockEntitySnackCabinet, SnackCabinetRenderState> {
     private static final Identifier TEXTURE = IdentifierUtil.modLoc("textures/bedrock/block/snack_cabinet.png");
+
     private final SimpleBedrockModel<Unit> model;
     private final BedrockPart full;
     private final BedrockPart half;
@@ -53,6 +54,7 @@ public class SnackCabinetRenderer implements BlockEntityRenderer<BlockEntitySnac
         poseStack.translate(0.5, 1.5, 0.5);
         poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         poseStack.mulPose(Axis.YN.rotationDegrees(180 - state.facing.get2DDataValue() * 90));
+
         submitNodeCollector.submitCustomGeometry(
                 poseStack, RenderTypes.entityCutout(TEXTURE),
                 (pose, buffer) -> {
@@ -65,6 +67,7 @@ public class SnackCabinetRenderer implements BlockEntityRenderer<BlockEntitySnac
                     poseStack.popPose();
                 }
         );
+
         poseStack.popPose();
     }
 
@@ -86,10 +89,12 @@ public class SnackCabinetRenderer implements BlockEntityRenderer<BlockEntitySnac
         return true;
     }
 
-    // TODO
+//    // TODO
 //    @Override
-//    public AABB getRenderBoundingBox(BlockEntitySnackCabinet blockEntity) {
-//        BlockPos pos = blockEntity.getBlockPos();
-//        return RenderHelper.getAABB(pos.offset(0, 0, 0), pos.offset(1, 2, 1));
+//    public AABB getRenderBoundingBox(BlockEntitySnackCabinet be) {
+//        return RenderHelper.getAABB(
+//                be.getBlockPos().offset(0, 0, 0),
+//                be.getBlockPos().offset(1, 2, 1)
+//        );
 //    }
 }

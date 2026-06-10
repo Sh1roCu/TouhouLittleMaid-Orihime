@@ -126,8 +126,10 @@ public class BlockStatue extends HorizontalDirectionalBlock implements EntityBlo
             return;
         }
         this.getStatue(level, pos).ifPresent(statue -> {
-            BlockState blockState = InitBlocks.GARAGE_KIT.defaultBlockState();
-            blockState.setValue(BlockGarageKit.FACING, state.getValue(FACING));
+            BlockState blockState = InitBlocks.GARAGE_KIT
+                    .defaultBlockState()
+                    .setValue(BlockGarageKit.FACING, state.getValue(FACING));
+
             level.setBlockAndUpdate(pos, blockState);
 
             BlockEntity be = level.getBlockEntity(pos);

@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.item;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IItemEntity;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidAndItemTransformEvent;
+import com.github.tartaricacid.touhoulittlemaid.entity.data.ProfileData;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemMaidTooltip;
@@ -31,8 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import static com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent.MODEL_ID_TAG_NAME;
 
 public abstract class AbstractStoreMaidItem extends Item implements IItemEntity {
     static final String CUSTOM_NAME = "CustomName";
@@ -80,12 +79,10 @@ public abstract class AbstractStoreMaidItem extends Item implements IItemEntity 
             return Optional.empty();
         }
         CompoundTag tag = maidInfo.copyTag();
-        Optional<String> modelId = tag.read(Codec.STRING.fieldOf(MODEL_ID_TAG_NAME));
-        if (modelId.isEmpty()) {
-            return Optional.empty();
-        }
-        String customName = tag.read(Codec.STRING.fieldOf(CUSTOM_NAME)).orElse(StringUtils.EMPTY);
-        return Optional.of(new ItemMaidTooltip(modelId.get(), customName));
+        String modelId = ProfileData.directGetModelId(tag);
+        String customName = tag.read(Codec.STRING.fieldOf(CUSTOM_NAME))
+                .orElse(StringUtils.EMPTY);
+        return Optional.of(new ItemMaidTooltip(modelId, customName));
     }
 
     public InteractionResult spawnFromStore(UseOnContext context, Player player, Level worldIn, EntityMaid maid, Runnable runnable) {
