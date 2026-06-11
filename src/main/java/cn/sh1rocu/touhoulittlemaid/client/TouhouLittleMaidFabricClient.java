@@ -15,10 +15,12 @@ import com.github.tartaricacid.touhoulittlemaid.client.input.STTChatKey;
 import com.github.tartaricacid.touhoulittlemaid.client.resource.BedrockModelLoader;
 import com.github.tartaricacid.touhoulittlemaid.debug.target.DebugClientRenderEvent;
 import com.github.tartaricacid.touhoulittlemaid.event.maid.UseNameTagEvent;
+import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import fuzs.forgeconfigapiport.api.config.v2.ModConfigEvents;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -27,6 +29,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 
@@ -45,6 +48,9 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
                 BuiltinItemRendererRegistry.INSTANCE.register(clientEx,
                         (stack, mode, matrices, vertexConsumers, light, overlay) ->
                                 ((IItemRenderer) clientEx).getCustomRenderer().renderByItem(stack, mode, matrices, vertexConsumers, light, overlay)));
+
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), InitBlocks.SCARECROW, InitBlocks.MAID_BEACON);
+        // BlockRenderLayerMap.INSTANCE.putItems(RenderType.cutout(), InitItems.MAID_BEACON);
 
         BedrockEntityModelRegisterEvent.CALLBACK.register(BedrockModelLoader::onRegisterBedrockModelRenderers);
 
