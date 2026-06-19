@@ -103,7 +103,7 @@ public class BlockEntityMaidBeacon extends BlockEntityBase {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (this.level instanceof ServerLevel serverLevel) {
-            ItemStack itemStack = ItemMaidBeacon.tileEntityToItemStack(serverLevel.registryAccess(), this);
+            ItemStack itemStack = ItemMaidBeacon.blockEntityToItemStack(serverLevel.registryAccess(), this);
             Block.popResource(serverLevel, pos, itemStack);
         }
     }

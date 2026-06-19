@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -143,10 +144,11 @@ public class LivingEntityEquipmentWrapper {
             if (!insideTransaction) entity.onEquipItem(slot, oldStack, itemStack);
         }
 
+        @SuppressWarnings("UnstableApiUsage")
         @Override
         protected int getCapacity(ItemVariant resource) {
             int slotLimit = slot.countLimit == 0 ? Item.ABSOLUTE_MAX_STACK_SIZE : slot.countLimit;
-            return resource.isBlank() ? slotLimit : Math.min(slotLimit, resource.toStack().getMaxStackSize());
+            return resource.isBlank() ? slotLimit : Math.min(slotLimit, ItemVariantImpl.getMaxStackSize(resource));
         }
 
         @Override

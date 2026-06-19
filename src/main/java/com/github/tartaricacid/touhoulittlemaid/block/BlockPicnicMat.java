@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.block;
 
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBlockExploded;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerUtil;
 import com.github.tartaricacid.touhoulittlemaid.block.properties.PicnicMatPart;
 import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityPicnicMat;
 import com.github.tartaricacid.touhoulittlemaid.entity.favorability.Type;
@@ -9,7 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.EntitySit;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemPicnicBasket;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.PicnicBasketItemHandler;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -241,7 +242,8 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         // 给中心方块存入物品
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
         if (blockEntity instanceof BlockEntityPicnicMat picnicMat && stack.is(InitItems.PICNIC_BASKET)) {
-            picnicMat.setHandler(ItemPicnicBasket.getContainer(stack));
+            PicnicBasketItemHandler itemHandler = PicnicBasketItemHandler.fromStack(stack.copy());
+            picnicMat.setHandler(itemHandler);
         }
     }
 
@@ -293,7 +295,11 @@ public class BlockPicnicMat extends Block implements EntityBlock, IBlockExploded
         BlockPos centerPos = picnicMat.getCenterPos();
         if (world.getBlockEntity(centerPos) instanceof BlockEntityPicnicMat picnicMatCenter) {
             ItemStack stack = InitItems.PICNIC_BASKET.getDefaultInstance();
-            ItemPicnicBasket.setContainer(stack, picnicMatCenter.getHandler());
+            PicnicBasketItemHandler itemHandler = PicnicBasketItemHandler.fromStack(stack);
+            ResourceHandlerUtil.move(
+                    picnicMatCenter.getHandler(), itemHandler, _ -> true,
+                    Integer.MAX_VALUE, null
+            );
 
             if (player == null || !player.isCreative()) {
                 popResource(world, centerPos, stack);

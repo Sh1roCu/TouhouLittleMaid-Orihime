@@ -6,6 +6,7 @@
 package cn.sh1rocu.touhoulittlemaid.util.transfer;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,9 +35,10 @@ public class ItemStacksResourceHandler extends StacksResourceHandler<ItemStack, 
         return resource.toStack(amount);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     protected int getCapacity(int index, ItemVariant resource) {
-        return resource.isBlank() ? Item.ABSOLUTE_MAX_STACK_SIZE : Math.min(resource.toStack().getMaxStackSize(), Item.ABSOLUTE_MAX_STACK_SIZE);
+        return resource.isBlank() ? Item.ABSOLUTE_MAX_STACK_SIZE : Math.min(ItemVariantImpl.getMaxStackSize(resource), Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
     @Override

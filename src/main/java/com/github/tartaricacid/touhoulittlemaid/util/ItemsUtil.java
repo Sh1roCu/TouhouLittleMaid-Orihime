@@ -121,7 +121,7 @@ public final class ItemsUtil {
     }
 
     /**
-     * 如果传入的 handler 是 {@link MaidInvWrapper}，
+     * 如果传入的 contents 是 {@link MaidInvWrapper}，
      * 在物品栏中找不到时会触发 {@link MaidRequestItemEvent} 事件尝试从外部存储请求物品到物品栏，再次查找。
      *
      * @return 如果没找到，返回 -1
@@ -135,7 +135,7 @@ public final class ItemsUtil {
             }
         }
 
-        // 如果没找到，并且 handler 是 MaidInvWrapper，就触发事件请求物品后再找一次
+        // 如果没找到，并且 contents 是 MaidInvWrapper，就触发事件请求物品后再找一次
         if (!(handler instanceof MaidInvWrapper maidInv) || maidInv.getMaid().level.isClientSide()) {
             return -1;
         }
@@ -175,7 +175,7 @@ public final class ItemsUtil {
     }
 
     /**
-     * 符合 filter 条件的物品是否在 handler 中
+     * 符合 filter 条件的物品是否在 contents 中
      */
     public static boolean isStackIn(SlottedStorage<ItemVariant> handler, Predicate<ItemStack> filter) {
         return findStackSlot(handler, filter) >= 0;

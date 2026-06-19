@@ -9,6 +9,7 @@ import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueIOSerializable;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
@@ -62,14 +63,15 @@ public abstract class ItemStackResourceHandler extends SnapshotJournal<ItemStack
      *
      * <p>If the capacity should be limited by the max stack size of the item, this function must take it into account.
      * Additionally, the empty resource should be special-cased to return the intended maximum capacity of the handler,
-     * as it will otherwise report a {@linkplain ItemVariant#toStack()} #getMaxStackSize() max stack size} of 1.
+     * as it will otherwise report a {@linkplain net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl#getMaxStackSize(ItemVariant) max stack size} of 1.
      * For example, a handler with a maximum count of 4, or less for items that have a smaller max stack size,
-     * should override this to return {@code resource.isBlank() ? 4 : Math.min(resource.toStack().getMaxStackSize(), 4)}.
+     * should override this to return {@code resource.isBlank() ? 4 : Math.min(ItemVariantImpl.getMaxStackSize(resource), 4)}.
      *
      * @return The maximum capacity of this handler for the passed item resource.
      */
+    @SuppressWarnings("UnstableApiUsage")
     protected int getCapacity(ItemVariant resource) {
-        return resource.isBlank() ? Item.ABSOLUTE_MAX_STACK_SIZE : Math.min(resource.toStack().getMaxStackSize(), Item.ABSOLUTE_MAX_STACK_SIZE);
+        return resource.isBlank() ? Item.ABSOLUTE_MAX_STACK_SIZE : Math.min(ItemVariantImpl.getMaxStackSize(resource), Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
     @Override

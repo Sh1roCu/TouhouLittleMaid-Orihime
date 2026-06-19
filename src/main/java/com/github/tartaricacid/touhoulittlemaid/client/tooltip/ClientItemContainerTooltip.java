@@ -1,63 +1,37 @@
 package com.github.tartaricacid.touhoulittlemaid.client.tooltip;
 
-import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.ItemContainerContentsUtil;
 import com.github.tartaricacid.touhoulittlemaid.inventory.tooltip.ItemContainerTooltip;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 public class ClientItemContainerTooltip implements ClientTooltipComponent {
-    private final NonNullList<ItemStack> items = NonNullList.create();
-    private @Nullable MutableComponent emptyTip = null;
+    private final ItemContainerContents contents;
 
-    public ClientItemContainerTooltip(ItemContainerTooltip containerTooltip) {
-        var handler = containerTooltip.handler();
-        for (int i = 0; i < handler.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(handler, i);
-            if (!stack.isEmpty()) {
-                this.items.add(stack);
-            }
-        }
-        if (items.isEmpty()) {
-            this.emptyTip = Component.translatable("tooltips.touhou_little_maid.item_container.empty");
-        }
+    public ClientItemContainerTooltip(ItemContainerTooltip tooltip) {
+        this.contents = tooltip.contents();
     }
 
     @Override
     public int getHeight(Font font) {
-        if (emptyTip != null) {
-            return 10;
-        }
         return 20;
     }
 
     @Override
     public int getWidth(Font font) {
-        if (emptyTip != null) {
-            return font.width(emptyTip);
-        }
-        return items.size() * 20;
+        return ItemContainerContentsUtil.getSlots(contents) * 20;
     }
 
     @Override
-    public void extractImage(Font font, int pX, int pY, int w, int h, GuiGraphicsExtractor guiGraphics) {
-        if (emptyTip != null) {
-            guiGraphics.text(font, emptyTip, pX, pY, ChatFormatting.GRAY.getColor());
-        } else {
-            int i = 0;
-            for (ItemStack stack : this.items) {
-                int xOffset = pX + i * 20;
-                guiGraphics.item(stack, xOffset, pY);
-                guiGraphics.itemDecorations(font, stack, xOffset, pY);
-                i++;
-            }
+    public void extractImage(Font font, int pX, int pY, int w, int h, GuiGraphicsExtractor graphics) {
+        for (int i = 0; i < ItemContainerContentsUtil.getSlots(contents); i++) {
+            ItemStack stack = ItemContainerContentsUtil.getStackInSlot(contents, i);
+            int xOffset = pX + i * 20;
+            graphics.item(stack, xOffset, pY);
+            graphics.itemDecorations(font, stack, xOffset, pY);
         }
     }
 }

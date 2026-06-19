@@ -10,6 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +36,7 @@ public class MaidHealSelfTask extends MaidCheckRateTask {
         return false;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     protected void start(ServerLevel serverLevel, EntityMaid maid, long gameTime) {
         List<IMaidMeal> maidMeals = MaidMealManager.getMaidMeals(MaidMealType.HEAL_MEAL);
@@ -74,7 +76,7 @@ public class MaidHealSelfTask extends MaidCheckRateTask {
         if (stackSlot != -1)
             try (Transaction transaction = Transaction.openOuter()) {
                 ItemVariant resource = backpackInv.getResource(stackSlot);
-                int foodStack = backpackInv.extract(stackSlot, resource, resource.toStack().getMaxStackSize(), transaction);
+                int foodStack = backpackInv.extract(stackSlot, resource, ItemVariantImpl.getMaxStackSize(resource), transaction);
                 if (foodStack == -1) return;
                 ItemStack handStack = itemInHand.copy();
                 maid.setItemInHand(eanHand, resource.toStack(foodStack));

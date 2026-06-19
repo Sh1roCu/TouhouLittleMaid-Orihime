@@ -8,6 +8,7 @@ package cn.sh1rocu.touhoulittlemaid.util.transfer;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -214,6 +215,7 @@ public final class PlayerInventoryWrapper extends VanillaContainerWrapper {
             }
         }
 
+        @SuppressWarnings("UnstableApiUsage")
         @Override
         protected void onRootCommit(Integer originalState) {
             // actually drop the stacks
@@ -222,7 +224,7 @@ public final class PlayerInventoryWrapper extends VanillaContainerWrapper {
                 DropInfo dropInfo = entries.removeFirst();
                 int remainder = dropInfo.amount;
 
-                int maxStackSize = dropInfo.resource.toStack().getMaxStackSize();
+                int maxStackSize = ItemVariantImpl.getMaxStackSize(dropInfo.resource);
                 while (remainder > 0) {
                     int dropped = Math.min(maxStackSize, remainder);
                     // This takes care of firing ItemTossEvent + dropping the entity if the event is not canceled

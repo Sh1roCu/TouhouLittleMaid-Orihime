@@ -9,4 +9,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AbstractContainerScreenAccessor {
     @Accessor("hoveredSlot")
     Slot tlm$getSlotUnderMouse();
+
+    @Accessor("leftPos")
+    int tlm$getLeftPos();
+
+    @Accessor("topPos")
+    int tlm$getTopPos();
 }

@@ -61,7 +61,7 @@ public class BlockEntityModelSwitcher extends BlockEntityBase {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (this.level instanceof ServerLevel serverLevel) {
-            ItemStack itemStack = ItemModelSwitcher.tileEntityToItemStack(serverLevel.registryAccess(), this);
+            ItemStack itemStack = ItemModelSwitcher.blockEntityToItemStack(serverLevel.registryAccess(), this);
             Block.popResource(serverLevel, pos, itemStack);
         }
     }

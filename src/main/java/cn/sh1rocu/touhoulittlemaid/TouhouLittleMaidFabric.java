@@ -15,7 +15,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.chatbubble.RandomEmoji;
 import com.github.tartaricacid.touhoulittlemaid.event.*;
 import com.github.tartaricacid.touhoulittlemaid.event.maid.*;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.*;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemSubstituteJizo;
 import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.EnvType;
@@ -129,7 +128,6 @@ public class TouhouLittleMaidFabric implements ModInitializer {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
             InteractMaidEvent.CALLBACK.register(UseNameTagEvent::onInteractServer);
         }
-        InteractMaidEvent.CALLBACK.register(ItemSubstituteJizo::onEntityInteract);
 
         MaidDamageEvent.CALLBACK.register(LOWEST, RandomEmoji::addHurtChatText);
 

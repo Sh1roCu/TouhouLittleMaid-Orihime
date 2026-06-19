@@ -1,20 +1,10 @@
 //package com.github.tartaricacid.touhoulittlemaid.compat.curios.menu;
 //
-//import cn.sh1rocu.touhoulittlemaid.mixin.accessor.AbstractContainerMenuAccessor;
 //import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
 //import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 //import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
 //import com.github.tartaricacid.touhoulittlemaid.network.message.CuriosS2CUpdatePacket;
-//import eu.pb4.trinkets.api.TrinketAttachment;
-//import eu.pb4.trinkets.api.TrinketSlotAccess;
-//import eu.pb4.trinkets.api.TrinketsApi;
-//import io.wispforest.accessories.api.AccessoriesCapability;
-//import io.wispforest.accessories.api.AccessoriesContainer;
-//import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-//import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
-//import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 //import net.minecraft.network.chat.Component;
-//import net.minecraft.network.codec.ByteBufCodecs;
 //import net.minecraft.server.level.ServerPlayer;
 //import net.minecraft.world.MenuProvider;
 //import net.minecraft.world.entity.EquipmentSlot;
@@ -24,6 +14,15 @@
 //import net.minecraft.world.inventory.MenuType;
 //import net.minecraft.world.inventory.Slot;
 //import net.minecraft.world.item.ItemStack;
+//import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+//import net.neoforged.neoforge.network.PacketDistributor;
+//import top.theillusivec4.curios.api.CuriosApi;
+//import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+//import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+//import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+//
+//import java.util.Optional;
+//
 //
 //public class CuriosContainer extends MaidMainContainer {
 //    public static final MenuType<CuriosContainer> TYPE = new ExtendedMenuType<>(CuriosContainer::new, ByteBufCodecs.INT);
@@ -32,45 +31,25 @@
 //    private static final int NEXT = 1;
 //    private static final int SLOTS_PER_PAGE = 36;
 //
-//    private final TrinketAttachment curiosHandler;
+//    private final Optional<ICuriosItemHandler> curiosHandler;
 //
 //    private int maxPages;
 //    private int page;
 //
 //    public CuriosContainer(int id, Inventory inventory, int entityId) {
 //        super(TYPE, id, inventory, entityId);
-//        this.curiosHandler = TrinketsApi.getAttachment(this.maid);
-//        int curiosSlotsCount = getVisibleSlots();
+//        this.curiosHandler = CuriosApi.getCuriosInventory(this.maid);
+//        int curiosSlotsCount = curiosHandler.map(ICuriosItemHandler::getVisibleSlots).orElse(0);
 //        this.maxPages = (curiosSlotsCount - 1) / SLOTS_PER_PAGE;
 //        this.page = Math.min(page, this.maxPages);
 //        // 延迟添加 Curios 物品栏
 //        if (maid != null) {
-//            this.addCuriosSlotsForPage(this.curiosHandler);
+//            this.curiosHandler.ifPresent(this::addCuriosSlotsForPage);
 //        }
 //    }
 //
-//    private int getVisibleSlots() {
-//        return curiosHandler.map(handler -> {
-//            int totalSlots = 0;
-//            for (AccessoriesContainer container : handler.getContainers().values()) {
-//                totalSlots += container.getSize();
-//            }
-//            return totalSlots;
-//        }).orElse(0);
-//    }
-//
 //    public static MenuProvider create(EntityMaid maid) {
-//        return new ExtendedMenuProvider<Integer>() {
-//            @Override
-//            public Integer getScreenOpeningData(ServerPlayer player) {
-//                return maid.getId();
-//            }
-//
-//            @Override
-//            public boolean shouldCloseCurrentScreen() {
-//                return false;
-//            }
-//
+//        return new MenuProvider() {
 //            @Override
 //            public Component getDisplayName() {
 //                return Component.literal("Maid Curios Container");
@@ -80,6 +59,11 @@
 //            public AbstractContainerMenu createMenu(int index, Inventory inventory, Player player) {
 //                int entityId = maid.getId();
 //                return new CuriosContainer(index, inventory, entityId);
+//            }
+//
+//            @Override
+//            public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+//                return false;
 //            }
 //        };
 //    }
@@ -100,15 +84,15 @@
 //    }
 //
 //    public void updatePage(int page, Player player) {
-//        int curiosSlotsCount = getVisibleSlots();
+//        int curiosSlotsCount = this.curiosHandler.map(ICuriosItemHandler::getVisibleSlots).orElse(0);
 //        this.maxPages = (curiosSlotsCount - 1) / SLOTS_PER_PAGE;
 //        this.page = Math.min(page, this.maxPages);
 //
 //        this.curiosHandler.ifPresent(handler -> {
 //            // 清空当前所有槽位，重新添加
 //            this.slots.clear();
-//            ((AbstractContainerMenuAccessor) this).tlm$lastSlots().clear();
-//            ((AbstractContainerMenuAccessor) this).tlm$remoteSlots().clear();
+//            this.lastSlots.clear();
+//            this.remoteSlots.clear();
 //
 //            // 重新添加槽位
 //            this.addPlayerInv(player.getInventory());
@@ -119,7 +103,7 @@
 //
 //        // 发送更新数据包到客户端
 //        if (player instanceof ServerPlayer serverPlayer) {
-//            ServerPlayNetworking.send(serverPlayer, new CuriosS2CUpdatePacket(this.page));
+//            PacketDistributor.sendToPlayer(serverPlayer, new CuriosS2CUpdatePacket(this.page));
 //        }
 //    }
 //
@@ -196,15 +180,20 @@
 //        return stack1;
 //    }
 //
-//    private void addCuriosSlotsForPage(TrinketAttachment capability) {
+//    private void addCuriosSlotsForPage(ICuriosItemHandler curios) {
 //        int total = 0;
 //
 //        int start = page * SLOTS_PER_PAGE;
 //        int end = start + SLOTS_PER_PAGE;
 //
-//        for (var equipped : capability.getAllEquipped()) {
-//            TrinketSlotAccess slotAccess = equipped.getA();
-//            int maxIndex = slotAccess.inventory().getContainerSize();
+//        for (var entry : curios.getCurios().entrySet()) {
+//            ICurioStacksHandler handler = entry.getValue();
+//            if (!handler.isVisible()) {
+//                continue;
+//            }
+//
+//            IDynamicStackHandler stacks = handler.getStacks();
+//            int maxIndex = stacks.getSlots();
 //
 //            // 跳过完全在当前页之前的 handler
 //            if (total + maxIndex <= start) {
@@ -218,14 +207,14 @@
 //            }
 //
 //            // 添加当前 handler 中属于本页的槽位
-//            String identifier = slotAccess.getAsIdentifierPath();
+//            String identifier = entry.getKey();
 //            for (int i = 0; i < maxIndex && total < end; i++, total++) {
 //                if (total >= start) {
 //                    int displayIndex = total - start;
 //                    int x = 143 + (displayIndex % 6) * 18;
 //                    int y = 37 + (displayIndex / 6) * 18;
-//                    this.addSlot(new MaidCurioSlot(maid, slotAccess.inventory(), i, identifier, x, y,
-//                            slotAccess.isVisible(), false, false));
+//                    this.addSlot(new MaidCurioSlot(maid, stacks, i, identifier, x, y,
+//                            handler.getRenders(), false));
 //                }
 //            }
 //        }

@@ -33,7 +33,7 @@ public class MaidUpdateActivityFromSchedule extends Behavior<EntityMaid> {
             }
             if (!this.cacheActivity.equals(activity) && maid.isHomeModeEnable() && maid.canBrainMoving()) {
                 this.cacheActivity = activity;
-                maid.getSchedulePos().setHomeTo(maid);
+                maid.getSchedulePos().restrictTo(maid);
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, maid.getHomePosition(), 0.7f, 3);
             }
         }

@@ -39,7 +39,7 @@ public abstract class StackCopySlot extends Slot {
     protected abstract void setStackCopy(ItemStack stack);
 
     @Override
-    public final ItemStack getItem() {
+    public ItemStack getItem() {
         return cachedReturnedStack = getStackCopy();
     }
 
@@ -60,7 +60,7 @@ public abstract class StackCopySlot extends Slot {
     }
 
     @Override
-    public final ItemStack remove(int amount) {
+    public ItemStack remove(int amount) {
         ItemStack stack = getStackCopy().copy();
         ItemStack ret = stack.split(amount);
         set(stack);

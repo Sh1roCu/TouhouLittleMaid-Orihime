@@ -7,6 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.bauble.IMaidBauble;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidWirelessIOEvent;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
+import com.github.tartaricacid.touhoulittlemaid.inventory.handler.WirelessIOItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -115,7 +116,7 @@ public class WirelessIOBauble implements IMaidBauble {
                 } else {
                     slotConfigData = new ArrayList<>(Collections.nCopies(SLOT_NUM, false));
                 }
-                var filterList = ItemWirelessIO.getFilterList(maid.registryAccess(), baubleItem);
+                var filterList = WirelessIOItemHandler.fromStack(baubleItem);
 
                 if (isMaidToChest) {
                     var event = new MaidWirelessIOEvent.MaidToChest(maid, maidInv, chestInv, filterList, isBlacklist, slotConfigData);

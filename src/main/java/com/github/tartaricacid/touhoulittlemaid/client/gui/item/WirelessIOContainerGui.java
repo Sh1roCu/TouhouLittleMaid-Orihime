@@ -5,11 +5,10 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.Wireles
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.other.WirelessIOContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemWirelessIO;
 import com.github.tartaricacid.touhoulittlemaid.network.message.WirelessIOGuiPackage;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -26,8 +25,8 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
 
     public WirelessIOContainerGui(WirelessIOContainer container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
-        this.isMaidToChest = ItemWirelessIO.isMaidToChest(container.getWirelessIO());
-        this.isBlacklist = ItemWirelessIO.isBlacklist(container.getWirelessIO());
+        this.isMaidToChest = ItemWirelessIO.isMaidToChest(container.getStack());
+        this.isBlacklist = ItemWirelessIO.isBlacklist(container.getStack());
     }
 
     @Override
@@ -49,7 +48,7 @@ public class WirelessIOContainerGui extends AbstractContainerScreen<WirelessIOCo
         filterModeToggle.initTextureValues(176, 0, 16, 16, MAIN);
 
         TouhouImageButton configButton = new TouhouImageButton(leftPos + 136, topPos + 44, 16, 16, 208, 0, 16,
-                MAIN, 256, 256, buttons -> Screens.getMinecraft(this).setScreen(new WirelessIOConfigSlotGui(menu.getWirelessIO())));
+                MAIN, 256, 256, buttons -> Screens.getMinecraft(this).setScreen(new WirelessIOConfigSlotGui(menu.getStack())));
         configButton.setTooltip(Tooltip.create(Component.translatable("gui.touhou_little_maid.wireless_io.config_slot")));
 
         addRenderableWidget(filterModeToggle);

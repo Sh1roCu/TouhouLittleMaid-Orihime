@@ -28,7 +28,7 @@ public final class SwitchSittingEvent {
                 maid.setTarget(null);
             }
             if (maid.hasHome() && maid.canBrainMoving()) {
-                maid.getSchedulePos().setHomeTo(maid);
+                maid.getSchedulePos().restrictTo(maid);
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, maid.getHomePosition(), 0.7f, 3);
             }
             maid.playSound(SoundEvents.ITEM_PICKUP, 0.2F,

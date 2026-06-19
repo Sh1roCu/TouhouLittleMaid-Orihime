@@ -58,7 +58,7 @@ public record MaidConfigPackage(int id, boolean home, boolean pick, boolean ride
                 }
                 if (maid.getSchedule() != message.schedule) {
                     maid.setSchedule(message.schedule);
-                    maid.getSchedulePos().setHomeTo(maid);
+                    maid.getSchedulePos().restrictTo(maid);
                     if (maid.isHomeModeEnable()) {
                         BehaviorUtils.setWalkAndLookTargetMemories(maid, maid.getHomePosition(), 0.7f, 3);
                     }

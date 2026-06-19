@@ -4,9 +4,11 @@ import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueInputUtil;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.ValueOutputUtil;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemStacksResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandler;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerUtil;
 import com.github.tartaricacid.touhoulittlemaid.init.InitBlocks;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.PicnicMatItemHandler;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.util.Util;
@@ -85,7 +87,7 @@ public class BlockEntityPicnicMat extends BlockEntityBase {
         return handler.getResource(slotId).isBlank();
     }
 
-    public void setHandler(ItemStacksResourceHandler stackHandler) {
+    public void setHandler(ResourceHandler<ItemVariant> stackHandler) {
         ResourceHandlerUtil.move(
                 stackHandler, this.handler, _ -> true,
                 Integer.MAX_VALUE, null

@@ -10,6 +10,7 @@ import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,6 +52,7 @@ public class MaidFarmPlantTask extends Behavior<EntityMaid> {
         }).orElse(false);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTimeIn) {
         maid.getBrain().getMemory(InitBrains.TARGET_POS).ifPresent(posWrapper -> {
@@ -73,7 +75,7 @@ public class MaidFarmPlantTask extends Behavior<EntityMaid> {
                 for (int slot : slots) {
                     try (Transaction tx = Transaction.openOuter()) {
                         @NotNull ItemVariant res = availableInv.getResource(slot);
-                        int seedCount = availableInv.extract(slot, res, res.toStack().getMaxStackSize(), tx);
+                        int seedCount = availableInv.extract(slot, res, ItemVariantImpl.getMaxStackSize(res), tx);
                         if (seedCount == 0) continue;
                         ItemStack seed = res.toStack(seedCount);
                         BlockState baseState = world.getBlockState(basePos);

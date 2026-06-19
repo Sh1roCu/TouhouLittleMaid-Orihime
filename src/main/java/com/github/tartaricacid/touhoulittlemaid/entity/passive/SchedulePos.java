@@ -65,7 +65,7 @@ public final class SchedulePos {
 
     public void tick(EntityMaid maid) {
         if (maid.tickCount % 40 == 0) {
-            this.setHomeTo(maid);
+            this.restrictTo(maid);
             if (maid.isWithinHome()) {
                 return;
             }
@@ -73,7 +73,7 @@ public final class SchedulePos {
                 return;
             }
             double distanceSqr = maid.getHomePosition().distSqr(maid.blockPosition());
-            int minTeleportDistance = maid.getHomeRadius() + 4;
+            int minTeleportDistance = (int) maid.getHomeRadius() + 4;
             if (distanceSqr > (minTeleportDistance * minTeleportDistance) && !this.sameWithRestrictCenter(maid)) {
                 teleport(maid);
             } else {
@@ -98,10 +98,10 @@ public final class SchedulePos {
         child.read("Sleep", BlockPos.CODEC).ifPresent(pos -> this.sleepPos = pos);
         child.read("Dimension", Codec.STRING).ifPresent(dim -> this.dimension = Identifier.parse(dim));
         child.read("Configured", Codec.BOOL).ifPresent(cfg -> this.configured = cfg);
-        this.setHomeTo(maid);
+        this.restrictTo(maid);
     }
 
-    public void setHomeTo(EntityMaid maid) {
+    public void restrictTo(EntityMaid maid) {
         if (!maid.isHomeModeEnable()) {
             return;
         }
@@ -148,7 +148,7 @@ public final class SchedulePos {
         this.sleepPos = this.workPos;
         this.configured = false;
         this.dimension = maid.level.dimension().identifier();
-        this.setHomeTo(maid);
+        this.restrictTo(maid);
     }
 
     public void setHomeModeEnable(EntityMaid maid, BlockPos pos) {
@@ -158,7 +158,7 @@ public final class SchedulePos {
             this.sleepPos = pos;
             this.dimension = maid.level.dimension().identifier();
         }
-        this.setHomeTo(maid);
+        this.restrictTo(maid);
     }
 
     @Nullable
