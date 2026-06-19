@@ -30,19 +30,19 @@ public final class InitEntitiesRender {
         EntityRenderers.register(EntityBroom.TYPE, EntityBroomRender::new);
         EntityRenderers.register(MaidFishingHook.TYPE, MaidFishingHookRenderer::new);
 
-        BlockEntityRenderers.register(InitBlocks.ALTAR_TE, AltarRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.STATUE_TE, StatueRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.GARAGE_KIT_TE, GarageKitRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.GOMOKU_TE, GomokuRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.CCHESS_TE, CChessRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.WCHESS_TE, WChessRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.KEYBOARD_TE, KeyboardRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.BOOKSHELF_TE, BookshelfRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.COMPUTER_TE, ComputerRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.SHRINE_TE, ShrineRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.PICNIC_MAT_TE, PicnicMatRender::new);
-        BlockEntityRenderers.register(InitBlocks.MAID_BED_TE, MaidBedRenderer::new);
-        BlockEntityRenderers.register(InitBlocks.SNACK_CABINET_TE, SnackCabinetRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.ALTAR_BE, AltarRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.STATUE_BE, StatueRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.GARAGE_KIT_BE, GarageKitRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.GOMOKU_BE, GomokuRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.CCHESS_BE, CChessRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.WCHESS_BE, WChessRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.KEYBOARD_BE, KeyboardRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.BOOKSHELF_BE, BookshelfRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.COMPUTER_BE, ComputerRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.SHRINE_BE, ShrineRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.PICNIC_MAT_BE, PicnicMatRender::new);
+        BlockEntityRenderers.register(InitBlocks.MAID_BED_BE, MaidBedRenderer::new);
+        BlockEntityRenderers.register(InitBlocks.SNACK_CABINET_BE, SnackCabinetRenderer::new);
     }
 
     public static void onRegisterLayers() {

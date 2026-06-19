@@ -6,6 +6,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockEntityBookshelf extends BlockEntityJoy {
     public BlockEntityBookshelf(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.BOOKSHELF_TE, pos, blockState);
+        super(InitBlocks.BOOKSHELF_BE, pos, blockState);
     }
 }

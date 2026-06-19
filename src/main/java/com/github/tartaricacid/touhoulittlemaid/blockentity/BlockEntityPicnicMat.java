@@ -31,7 +31,7 @@ public class BlockEntityPicnicMat extends BlockEntityBase {
     private BlockPos centerPos = BlockPos.ZERO;
 
     public BlockEntityPicnicMat(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.PICNIC_MAT_TE, pos, blockState);
+        super(InitBlocks.PICNIC_MAT_BE, pos, blockState);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class BlockEntityWChess extends BlockEntityJoy implements IBoardGameEntit
     private boolean moveNumberLimit = false;
 
     public BlockEntityWChess(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.WCHESS_TE, pos, blockState);
+        super(InitBlocks.WCHESS_BE, pos, blockState);
         this.chessData = new Position();
         this.chessData.fromFen(WChessUtil.INIT);
     }

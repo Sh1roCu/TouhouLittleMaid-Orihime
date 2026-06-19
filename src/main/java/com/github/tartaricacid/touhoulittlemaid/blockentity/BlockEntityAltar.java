@@ -35,7 +35,7 @@ public class BlockEntityAltar extends BlockEntityBase {
     private Direction direction = Direction.SOUTH;
 
     public BlockEntityAltar(BlockPos blockPos, BlockState blockState) {
-        super(InitBlocks.ALTAR_TE, blockPos, blockState);
+        super(InitBlocks.ALTAR_BE, blockPos, blockState);
     }
 
     public void setData(

@@ -63,6 +63,11 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
      */
     public static final TagKey<Item> MAID_EAT_BLOCKLIST_ITEM = createTagKey("maid_eat_blocklist_item");
 
+    /**
+     * 所有颜色的女仆床物品
+     */
+    public static final TagKey<Item> MAID_BED = createTagKey("maid_bed");
+
     public TagItem(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
@@ -111,6 +116,15 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
         this.builder(MAID_EAT_BLOCKLIST_ITEM)
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:red_chili")))
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:green_chili")));
+
+        this.valueLookupBuilder(MAID_BED)
+                .add(InitItems.PINK_MAID_BED)
+                .add(InitItems.WHITE_MAID_BED)
+                .add(InitItems.BLACK_MAID_BED)
+                .add(InitItems.YELLOW_MAID_BED)
+                .add(InitItems.BLUE_MAID_BED)
+                .add(InitItems.GREEN_MAID_BED)
+                .add(InitItems.PURPLE_MAID_BED);
     }
 
     private void addCakeItems(TagKey<Item> tagKey) {

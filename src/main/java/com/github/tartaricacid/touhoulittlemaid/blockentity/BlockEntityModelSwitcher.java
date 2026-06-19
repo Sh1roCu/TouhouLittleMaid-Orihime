@@ -34,7 +34,7 @@ public class BlockEntityModelSwitcher extends BlockEntityBase {
     private int index;
 
     public BlockEntityModelSwitcher(BlockPos pWorldPosition, BlockState pBlockState) {
-        super(InitBlocks.MODEL_SWITCHER_TE, pWorldPosition, pBlockState);
+        super(InitBlocks.MODEL_SWITCHER_BE, pWorldPosition, pBlockState);
     }
 
     @Override

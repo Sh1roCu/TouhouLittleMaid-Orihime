@@ -14,19 +14,26 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import java.util.Set;
 
 public final class MaidPoiManager {
-    private static final Set<BlockState> JOYS = ImmutableList.of(InitBlocks.COMPUTER, InitBlocks.BOOKSHELF, InitBlocks.KEYBOARD,
+    private static final Set<BlockState> JOYS = ImmutableList.of(
+                    InitBlocks.COMPUTER, InitBlocks.BOOKSHELF, InitBlocks.KEYBOARD,
                     InitBlocks.GOMOKU, InitBlocks.CCHESS, InitBlocks.WCHESS)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
             .collect(ImmutableSet.toImmutableSet());
-    private static final Set<BlockState> BEDS = ImmutableList.of(InitBlocks.MAID_BED)
+
+    private static final Set<BlockState> BEDS = ImmutableList.of(
+                    InitBlocks.PINK_MAID_BED, InitBlocks.WHITE_MAID_BED, InitBlocks.BLACK_MAID_BED,
+                    InitBlocks.YELLOW_MAID_BED, InitBlocks.BLUE_MAID_BED, InitBlocks.GREEN_MAID_BED,
+                    InitBlocks.PURPLE_MAID_BED)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
             .filter(blockState -> blockState.getValue(BedBlock.PART) == BedPart.HEAD)
             .filter(blockState -> !blockState.getValue(BedBlock.OCCUPIED))
             .collect(ImmutableSet.toImmutableSet());
+
     private static final Set<BlockState> HOME_MEAL = ImmutableList.of(InitBlocks.PICNIC_MAT)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
             .filter(blockState -> blockState.getValue(BlockPicnicMat.PART).isCenter())
             .collect(ImmutableSet.toImmutableSet());
+
     private static final Set<BlockState> SCARECROW = ImmutableList.of(InitBlocks.SCARECROW)
             .stream().flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
             .filter(blockState -> blockState.getValue(BlockScarecrow.HALF) == DoubleBlockHalf.LOWER)

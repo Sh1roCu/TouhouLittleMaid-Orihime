@@ -29,7 +29,7 @@ public class InitCreativeTabs {
 
     public static CreativeModeTab MAIN_TAB = register("main", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.main"))
-            .icon(() -> InitItems.HAKUREI_GOHEI.getDefaultInstance())
+            .icon(HAKUREI_GOHEI::getDefaultInstance)
             .displayItems((par, output) -> {
                 // TODO: Patchouli 暂无
                 // if (FabricLoader.getInstance().isModLoaded("patchouli")) {
@@ -76,7 +76,13 @@ public class InitCreativeTabs {
                 output.accept(PHOTO);
                 output.accept(FILM);
                 output.accept(CHISEL);
-                output.accept(MAID_BED);
+                output.accept(PINK_MAID_BED);
+                output.accept(WHITE_MAID_BED);
+                output.accept(BLACK_MAID_BED);
+                output.accept(YELLOW_MAID_BED);
+                output.accept(BLUE_MAID_BED);
+                output.accept(GREEN_MAID_BED);
+                output.accept(PURPLE_MAID_BED);
                 output.accept(PICNIC_BASKET);
                 output.accept(MAID_BEACON);
                 output.accept(SNACK_CABINET);
@@ -99,7 +105,7 @@ public class InitCreativeTabs {
 
     public static CreativeModeTab GARAGE_KIT_TAB = register("chair", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.chair"))
-            .icon(() -> InitItems.CHAIR.getDefaultInstance())
+            .icon(CHAIR::getDefaultInstance)
             .displayItems((par, output) -> {
                 if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                     ItemChair.fillItemCategory(output);
@@ -108,7 +114,7 @@ public class InitCreativeTabs {
 
     public static CreativeModeTab CHAIR_TAB = register("garage_kit", FabricCreativeModeTab.builder()
             .title(Component.translatable("item_group.touhou_little_maid.garage_kit"))
-            .icon(() -> InitItems.GARAGE_KIT.getDefaultInstance())
+            .icon(GARAGE_KIT::getDefaultInstance)
             .displayItems((par, output) -> {
                 if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                     BlockGarageKit.fillItemCategory(output);

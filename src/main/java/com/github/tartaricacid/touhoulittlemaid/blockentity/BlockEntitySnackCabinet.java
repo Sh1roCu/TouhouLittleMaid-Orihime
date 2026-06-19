@@ -56,7 +56,7 @@ public class BlockEntitySnackCabinet extends RandomizableContainerBlockEntity {
     };
 
     public BlockEntitySnackCabinet(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.SNACK_CABINET_TE, pos, blockState);
+        super(InitBlocks.SNACK_CABINET_BE, pos, blockState);
     }
 
     @Override

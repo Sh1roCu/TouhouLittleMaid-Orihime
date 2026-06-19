@@ -67,9 +67,17 @@ public interface InitItems {
     Item SERVANT_BELL = register("servant_bell", ItemServantBell::new);
     Item TRUMPET = register("trumpet", ItemTrumpet::new);
 
+    // 女仆床
+    Item PINK_MAID_BED = register("pink_maid_bed", id -> new ItemMaidBed(id, InitBlocks.PINK_MAID_BED));
+    Item WHITE_MAID_BED = register("white_maid_bed", id -> new ItemMaidBed(id, InitBlocks.WHITE_MAID_BED));
+    Item BLACK_MAID_BED = register("black_maid_bed", id -> new ItemMaidBed(id, InitBlocks.BLACK_MAID_BED));
+    Item YELLOW_MAID_BED = register("yellow_maid_bed", id -> new ItemMaidBed(id, InitBlocks.YELLOW_MAID_BED));
+    Item BLUE_MAID_BED = register("blue_maid_bed", id -> new ItemMaidBed(id, InitBlocks.BLUE_MAID_BED));
+    Item GREEN_MAID_BED = register("green_maid_bed", id -> new ItemMaidBed(id, InitBlocks.GREEN_MAID_BED));
+    Item PURPLE_MAID_BED = register("purple_maid_bed", id -> new ItemMaidBed(id, InitBlocks.PURPLE_MAID_BED));
+
     // 家具
     Item CHAIR = register("chair", ItemChair::new);
-    Item MAID_BED = register("maid_bed", ItemMaidBed::new);
     Item PICNIC_BASKET = register("picnic_basket", ItemPicnicBasket::new);
     Item SNACK_CABINET = register("snack_cabinet", ItemSnackCabinet::new);
     Item SCARECROW = register("scarecrow", ItemScarecrow::new);

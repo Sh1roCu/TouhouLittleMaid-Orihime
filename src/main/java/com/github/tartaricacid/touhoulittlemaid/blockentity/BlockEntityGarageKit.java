@@ -15,7 +15,7 @@ public class BlockEntityGarageKit extends BlockEntityBase {
     private CompoundTag extraData = new CompoundTag();
 
     public BlockEntityGarageKit(BlockPos blockPos, BlockState blockState) {
-        super(InitBlocks.GARAGE_KIT_TE, blockPos, blockState);
+        super(InitBlocks.GARAGE_KIT_BE, blockPos, blockState);
     }
 
     @Override

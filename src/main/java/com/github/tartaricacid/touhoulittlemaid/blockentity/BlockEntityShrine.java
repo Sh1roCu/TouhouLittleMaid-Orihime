@@ -19,7 +19,7 @@ public class BlockEntityShrine extends BlockEntityBase {
     private final ItemStacksResourceHandler handler = new ShrineItemHandler();
 
     public BlockEntityShrine(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.SHRINE_TE, pos, blockState);
+        super(InitBlocks.SHRINE_BE, pos, blockState);
     }
 
     @Override

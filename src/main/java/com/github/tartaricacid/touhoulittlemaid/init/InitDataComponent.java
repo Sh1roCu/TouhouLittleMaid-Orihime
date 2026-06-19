@@ -149,13 +149,6 @@ public class InitDataComponent {
                     .networkSynchronized(TrackInfo.STREAM_CODEC)
                     .build());
 
-    private static final String BED_COLOR_TAG_NAME = "bed_color";
-    public static final DataComponentType<DyeColor> BED_COLOR_TAG =
-            register(BED_COLOR_TAG_NAME, DataComponentType.<DyeColor>builder()
-                    .persistent(DyeColor.CODEC)
-                    .networkSynchronized(DyeColor.STREAM_CODEC)
-                    .build());
-
     /**
      * 有初始主人锁定标记时，会进行 UUID 判断，避免其他玩家释放他人的初始女仆。
      * <p>

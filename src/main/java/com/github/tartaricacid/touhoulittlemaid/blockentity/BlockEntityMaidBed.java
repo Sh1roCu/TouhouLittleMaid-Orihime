@@ -12,7 +12,7 @@ public class BlockEntityMaidBed extends BlockEntityBase {
     private DyeColor color = DyeColor.PINK;
 
     public BlockEntityMaidBed(BlockPos blockPos, BlockState blockState) {
-        super(InitBlocks.MAID_BED_TE, blockPos, blockState);
+        super(InitBlocks.MAID_BED_BE, blockPos, blockState);
     }
 
     public void setColor(DyeColor color) {

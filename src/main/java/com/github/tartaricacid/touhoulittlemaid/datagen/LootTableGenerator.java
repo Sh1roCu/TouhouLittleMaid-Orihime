@@ -13,6 +13,9 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -209,7 +212,14 @@ public class LootTableGenerator {
 
         @Override
         public void generate() {
-            add(InitBlocks.MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.PINK_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.WHITE_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.BLACK_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.YELLOW_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.BLUE_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.GREEN_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+            add(InitBlocks.PURPLE_MAID_BED, block -> createSinglePropConditionTable(block, BlockMaidBed.PART, BedPart.HEAD));
+
             add(InitBlocks.SCARECROW, block -> createSinglePropConditionTable(block, BlockScarecrow.HALF, DoubleBlockHalf.LOWER));
 
             dropSelf(InitBlocks.MODEL_SWITCHER);

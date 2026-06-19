@@ -6,6 +6,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockEntityKeyboard extends BlockEntityJoy {
     public BlockEntityKeyboard(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.KEYBOARD_TE, pos, blockState);
+        super(InitBlocks.KEYBOARD_BE, pos, blockState);
     }
 }

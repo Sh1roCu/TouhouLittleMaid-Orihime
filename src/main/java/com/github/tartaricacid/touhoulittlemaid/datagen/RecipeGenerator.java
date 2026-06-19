@@ -1,9 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen;
 
 import com.github.tartaricacid.touhoulittlemaid.datagen.builder.AltarRecipeBuilder;
+import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import mezz.jei.api.constants.Tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
@@ -202,9 +204,45 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(ConventionalItemTags.OBSIDIANS)
                     .save(recipeOutput);
 
-            AltarRecipeBuilder.shapeless(items, InitItems.MAID_BED)
+            AltarRecipeBuilder.shapeless(items, InitItems.PINK_MAID_BED)
                     .power(0.2F)
                     .requires(Items.PINK_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.WHITE_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.WHITE_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.BLACK_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.BLACK_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.YELLOW_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.YELLOW_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.BLUE_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.BLUE_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.GREEN_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.GREEN_WOOL)
+                    .requires(ItemTags.PLANKS)
+                    .save(recipeOutput);
+
+            AltarRecipeBuilder.shapeless(items, InitItems.PURPLE_MAID_BED)
+                    .power(0.2F)
+                    .requires(Items.PURPLE_WOOL)
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
@@ -353,9 +391,9 @@ public class RecipeGenerator extends FabricRecipeProvider {
 //        ModLoadedCondition modLoadedCondition = new ModLoadedCondition(CompatRegistry.PATCHOULI);
 //        ItemStack patchouliBook = new ItemStack(PatchouliItems.BOOK);
 //        patchouliBook.set(PatchouliDataComponents.BOOK, InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
-//        this.shapeless(patchouliBook)
-//                .requires(ConventionalItemTags.DYES_WHITE)
-//                .requires(ConventionalItemTags.DYES_RED)
+//        this.shapeless(RecipeCategory.MISC, patchouliBook)
+//                .requires(ConventionalItemTags.WHITE_DYES)
+//                .requires(ConventionalItemTags.RED_DYES)
 //                .requires(Items.BOOK)
 //                .unlockedBy(getHasName(Items.BOOK), has(Items.BOOK))
 //                .save(recipeOutput.withConditions(modLoadedCondition), InitItems.MEMORIZABLE_GENSOKYO_LOCATION);
@@ -386,6 +424,49 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(Items.PAPER)
                     .unlockedBy(getHasName(Items.BOOK), has(Items.BOOK))
                     .save(recipeOutput);
+
+            // 女仆床染色配方
+            this.shapeless(RecipeCategory.MISC, InitItems.PINK_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.PINK_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "pink_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.WHITE_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.WHITE_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "white_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.BLACK_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.BLACK_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "black_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.YELLOW_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.YELLOW_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "yellow_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.BLUE_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.BLUE_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "blue_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.GREEN_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.GREEN_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "green_maid_bed_from_dye");
+
+            this.shapeless(RecipeCategory.MISC, InitItems.PURPLE_MAID_BED)
+                    .requires(TagItem.MAID_BED)
+                    .requires(ConventionalItemTags.PURPLE_DYES)
+                    .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
+                    .save(recipeOutput, "purple_maid_bed_from_dye");
         }
     }
 }

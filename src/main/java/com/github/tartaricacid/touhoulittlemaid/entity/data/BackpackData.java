@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.entity.data;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.backpack.BackpackManager;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -13,6 +14,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 public record BackpackData(String type) {
+    public static final String KEY = IdentifierUtil.modLoc("backpack").toString();
+
     private static final Codec<BackpackData> CODEC = RecordCodecBuilder.create(ins -> ins.group(
             Codec.STRING.fieldOf("type").forGetter(BackpackData::type)
     ).apply(ins, BackpackData::new));

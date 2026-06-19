@@ -36,7 +36,7 @@ public class BlockEntityMaidBeacon extends BlockEntityBase {
     private boolean overflowDelete = false;
 
     public BlockEntityMaidBeacon(BlockPos blockPos, BlockState blockState) {
-        super(InitBlocks.MAID_BEACON_TE, blockPos, blockState);
+        super(InitBlocks.MAID_BEACON_BE, blockPos, blockState);
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BlockEntityMaidBeacon beacon) {

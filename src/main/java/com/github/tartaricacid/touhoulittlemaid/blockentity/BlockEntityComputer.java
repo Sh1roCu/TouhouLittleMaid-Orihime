@@ -6,6 +6,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockEntityComputer extends BlockEntityJoy {
     public BlockEntityComputer(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.COMPUTER_TE, pos, blockState);
+        super(InitBlocks.COMPUTER_BE, pos, blockState);
     }
 }

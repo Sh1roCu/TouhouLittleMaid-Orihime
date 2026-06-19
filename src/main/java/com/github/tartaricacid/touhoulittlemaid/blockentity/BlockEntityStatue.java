@@ -31,7 +31,7 @@ public class BlockEntityStatue extends BlockEntityBase {
     private @Nullable CompoundTag extraMaidData = null;
 
     public BlockEntityStatue(BlockPos blockPos, BlockState blockState) {
-        super(InitBlocks.STATUE_TE, blockPos, blockState);
+        super(InitBlocks.STATUE_BE, blockPos, blockState);
     }
 
     public void setAllData(Size size, boolean isCoreBlock, BlockPos coreBlockPos,

@@ -28,7 +28,7 @@ public class BlockEntityGomoku extends BlockEntityJoy implements IBoardGameEntit
     private Point latestChessPoint = Point.NULL;
 
     public BlockEntityGomoku(BlockPos pos, BlockState blockState) {
-        super(InitBlocks.GOMOKU_TE, pos, blockState);
+        super(InitBlocks.GOMOKU_BE, pos, blockState);
     }
 
     @Override
