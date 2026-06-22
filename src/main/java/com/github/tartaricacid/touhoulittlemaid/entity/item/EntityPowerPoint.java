@@ -2,16 +2,15 @@ package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
-import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.BeaconAbsorbPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SyncDataPackage;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -34,34 +33,48 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
 
 import static com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment.POWER_NUM;
 
 public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn, IEntityExtension {
-    public static final EntityType<EntityPowerPoint> TYPE = EntityType.Builder.<EntityPowerPoint>of(EntityPowerPoint::new, MobCategory.MISC)
-            .sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20)
-            .build(ResourceKey.create(Registries.ENTITY_TYPE, IdentifierUtil.modLoc("power_point")));
+    public static final Identifier ENTITY_ID = IdentifierUtil.modLoc("power_point");
+    public static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, ENTITY_ID);
+    public static final EntityType<EntityPowerPoint> TYPE = EntityType
+            .Builder.<EntityPowerPoint>of(EntityPowerPoint::new, MobCategory.MISC)
+            .noLootTable()
+            .sized(0.5F, 0.5F)
+            .clientTrackingRange(6)
+            .updateInterval(20)
+            .build(ENTITY_KEY);
+
     private static final int MAX_AGE = 6000;
+
     public int tickCount;
     public int age;
     public int throwTime;
     public int value;
+
     private int health = 5;
-    private Player followingPlayer;
+    private @Nullable Player followingPlayer;
     private int followingTime;
 
-    public EntityPowerPoint(EntityType<?> entityTypeIn, Level worldIn) {
-        super(entityTypeIn, worldIn);
+    public EntityPowerPoint(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
-    public EntityPowerPoint(Level worldIn, double x, double y, double z, int powerValue) {
-        this(TYPE, worldIn);
+    public EntityPowerPoint(Level level, double x, double y, double z, int powerValue) {
+        this(TYPE, level);
         this.setPos(x, y, z);
-        this.setYRot((float) (this.random.nextDouble() * 360.0));
-        this.setDeltaMovement((this.random.nextDouble() * 0.2 - 0.1) * 2.0,
-                this.random.nextDouble() * 0.2 * 2.0,
-                (this.random.nextDouble() * 0.2 - 0.1) * 2.0);
+        this.setYRot(this.random.nextFloat() * 360);
+        this.setDeltaMovement(
+                (this.random.nextDouble() * 0.2 - 0.1) * 2,
+                this.random.nextDouble() * 0.2 * 2,
+                (this.random.nextDouble() * 0.2 - 0.1) * 2
+        );
         this.value = powerValue;
     }
 
@@ -129,10 +142,6 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-    }
-
-    @Override
     public void tick() {
         super.tick();
 
@@ -144,9 +153,12 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
         this.yo = this.getY();
         this.zo = this.getZ();
         this.fluidMovement();
-        if (!this.level.noCollision(this.getBoundingBox())) {
-            this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
+
+        AABB box = this.getBoundingBox();
+        if (!this.level.noCollision(box)) {
+            this.moveTowardsClosestSpace(this.getX(), (box.minY + box.maxY) / 2.0, this.getZ());
         }
+
         this.followingMovement();
         this.move(MoverType.SELF, this.getDeltaMovement());
         this.groundMovement();
@@ -161,9 +173,10 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     private void groundMovement() {
         double slipperiness = 0.98;
         if (this.onGround()) {
-            BlockPos pos = new BlockPos((int) this.getX(), (int) (this.getY() - 1.0), (int) this.getZ());
-            //slipperiness = this.level.getBlockState(pos).getFriction(this.level, pos, this) * 0.98;
-            slipperiness = this.level.getBlockState(pos).getBlock().getFriction() * 0.98;
+            BlockPos pos = this.blockPosition().below(1);
+            // float friction = this.level.getBlockState(pos).getFriction(this.level, pos, this);
+            float friction = this.level.getBlockState(pos).getBlock().getFriction();
+            slipperiness = friction * 0.98;
         }
         this.setDeltaMovement(this.getDeltaMovement().multiply(slipperiness, 0.98, slipperiness));
         if (this.onGround()) {
@@ -185,13 +198,17 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
         }
 
         if (this.followingPlayer != null) {
-            Vec3 relativeVector = new Vec3(this.followingPlayer.getX() - this.getX(),
+            Vec3 relativeVector = new Vec3(
+                    this.followingPlayer.getX() - this.getX(),
                     this.followingPlayer.getY() + this.followingPlayer.getEyeHeight() / 2.0 - this.getY(),
-                    this.followingPlayer.getZ() - this.getZ());
+                    this.followingPlayer.getZ() - this.getZ()
+            );
             double length = relativeVector.length();
             if (length < distance) {
                 double factor = 1.0 - length / 8.0;
-                this.setDeltaMovement(this.getDeltaMovement().add(relativeVector.normalize().scale(factor * factor * 0.1D)));
+                this.setDeltaMovement(this.getDeltaMovement()
+                        .add(relativeVector.normalize().scale(factor * factor * 0.1))
+                );
             }
         }
     }
@@ -209,8 +226,11 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
         }
 
         if (this.level.getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
-            this.setDeltaMovement((this.random.nextDouble() - this.random.nextDouble()) * 0.2,
-                    0.2, (this.random.nextDouble() - this.random.nextDouble()) * 0.2);
+            this.setDeltaMovement(
+                    (this.random.nextDouble() - this.random.nextDouble()) * 0.2,
+                    0.2,
+                    (this.random.nextDouble() - this.random.nextDouble()) * 0.2
+            );
             this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
@@ -219,17 +239,20 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     protected void doWaterSplashEffect() {
     }
 
-
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (!this.isInvulnerableToBase(source)) {
             this.markHurt();
-            this.health = (int) ((float) this.health - amount);
+            this.health = (int) (this.health - amount);
             if (this.health <= 0) {
                 this.discard();
             }
         }
         return false;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Override
@@ -252,34 +275,41 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
             return;
         }
 
-        if (this.throwTime == 0 && player.takeXpDelay == 0) {
-            PowerAttachment power = player.getAttachedOrCreate(POWER_NUM, () -> new PowerAttachment(0));
-            MaidNumAttachment maidNum = player.getAttachedOrCreate(InitDataAttachment.MAID_NUM, () -> new MaidNumAttachment(0));
-            player.takeXpDelay = 2;
-            this.take(player, 1);
-            if (this.value > 0) {
-                if (power.get() + value / 100.0f > PowerAttachment.MAX_POWER) {
-                    power.add(PowerAttachment.MAX_POWER - power.get());
-                    int residualValue = value - (int) (PowerAttachment.MAX_POWER * 100) + (int) (power.get() * 100);
-                    // 和原版设计不同，该数值过大，故缩小一些
-                    player.giveExperiencePoints(transPowerValueToXpValue(residualValue));
-                    player.setAttached(POWER_NUM, new PowerAttachment(power.get()));
-                } else {
-                    power.add(value / 100.0f);
-                    player.setAttached(POWER_NUM, new PowerAttachment(power.get()));
-                }
+        if (this.throwTime != 0 || player.takeXpDelay != 0) {
+            return;
+        }
+
+        player.takeXpDelay = 2;
+        this.take(player, 1);
+
+        PowerAttachment power = player.getAttachedOrCreate(POWER_NUM);
+        if (this.value > 0) {
+            if (power.get() + value / 100.0f > PowerAttachment.MAX_POWER) {
+                power.add(PowerAttachment.MAX_POWER - power.get());
+                int residualValue = value - (int) (PowerAttachment.MAX_POWER * 100) + (int) (power.get() * 100);
+                // 和原版设计不同，该数值过大，故缩小一些
+                player.giveExperiencePoints(transPowerValueToXpValue(residualValue));
+                player.setAttached(POWER_NUM, new PowerAttachment(power.get()));
+            } else {
+                power.add(value / 100.0f);
+                player.setAttached(POWER_NUM, new PowerAttachment(power.get()));
             }
-            ServerPlayNetworking.send((ServerPlayer) player, new SyncDataPackage(power.get(), maidNum.get()));
-            this.discard();
-            if (player instanceof ServerPlayer serverPlayer) {
-                InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.PICKUP_POWER_POINT);
-            }
+        }
+        this.discard();
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            int maidNum = player.getAttachedOrCreate(InitDataAttachment.MAID_NUM).get();
+            SyncDataPackage msg = new SyncDataPackage(power.get(), maidNum);
+            PacketDistributor.sendToPlayer(serverPlayer, msg);
+
+            InitTrigger.MAID_EVENT.trigger(serverPlayer, TriggerType.PICKUP_POWER_POINT);
         }
     }
 
-    public void take(Entity player, int quantity) {
-        if (this.isAlive() && !this.level.isClientSide()) {
-            ((ServerLevel) this.level).getChunkSource().sendToTrackingPlayers(this, new ClientboundTakeItemEntityPacket(this.getId(), player.getId(), quantity));
+    public void take(Entity entity, int quantity) {
+        if (this.isAlive() && this.level instanceof ServerLevel serverLevel) {
+            ClientboundTakeItemEntityPacket msg = new ClientboundTakeItemEntityPacket(this.getId(), entity.getId(), quantity);
+            serverLevel.getChunkSource().sendToTrackingPlayers(this, msg);
         }
     }
 
@@ -322,7 +352,7 @@ public class EntityPowerPoint extends Entity implements IEntityWithComplexSpawn,
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
-        this.value = additionalData.readInt();
+    public void readSpawnData(RegistryFriendlyByteBuf buffer) {
+        this.value = buffer.readInt();
     }
 }

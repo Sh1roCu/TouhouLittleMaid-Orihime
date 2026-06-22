@@ -1,12 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.client.overlay;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.compat.kubejs.ModKubeJSCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -64,14 +63,13 @@ public class MaidTipsOverlay implements HudElement {
 
         INSTANCE.addSpecialTips("overlay.touhou_little_maid.ntr_item.tips", (item, maid, player) ->
                 !maid.isOwnedBy(player)
-                        && item.is(InitItems.OWNER_CONVERSION_TOOL)
+                && item.is(InitItems.OWNER_CONVERSION_TOOL)
         );
         INSTANCE.addSpecialTips("overlay.touhou_little_maid.remove_backpack.tips", MaidTipsOverlay::checkShears);
 
         for (ILittleMaid littleMaid : TouhouLittleMaid.EXTENSIONS) {
             littleMaid.addMaidTips(INSTANCE);
         }
-        ModKubeJSCompat.maidTipsOverlayInit(INSTANCE);
 
         TIPS = ImmutableMap.copyOf(TIPS);
         TIPS_CONFIG = ImmutableMap.copyOf(TIPS_CONFIG);

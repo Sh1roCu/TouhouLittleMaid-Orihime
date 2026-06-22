@@ -1,15 +1,14 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.MaidBackpackRenderData;
 import com.github.tartaricacid.touhoulittlemaid.client.renderer.backpack.MiddleBackpackRenderData;
-import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.MiddleBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -24,16 +23,28 @@ public class MiddleBackpack extends IMaidBackpack {
     public static final Identifier ID = IdentifierUtil.modLoc("middle_backpack");
 
     @Override
-    public void onPutOn(ItemStack stack, Player player, EntityMaid maid) {
-    }
-
-    @Override
     public void onTakeOff(ItemStack stack, Player player, EntityMaid maid) {
         dropRelativeItems(stack, maid);
     }
 
     @Override
-    public void onSpawnTombstone(EntityMaid maid, EntityTombstone tombstone) {
+    public int getAvailableMaxContainerIndex() {
+        return BackpackLevel.MIDDLE_CAPACITY;
+    }
+
+    @Override
+    public MaidBackpackRenderData getRenderData() {
+        return new MiddleBackpackRenderData();
+    }
+
+    @Override
+    public Identifier getId() {
+        return ID;
+    }
+
+    @Override
+    public Item getItem() {
+        return InitItems.MAID_BACKPACK_MIDDLE;
     }
 
     @Override
@@ -59,25 +70,5 @@ public class MiddleBackpack extends IMaidBackpack {
                 return false;
             }
         };
-    }
-
-    @Override
-    public int getAvailableMaxContainerIndex() {
-        return BackpackLevel.MIDDLE_CAPACITY;
-    }
-
-    @Override
-    public MaidBackpackRenderData getRenderData() {
-        return new MiddleBackpackRenderData();
-    }
-
-    @Override
-    public Identifier getId() {
-        return ID;
-    }
-
-    @Override
-    public Item getItem() {
-        return InitItems.MAID_BACKPACK_MIDDLE;
     }
 }

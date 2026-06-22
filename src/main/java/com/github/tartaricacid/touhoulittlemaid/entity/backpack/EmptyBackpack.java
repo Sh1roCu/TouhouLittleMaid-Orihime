@@ -1,13 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.backpack;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.IMaidBackpack;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.MaidBackpackRenderData;
-import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityTombstone;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack.EmptyBackpackContainer;
 import com.github.tartaricacid.touhoulittlemaid.item.BackpackLevel;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -16,7 +14,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class EmptyBackpack extends IMaidBackpack {
@@ -33,15 +30,13 @@ public class EmptyBackpack extends IMaidBackpack {
     }
 
     @Override
-    public void onPutOn(ItemStack stack, Player player, EntityMaid maid) {
+    public int getAvailableMaxContainerIndex() {
+        return BackpackLevel.EMPTY_CAPACITY;
     }
 
     @Override
-    public void onTakeOff(ItemStack stack, Player player, EntityMaid maid) {
-    }
-
-    @Override
-    public void onSpawnTombstone(EntityMaid maid, EntityTombstone tombstone) {
+    public MaidBackpackRenderData getRenderData() {
+        return MaidBackpackRenderData.EMPTY;
     }
 
     @Override
@@ -67,15 +62,5 @@ public class EmptyBackpack extends IMaidBackpack {
                 return false;
             }
         };
-    }
-
-    @Override
-    public int getAvailableMaxContainerIndex() {
-        return BackpackLevel.EMPTY_CAPACITY;
-    }
-
-    @Override
-    public MaidBackpackRenderData getRenderData() {
-        return MaidBackpackRenderData.EMPTY;
     }
 }

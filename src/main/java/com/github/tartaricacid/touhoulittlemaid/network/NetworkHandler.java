@@ -31,7 +31,7 @@ public class NetworkHandler {
         PayloadTypeRegistry.clientboundPlay().register(type, streamCodec);
     }
 
-    public static <T extends CustomPacketPayload> void registerClientReceivers() {
+    public static void registerClientReceivers() {
         ClientPlayNetworking.registerGlobalReceiver(OpenChairGuiPackage.TYPE, OpenChairGuiPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(ItemBreakPackage.TYPE, ItemBreakPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(SpawnParticlePackage.TYPE, SpawnParticlePackage::handle);
@@ -56,6 +56,7 @@ public class NetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage::handle);
         ClientPlayNetworking.registerGlobalReceiver(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncBaublePackage.TYPE, SyncBaublePackage::handle);
+        ClientPlayNetworking.registerGlobalReceiver(TeleportItemParticlePackage.TYPE, TeleportItemParticlePackage::handle);
 
         ClientPlayNetworking.registerGlobalReceiver(SyncAISitesPacket.TYPE, SyncAISitesPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncMaidAIDataPacket.TYPE, SyncMaidAIDataPacket::handle);
@@ -86,9 +87,12 @@ public class NetworkHandler {
         registerS2CPacket(PlayMaidSoundAtPosPackage.TYPE, PlayMaidSoundAtPosPackage.STREAM_CODEC);
         registerS2CPacket(CuriosS2CUpdatePacket.TYPE, CuriosS2CUpdatePacket.STREAM_CODEC);
         registerS2CPacket(SyncBaublePackage.TYPE, SyncBaublePackage.STREAM_CODEC);
+        registerS2CPacket(TeleportItemParticlePackage.TYPE, TeleportItemParticlePackage.STREAM_CODEC);
 
         registerS2CPacket(SyncAISitesPacket.TYPE, SyncAISitesPacket.STREAM_CODEC);
         registerS2CPacket(SyncMaidAIDataPacket.TYPE, SyncMaidAIDataPacket.STREAM_CODEC);
+
+
     }
 
     public static void registerC2SPackets() {

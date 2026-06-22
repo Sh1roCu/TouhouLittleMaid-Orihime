@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -149,14 +150,15 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
         }
     }
 
-//    /**
-//     * 处理反序列化时的饰品加载
-//     */
-//    @Override
-//    protected void onLoad() {
-//        IntStream.range(0, size()).forEach(this::updateBaubles);
-//        this.updateBaublesCache();
-//    }
+    /**
+     * 处理反序列化时的饰品加载
+     */
+    @Override
+    public void deserialize(ValueInput input) {
+        super.deserialize(input);
+        IntStream.range(0, size()).forEach(this::updateBaubles);
+        this.updateBaublesCache();
+    }
 
     public boolean fireEvent(BiPredicate<IMaidBauble, ItemStack> function) {
         var iterator = baubles.int2ObjectEntrySet().iterator();
@@ -165,7 +167,8 @@ public class BaubleItemHandler extends ItemStacksResourceHandler {
             int slot = entry.getIntKey();
 
             IMaidBauble bauble = entry.getValue();
-            ItemStack stack = ItemUtil.getStack(this, slot);
+            // 特殊，因为存在直接修改库存物品的情况，需要直接获取
+            ItemStack stack = stacks.get(slot);
 
             if (stack.isEmpty()) {
                 // 删除不存在物品的映射
