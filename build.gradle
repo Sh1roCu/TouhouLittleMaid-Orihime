@@ -148,6 +148,10 @@ repositories {
         name = "Greenhouse Maven"
         url = 'https://maven.greenhouse.lgbt/releases/'
     }
+    maven {
+        name = "AlexIIL"
+        url = "https://staging.alexiil.uk/maven/"
+    }
 }
 
 configurations {
