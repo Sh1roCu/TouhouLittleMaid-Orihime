@@ -18,8 +18,6 @@ accessible field net/minecraft/world/entity/ai/goal/TemptGoal canScare Z # canSc
 
 accessible field net/minecraft/world/entity/ai/Brain lastScheduleUpdate J # lastScheduleUpdate
 
-accessible field net/minecraft/client/renderer/MultiBufferSource$BufferSource fixedBuffers Ljava/util/SequencedMap; # fixedBuffers
-
 accessible method net/minecraft/world/entity/SpawnPlacements register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V # register
 extendable method net/minecraft/world/entity/Entity getGravity ()D # getGravity
 extendable method net/minecraft/world/entity/Entity getEyeHeight (Lnet/minecraft/world/entity/Pose;)F # getEyeHeight
