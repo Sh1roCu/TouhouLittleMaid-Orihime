@@ -101,9 +101,8 @@ public class MaidContainerCache {
 //            }
 //        });
 
-        for (var equipped : TrinketsApi.getAttachment(maid).getAllEquipped()) {
-            var access = equipped.getA();
-            ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(equipped.getB(), access.slotType().getId(), access.index());
+        for (var access : TrinketsApi.getAttachment(maid).allEquipped(false)) {
+            ContainerRef ref = ExtraContainerManager.tryCreateSlotRef(access.get(), access.slotType().getId(), access.index());
             if (ref instanceof CuriosSlotRef curiosRef) {
                 slotRefs.add(curiosRef);
             }

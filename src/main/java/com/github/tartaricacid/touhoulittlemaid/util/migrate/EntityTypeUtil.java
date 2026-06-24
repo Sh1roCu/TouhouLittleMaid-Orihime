@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.util.migrate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import java.util.Optional;
 
@@ -19,46 +20,46 @@ public final class EntityTypeUtil {
     }
 
     public static EntityType<?> wolf() {
-        return EntityType.WOLF;
+        return EntityTypes.WOLF;
     }
 
     public static EntityType<?> cat() {
-        return EntityType.CAT;
+        return EntityTypes.CAT;
     }
 
     public static EntityType<?> parrot() {
-        return EntityType.PARROT;
+        return EntityTypes.PARROT;
     }
 
     public static EntityType<?> player() {
-        return EntityType.PLAYER;
+        return EntityTypes.PLAYER;
     }
 
     public static EntityType<?> armorStand() {
-        return EntityType.ARMOR_STAND;
+        return EntityTypes.ARMOR_STAND;
     }
 
     public static EntityType<?> item() {
-        return EntityType.ITEM;
+        return EntityTypes.ITEM;
     }
 
     public static EntityType<?> lightningBolt() {
-        return EntityType.LIGHTNING_BOLT;
+        return EntityTypes.LIGHTNING_BOLT;
     }
 
     public static EntityType<?> ironGolem() {
-        return EntityType.IRON_GOLEM;
+        return EntityTypes.IRON_GOLEM;
     }
 
     public static EntityType<?> creeper() {
-        return EntityType.CREEPER;
+        return EntityTypes.CREEPER;
     }
 
     public static EntityType<?> zombie() {
-        return EntityType.ZOMBIE;
+        return EntityTypes.ZOMBIE;
     }
 
     public static EntityType<?> allay() {
-        return EntityType.ALLAY;
+        return EntityTypes.ALLAY;
     }
 }

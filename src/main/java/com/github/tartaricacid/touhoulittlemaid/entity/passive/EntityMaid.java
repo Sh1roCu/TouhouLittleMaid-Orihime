@@ -534,7 +534,7 @@ public class EntityMaid extends MaidManagerHost implements IEntity, CrossbowAtta
     }
 
     @Override
-    public boolean isBaby() {
+    public boolean canBeABaby() {
         // 没有幼年形态的女仆
         return false;
     }

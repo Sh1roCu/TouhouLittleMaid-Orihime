@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.util.migrate;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -18,35 +18,35 @@ public final class ScreenUtil {
     }
 
     public static void setScreen(@Nullable Screen screen) {
-        Minecraft.getInstance().setScreen(screen);
+        Minecraft.getInstance().gui.setScreen(screen);
     }
 
     @Nullable
     public static Screen getScreen() {
-        return Minecraft.getInstance().screen;
+        return Minecraft.getInstance().gui.screen();
     }
 
     public static boolean hasOverlay() {
-        return Minecraft.getInstance().getOverlay() != null;
+        return Minecraft.getInstance().gui.overlay() != null;
     }
 
     public static void setTitle(Component title) {
-        Minecraft.getInstance().gui.setTitle(title);
+        Minecraft.getInstance().gui.hud.setTitle(title);
     }
 
     public static void setSubtitle(Component subtitle) {
-        Minecraft.getInstance().gui.setSubtitle(subtitle);
+        Minecraft.getInstance().gui.hud.setSubtitle(subtitle);
     }
 
     public static void setOverlayMessage(Component message, boolean animate) {
-        Minecraft.getInstance().gui.setOverlayMessage(message, animate);
+        Minecraft.getInstance().gui.hud.setOverlayMessage(message, animate);
     }
 
     public static Identifier getMobEffectSprite(Holder<MobEffect> effectHolder) {
-        return Gui.getMobEffectSprite(effectHolder);
+        return Hud.getMobEffectSprite(effectHolder);
     }
 
     public static boolean isHideGui() {
-        return Minecraft.getInstance().options.hideGui;
+        return Minecraft.getInstance().gui.hud.isHidden();
     }
 }

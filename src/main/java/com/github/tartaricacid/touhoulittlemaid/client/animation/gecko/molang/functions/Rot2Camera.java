@@ -13,7 +13,7 @@ public class Rot2Camera extends ContextFunction<Object> {
         if (axis < 0 || axis > 1) {
             return null;
         }
-        Camera mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        Camera mainCamera = Minecraft.getInstance().gameRenderer.mainCamera();
         if (axis == 0) {
             return -mainCamera.xRot();
         } else {

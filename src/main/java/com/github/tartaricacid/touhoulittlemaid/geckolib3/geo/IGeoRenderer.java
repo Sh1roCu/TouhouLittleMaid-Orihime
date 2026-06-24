@@ -7,8 +7,6 @@ import com.github.tartaricacid.touhoulittlemaid.geckolib3.util.IRenderCycle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexMultiConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -50,17 +48,6 @@ public interface IGeoRenderer<TState extends EntityRenderState, TData extends Ge
             if (data.isClosed()) {
                 return;
             }
-            if (ctx.level() && !ctx.irisShadow()
-                    && state.outlineColor != 0 && (type.outline().isPresent() || type.isOutline())) {
-                var outlineBufferSource = Minecraft.getInstance().renderBuffers().outlineBufferSource();
-                outlineBufferSource.setColor(state.outlineColor);
-                var outlineBuffer = outlineBufferSource.getBuffer(type);
-                if (type.isOutline()) {
-                    vertexConsumer = outlineBuffer;
-                } else {
-                    vertexConsumer = VertexMultiConsumer.create(vertexConsumer, outlineBuffer);
-                }
-            }
             VertexConsumer finalVertexConsumer = vertexConsumer;
             data.modelState.visitRenderBones(pose, (bone, poseState) -> {
                 renderCubesOfBone(bone, poseState, finalVertexConsumer, state, data);
@@ -99,7 +86,7 @@ public interface IGeoRenderer<TState extends EntityRenderState, TData extends Ge
 
             int faces = mesh.faces(i);
             boolean mirrored = (faces & 0b1000000) != 0;
-            if (RenderSystem.getModelViewMatrix().m32() != 0) {
+            if (RenderSystem.getModelViewMatrixCopy().m32() != 0) {
                 Matrix3f normal = poseState.normal();
                 mesh.dx(i).cross(mesh.dy(i), nz);
                 mesh.dy(i).cross(mesh.dz(i), nx);

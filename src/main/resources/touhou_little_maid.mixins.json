@@ -33,7 +33,8 @@
     "client.LanguageMixin",
     "client.LivingEntityRendererMixin",
     "client.InventoryScreenMixin",
-    "client.LevelRendererMixin"
+    "client.LevelRendererMixin",
+    "client.LevelExtractorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

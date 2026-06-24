@@ -46,7 +46,7 @@ public class MultiBlockAltar implements IMultiBlock {
                 }
             }
             // 羊毛部分 -> 鸟居
-            else if (infoState.is(Blocks.RED_WOOL)) {
+            else if (infoState.is(Blocks.WOOL.red())) {
                 if (!worldState.is(TagBlock.ALTAR_TORII)) {
                     return false;
                 }

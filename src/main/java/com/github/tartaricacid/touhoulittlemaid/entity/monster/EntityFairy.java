@@ -33,7 +33,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +45,7 @@ import javax.annotation.Nullable;
 
 import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
 
-public class EntityFairy extends Monster implements RangedAttackMob, FlyingAnimal, IHasPowerPoint {
+public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPoint {
     public static final EntityType<EntityFairy> TYPE = EntityType.Builder.<EntityFairy>of(EntityFairy::new, MobCategory.MONSTER)
             .sized(0.6f, 1.5f).clientTrackingRange(10).build(ResourceKey.create(Registries.ENTITY_TYPE, IdentifierUtil.modLoc("fairy")));
 
@@ -201,8 +200,8 @@ public class EntityFairy extends Monster implements RangedAttackMob, FlyingAnima
     }
 
     @Override
-    public boolean isFlying() {
-        return !this.onGround();
+    protected boolean omnidirectionalAirMover() {
+        return true;
     }
 
     @Override

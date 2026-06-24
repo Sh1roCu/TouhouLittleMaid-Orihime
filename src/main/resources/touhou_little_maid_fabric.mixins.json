@@ -54,7 +54,6 @@
     "client.EntityRenderStateMixin",
     "client.ItemInHandRendererMixin",
     "client.KeyboardHandlerMixin",
-    "client.MinecraftMixin",
     "client.SoundEngineMixin"
   ],
   "injectors": {

@@ -18,13 +18,13 @@ public abstract class CuriosSlotRef implements ContainerRef {
     }
 
     protected ItemStack getCuriosStack(EntityMaid maid) {
-        return TrinketsApi.getAttachment(maid).getAllEquipped().stream()
-                .filter(t -> t.getA().slotType().getId().equals(slotType))
+        return TrinketsApi.getAttachment(maid).allEquipped(false).stream()
+                .filter(t -> t.slotType().getId().equals(slotType))
                 .map(tuple -> {
-                    if (slotIndex >= tuple.getA().inventory().getContainerSize()) {
+                    if (slotIndex >= tuple.inventory().getContainerSize()) {
                         return ItemStack.EMPTY;
                     }
-                    return tuple.getA().inventory().getItem(slotIndex);
+                    return tuple.inventory().getItem(slotIndex);
                 }).findFirst().orElse(ItemStack.EMPTY);
     }
 

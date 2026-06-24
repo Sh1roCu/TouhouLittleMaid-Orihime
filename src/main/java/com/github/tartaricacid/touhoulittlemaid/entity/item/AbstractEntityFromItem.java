@@ -133,7 +133,12 @@ public abstract class AbstractEntityFromItem extends LivingEntity {
     }
 
     @Override
-    public void knockback(double strength, double ratioX, double ratioZ) {
+    public void knockback(double power, double xd, double zd, DamageSource source, float damage) {
+        // 不允许被击退效果影响
+    }
+
+    @Override
+    public void knockback(double power, double xd, double zd, DamageSource source, float damage, boolean comesFromEffect) {
         // 不允许被击退效果影响
     }
 

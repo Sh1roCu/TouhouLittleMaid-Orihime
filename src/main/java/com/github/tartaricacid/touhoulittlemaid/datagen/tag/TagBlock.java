@@ -8,12 +8,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -86,37 +86,41 @@ public class TagBlock extends FabricTagsProvider.BlockTagsProvider {
         return ResourceKey.create(Registries.BLOCK, resourceLocation);
     }
 
+    private static ResourceKey<Block> blockKey(Block block) {
+        return block.builtInRegistryHolder().key();
+    }
+
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        valueLookupBuilder(MAID_BED)
-                .add(InitBlocks.PINK_MAID_BED)
-                .add(InitBlocks.WHITE_MAID_BED)
-                .add(InitBlocks.BLACK_MAID_BED)
-                .add(InitBlocks.YELLOW_MAID_BED)
-                .add(InitBlocks.BLUE_MAID_BED)
-                .add(InitBlocks.GREEN_MAID_BED)
-                .add(InitBlocks.PURPLE_MAID_BED);
+        builder(MAID_BED)
+                .add(blockKey(InitBlocks.PINK_MAID_BED))
+                .add(blockKey(InitBlocks.WHITE_MAID_BED))
+                .add(blockKey(InitBlocks.BLACK_MAID_BED))
+                .add(blockKey(InitBlocks.YELLOW_MAID_BED))
+                .add(blockKey(InitBlocks.BLUE_MAID_BED))
+                .add(blockKey(InitBlocks.GREEN_MAID_BED))
+                .add(blockKey(InitBlocks.PURPLE_MAID_BED));
 
-        valueLookupBuilder(MAID_JUMP_FORBIDDEN_BLOCK)
+        builder(MAID_JUMP_FORBIDDEN_BLOCK)
                 .forceAddTag(BlockTags.DOORS)
                 .forceAddTag(BlockTags.FENCES)
                 .forceAddTag(BlockTags.CLIMBABLE);
 
-        valueLookupBuilder(ALTAR_TORII).add(Blocks.RED_WOOL, Blocks.RED_CONCRETE);
+        builder(ALTAR_TORII).add(BlockItemIds.WOOL.red(), BlockItemIds.CONCRETE.red());
         builder(ALTAR_TORII).addOptional(createResourceKey(Identifier.parse("biomesoplenty:redwood_planks")));
-        valueLookupBuilder(ALTAR_PILLAR).forceAddTag(BlockTags.LOGS);
+        builder(ALTAR_PILLAR).forceAddTag(BlockTags.LOGS);
 
-        var blacklist = valueLookupBuilder(CARRYON_BLOCK_BLACKLIST);
+        var blacklist = builder(CARRYON_BLOCK_BLACKLIST);
         BuiltInRegistries.BLOCK.keySet().stream().filter(id -> id.getNamespace().equals(TouhouLittleMaid.MOD_ID))
-                .forEach(id -> blacklist.add(BuiltInRegistries.BLOCK.getValue(id)));
+                .forEach(id -> blacklist.add(BuiltInRegistries.BLOCK.getValue(id).builtInRegistryHolder().key()));
 
-        valueLookupBuilder(MAID_SNACK_STAND_BLOCK)
-                .add(InitBlocks.SNACK_CABINET)
+        builder(MAID_SNACK_STAND_BLOCK)
+                .add(blockKey(InitBlocks.SNACK_CABINET))
                 .addOptionalTag(createTagKey(Identifier.parse("kaleidoscope_cookery:table")));
 
-        valueLookupBuilder(SNACK_CABINET_FULL)
+        builder(SNACK_CABINET_FULL)
                 // 蛋糕全部是完整玻璃橱窗
-                .add(Blocks.CAKE)
+                .add(BlockItemIds.CAKE)
                 .addOptionalTag(createTagKey(Identifier.parse("forge:cakes")))
                 .addOptionalTag(createTagKey(Identifier.parse("c:cakes")))
                 .addOptionalTag(createTagKey(Identifier.parse("jmc:cakes")));

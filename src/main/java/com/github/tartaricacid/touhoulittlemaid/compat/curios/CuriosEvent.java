@@ -55,9 +55,9 @@ public class CuriosEvent {
 //            }
 //        });
 
-        TrinketsApi.getAttachment(maid).getAllEquipped().forEach(tuple -> {
-            var inv = tuple.getA().inventory();
-            ItemStack stack = inv.removeItem(tuple.getA().index(), tuple.getB().getCount());
+        TrinketsApi.getAttachment(maid).allEquipped(false).forEach(access -> {
+            var inv = access.inventory();
+            ItemStack stack = inv.removeItem(access.index(), access.get().getCount());
             tombstone.insertItem(stack);
         });
     }

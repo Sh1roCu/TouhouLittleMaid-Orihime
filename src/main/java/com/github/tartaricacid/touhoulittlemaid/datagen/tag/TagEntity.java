@@ -55,14 +55,18 @@ public class TagEntity extends FabricTagsProvider.EntityTypeTagsProvider {
         return ResourceKey.create(Registries.ENTITY_TYPE, id);
     }
 
+    private static ResourceKey<EntityType<?>> entityKey(EntityType<?> entityType) {
+        return entityType.builtInRegistryHolder().key();
+    }
+
     @Override
     public void addTags(HolderLookup.@NonNull Provider lookupProvider) {
-        valueLookupBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(InitEntities.DANMAKU);
-        valueLookupBuilder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(InitEntities.FAIRY);
-        valueLookupBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(InitEntities.FAIRY);
-        valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(InitEntities.FAIRY);
+        builder(EntityTypeTags.IMPACT_PROJECTILES).add(entityKey(InitEntities.DANMAKU));
+        builder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(entityKey(InitEntities.FAIRY));
+        builder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(entityKey(InitEntities.FAIRY));
+        builder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(entityKey(InitEntities.FAIRY));
 
-        valueLookupBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityTypeUtil.ironGolem());
+        builder(MAID_FAIRY_ATTACK_GOAL).add(entityKey(EntityTypeUtil.ironGolem()));
         builder(MAID_FAIRY_ATTACK_GOAL)
                 .addOptional(createResourceKey(id("guardvillagers:guard")))
                 .addOptional(createResourceKey(id("earthtojavamobs:furnace_golem")))
@@ -75,13 +79,13 @@ public class TagEntity extends FabricTagsProvider.EntityTypeTagsProvider {
                 .addOptional(createResourceKey(id("create:carriage_contraption")))
                 .addOptional(createResourceKey(id("create:seat")));
 
-        valueLookupBuilder(CARRYON_ENTITY_BLACKLIST).add(
-                InitEntities.TOMBSTONE,
-                InitEntities.SIT,
-                InitEntities.BROOM);
+        builder(CARRYON_ENTITY_BLACKLIST)
+                .add(entityKey(InitEntities.TOMBSTONE))
+                .add(entityKey(InitEntities.SIT))
+                .add(entityKey(InitEntities.BROOM));
 
         // 让女仆免疫冰与火的石化效果，避免石化带来的各种问题
-        valueLookupBuilder(IMMUNE_TO_GORGON_STONE).add(InitEntities.MAID);
+        builder(IMMUNE_TO_GORGON_STONE).add(entityKey(InitEntities.MAID));
     }
 
     private Identifier id(String name) {

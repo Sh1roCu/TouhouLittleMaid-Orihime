@@ -18,7 +18,7 @@ public class TagEnchantment extends FabricTagsProvider<Enchantment> {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider provider) {
-        builder(EnchantmentTags.NON_TREASURE).add(EnchantmentKeys.SPEEDY, EnchantmentKeys.IMPEDING);
+        builder(EnchantmentTags.NON_TREASURE).add(EnchantmentKeys.SPEEDY).add(EnchantmentKeys.IMPEDING);
         builder(EnchantmentTags.TREASURE).add(EnchantmentKeys.ENDERS_ENDER);
         builder(EnchantmentTags.TRADEABLE).add(EnchantmentKeys.ENDERS_ENDER);
     }

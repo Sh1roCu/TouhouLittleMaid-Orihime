@@ -7,9 +7,9 @@ import com.github.tartaricacid.touhoulittlemaid.datagen.LootTableGenerator;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.KilledTrigger;
-import net.minecraft.advancements.criterion.RecipeCraftedTrigger;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.KilledTrigger;
+import net.minecraft.advancements.triggers.RecipeCraftedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -76,7 +76,7 @@ public class BaseAdvancement {
     private static void generateAltar(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, AdvancementHolder root) {
         HolderGetter<EntityType<?>> entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
 
-        AdvancementHolder altar = make(Items.RED_WOOL, "build_altar").parent(root)
+        AdvancementHolder altar = make(Items.WOOL.red(), "build_altar").parent(root)
                 .addCriterion("maid_event", MaidEventTrigger.create(TriggerType.BUILD_ALTAR))
                 .rewards(AdvancementRewards.Builder.loot(LootTableGenerator.ADVANCEMENT_POWER_POINT))
                 .save(saver, id("base/build_altar").toString());

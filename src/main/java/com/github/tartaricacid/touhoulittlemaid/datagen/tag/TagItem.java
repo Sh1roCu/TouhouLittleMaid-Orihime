@@ -7,12 +7,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -84,52 +84,57 @@ public class TagItem extends FabricTagsProvider.ItemTagsProvider {
         return ResourceKey.create(Registries.ITEM, resourceLocation);
     }
 
+    private static ResourceKey<Item> itemKey(Item item) {
+        return item.builtInRegistryHolder().key();
+    }
+
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        this.valueLookupBuilder(GOHEI_ENCHANTABLE).add(InitItems.HAKUREI_GOHEI);
-        this.valueLookupBuilder(GOHEI_ENCHANTABLE).add(InitItems.SANAE_GOHEI);
+        this.builder(GOHEI_ENCHANTABLE).add(itemKey(InitItems.HAKUREI_GOHEI));
+        this.builder(GOHEI_ENCHANTABLE).add(itemKey(InitItems.SANAE_GOHEI));
 
-        this.valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(InitItems.HAKUREI_GOHEI)
-                .add(InitItems.SANAE_GOHEI)
-                .add(InitItems.ULTRAMARINE_ORB_ELIXIR)
-                .add(InitItems.EXPLOSION_PROTECT_BAUBLE)
-                .add(InitItems.FIRE_PROTECT_BAUBLE)
-                .add(InitItems.PROJECTILE_PROTECT_BAUBLE)
-                .add(InitItems.MAGIC_PROTECT_BAUBLE)
-                .add(InitItems.FALL_PROTECT_BAUBLE)
-                .add(InitItems.DROWN_PROTECT_BAUBLE)
-                .add(InitItems.NIMBLE_FABRIC);
+        this.builder(ItemTags.DURABILITY_ENCHANTABLE)
+                .add(itemKey(InitItems.HAKUREI_GOHEI))
+                .add(itemKey(InitItems.SANAE_GOHEI))
+                .add(itemKey(InitItems.ULTRAMARINE_ORB_ELIXIR))
+                .add(itemKey(InitItems.EXPLOSION_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.FIRE_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.PROJECTILE_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.MAGIC_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.FALL_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.DROWN_PROTECT_BAUBLE))
+                .add(itemKey(InitItems.NIMBLE_FABRIC));
 
-        this.valueLookupBuilder(MAID_PLANTABLE_SEEDS)
+        this.builder(MAID_PLANTABLE_SEEDS)
                 .forceAddTag(ItemTags.VILLAGER_PLANTABLE_SEEDS)
                 .forceAddTag(ConventionalItemTags.SEEDS)
                 .addOptionalTag(createTagKey(Identifier.parse("kaleidoscope_cookery:cookery_mod_seeds")));
-        this.valueLookupBuilder(MAID_PLANTABLE_SEEDS).add(Items.NETHER_WART);
+        this.builder(MAID_PLANTABLE_SEEDS).add(BlockItemIds.NETHER_WART);
 
         this.addCakeItems(MAID_TAMED_ITEM);
         this.addCakeItems(MAID_TEMPTATION_ITEM);
 
-        this.valueLookupBuilder(MAID_MENDING_BLOCKLIST_ITEM).add(InitItems.ULTRAMARINE_ORB_ELIXIR);
-        this.valueLookupBuilder(MAID_VANISHING_BLOCKLIST_ITEM).add(InitItems.ULTRAMARINE_ORB_ELIXIR);
+        this.builder(MAID_MENDING_BLOCKLIST_ITEM).add(itemKey(InitItems.ULTRAMARINE_ORB_ELIXIR));
+        this.builder(MAID_VANISHING_BLOCKLIST_ITEM).add(itemKey(InitItems.ULTRAMARINE_ORB_ELIXIR));
 
         // 森罗物语辣椒
         this.builder(MAID_EAT_BLOCKLIST_ITEM)
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:red_chili")))
                 .addOptional(createResourceKey(Identifier.parse("kaleidoscope_cookery:green_chili")));
 
-        this.valueLookupBuilder(MAID_BED)
-                .add(InitItems.PINK_MAID_BED)
-                .add(InitItems.WHITE_MAID_BED)
-                .add(InitItems.BLACK_MAID_BED)
-                .add(InitItems.YELLOW_MAID_BED)
-                .add(InitItems.BLUE_MAID_BED)
-                .add(InitItems.GREEN_MAID_BED)
-                .add(InitItems.PURPLE_MAID_BED);
+        this.builder(MAID_BED)
+                .add(itemKey(InitItems.PINK_MAID_BED))
+                .add(itemKey(InitItems.WHITE_MAID_BED))
+                .add(itemKey(InitItems.BLACK_MAID_BED))
+                .add(itemKey(InitItems.YELLOW_MAID_BED))
+                .add(itemKey(InitItems.BLUE_MAID_BED))
+                .add(itemKey(InitItems.GREEN_MAID_BED))
+                .add(itemKey(InitItems.PURPLE_MAID_BED));
     }
 
     private void addCakeItems(TagKey<Item> tagKey) {
-        this.valueLookupBuilder(tagKey)
-                .add(Items.CAKE)
+        this.builder(tagKey)
+                .add(BlockItemIds.CAKE)
                 .addOptionalTag(createTagKey(Identifier.parse("forge:cakes")))
                 .addOptionalTag(createTagKey(Identifier.parse("c:cakes")))
                 .addOptionalTag(createTagKey(Identifier.parse("jmc:cakes")));

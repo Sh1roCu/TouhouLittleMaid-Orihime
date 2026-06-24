@@ -177,23 +177,23 @@ public class RecipeGenerator extends FabricRecipeProvider {
 
             AltarRecipeBuilder.shapeless(items, InitItems.MAID_BACKPACK_BIG)
                     .power(0.3F)
-                    .requires(4, Items.GRAY_WOOL)
+                    .requires(4, Items.WOOL.gray())
                     .requires(ConventionalItemTags.DIAMOND_GEMS)
-                    .requires(Items.GRAY_WOOL)
+                    .requires(Items.WOOL.gray())
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.MAID_BACKPACK_MIDDLE)
                     .power(0.2F)
-                    .requires(4, Items.PINK_WOOL)
+                    .requires(4, Items.WOOL.pink())
                     .requires(ConventionalItemTags.GOLD_INGOTS)
-                    .requires(Items.PINK_WOOL)
+                    .requires(Items.WOOL.pink())
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.MAID_BACKPACK_SMALL)
                     .power(0.1F)
-                    .requires(4, Items.RED_WOOL)
+                    .requires(4, Items.WOOL.red())
                     .requires(ConventionalItemTags.IRON_INGOTS)
-                    .requires(Items.RED_WOOL)
+                    .requires(Items.WOOL.red())
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.MAID_BEACON)
@@ -208,43 +208,43 @@ public class RecipeGenerator extends FabricRecipeProvider {
 
             AltarRecipeBuilder.shapeless(items, InitItems.PINK_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.PINK_WOOL)
+                    .requires(Items.WOOL.pink())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.WHITE_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.WHITE_WOOL)
+                    .requires(Items.WOOL.white())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.BLACK_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.BLACK_WOOL)
+                    .requires(Items.WOOL.black())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.YELLOW_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.YELLOW_WOOL)
+                    .requires(Items.WOOL.yellow())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.BLUE_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.BLUE_WOOL)
+                    .requires(Items.WOOL.blue())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.GREEN_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.GREEN_WOOL)
+                    .requires(Items.WOOL.green())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 
             AltarRecipeBuilder.shapeless(items, InitItems.PURPLE_MAID_BED)
                     .power(0.2F)
-                    .requires(Items.PURPLE_WOOL)
+                    .requires(Items.WOOL.purple())
                     .requires(ItemTags.PLANKS)
                     .save(recipeOutput);
 

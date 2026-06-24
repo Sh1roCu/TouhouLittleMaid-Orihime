@@ -20,7 +20,7 @@ recipeList:
 
   - org.openrewrite.properties.ChangePropertyValue:
       propertyKey: cloth_config_version
-      newValue: 26.2.155+fabric
+      newValue: 26.2.155
 
   - org.openrewrite.properties.ChangePropertyValue:
       propertyKey: jade_version

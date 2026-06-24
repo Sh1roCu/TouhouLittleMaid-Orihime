@@ -296,8 +296,9 @@ public class MaidCombatManager {
                 if (entity != maid && entity != target && !maid.isAlliedTo(entity) && maid.canAttack(entity) && maid.wantsToAttack(entity, maid.getOwner())) {
                     float posX = Mth.sin(maid.getYRot() * ((float) Math.PI / 180F));
                     float posY = -Mth.cos(maid.getYRot() * ((float) Math.PI / 180F));
-                    entity.knockback(0.4, posX, posY);
-                    entity.hurt(maid.damageSources().mobAttack(maid), sweepDamage);
+                    DamageSource damageSource = maid.damageSources().mobAttack(maid);
+                    entity.knockback(0.4, posX, posY,damageSource,sweepDamage);
+                    entity.hurt(damageSource, sweepDamage);
                 }
             }
             maid.level.playSound(null, maid.getX(), maid.getY(), maid.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, maid.getSoundSource(), 1, 1);

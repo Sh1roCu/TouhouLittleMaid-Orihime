@@ -5,7 +5,7 @@ import com.github.tartaricacid.touhoulittlemaid.advancements.altar.AltarCraftTri
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.rewards.GivePatchouliBookConfigTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.rewards.GiveSmartSlabConfigTrigger;
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;

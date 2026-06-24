@@ -61,7 +61,7 @@ public final class MaidItemStorageHelper {
     public static void spawnMaidPhoto(Level worldIn, CompoundTag data, Player playerIn) {
         ItemStack photo = InitItems.PHOTO.getDefaultInstance();
         ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, worldIn.registryAccess(), data);
-        Optional<Entity> optional = EntityType.create(input, worldIn, EntitySpawnReason.SPAWN_ITEM_USE);
+        Optional<Entity> optional = EntityType.create(input, worldIn, new EntitySpawnRequest(EntitySpawnReason.SPAWN_ITEM_USE, false));
         if (optional.isEmpty() || !(optional.get() instanceof EntityMaid maid)) {
             return;
         }
@@ -109,7 +109,7 @@ public final class MaidItemStorageHelper {
         tag.remove(LivingEntity.TAG_HEALTH);
         tag.remove(LivingEntity.TAG_HURT_TIME);
         tag.remove(LivingEntity.TAG_DEATH_TIME);
-        tag.remove(LivingEntity.TAG_HURT_BY_TIMESTAMP);
+        //tag.remove(LivingEntity.TAG_HURT_BY_TIMESTAMP);
 
         tag.remove(Leashable.LEASH_TAG);
 

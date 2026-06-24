@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "26.1"
+      - "26.2"
     paths:
       - 'src/main/**'
 env:
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: "26.1"
+          ref: "26.2"
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
@@ -52,7 +52,7 @@ jobs:
         env:
           MY_WORKFLOW_TOKEN: ${{ secrets.WORKFLOW }}
         with:
-          tag_name: 26.1.2-snapshot-${{ steps.create_timestamp.outputs.timestamp }}
+          tag_name: 26.2-snapshot-${{ steps.create_timestamp.outputs.timestamp }}
           target_commitish: ${{ github.sha }}
           body: ${{ github.event.head_commit.message }}
           draft: false

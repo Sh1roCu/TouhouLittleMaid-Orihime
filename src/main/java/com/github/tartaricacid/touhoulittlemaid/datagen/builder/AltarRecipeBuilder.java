@@ -4,7 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.crafting.AltarRecipe;
 import com.github.tartaricacid.touhoulittlemaid.util.migrate.EntityTypeUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.google.common.collect.Lists;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

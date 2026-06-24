@@ -3,10 +3,6 @@ package com.github.tartaricacid.touhoulittlemaid.block;
 import cn.sh1rocu.touhoulittlemaid.api.extension.IBedBlock;
 import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBed;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.item.ItemMaidBed;
-import com.google.common.collect.Lists;
-import com.github.tartaricacid.touhoulittlemaid.blockentity.BlockEntityMaidBed;
-import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +32,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -44,7 +39,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBlock,IBedBlock {
+public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBlock, IBedBlock {
     public static final Map<DyeColor, BlockMaidBed> COLOR_TO_BLOCK = new EnumMap<>(DyeColor.class);
 
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
@@ -61,6 +56,7 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
                 .setId(ResourceKey.create(Registries.BLOCK, id))
                 .sound(SoundType.WOOD)
                 .strength(0.2F)
+                .bounceRestitution(0.75F)
                 .noOcclusion()
                 .pushReaction(PushReaction.DESTROY));
         this.registerDefaultState(this.stateDefinition.any()
@@ -158,20 +154,6 @@ public class BlockMaidBed extends HorizontalDirectionalBlock implements EntityBl
     public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, double fallDistance) {
         super.fallOn(worldIn, blockState, pos, entityIn, fallDistance * 0.5f);
     }
-
-    @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entity) {
-        if (entity.isSuppressingBounce()) {
-            super.updateEntityMovementAfterFallOn(worldIn, entity);
-        } else {
-            Vec3 movement = entity.getDeltaMovement();
-            if (movement.y < 0) {
-                double modulus = entity instanceof LivingEntity ? 1.0 : 0.8;
-                entity.setDeltaMovement(movement.x, -movement.y * 0.66 * modulus, movement.z);
-            }
-        }
-    }
-
 
     @Override
     protected long getSeed(BlockState state, BlockPos pos) {

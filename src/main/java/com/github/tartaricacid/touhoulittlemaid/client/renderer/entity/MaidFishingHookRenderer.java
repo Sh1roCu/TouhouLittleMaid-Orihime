@@ -107,7 +107,7 @@ public class MaidFishingHookRenderer<T extends MaidFishingHook, S extends MaidFi
         float ya = (float) state.lineOriginOffset.y;
         float za = (float) state.lineOriginOffset.z;
         float[] colors = new float[]{state.lineColorR, state.lineColorG, state.lineColorB};
-        float width = Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth;
+        float width = Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth;
 
         submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, buffer) -> {
             for (int i = 0; i <= 16; ++i) {
