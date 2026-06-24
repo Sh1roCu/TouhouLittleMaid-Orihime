@@ -3,8 +3,6 @@ package cn.sh1rocu.touhoulittlemaid.util.itemhandler;
 import net.minecraft.world.item.ItemStack;
 
 public interface IItemHandler {
-    String TAG_INVENTORY = "Inventory";
-
     int getSlots();
 
     ItemStack getStackInSlot(int slot);

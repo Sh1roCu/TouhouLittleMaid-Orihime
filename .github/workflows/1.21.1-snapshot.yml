@@ -52,7 +52,8 @@ jobs:
         env:
           MY_WORKFLOW_TOKEN: ${{ secrets.WORKFLOW }}
         with:
-          tag_name: snapshot-${{ steps.create_timestamp.outputs.timestamp }}
+          tag_name: 1.21.1-snapshot-${{ steps.create_timestamp.outputs.timestamp }}
+          target_commitish: ${{ github.sha }}
           body: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: true
