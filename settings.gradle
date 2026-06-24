@@ -8,6 +8,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
 rootProject.name = 'touhoulittlemaid-fabric'
 include 'maid-manager-codegen'
 project(':maid-manager-codegen').projectDir = file('modules/maid-manager-codegen')
