@@ -3,7 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.other;
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.AbstractMaidContainerGui;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.ScreenUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;

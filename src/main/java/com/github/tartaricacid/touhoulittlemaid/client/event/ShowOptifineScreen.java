@@ -2,7 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.event;
 
 import com.github.tartaricacid.touhoulittlemaid.client.gui.mod.OptifineScreen;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MiscConfig;
-import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.ScreenUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;

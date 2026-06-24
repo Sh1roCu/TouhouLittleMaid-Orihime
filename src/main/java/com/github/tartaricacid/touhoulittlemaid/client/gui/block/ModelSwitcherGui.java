@@ -12,7 +12,7 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.SaveSwitcherData
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
-import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.ScreenUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -54,6 +54,7 @@ public class ModelSwitcherGui extends Screen {
         this.bindUuid = switcher.getUuid();
         if (Minecraft.getInstance().level != null) {
             this.maid = new EntityMaid(Minecraft.getInstance().level);
+            this.maid.setId(-1);
         }
     }
 

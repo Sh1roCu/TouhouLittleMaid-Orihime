@@ -4,11 +4,11 @@ import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitDataAttachment;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemGohei;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.ScreenUtil;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
@@ -23,9 +23,8 @@ public class ShowPowerOverlay implements HudElement {
     @Override
     public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        Options options = minecraft.options;
         Player player = minecraft.player;
-        if (player == null || options.hideGui) {
+        if (player == null || ScreenUtil.isHideGui()) {
             return;
         }
         ItemStack stack = player.getMainHandItem();

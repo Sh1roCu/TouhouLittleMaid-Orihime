@@ -8,7 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.compat.cloth.ClothConfigCompat;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.SideTab;
 import com.github.tartaricacid.touhoulittlemaid.init.registry.CompatRegistry;
-import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.ScreenUtil;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
