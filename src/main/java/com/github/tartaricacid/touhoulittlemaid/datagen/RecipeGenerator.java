@@ -5,12 +5,14 @@ import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagItem;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.util.EntityTypeUtil;
 import mezz.jei.api.constants.Tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -357,7 +359,7 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .power(0.2F)
                     .requires(3, ConventionalItemTags.GUNPOWDERS)
                     .requires(3, Items.BLAZE_POWDER)
-                    .entity(EntityType.getKey(EntityType.LIGHTNING_BOLT))
+                    .entity(EntityType.getKey(EntityTypeUtil.lightningBolt()))
                     .langKey("jei.touhou_little_maid.altar_craft.spawn_lightning_bolt.result")
                     .save(recipeOutput, "spawn_lightning_bolt");
 
@@ -467,6 +469,6 @@ public class RecipeGenerator extends FabricRecipeProvider {
                     .requires(ConventionalItemTags.PURPLE_DYES)
                     .unlockedBy("has_maid_bed", has(TagItem.MAID_BED))
                     .save(recipeOutput, "purple_maid_bed_from_dye");
+            }
         }
     }
-}

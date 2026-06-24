@@ -7,6 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitDataComponent;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitRecipes;
 import com.github.tartaricacid.touhoulittlemaid.item.ItemFilm;
+import com.github.tartaricacid.touhoulittlemaid.util.EntityTypeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -65,7 +66,7 @@ public class AltarRecipe implements Recipe<CraftingInput> {
     public void spawnOutputEntity(ServerLevel world, BlockPos pos, @Nullable List<ItemStack> list) {
         EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(entityType);
 
-        if (type == EntityType.ITEM) {
+        if (type == EntityTypeUtil.item()) {
             this.spawnItem(world, pos);
             return;
         }

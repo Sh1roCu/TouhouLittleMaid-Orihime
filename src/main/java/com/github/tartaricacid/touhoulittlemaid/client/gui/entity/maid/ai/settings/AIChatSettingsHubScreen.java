@@ -12,6 +12,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.FlatCol
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.OpenMaidAIChatPacket;
 import com.github.tartaricacid.touhoulittlemaid.util.Rectangle;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -178,7 +179,7 @@ public abstract class AIChatSettingsHubScreen extends Screen {
 
     protected void switchTo(Type type) {
         this.persistTransientState();
-        this.minecraft.setScreen(this.createTabScreen(type));
+        ScreenUtil.setScreen(this.createTabScreen(type));
     }
 
     protected AIChatSettingsHubScreen createTabScreen(Type type) {
@@ -199,7 +200,7 @@ public abstract class AIChatSettingsHubScreen extends Screen {
         this.state.llmSites.putAll(llmSites);
         this.state.ttsSites.clear();
         this.state.ttsSites.putAll(ttsSites);
-        this.minecraft.setScreen(this.createTabScreen(this.getType()));
+        ScreenUtil.setScreen(this.createTabScreen(this.getType()));
     }
 
     private int addSiteSideButtons(int sideY) {
@@ -236,7 +237,7 @@ public abstract class AIChatSettingsHubScreen extends Screen {
         if (this.parent instanceof AIChatScreen chatScreen && chatScreen.getMaid().isAlive()) {
             ClientPlayNetworking.send(new OpenMaidAIChatPacket(chatScreen.getMaid()));
         } else {
-            Screens.getMinecraft(this).setScreen(null);
+            ScreenUtil.setScreen(null);
         }
     }
 

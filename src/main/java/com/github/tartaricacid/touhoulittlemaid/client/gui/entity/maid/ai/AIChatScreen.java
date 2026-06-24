@@ -15,6 +15,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SendUserChatPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.OpenAIConfigPacket;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.SaveMaidAIDataPackage;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -121,13 +122,13 @@ public class AIChatScreen extends Screen {
     private void addLeftButtons(int leftX, int y, int size, int gap) {
         this.historyButton = this.addRenderableWidget(new FlatColorButton(leftX, y, size, size, Component.literal("🕑"), b -> {
             HistoryAIChatScreen screen = new HistoryAIChatScreen(this, this.maid);
-            Screens.getMinecraft(this).setScreen(screen);
+            ScreenUtil.setScreen(screen);
         }).setTooltips("ai.touhou_little_maid.chat.button.history.tip"));
 
         leftX = leftX + size + gap;
         this.settingButton = this.addRenderableWidget(new FlatColorButton(leftX, y, size, size, Component.literal("✎"), b -> {
             SettingEditScreen editScreen = new SettingEditScreen(this, this.maid);
-            Screens.getMinecraft(this).setScreen(editScreen);
+            ScreenUtil.setScreen(editScreen);
         }).setTooltips("ai.touhou_little_maid.chat.button.setting.tip"));
 
         leftX = leftX + size + gap;
@@ -530,8 +531,8 @@ public class AIChatScreen extends Screen {
 
     private boolean isPopupTriggerHovered(double mouseX, double mouseY) {
         return this.isButtonHovered(this.llmButton, mouseX, mouseY)
-                || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
-                || this.isButtonHovered(this.langButton, mouseX, mouseY);
+               || this.isButtonHovered(this.ttsButton, mouseX, mouseY)
+               || this.isButtonHovered(this.langButton, mouseX, mouseY);
     }
 
     private boolean isButtonHovered(FlatColorButton button, double mouseX, double mouseY) {
@@ -807,7 +808,7 @@ public class AIChatScreen extends Screen {
 
         private boolean contains(double mouseX, double mouseY) {
             return this.x <= mouseX && mouseX < this.x + this.width
-                    && this.y <= mouseY && mouseY < this.y + this.height();
+                   && this.y <= mouseY && mouseY < this.y + this.height();
         }
     }
 

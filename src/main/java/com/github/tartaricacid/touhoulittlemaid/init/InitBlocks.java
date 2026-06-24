@@ -70,7 +70,6 @@ public final class InitBlocks {
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntityType(String id, FabricBlockEntityTypeBuilder.Factory<T> factory, Block... blocks) {
         var type = FabricBlockEntityTypeBuilder.create(factory, blocks).build();
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), type);
-        return type;
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, id), type);
     }
 }

@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.FlatCol
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.HistoryChatWidget;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.ClearMaidAIDataPacket;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -53,7 +54,7 @@ public class HistoryAIChatScreen extends Screen {
     private final @Nullable Screen parent;
     private final List<LLMMessage> history = Lists.newArrayList();
     private final List<Renderable> historyWidgets = Lists.newArrayList();
-    private final ResolvableProfile playerProfile;
+    private ResolvableProfile playerProfile;
     private String summaryText = StringUtils.EMPTY;
 
     private double scroll = 0;
@@ -127,7 +128,7 @@ public class HistoryAIChatScreen extends Screen {
         MutableComponent clearName = Component.translatable("gui.touhou_little_maid.button.maid_ai_chat_config.clear_history_chat");
         MutableComponent clearMsg = Component.translatable("gui.touhou_little_maid.button.maid_ai_chat_config.clear_history_chat.confirm");
         this.addRenderableWidget(new FlatColorButton(this.getRightColumnLeft(), this.getClearButtonY(), SUMMARY_WIDTH, BUTTON_HEIGHT, clearName, button -> {
-            Screens.getMinecraft(this).setScreen(new ConfirmScreen(yes -> {
+            ScreenUtil.setScreen(new ConfirmScreen(yes -> {
                 if (yes) {
                     this.history.clear();
                     this.historyWidgets.clear();
@@ -136,7 +137,7 @@ public class HistoryAIChatScreen extends Screen {
                     ClientPlayNetworking.send(new ClearMaidAIDataPacket(this.maid.getId()));
                     this.init();
                 }
-                Screens.getMinecraft(this).setScreen(this);
+                ScreenUtil.setScreen(this);
             }, clearName, clearMsg));
         }));
         this.addRenderableWidget(new FlatColorButton(this.getRightColumnLeft(), this.getBackButtonY(), SUMMARY_WIDTH, BUTTON_HEIGHT,
@@ -219,7 +220,7 @@ public class HistoryAIChatScreen extends Screen {
     @Override
     public void onClose() {
         Screen screen = Objects.requireNonNullElse(this.parent, new AIChatScreen(this.maid));
-        this.minecraft.setScreen(screen);
+        ScreenUtil.setScreen(screen);
     }
 
     private void transformMessage() {

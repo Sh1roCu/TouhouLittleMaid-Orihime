@@ -4,6 +4,7 @@ import com.github.tartaricacid.touhoulittlemaid.config.subconfig.AIConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.OpenMaidAIChatPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
@@ -58,11 +59,11 @@ public class PressAIChatKeyEvent {
     private static boolean isInGame() {
         Minecraft mc = Minecraft.getInstance();
         // 不能是加载界面
-        if (mc.getOverlay() != null) {
+        if (ScreenUtil.hasOverlay()) {
             return false;
         }
         // 不能打开任何 GUI
-        if (mc.screen != null) {
+        if (ScreenUtil.getScreen() != null) {
             return false;
         }
         // 当前窗口捕获鼠标操作

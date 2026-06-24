@@ -1,10 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.client.gui.widget.ai;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.ai.service.tts.TTSSite;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.ai.settings.AIChatSettingsTTSSiteScreen;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.SaveTTSSitePacket;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.I18nUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -28,11 +29,7 @@ public class TTSSiteButton extends Button {
         this.parent = parent;
 
         String nameKey = this.site.getNameKey();
-        if (I18n.exists(nameKey)) {
-            this.setMessage(Component.literal(I18n.get(nameKey)));
-        } else {
-            this.setMessage(Component.literal(this.site.id()));
-        }
+        this.setMessage(Component.literal(I18nUtil.getOrDefault(nameKey, this.site.id())));
     }
 
     @Override

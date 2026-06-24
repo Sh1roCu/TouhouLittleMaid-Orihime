@@ -8,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPac
 import com.github.tartaricacid.touhoulittlemaid.client.resource.pojo.MaidModelInfo;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -61,7 +62,7 @@ public class ModelSwitcherModelGui extends AbstractModelGui<EntityMaid, MaidMode
     @Override
     protected void openDetailsGui(EntityMaid maid, MaidModelInfo modelInfo) {
         if (minecraft != null && modelInfo.getEasterEgg() == null) {
-            minecraft.setScreen(new MaidModelDetailsGui(maid, modelInfo));
+            ScreenUtil.setScreen(new MaidModelDetailsGui(maid, modelInfo));
         }
     }
 
@@ -70,7 +71,7 @@ public class ModelSwitcherModelGui extends AbstractModelGui<EntityMaid, MaidMode
         if (info.getEasterEgg() == null) {
             maid.setModelId(info.getModelId().toString());
             infoIn.setModelId(info.getModelId());
-            Screens.getMinecraft(this).setScreen(this.modelSwitcherGui);
+            ScreenUtil.setScreen(this.modelSwitcherGui);
         }
     }
 

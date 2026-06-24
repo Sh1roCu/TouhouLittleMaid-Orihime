@@ -14,6 +14,7 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.ai.SaveMaidAIDat
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -228,7 +229,7 @@ public class SettingEditScreen extends Screen {
     @Override
     public void onClose() {
         Screen screen = Objects.requireNonNullElse(this.parent, new AIChatScreen(this.maid));
-        this.minecraft.setScreen(screen);
+        ScreenUtil.setScreen(screen);
     }
 
     private void saveConfig() {

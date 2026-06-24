@@ -3,6 +3,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.event;
 import com.github.tartaricacid.touhoulittlemaid.api.event.InteractMaidEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.item.NameTagGui;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +22,7 @@ public class UseNameTagEvent {
                 && player.equals(maid.getOwner())
         ) {
             if (player.level.isClientSide()) {
-                Minecraft.getInstance().setScreen(new NameTagGui(maid));
+                ScreenUtil.setScreen(new NameTagGui(maid));
             }
             event.setCanceled(true);
         }

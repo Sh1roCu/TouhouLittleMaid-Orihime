@@ -1,0 +1,137 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.github.tartaricacid.Upgrade
+recipeList:
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: net.minecraft.advancements.criterion
+      newPackageName: net.minecraft.advancements.triggers
+      recursive: true
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.triggers.ContextAwarePredicate
+      newFullyQualifiedTypeName: net.minecraft.advancements.predicates.ContextAwarePredicate
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.triggers.EntityPredicate
+      newFullyQualifiedTypeName: net.minecraft.advancements.predicates.entity.EntityPredicate
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.triggers.ItemPredicate
+      newFullyQualifiedTypeName: net.minecraft.advancements.predicates.ItemPredicate
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.triggers.FishingHookPredicate
+      newFullyQualifiedTypeName: net.minecraft.advancements.predicates.entity.FishingHookPredicate
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.Criterion
+      newFullyQualifiedTypeName: net.minecraft.advancements.triggers.Criterion
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.advancements.CriterionTrigger
+      newFullyQualifiedTypeName: net.minecraft.advancements.triggers.CriterionTrigger
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.world.entity.monster.Slime
+      newFullyQualifiedTypeName: net.minecraft.world.entity.monster.cubemob.Slime
+
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: net.minecraft.data.tags.KeyTagProvider
+      newFullyQualifiedTypeName: net.minecraft.data.tags.TagsProvider
+
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: com.mojang.blaze3d.systems.RenderSystem getModelViewMatrix()
+      newMethodName: getModelViewMatrixCopy
+
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: net.minecraft.client.renderer.GameRenderer getMainCamera()
+      newMethodName: mainCamera
+
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: net.minecraft.client.renderer.GameRenderer getGameRenderState()
+      newMethodName: gameRenderState
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Minecraft.getInstance().setScreen(
+      replace: Minecraft.getInstance().gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: this.minecraft.setScreen(
+      replace: this.minecraft.gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Screens.getMinecraft(this).setScreen(
+      replace: Screens.getMinecraft(this).gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Screens.getMinecraft(this).setScreen(
+      replace: Screens.getMinecraft(this).gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: minecraft.setScreen(
+      replace: minecraft.gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: mc.setScreen(
+      replace: mc.gui.setScreen(
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Blocks.RED_WOOL
+      replace: Blocks.WOOL.red()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Blocks.RED_CONCRETE
+      replace: Blocks.CONCRETE.red()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.GRAY_WOOL
+      replace: Items.WOOL.gray()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.PINK_WOOL
+      replace: Items.WOOL.pink()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.RED_WOOL
+      replace: Items.WOOL.red()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.WHITE_WOOL
+      replace: Items.WOOL.white()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.BLACK_WOOL
+      replace: Items.WOOL.black()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.YELLOW_WOOL
+      replace: Items.WOOL.yellow()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.BLUE_WOOL
+      replace: Items.WOOL.blue()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.GREEN_WOOL
+      replace: Items.WOOL.green()
+      filePattern: "**/*.java"
+
+  - org.openrewrite.text.FindAndReplace:
+      find: Items.PURPLE_WOOL
+      replace: Items.WOOL.purple()
+      filePattern: "**/*.java"

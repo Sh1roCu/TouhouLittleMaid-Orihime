@@ -2,7 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.client.gui.ITooltipButton;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTaskEnableEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.MaidContainerGuiEvent;
@@ -24,6 +23,7 @@ import com.github.tartaricacid.touhoulittlemaid.network.message.SendEffectPackag
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ParseI18n;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Pair;
@@ -190,7 +190,7 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
         String minecraftVersion = SharedConstants.getCurrentVersion().name();
         String modVersion = FabricLoader.getInstance().getModContainer(TouhouLittleMaid.MOD_ID).get().getMetadata().getVersion().getFriendlyString();
         String debugInfo = String.format("%s-%s", minecraftVersion, modVersion);
-        graphics.centeredText(font, debugInfo, leftPos + 80 / 2, topPos - 4, ChatFormatting.GRAY.getColor());
+        graphics.centeredText(font, debugInfo, leftPos + 80 / 2, topPos - 4, 0xFFAAAAAA);
     }
 
     @SuppressWarnings("all")
@@ -224,11 +224,11 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
     private int getPotionColor(int category) {
         switch (category) {
             case 0:
-                return ChatFormatting.GREEN.getColor();
+                return 0xFF55FF55;
             case 1:
-                return ChatFormatting.RED.getColor();
+                return 0xFFFF5555;
             default:
-                return ChatFormatting.BLUE.getColor();
+                return 0xFF5555FF;
         }
     }
 
@@ -274,14 +274,14 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
     }
 
     private void addStateButton() {
-        skin = new TouhouImageButton(leftPos + 62, topPos + 14, 9, 9, 72, 43, 10, BUTTON, (b) -> Screens.getMinecraft(this).setScreen(new MaidModelGui(maid)));
+        skin = new TouhouImageButton(leftPos + 62, topPos + 14, 9, 9, 72, 43, 10, BUTTON, (b) -> ScreenUtil.setScreen(new MaidModelGui(maid)));
         info = new TouhouImageButton(leftPos + 8, topPos + 14, 9, 9, 72, 65, 10, BUTTON, NO_ACTION);
         this.addRenderableWidget(skin);
         this.addRenderableWidget(info);
 
         this.sound = new TouhouImageButton(leftPos + 52, topPos + 14, 9, 9,
                 144, 43, 10, BUTTON,
-                (b) -> Screens.getMinecraft(this).setScreen(new MaidSoundPackGui(maid)));
+                (b) -> ScreenUtil.setScreen(new MaidSoundPackGui(maid)));
         this.addRenderableWidget(sound);
     }
 
@@ -614,7 +614,7 @@ public abstract class AbstractMaidContainerGui<T extends AbstractMaidContainer> 
         graphics.pose().pushMatrix();
         graphics.pose().scale(0.5f, 0.5f);
         graphics.text(font, text, posX * 2, posY * 2 + font.lineHeight / 2,
-                0xFF_000000 | ChatFormatting.DARK_GRAY.getColor(), false);
+                0xFF555555, false);
         graphics.pose().popMatrix();
     }
 

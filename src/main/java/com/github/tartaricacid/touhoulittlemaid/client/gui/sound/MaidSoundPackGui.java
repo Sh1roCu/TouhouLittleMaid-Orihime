@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.sound;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.FlatColorButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.SoundElementButton;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.SoundPackButton;
@@ -123,11 +124,11 @@ public class MaidSoundPackGui extends Screen {
             if (StringUtils.isNotBlank(selectSoundId) && CustomSoundLoader.CACHE.containsKey(selectSoundId)) {
                 String url = CustomSoundLoader.getSoundCache(selectSoundId).info().getUrl();
                 if (StringUtils.isNotBlank(url) && minecraft != null) {
-                    minecraft.setScreen(new ConfirmLinkScreen(yes -> {
+                    ScreenUtil.setScreen(new ConfirmLinkScreen(yes -> {
                         if (yes) {
                             Util.getPlatform().openUri(url);
                         }
-                        minecraft.setScreen(this);
+                        ScreenUtil.setScreen(this);
                     }, url, false));
                 }
             }

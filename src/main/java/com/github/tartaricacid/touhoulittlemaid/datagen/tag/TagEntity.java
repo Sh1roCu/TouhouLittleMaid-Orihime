@@ -1,8 +1,8 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen.tag;
 
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.github.tartaricacid.touhoulittlemaid.util.EntityTypeUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
@@ -62,7 +62,7 @@ public class TagEntity extends FabricTagsProvider.EntityTypeTagsProvider {
         valueLookupBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(InitEntities.FAIRY);
         valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(InitEntities.FAIRY);
 
-        valueLookupBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityType.IRON_GOLEM);
+        valueLookupBuilder(MAID_FAIRY_ATTACK_GOAL).add(EntityTypeUtil.ironGolem());
         builder(MAID_FAIRY_ATTACK_GOAL)
                 .addOptional(createResourceKey(id("guardvillagers:guard")))
                 .addOptional(createResourceKey(id("earthtojavamobs:furnace_golem")))

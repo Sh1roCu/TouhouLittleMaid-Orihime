@@ -3,6 +3,8 @@ plugins {
     id 'net.fabricmc.fabric-loom' version '1.16-SNAPSHOT'
     id 'maven-publish'
     id 'com.gradleup.shadow' version '9.4.1'
+    // OpenRewrite 插件，用于自动化处理 Minecraft 或者 Fabric 更新时的代码修改
+    id "org.openrewrite.rewrite" version "7.35.0"
 }
 
 version = project.mod_version
@@ -144,6 +146,10 @@ repositories {
     maven {
         name = "Nucleoid"
         url = 'https://maven.nucleoid.xyz/releases'
+    }
+    maven {
+        name = "AlexIIL"
+        url = "https://staging.alexiil.uk/maven/"
     }
 
 }
@@ -339,9 +345,11 @@ processResources {
     }
 }
 
-def targetJavaVersion = 25
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
+    options.compilerArgs += ['-Xlint:-removal']
+    options.encoding = 'UTF-8'
 }
 
 tasks.withType(Jar).configureEach {
@@ -394,4 +402,8 @@ publishing {
             url "file:///D:/github_maven/Sh1roCu_MCRepo/repository"
         }
     }
+}
+
+rewrite {
+    activeRecipe("com.github.tartaricacid.Upgrade")
 }

@@ -2,7 +2,6 @@ package com.github.tartaricacid.touhoulittlemaid.client.gui.entity;
 
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ScreenAccessor;
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.client.download.InfoGetManager;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadInfo;
 import com.github.tartaricacid.touhoulittlemaid.client.download.pojo.DownloadStatus;
@@ -13,6 +12,8 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.loader.CustomPac
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenMaidGuiPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.GuiTools;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.ScreenUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -205,7 +206,7 @@ public class ModelDownloadGui extends Screen {
         List<FormattedCharSequence> split = font.split(Component.translatable("gui.touhou_little_maid.resources_download.fail"), 200);
         int yOffset = y + 100;
         for (FormattedCharSequence sequence : split) {
-            graphics.centeredText(font, sequence, x + 134, yOffset, ChatFormatting.RED.getColor() | 0xFF000000);
+            graphics.centeredText(font, sequence, x + 134, yOffset, 0xFFFF5555);
             yOffset += 12;
         }
     }
@@ -231,7 +232,8 @@ public class ModelDownloadGui extends Screen {
 
     private void renderSearchBox(GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
         graphics.text(font, Component.translatable("gui.touhou_little_maid.resources_download.hot_search"), x + 274, y + 102, 0xFFFFFFFF);
-        graphics.textWithWordWrap(font, Component.translatable("gui.touhou_little_maid.resources_download.hot_search_key"), x + 274, y + 115, 146, ChatFormatting.GRAY.getColor() | 0xFF000000);
+        graphics.textWithWordWrap(font, Component.translatable("gui.touhou_little_maid.resources_download.hot_search_key"),
+                x + 274, y + 115, 146, 0xFFAAAAAA);
         textField.extractRenderState(graphics, pMouseX, pMouseY, pPartialTick);
         if (textField.getValue().isEmpty() && !textField.isFocused()) {
             graphics.text(font, Component.translatable("gui.touhou_little_maid.resources_download.search").withStyle(ChatFormatting.ITALIC), x + 277, y + 83, 0xFF777777);
@@ -308,8 +310,8 @@ public class ModelDownloadGui extends Screen {
     @Override
     public void onClose() {
         if (this.needReload && Screens.getMinecraft(this).player != null) {
-            Screens.getMinecraft(this).gui.setTitle(Component.translatable("gui.touhou_little_maid.resources_download.need_reload.title"));
-            Screens.getMinecraft(this).gui.setSubtitle(Component.translatable("gui.touhou_little_maid.resources_download.need_reload.subtitle"));
+            ScreenUtil.setTitle(Component.translatable("gui.touhou_little_maid.resources_download.need_reload.title"));
+            ScreenUtil.setSubtitle(Component.translatable("gui.touhou_little_maid.resources_download.need_reload.subtitle"));
             Screens.getMinecraft(this).player.sendSystemMessage(Component.translatable("gui.touhou_little_maid.resources_download.need_reload.subtitle"));
         }
         super.onClose();
@@ -361,11 +363,11 @@ public class ModelDownloadGui extends Screen {
     private void openPackWebsite(DownloadInfo info) {
         String website = info.getWebsite();
         if (StringUtils.isNotBlank(website)) {
-            Screens.getMinecraft(this).setScreen(new ConfirmLinkScreen(yes -> {
+            ScreenUtil.setScreen(new ConfirmLinkScreen(yes -> {
                 if (yes) {
                     Util.getPlatform().openUri(website);
                 }
-                Screens.getMinecraft(this).setScreen(this);
+                ScreenUtil.setScreen(this);
             }, website, false));
         }
     }
@@ -373,7 +375,7 @@ public class ModelDownloadGui extends Screen {
     private void deletePack(DownloadInfo info) {
         Set<String> deleteFiles = this.getDeleteFiles(info);
         if (info.getStatus() == DownloadStatus.DOWNLOADED || info.getStatus() == DownloadStatus.NEED_UPDATE) {
-            Screens.getMinecraft(this).setScreen(new ConfirmScreen(yes -> this.deleteFilesAndReload(yes, deleteFiles),
+            ScreenUtil.setScreen(new ConfirmScreen(yes -> this.deleteFilesAndReload(yes, deleteFiles),
                     Component.translatable("gui.touhou_little_maid.resources_download.delete.confirm"),
                     Component.translatable(info.getName())));
         }
@@ -423,7 +425,7 @@ public class ModelDownloadGui extends Screen {
             this.checkDownloadInfo();
             this.init();
         }
-        Screens.getMinecraft(this).setScreen(this);
+        ScreenUtil.setScreen(this);
     }
 
     public enum Condition {
