@@ -2,7 +2,7 @@
   "sources": [
     {
       "type": "single",
-      "resource": "touhou_little_maid:slot/empty_back_show_slot"
+      "resource": "touhou_little_maid:gui/sprites/container/slot/back_show"
     },
     {
       "type": "single",

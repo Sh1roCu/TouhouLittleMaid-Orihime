@@ -3,22 +3,20 @@ package cn.sh1rocu.touhoulittlemaid.api.event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
 public class RenderHandEvent extends CancellableEvent {
-    private final AbstractClientPlayer player;
     private final InteractionHand hand;
-    private final ItemStack stack;
-    private final PoseStack matrices;
+    private final PoseStack poseStack;
     private final SubmitNodeCollector submitNodeCollector;
-    private final float tickDelta;
-    private final float pitch;
+    private final int packedLight;
+    private final float partialTick;
+    private final float interpolatedPitch;
     private final float swingProgress;
     private final float equipProgress;
-    private final int light;
+    private final ItemStack stack;
 
     public static final Event<Callback> CALLBACK = EventFactory.createArrayBacked(Callback.class, callbacks -> (handEvent) -> {
         for (Callback callback : callbacks) {
@@ -26,29 +24,27 @@ public class RenderHandEvent extends CancellableEvent {
         }
     });
 
-    public RenderHandEvent(AbstractClientPlayer player, InteractionHand hand, ItemStack stack, PoseStack matrices, SubmitNodeCollector submitNodeCollector, float tickDelta, float pitch, float swingProgress, float equipProgress, int light) {
-        this.player = player;
+    public RenderHandEvent(InteractionHand hand, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight,
+                           float partialTick, float interpolatedPitch,
+                           float swingProgress, float equipProgress, ItemStack stack) {
         this.hand = hand;
-        this.stack = stack;
-        this.matrices = matrices;
+        this.poseStack = poseStack;
         this.submitNodeCollector = submitNodeCollector;
-        this.tickDelta = tickDelta;
-        this.pitch = pitch;
+        this.packedLight = packedLight;
+        this.partialTick = partialTick;
+        this.interpolatedPitch = interpolatedPitch;
         this.swingProgress = swingProgress;
         this.equipProgress = equipProgress;
-        this.light = light;
+        this.stack = stack;
     }
 
-    public AbstractClientPlayer getPlayer() {
-        return player;
-    }
 
-    public ItemStack getItemStack() {
-        return stack;
+    public InteractionHand getHand() {
+        return hand;
     }
 
     public PoseStack getPoseStack() {
-        return matrices;
+        return poseStack;
     }
 
     public SubmitNodeCollector getSubmitNodeCollector() {
@@ -56,27 +52,27 @@ public class RenderHandEvent extends CancellableEvent {
     }
 
     public int getPackedLight() {
-        return light;
+        return packedLight;
     }
 
-    public float getPartialTicks() {
-        return tickDelta;
+    public float getPartialTick() {
+        return partialTick;
     }
 
-    public InteractionHand getHand() {
-        return hand;
+    public float getInterpolatedPitch() {
+        return interpolatedPitch;
     }
 
-    public float getPitch() {
-        return pitch;
+    public float getSwingProgress() {
+        return swingProgress;
     }
 
     public float getEquipProgress() {
         return equipProgress;
     }
 
-    public float getSwingProgress() {
-        return swingProgress;
+    public ItemStack getItemStack() {
+        return stack;
     }
 
     public interface Callback {
