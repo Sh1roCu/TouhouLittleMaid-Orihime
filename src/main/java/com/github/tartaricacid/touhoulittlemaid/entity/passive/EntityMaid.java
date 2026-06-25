@@ -9,6 +9,7 @@ import com.github.tartaricacid.touhoulittlemaid.api.event.MaidEquipEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.event.MaidTickEvent;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IRangedAttackTask;
+import com.github.tartaricacid.touhoulittlemaid.client.entity.GeckoMaidEntity;
 import com.github.tartaricacid.touhoulittlemaid.config.ServerConfig;
 import com.github.tartaricacid.touhoulittlemaid.datagen.tag.TagEntity;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.MaidBrain;
@@ -22,10 +23,11 @@ import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.init.InitTrigger;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SendEffectPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.EntityTypeUtil;
 import com.github.tartaricacid.touhoulittlemaid.world.backups.MaidBackupsManager;
 import com.github.tartaricacid.touhoulittlemaid.world.data.MaidWorldData;
-import com.github.tartaricacid.touhoulittlemaid.util.migrate.EntityTypeUtil;
 import com.google.common.collect.Lists;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -124,6 +126,18 @@ public class EntityMaid extends MaidManagerHost implements IEntity, CrossbowAtta
 
     public static EntityDataAccessor<ChatBubbleDataCollection> getChatBubbleKey() {
         return CHAT_BUBBLE;
+    }
+
+    // Fabric:
+    @SuppressWarnings("unchecked")
+    @Override
+    public @Nullable <A> A getAttached(AttachmentType<A> type) {
+        if (this.level().isClientSide() && type == GeckoMaidEntity.TYPE && !this.hasAttached(type)) {
+            GeckoMaidEntity<EntityMaid> attach = new GeckoMaidEntity<>(this);
+            this.setAttached(GeckoMaidEntity.TYPE, attach);
+            return (A) attach;
+        }
+        return super.getAttached(type);
     }
 
     @Override
