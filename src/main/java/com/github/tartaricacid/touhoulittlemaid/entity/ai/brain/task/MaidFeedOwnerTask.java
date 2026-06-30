@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
+import cn.sh1rocu.touhoulittlemaid.util.transfer.ItemUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFeedTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
@@ -17,7 +18,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 public class MaidFeedOwnerTask extends MaidCheckRateTask {
     private static final int MAX_DELAY_TIME = 20;
@@ -88,10 +88,11 @@ public class MaidFeedOwnerTask extends MaidCheckRateTask {
 
             IntList map = !highFoods.isEmpty() ? highFoods : !lowFoods.isEmpty() ? lowFoods : lowestFoods;
             map.intStream().skip(maid.getRandom().nextInt(map.size())).findFirst().ifPresent(slot -> {
-                ItemStack stack = inv.getResource(slot).toStack(inv.getAmountAsInt(slot));
+                ItemStack stack = ItemUtil.getStack(inv, slot);
+                int beforeCount = stack.getCount();
                 ItemStack feedResult = task.feed(stack, player);
                 //Fixme 替换可变的ItemStack
-                ItemsUtil.extractItem(inv, slot, stack.getCount() - feedResult.getCount(), false, null);
+                ItemsUtil.extractItem(inv, slot, beforeCount - feedResult.getCount(), false, null);
                 maid.swing(InteractionHand.MAIN_HAND);
                 this.setNextCheckTickCount(5);
                 if (maid.getOwner() instanceof ServerPlayer serverPlayer) {

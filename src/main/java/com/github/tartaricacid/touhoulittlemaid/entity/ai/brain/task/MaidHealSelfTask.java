@@ -9,7 +9,6 @@ import com.github.tartaricacid.touhoulittlemaid.util.HandUtils;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -73,23 +72,21 @@ public class MaidHealSelfTask extends MaidCheckRateTask {
 
         // 若没有食物则借助此调用触发 MaidRequestItemEvent 来尝试获取食物
         int stackSlot = ItemsUtil.findStackSlot(backpackInv, DefaultMaidHealSelfMeal::isHealMeal);
-        if (stackSlot != -1)
-            try (Transaction transaction = Transaction.openOuter()) {
-                ItemVariant resource = backpackInv.getResource(stackSlot);
-                int foodStack = backpackInv.extract(stackSlot, resource, ItemVariantImpl.getMaxStackSize(resource), transaction);
-                if (foodStack == -1) return;
-                ItemStack handStack = itemInHand.copy();
-                maid.setItemInHand(eanHand, resource.toStack(foodStack));
-                itemInHand = maid.getItemInHand(eanHand);
-                maid.memoryHandItemStack(handStack);
-                transaction.commit();
+        if (stackSlot != -1) {
+            ItemVariant resource = backpackInv.getResource(stackSlot);
+            ItemStack foodStack = ItemsUtil.extractItem(backpackInv, stackSlot, ItemVariantImpl.getMaxStackSize(resource), false, null);
+            if (foodStack.isEmpty()) return;
+            ItemStack handStack = itemInHand.copy();
+            maid.setItemInHand(eanHand, foodStack);
+            itemInHand = maid.getItemInHand(eanHand);
+            maid.memoryHandItemStack(handStack);
 
-                for (IMaidMeal maidMeal : maidMeals) {
-                    if (maidMeal.canMaidEat(maid, itemInHand, eanHand)) {
-                        maidMeal.onMaidEat(maid, itemInHand, eanHand);
-                        return;
-                    }
+            for (IMaidMeal maidMeal : maidMeals) {
+                if (maidMeal.canMaidEat(maid, itemInHand, eanHand)) {
+                    maidMeal.onMaidEat(maid, itemInHand, eanHand);
+                    return;
                 }
             }
+        }
     }
 }

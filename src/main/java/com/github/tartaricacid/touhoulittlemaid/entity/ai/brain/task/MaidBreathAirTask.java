@@ -10,7 +10,6 @@ import com.github.tartaricacid.touhoulittlemaid.util.HandUtils;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +21,7 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -131,20 +131,17 @@ public class MaidBreathAirTask extends Behavior<EntityMaid> {
         var backpackInv = maid.getAvailableBackpackInv();
 
         // 若没有食物则借助此调用触发 MaidRequestItemEvent 来尝试获取食物
-        try (Transaction transaction = Transaction.openOuter()) {
-            int stackSlot = ItemsUtil.findStackSlot(backpackInv, stack -> this.isBreatheFood(maid, ItemVariant.of(stack)));
-            if (stackSlot >= 0) {
-                ItemStack canExtract = ItemsUtil.extractItem(backpackInv, stackSlot, 99, true, transaction);
-                if (!canExtract.isEmpty()) {
-                    ItemStack foodStack = ItemsUtil.extractItem(backpackInv, stackSlot, canExtract.getCount(), false, transaction);
-                    ItemStack handStack = itemInHand.copy();
-                    maid.setItemInHand(eanHand, foodStack);
-                    maid.memoryHandItemStack(handStack);
-                    itemInHand = maid.getItemInHand(eanHand);
-                    this.startEatBreatheItem(maid, itemInHand, eanHand);
-                    transaction.commit();
-                    return true;
-                }
+        int stackSlot = ItemsUtil.findStackSlot(backpackInv, stack -> this.isBreatheFood(maid, ItemVariant.of(stack)));
+        if (stackSlot >= 0) {
+            ItemStack canExtract = ItemsUtil.extractItem(backpackInv, stackSlot, Item.ABSOLUTE_MAX_STACK_SIZE, true, null);
+            if (!canExtract.isEmpty()) {
+                ItemStack foodStack = ItemsUtil.extractItem(backpackInv, stackSlot, canExtract.getCount(), false, null);
+                ItemStack handStack = itemInHand.copy();
+                maid.setItemInHand(eanHand, foodStack);
+                maid.memoryHandItemStack(handStack);
+                itemInHand = maid.getItemInHand(eanHand);
+                this.startEatBreatheItem(maid, itemInHand, eanHand);
+                return true;
             }
         }
         return false;
