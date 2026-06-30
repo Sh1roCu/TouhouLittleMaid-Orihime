@@ -66,6 +66,14 @@ public final class EntityCacheUtil {
         }
     }
 
+    public static EntityMaid getMaidInStatue(long key, Level level) throws ExecutionException {
+        return STATUE_CACHE.get(key, () -> {
+            EntityMaid entity = new EntityMaid(level);
+            entity.setId(PREVIEW_ENTITY_ID.getAndDecrement());
+            return entity;
+        });
+    }
+
     public static void clearMaidDataResidue(EntityMaid maid, boolean clearEquipmentData) {
         var animatable = maid.getAttached(GeckoMaidEntity.TYPE);
         if (animatable != null) {

@@ -9,8 +9,8 @@ import com.github.tartaricacid.touhoulittlemaid.client.resource.bedrock.Internal
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.util.EntityCacheUtil;
-import com.github.tartaricacid.touhoulittlemaid.util.migrate.EntityTypeUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
+import com.github.tartaricacid.touhoulittlemaid.util.migrate.EntityTypeUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -35,7 +35,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -91,18 +90,16 @@ public class StatueRenderer implements BlockEntityRenderer<BlockEntityStatue, St
         });
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unchecked,rawtypes")
     private void extractEntityRenderState(BlockEntityStatue te, StatueRenderState state, CompoundTag data,
                                           Level level, EntityType type, float partialTick) throws ExecutionException {
         Entity entity;
         if (type.equals(InitEntities.MAID)) {
             long key = te.getBlockPos().asLong();
-            entity = EntityCacheUtil.STATUE_CACHE.get(key, () -> new EntityMaid(level));
+            entity = EntityCacheUtil.getMaidInStatue(key, level);
         } else {
-            entity = EntityCacheUtil.ENTITY_CACHE.get(type, () -> {
-                Entity e = type.create(level, EntitySpawnReason.COMMAND);
-                return Objects.requireNonNullElseGet(e, () -> new EntityMaid(level));
-            });
+            entity = EntityCacheUtil.getEntity(type, (l, _) ->
+                    new EntityMaid(l), level, EntitySpawnReason.COMMAND);
         }
 
         RegistryAccess access = entity.registryAccess();
