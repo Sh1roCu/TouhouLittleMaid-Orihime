@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network;
 
+import cn.sh1rocu.touhoulittlemaid.util.PacketDistributor;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.AdvancedAddEntityPayload;
 import com.github.tartaricacid.touhoulittlemaid.network.message.*;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.*;
@@ -131,11 +132,13 @@ public class NetworkHandler {
         registerC2SPacket(SaveTTSSitePacket.TYPE, SaveTTSSitePacket.STREAM_CODEC, SaveTTSSitePacket::handle);
     }
 
+    public static void sendToClientPlayer(CustomPacketPayload payload, ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, payload);
+    }
+
     public static void sendToNearby(Entity entity, CustomPacketPayload toSend) {
-        if (entity.level instanceof ServerLevel serverLevel) {
-            for (ServerPlayer target : PlayerLookup.tracking(serverLevel, entity.blockPosition())) {
-                ServerPlayNetworking.send(target, toSend);
-            }
+        if (entity.level instanceof ServerLevel) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, toSend);
         }
     }
 
@@ -143,14 +146,6 @@ public class NetworkHandler {
         if (entity.level instanceof ServerLevel serverLevel) {
             BlockPos pos = entity.blockPosition();
             for (ServerPlayer target : PlayerLookup.around(serverLevel, new Vec3i(pos.getX(), pos.getY(), pos.getZ()), distance)) {
-                ServerPlayNetworking.send(target, toSend);
-            }
-        }
-    }
-
-    public static void sendToPlayersTrackingEntity(Entity entity, CustomPacketPayload toSend) {
-        if (entity.level instanceof ServerLevel) {
-            for (ServerPlayer target : PlayerLookup.tracking(entity)) {
                 ServerPlayNetworking.send(target, toSend);
             }
         }

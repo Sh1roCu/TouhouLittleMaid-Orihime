@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
+import cn.sh1rocu.touhoulittlemaid.util.PacketDistributor;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
 import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
@@ -10,7 +11,6 @@ import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.BeaconAbsorbPackage;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SyncDataPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
