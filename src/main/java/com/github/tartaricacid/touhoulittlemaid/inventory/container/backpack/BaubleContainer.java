@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.inventory.container.backpack;
 
+import cn.sh1rocu.touhoulittlemaid.util.PacketDistributor;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.IndexModifier;
 import cn.sh1rocu.touhoulittlemaid.util.transfer.ResourceHandlerSlot;
 import com.github.tartaricacid.touhoulittlemaid.api.backpack.ITriggerSlotChange;
@@ -9,7 +10,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.MaidMainContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.handler.BaubleItemHandler;
 import com.github.tartaricacid.touhoulittlemaid.item.bauble.BaubleManager;
-import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.SyncBaublePackage;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
@@ -169,7 +169,7 @@ public class BaubleContainer extends MaidMainContainer {
             // 如果是可同步，同步删除客户端信息
             if (bauble.syncClient(maid, stack)) {
                 SyncBaublePackage msg = SyncBaublePackage.partialDel(maid.getId(), this.getContainerSlot());
-                NetworkHandler.sendToPlayersTrackingEntity(maid, msg);
+                PacketDistributor.sendToPlayersTrackingEntity(maid, msg);
             }
         }
 
@@ -194,7 +194,7 @@ public class BaubleContainer extends MaidMainContainer {
             // 如果是可同步，同步客户端信息
             if (bauble.syncClient(maid, stack)) {
                 SyncBaublePackage msg = SyncBaublePackage.partialSync(maid.getId(), this.getContainerSlot(), stack);
-                NetworkHandler.sendToPlayersTrackingEntity(maid, msg);
+                PacketDistributor.sendToPlayersTrackingEntity(maid, msg);
             }
         }
     }

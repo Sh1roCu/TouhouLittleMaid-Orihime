@@ -1,5 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
+import cn.sh1rocu.touhoulittlemaid.util.PacketDistributor;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.network.NetworkHandler;
 import com.github.tartaricacid.touhoulittlemaid.network.message.MaidAnimationPackage;
@@ -49,12 +50,12 @@ public class MaidSnowballTargetTask extends Behavior<EntityMaid> {
     protected void start(ServerLevel worldIn, EntityMaid entityIn, long gameTimeIn) {
         if (entityIn.getMainHandItem().isEmpty()) {
             entityIn.setItemInHand(InteractionHand.MAIN_HAND, Items.SNOWBALL.getDefaultInstance());
-            NetworkHandler.sendToPlayersTrackingEntity(entityIn, MaidAnimationPackage.pickUpSnowball(entityIn));
+            PacketDistributor.sendToPlayersTrackingEntity(entityIn, MaidAnimationPackage.pickUpSnowball(entityIn));
             return;
         }
         if (!(entityIn.getMainHandItem().getItem() instanceof SnowballItem) && entityIn.getOffhandItem().isEmpty()) {
             entityIn.setItemInHand(InteractionHand.OFF_HAND, Items.SNOWBALL.getDefaultInstance());
-            NetworkHandler.sendToPlayersTrackingEntity(entityIn, MaidAnimationPackage.pickUpSnowball(entityIn));
+            PacketDistributor.sendToPlayersTrackingEntity(entityIn, MaidAnimationPackage.pickUpSnowball(entityIn));
         }
     }
 
@@ -83,7 +84,7 @@ public class MaidSnowballTargetTask extends Behavior<EntityMaid> {
                 this.playPickUpAnimationDelayTime--;
             }
             if (this.playPickUpAnimationDelayTime == 0) {
-                NetworkHandler.sendToPlayersTrackingEntity(owner, MaidAnimationPackage.pickUpSnowball(owner));
+                PacketDistributor.sendToPlayersTrackingEntity(owner, MaidAnimationPackage.pickUpSnowball(owner));
             }
 
             // 如果女仆处于捡雪球动画中，禁止移动
