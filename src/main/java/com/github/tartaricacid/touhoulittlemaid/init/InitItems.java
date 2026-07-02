@@ -2,6 +2,7 @@ package com.github.tartaricacid.touhoulittlemaid.init;
 
 import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.monster.EntityFairy;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.item.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +23,7 @@ public interface InitItems {
 
     // 生物蛋
     Item MAID_SPAWN_EGG = register("maid_spawn_egg", id -> new SpawnEggItem(
-            new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)).spawnEgg(EntityFairy.TYPE)));
+            new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)).spawnEgg(EntityMaid.TYPE)));
     Item FAIRY_SPAWN_EGG = register("fairy_spawn_egg", id -> new SpawnEggItem(
             new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)).spawnEgg(EntityFairy.TYPE)));
 
