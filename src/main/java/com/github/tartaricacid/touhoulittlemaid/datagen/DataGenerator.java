@@ -26,7 +26,7 @@ public class DataGenerator implements DataGeneratorEntrypoint {
         // pack.addProvider(packOutput -> new GlobalLootModifier(packOutput, registries, TouhouLittleMaid.MOD_ID));
 
         // Recipe
-        pack.addProvider(RecipeGenerator::new);
+        pack.addProvider(RecipeGenerator.Runner::new);
 
         // Tags
         pack.addProvider(TagDamage::new);

@@ -126,6 +126,17 @@ public class AltarRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
+    public void save(RecipeOutput output, String id) {
+        ResourceKey<Recipe<?>> defaultKey = this.defaultId();
+        ResourceKey<Recipe<?>> overriddenKey = ResourceKey.create(Registries.RECIPE, IdentifierUtil.modLoc(id));
+        if (overriddenKey == defaultKey) {
+            throw new IllegalStateException("Recipe " + id + " should remove its 'save' argument as it is equal to default one");
+        } else {
+            this.save(output, overriddenKey);
+        }
+    }
+
+    @Override
     public void save(RecipeOutput output, ResourceKey<Recipe<?>> id) {
         List<Ingredient> copyOf = List.copyOf(this.ingredients);
         AltarRecipe recipe = new AltarRecipe(copyOf, power, result, entityType, langKey);
