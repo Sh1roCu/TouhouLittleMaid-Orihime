@@ -65,7 +65,7 @@ public class FavorabilityAdvancement {
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.favorability.%s.description", key));
 
         return Advancement.Builder.advancement().display(item, title, desc,
-                IdentifierUtil.modLoc("textures/advancements/backgrounds/stone.png"),
+                IdentifierUtil.modLoc("advancements/backgrounds/stone"),
                 AdvancementType.TASK, true, true, false);
     }
 
@@ -74,7 +74,7 @@ public class FavorabilityAdvancement {
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.favorability.%s.description", key));
 
         return Advancement.Builder.advancement().display(item, title, desc,
-                IdentifierUtil.modLoc("textures/advancements/backgrounds/stone.png"),
+                IdentifierUtil.modLoc("advancements/backgrounds/stone"),
                 AdvancementType.GOAL, true, true, false);
     }
 

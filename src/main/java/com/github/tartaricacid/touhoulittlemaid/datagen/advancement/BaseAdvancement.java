@@ -1,11 +1,11 @@
 package com.github.tartaricacid.touhoulittlemaid.datagen.advancement;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.MaidEventTrigger;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.datagen.LootTableGenerator;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.KilledTrigger;
@@ -96,7 +96,7 @@ public class BaseAdvancement {
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.base.%s.description", key));
 
         return Advancement.Builder.advancement().display(item, title, desc,
-                IdentifierUtil.modLoc("textures/advancements/backgrounds/stone.png"),
+                IdentifierUtil.modLoc("advancements/backgrounds/stone"),
                 AdvancementType.TASK, true, true, false);
     }
 
@@ -105,7 +105,7 @@ public class BaseAdvancement {
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.base.%s.description", key));
 
         return Advancement.Builder.advancement().display(ItemStackTemplate.fromNonEmptyStack(item), title, desc,
-                IdentifierUtil.modLoc("textures/advancements/backgrounds/stone.png"),
+                IdentifierUtil.modLoc("advancements/backgrounds/stone"),
                 AdvancementType.TASK, true, true, false);
     }
 
@@ -114,7 +114,7 @@ public class BaseAdvancement {
         MutableComponent desc = Component.translatable(String.format("advancements.touhou_little_maid.base.%s.description", key));
 
         return Advancement.Builder.advancement().display(item, title, desc,
-                IdentifierUtil.modLoc("textures/advancements/backgrounds/stone.png"),
+                IdentifierUtil.modLoc("advancements/backgrounds/stone"),
                 AdvancementType.GOAL, true, true, false);
     }
 

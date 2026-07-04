@@ -9,7 +9,7 @@
     }
   },
   "display": {
-    "background": "touhou_little_maid:textures/advancements/backgrounds/stone.png",
+    "background": "touhou_little_maid:advancements/backgrounds/stone",
     "description": {
       "translate": "advancements.touhou_little_maid.base.craft_chair.description"
     },
