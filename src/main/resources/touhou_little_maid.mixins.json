@@ -29,6 +29,7 @@
   "client": [
     "client.ClientPacketListenerMixin",
     "client.DrawableGizmoPrimitives$GroupMixin",
+    "client.DrawableGizmoPrimitives$TextMixin",
     "client.DrawableGizmoPrimitivesMixin",
     "client.FishingRodCastMixin",
     "client.InventoryScreenMixin",

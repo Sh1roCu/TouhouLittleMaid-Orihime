@@ -4,14 +4,17 @@ import com.github.tartaricacid.touhoulittlemaid.api.mixin.IDrawableGizmoPrimitiv
 import net.minecraft.client.gui.Font;
 import net.minecraft.gizmos.Gizmo;
 import net.minecraft.gizmos.GizmoPrimitives;
+import net.minecraft.gizmos.Gizmos;
 import net.minecraft.gizmos.TextGizmo;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * 基于TextGizmo的扩展。
- * 能接收DisplayMode参数，用于解决DrawableGizmoPrimitives渲染文本时硬编码DisplayMode.NORMAL可能出现的渲染问题
- * */
+ * <p>
+ * 能接收DisplayMode参数，用于解决{@link Gizmos#billboardText(String, Vec3, TextGizmo.Style)}
+ * 在渲染文本时硬编码{@link Font.DisplayMode#NORMAL}可能出现的渲染问题。
+ */
 public record DisplayModeTextGizmo(Vec3 pos, String text, TextGizmo.Style style,
                                    Font.DisplayMode displayMode) implements Gizmo {
     @Override
@@ -26,7 +29,9 @@ public record DisplayModeTextGizmo(Vec3 pos, String text, TextGizmo.Style style,
         primitives.addText(pos, text, newStyle);
 
         if (primitives instanceof IDrawableGizmoPrimitivesMixin iDrawable) {
-            iDrawable.tlm$setDisplayMode(style, displayMode);
+            iDrawable.tlm$addTextWithDisplayMode(pos, text, style, displayMode);
+        } else {
+            primitives.addText(pos, text, newStyle);
         }
     }
 }
