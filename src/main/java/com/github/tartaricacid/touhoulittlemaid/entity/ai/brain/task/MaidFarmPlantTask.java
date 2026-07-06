@@ -23,7 +23,6 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +73,8 @@ public class MaidFarmPlantTask extends Behavior<EntityMaid> {
             if (!slots.isEmpty()) {
                 for (int slot : slots) {
                     try (Transaction tx = Transaction.openOuter()) {
-                        @NotNull ItemVariant res = availableInv.getResource(slot);
+                        ItemVariant res = availableInv.getResource(slot);
+                        if (res.isBlank()) continue;
                         int seedCount = availableInv.extract(slot, res, ItemVariantImpl.getMaxStackSize(res), tx);
                         if (seedCount == 0) continue;
                         ItemStack seed = res.toStack(seedCount);
