@@ -29,6 +29,9 @@ public class MaidDropBaubleEvent {
         try (Transaction tx = Transaction.openOuter()) {
             for (int i = startIndex; i < maidBauble.size(); i++) {
                 ItemVariant resource = maidBauble.getResource(i);
+                if (resource.isBlank()){
+                    continue;
+                }
                 int extract = maidBauble.extract(i, resource, 1, tx);
                 if (extract == 0) {
                     continue;

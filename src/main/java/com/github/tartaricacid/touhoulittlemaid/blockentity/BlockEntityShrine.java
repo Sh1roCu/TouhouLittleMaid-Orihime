@@ -54,6 +54,9 @@ public class BlockEntityShrine extends BlockEntityBase {
     public ItemStack extractStorageItem() {
         try (Transaction tx = Transaction.openOuter()) {
             ItemVariant resource = handler.getResource(0);
+            if (resource.isBlank()) {
+                return ItemStack.EMPTY;
+            }
             int extract = handler.extract(0, resource, 1, tx);
             if (extract > 0) {
                 tx.commit();

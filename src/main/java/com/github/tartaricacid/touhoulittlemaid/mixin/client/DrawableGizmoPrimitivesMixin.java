@@ -21,19 +21,19 @@ public abstract class DrawableGizmoPrimitivesMixin implements IDrawableGizmoPrim
     public abstract void addText(Vec3 pos, String text, TextGizmo.Style style);
 
     @Unique
-    private final ThreadLocal<DrawableGizmoPrimitives.Text> cachedText = new ThreadLocal<>();
+    private final ThreadLocal<DrawableGizmoPrimitives.Text> tlm$cachedText = new ThreadLocal<>();
 
     @WrapOperation(method = "addText", at = @At(remap = false, value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
     private <E> boolean tlm$addText(List<E> instance, E text, Operation<Boolean> original) {
         boolean result = original.call(instance, text);
-        cachedText.set((DrawableGizmoPrimitives.Text) text);
+        tlm$cachedText.set((DrawableGizmoPrimitives.Text) text);
         return result;
     }
 
     @Override
     public void tlm$addTextWithDisplayMode(Vec3 pos, String text, TextGizmo.Style style, Font.DisplayMode displayMode) {
         this.addText(pos, text, style);
-        DrawableGizmoPrimitives.Text t = cachedText.get();
+        DrawableGizmoPrimitives.Text t = tlm$cachedText.get();
         if (t != null) {
             ((IDrawableGizmoPrimitives$TextMixin) (Object) t).tlm$setDisplayMode(displayMode);
         }
