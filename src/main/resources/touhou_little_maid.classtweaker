@@ -63,4 +63,7 @@ accessible field net/minecraft/client/model/geom/ModelPart initialPose Lnet/mine
 accessible method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
 extendable method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
 
+accessible class net/minecraft/client/renderer/gizmos/DrawableGizmoPrimitives$Text
+accessible class net/minecraft/client/renderer/gizmos/DrawableGizmoPrimitives$Group
+
 inject-interface net/minecraft/client/renderer/entity/state/EntityRenderState cn/sh1rocu/touhoulittlemaid/api/mixin/IEntityRenderStatePartialTick
