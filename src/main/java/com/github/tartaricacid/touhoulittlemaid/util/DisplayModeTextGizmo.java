@@ -26,10 +26,8 @@ public record DisplayModeTextGizmo(Vec3 pos, String text, TextGizmo.Style style,
             newStyle = style;
         }
 
-        primitives.addText(pos, text, newStyle);
-
         if (primitives instanceof IDrawableGizmoPrimitivesMixin iDrawable) {
-            iDrawable.tlm$addTextWithDisplayMode(pos, text, style, displayMode);
+            iDrawable.tlm$addTextWithDisplayMode(pos, text, newStyle, displayMode);
         } else {
             primitives.addText(pos, text, newStyle);
         }
