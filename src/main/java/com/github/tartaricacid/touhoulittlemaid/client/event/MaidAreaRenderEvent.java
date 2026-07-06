@@ -3,10 +3,12 @@ package com.github.tartaricacid.touhoulittlemaid.client.event;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.SchedulePos;
+import com.github.tartaricacid.touhoulittlemaid.util.RenderHelper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gizmos.GizmoStyle;
@@ -106,7 +108,7 @@ public class MaidAreaRenderEvent {
     }
 
     private static void renderText(String text, Vec3 pos, int color) {
-        Gizmos.billboardText(text, pos, new TextGizmo.Style(color, 1.5f, OptionalDouble.empty())).setAlwaysOnTop();
+        RenderHelper.billboardText(text, pos, new TextGizmo.Style(color, 1.5f, OptionalDouble.empty()), Font.DisplayMode.SEE_THROUGH).setAlwaysOnTop();
     }
 
     public static void addSchedulePos(int id, SchedulePos pos) {

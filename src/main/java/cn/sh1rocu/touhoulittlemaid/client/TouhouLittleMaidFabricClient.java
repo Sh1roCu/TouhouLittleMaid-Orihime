@@ -64,7 +64,7 @@ public class TouhouLittleMaidFabricClient implements ClientModInitializer {
         KeyInputCallback.EVENT.register(PressAIChatKeyEvent::onOpenConfig);
         KeyInputCallback.EVENT.register(STTChatKey::onSttChatPress);
         KeyInputCallback.EVENT.register(DismountBroomKey::onDismountPress);
-        LevelRenderEvents.AFTER_SOLID_FEATURES.register(ScrollRenderEvent::onRenderWorldLastEvent);
+        LevelRenderEvents.END_MAIN.register(ScrollRenderEvent::onRenderWorldLastEvent);
         ScreenEvents.AFTER_INIT.register(ShowOptifineScreen::showOptifineWarning);
 
         LevelRenderEvents.AFTER_SOLID_FEATURES.register(WirelessIORenderEvent::onRender);

@@ -28,13 +28,16 @@
   ],
   "client": [
     "client.ClientPacketListenerMixin",
-    // "client.HumanoidModelMixin",
+    "client.DrawableGizmoPrimitives$TextMixin",
+    "client.DrawableGizmoPrimitivesMixin",
     "client.FishingRodCastMixin",
-    "client.LanguageMixin",
-    "client.LivingEntityRendererMixin",
+    "client.GizmoFeatureRendererMixin",
+    "client.GizmoFeatureRendererMixin$GlyphVisitorMixin",
     "client.InventoryScreenMixin",
+    "client.LanguageMixin",
+    "client.LevelExtractorMixin",
     "client.LevelRendererMixin",
-    "client.LevelExtractorMixin"
+    "client.LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
