@@ -67,6 +67,7 @@ public class TeleportItemParticlePackageProxy {
 
         ItemEntity fromEntity = new ItemEntity(level, fromPos.x, fromPos.y, fromPos.z, ItemStack.EMPTY);
         ItemEntity toEntity = new ItemEntity(level, toPos.x, toPos.y, toPos.z, message.itemStack());
+        toEntity.setId(-1);
 
         EntityRenderState itemState = mc.getEntityRenderDispatcher().extractEntity(toEntity, 1.0F);
         mc.particleEngine.add(new ItemPickupParticle(level, itemState, fromEntity, toPos.subtract(fromPos)));
