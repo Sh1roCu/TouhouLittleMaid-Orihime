@@ -2,7 +2,10 @@ package com.github.tartaricacid.touhoulittlemaid.mixin;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityBroom;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -63,10 +66,28 @@ public class EntityMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    @SuppressWarnings("all")
+    @SuppressWarnings("ConstantConditions")
     private void onGetBoundingBox(CallbackInfoReturnable<AABB> cir) {
         if ((Object) this instanceof EntityBroom broom && broom.inPhysicalCheck) {
             cir.setReturnValue(broom.getPhysicalBoundingBox());
+        }
+    }
+
+    @WrapOperation(
+            method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/EntityType;canSerialize()Z"
+            )
+    )
+    @SuppressWarnings("ConstantConditions")
+    private boolean allowMaidToRide(EntityType<?> instance, Operation<Boolean> original) {
+        // 也许不止玩家实体类型在构建时调用了noSave（即canSerialize为false）
+        // 因此这里暂时注释掉玩家类型判断，以防不兼容其他实体
+        if (/*instance == EntityType.PLAYER && */(Entity) (Object) this instanceof EntityMaid) {
+            return true;
+        } else {
+            return original.call(instance);
         }
     }
 }
