@@ -5,11 +5,11 @@ import com.github.tartaricacid.touhoulittlemaid.entity.ai.goal.FairyAttackGoal;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.goal.FairyNearestAttackableTargetGoal;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.projectile.DanmakuShoot;
-import com.github.tartaricacid.touhoulittlemaid.init.InitPoi;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -32,7 +32,6 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
@@ -43,22 +42,30 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
+import static com.github.tartaricacid.touhoulittlemaid.init.InitPoi.SCARECROW;
 import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+import static net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.ANY;
 
 public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPoint {
-    public static final EntityType<EntityFairy> TYPE = EntityType.Builder.<EntityFairy>of(EntityFairy::new, MobCategory.MONSTER)
-            .sized(0.6f, 1.5f).clientTrackingRange(10).build(ResourceKey.create(Registries.ENTITY_TYPE, IdentifierUtil.modLoc("fairy")));
-
-    private static final Identifier SPEED_MODIFIER_BABY_ID = IdentifierUtil.modLoc("baby");
-    private static final AttributeModifier SPEED_MODIFIER_BABY = new AttributeModifier(SPEED_MODIFIER_BABY_ID, 0.2, ADD_MULTIPLIED_BASE);
-    private static final EntityDimensions BABY_DIMENSIONS = TYPE.getDimensions().scale(0.75F).withEyeHeight(1);
+    public static final Identifier ENTITY_ID = IdentifierUtil.modLoc("fairy");
+    public static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, ENTITY_ID);
+    public static final EntityType<EntityFairy> TYPE = EntityType.Builder
+            .<EntityFairy>of(EntityFairy::new, MobCategory.MONSTER)
+            .sized(0.6f, 1.5f)
+            .clientTrackingRange(10)
+            .build(ENTITY_KEY);
 
     public static final String RICK = "rick";
+
     private static final String FAIRY_TYPE_TAG_NAME = "FairyType";
     private static final String BABY_TAG_NAME = "IsBaby";
 
     private static final EntityDataAccessor<Integer> DATA_FAIRY_TYPE = SynchedEntityData.defineId(EntityFairy.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(EntityFairy.class, EntityDataSerializers.BOOLEAN);
+
+    private static final Identifier SPEED_MODIFIER_BABY_ID = IdentifierUtil.modLoc("baby");
+    private static final AttributeModifier SPEED_MODIFIER_BABY = new AttributeModifier(SPEED_MODIFIER_BABY_ID, 0.2, ADD_MULTIPLIED_BASE);
+    private static final EntityDimensions BABY_DIMENSIONS = TYPE.getDimensions().scale(0.75F).withEyeHeight(1);
 
     private static final double AIMED_SHOT_PROBABILITY = 0.9;
 
@@ -71,10 +78,19 @@ public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPo
         this(TYPE, worldIn);
     }
 
-    public static boolean checkFairySpawnRules(EntityType<EntityFairy> entityType, ServerLevelAccessor levelAccessor, EntitySpawnReason spawnType, BlockPos pos, RandomSource randomSource) {
-        if (Monster.checkMonsterSpawnRules(entityType, levelAccessor, spawnType, pos, randomSource) && levelAccessor instanceof ServerLevel level) {
-            int scarecrowRange = MiscConfig.SCARECROW_RANGE.get();
-            long findCount = level.getPoiManager().getInSquare(type -> type.value().equals(InitPoi.SCARECROW), pos, scarecrowRange, PoiManager.Occupancy.ANY).count();
+    public static boolean checkFairySpawnRules(
+            EntityType<EntityFairy> entityType, ServerLevelAccessor levelAccessor,
+            EntitySpawnReason spawnType, BlockPos pos, RandomSource randomSource
+    ) {
+        if (Monster.checkMonsterSpawnRules(entityType, levelAccessor, spawnType, pos, randomSource)
+                && levelAccessor instanceof ServerLevel level) {
+            int range = MiscConfig.SCARECROW_RANGE.get();
+            long findCount = level.getPoiManager()
+                    .getInSquare(type -> {
+                        Identifier id = BuiltInRegistries.POINT_OF_INTEREST_TYPE.getKey(SCARECROW);
+                        return id != null && type.is(id);
+                    }, pos, range, ANY)
+                    .count();
             return findCount <= 0;
         }
         return false;
@@ -89,6 +105,7 @@ public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPo
         goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(5, new LookAtPlayerGoal(this, EntityMaid.class, 8.0F));
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+
         targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
         targetSelector.addGoal(3, new FairyNearestAttackableTargetGoal<>(this));
     }
@@ -110,11 +127,11 @@ public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPo
 
     @Override
     public int getPowerPoint() {
-        double reward = MiscConfig.MAID_FAIRY_POWER_POINT.get() * 100;
+        int reward = (int) (MiscConfig.MAID_FAIRY_POWER_POINT.get() * 100);
         if (this.isBaby()) {
-            return (int) (reward * 2);
+            return reward * 2;
         }
-        return (int) reward;
+        return reward;
     }
 
     @Override
@@ -180,7 +197,7 @@ public class EntityFairy extends Monster implements RangedAttackMob, IHasPowerPo
     @Override
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
-        output.store(FAIRY_TYPE_TAG_NAME, Codec.INT, getFairyTypeOrdinal());
+        output.store(FAIRY_TYPE_TAG_NAME, Codec.INT, this.getFairyTypeOrdinal());
         output.store(BABY_TAG_NAME, Codec.BOOL, this.isBaby());
     }
 
