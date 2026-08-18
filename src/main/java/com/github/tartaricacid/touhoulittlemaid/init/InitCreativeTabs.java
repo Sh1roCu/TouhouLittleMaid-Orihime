@@ -17,6 +17,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import vazkii.patchouli.common.item.ItemModBook;
 
 import java.util.Optional;
 
@@ -31,10 +32,10 @@ public class InitCreativeTabs {
             .title(Component.translatable("item_group.touhou_little_maid.main"))
             .icon(HAKUREI_GOHEI::getDefaultInstance)
             .displayItems((par, output) -> {
-                // TODO: Patchouli 暂无
-                // if (FabricLoader.getInstance().isModLoaded("patchouli")) {
-                //     output.accept(ItemModBook.forBook(MEMORIZABLE_GENSOKYO_LOCATION));
-                // }
+                if (FabricLoader.getInstance().isModLoaded("patchouli")) {
+                    Identifier book = Identifier.fromNamespaceAndPath(TouhouLittleMaid.MOD_ID, "memorizable_gensokyo");
+                    output.accept(ItemModBook.forBook(book).create());
+                }
                 output.accept(MAID_SPAWN_EGG);
                 output.accept(FAIRY_SPAWN_EGG);
                 output.accept(HAKUREI_GOHEI);

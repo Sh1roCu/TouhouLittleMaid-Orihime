@@ -212,7 +212,7 @@ dependencies {
     implementation "maven.modrinth:jade:${jade_version}"
 //    compileOnly "maven.modrinth:cyberanner-ironchest:${iron_chests_version}"
 //    compileOnly "maven.modrinth:carry-on:${carry_on_version}"
-//    compileOnly "maven.modrinth:patchouli:${patchouli_version}"
+    implementation "maven.modrinth:patchouli:${patchouli_version}"
 
     // IPN
     implementation "net.fabricmc:fabric-language-kotlin:1.13.11+kotlin.2.3.21"
