@@ -7,10 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemChair;
 import com.github.tartaricacid.touhoulittlemaid.network.message.OpenChairGuiPackage;
 import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.mojang.serialization.Codec;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -101,8 +98,8 @@ public class EntityChair extends AbstractEntityFromItem implements OwnableEntity
 
     private boolean canRide(TamableAnimal e) {
         return !e.isInSittingPose()
-               && !e.isPassenger()
-               && e.getPassengers().isEmpty();
+                && !e.isPassenger()
+                && e.getPassengers().isEmpty();
     }
 
     @Override
@@ -111,7 +108,7 @@ public class EntityChair extends AbstractEntityFromItem implements OwnableEntity
             if (player.getItemInHand(hand).interactLivingEntity(player, this, hand).consumesAction()) {
                 return InteractionResult.SUCCESS;
             }
-            if (player instanceof ServerPlayer serverPlayer) {
+            if (player instanceof ServerPlayer serverPlayer && !isBlockPlacingRestricted(serverPlayer)) {
                 ServerPlayNetworking.send(serverPlayer, new OpenChairGuiPackage(this));
             }
         } else {

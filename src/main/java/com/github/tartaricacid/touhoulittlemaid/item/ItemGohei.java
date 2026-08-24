@@ -35,7 +35,6 @@ import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operati
 import static net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE;
 import static net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED;
 
-
 @SuppressWarnings("deprecation")
 public class ItemGohei extends ProjectileWeaponItem {
     public ItemGohei(Identifier id) {
@@ -106,14 +105,14 @@ public class ItemGohei extends ProjectileWeaponItem {
 
             for (IMultiBlock multiBlock : multiBlockList) {
                 if (multiBlock.isCoreBlock(blockState)
-                    && multiBlock.directionIsSuitable(direction)
-                    && this.checkAndBuild(context, multiBlock, serverLevel, pos, direction)) {
+                        && multiBlock.directionIsSuitable(direction)
+                        && this.checkAndBuild(context, multiBlock, serverLevel, pos, direction)) {
                     return InteractionResult.SUCCESS;
                 }
 
                 if (multiBlock.isCoreBlock(leftBlockState)
-                    && multiBlock.directionIsSuitable(direction)
-                    && this.checkAndBuild(context, multiBlock, serverLevel, leftPos, direction)) {
+                        && multiBlock.directionIsSuitable(direction)
+                        && this.checkAndBuild(context, multiBlock, serverLevel, leftPos, direction)) {
                     return InteractionResult.SUCCESS;
                 }
             }
