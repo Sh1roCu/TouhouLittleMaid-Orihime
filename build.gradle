@@ -229,7 +229,7 @@ dependencies {
     modRuntimeOnly("maven.modrinth:accessories-tc-layer:3.10.0+beta.28")
 
     // Immersive Melodies
-    modImplementation "immersive_melodies:immersive_melodies-fabric:0.6.2+1.21.1"
+    modImplementation "net.conczin:immersive_melodies:1.21.1-SNAPSHOT+fabric"
 
     // Ponder
     modImplementation("net.createmod.ponder:Ponder-Fabric-${minecraft_version}:1.0.61")
