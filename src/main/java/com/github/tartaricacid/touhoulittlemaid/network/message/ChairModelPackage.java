@@ -42,11 +42,11 @@ public record ChairModelPackage(int id, Identifier modelId, float mountedHeight,
         context.server().execute(() -> {
             ServerPlayer sender = context.player();
             Entity entity = sender.level.getEntity(message.id);
-            boolean canChangeModel = ChairConfig.CHAIR_CHANGE_MODEL.get() || sender.isCreative();
+            boolean isBlockPlacingRestricted = sender.gameMode.getGameModeForPlayer().isBlockPlacingRestricted();
+            boolean canChangeModel = !isBlockPlacingRestricted && (ChairConfig.CHAIR_CHANGE_MODEL.get() || sender.isCreative());
 
-            if (entity instanceof EntityChair) {
+            if (entity instanceof EntityChair chair) {
                 if (canChangeModel) {
-                    EntityChair chair = (EntityChair) entity;
                     chair.setModelId(message.modelId.toString());
                     chair.setMountedHeight(message.mountedHeight);
                     chair.setTameableCanRide(message.tameableCanRide);

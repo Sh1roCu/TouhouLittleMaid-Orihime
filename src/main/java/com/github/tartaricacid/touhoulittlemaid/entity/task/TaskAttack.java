@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidMeleeAttack;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidUseShieldTask;
@@ -8,6 +7,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.item.EntityExtinguishingA
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitItems;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
@@ -52,8 +52,13 @@ public class TaskAttack implements IAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasAssaultWeapon(e), (level, e) -> IAttackTask.findFirstValidAttackTarget(e));
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasAssaultWeapon(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(
+                (_, e) -> hasAssaultWeapon(e),
+                (_, e) -> IAttackTask.findFirstValidAttackTarget(e)
+        );
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create(
+                (_, target) -> !hasAssaultWeapon(maid) || farAway(target, maid)
+        );
         BehaviorControl<Mob> moveToTargetTask = SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(0.6f);
         BehaviorControl<EntityMaid> attackTargetTask = MaidMeleeAttack.create(20);
         MaidUseShieldTask maidUseShieldTask = new MaidUseShieldTask();
@@ -69,8 +74,13 @@ public class TaskAttack implements IAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createRideBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasAssaultWeapon(e), (level, e) -> IAttackTask.findFirstValidAttackTarget(e));
-        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create((level, target) -> !hasAssaultWeapon(maid) || farAway(target, maid));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(
+                (_, e) -> hasAssaultWeapon(e),
+                (_, e) -> IAttackTask.findFirstValidAttackTarget(e)
+        );
+        BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create(
+                (_, target) -> !hasAssaultWeapon(maid) || farAway(target, maid)
+        );
         BehaviorControl<EntityMaid> attackTargetTask = MaidMeleeAttack.create(20);
         MaidUseShieldTask maidUseShieldTask = new MaidUseShieldTask();
 
@@ -91,8 +101,8 @@ public class TaskAttack implements IAttackTask {
     public boolean doExtraAttack(EntityMaid maid, Entity target) {
         Level world = maid.level;
         AABB aabb = target.getBoundingBox().inflate(1.5, 1, 1.5);
-        List<EntityExtinguishingAgent> extinguishingAgents = world.getEntitiesOfClass(EntityExtinguishingAgent.class, aabb, Entity::isAlive);
-        if (extinguishingAgents.isEmpty()) {
+        List<EntityExtinguishingAgent> entities = world.getEntitiesOfClass(EntityExtinguishingAgent.class, aabb, Entity::isAlive);
+        if (entities.isEmpty()) {
             world.addFreshEntity(new EntityExtinguishingAgent(world, target.position()));
             maid.getOffhandItem().hurtAndBreak(1, maid, EquipmentSlot.OFFHAND);
             return true;

@@ -15,15 +15,14 @@ import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
-import org.jetbrains.annotations.NotNull;
 public class NetherWartCropHandler implements ISpecialCropHandler {
     @Override
-    public boolean canHarvest(@NotNull EntityMaid maid, @NotNull BlockPos cropPos, @NotNull BlockState cropState) {
+    public boolean canHarvest(EntityMaid maid, BlockPos cropPos, BlockState cropState) {
         return cropState.getValue(NetherWartBlock.AGE) >= NetherWartBlock.MAX_AGE;
     }
 
     @Override
-    public void harvest(@NotNull EntityMaid maid, @NotNull BlockPos cropPos, @NotNull BlockState cropState, boolean isDestroyMode) {
+    public void harvest(EntityMaid maid, BlockPos cropPos, BlockState cropState, boolean isDestroyMode) {
         if (isDestroyMode) {
             maid.destroyBlock(cropPos);
         } else {

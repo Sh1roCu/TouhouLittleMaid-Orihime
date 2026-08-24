@@ -14,7 +14,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class TagBlock extends FabricTagsProvider.BlockTagsProvider {
@@ -66,6 +68,11 @@ public class TagBlock extends FabricTagsProvider.BlockTagsProvider {
     public static final TagKey<Block> MAID_BED = createTagKey("maid_bed");
 
     /**
+     * 女仆在除草模式下，能够破坏的方块
+     */
+    public static final TagKey<Block> TASK_GRASS_HARVEST = createTagKey("task_grass_harvest");
+
+    /**
      * CarryOn 黑名单标签，被此标签包含的方块将无法被 CarryOn 抱起
      */
     public static final TagKey<Block> CARRYON_BLOCK_BLACKLIST = createTagKey(Identifier.parse("carryon:block_blacklist"));
@@ -100,6 +107,31 @@ public class TagBlock extends FabricTagsProvider.BlockTagsProvider {
                 .add(blockKey(InitBlocks.BLUE_MAID_BED))
                 .add(blockKey(InitBlocks.GREEN_MAID_BED))
                 .add(blockKey(InitBlocks.PURPLE_MAID_BED));
+
+        builder(TASK_GRASS_HARVEST)
+                .forceAddTag(BlockTags.SMALL_FLOWERS)
+                .addAll(Arrays.asList(
+                        blockKey(Blocks.SHORT_GRASS),
+                        blockKey(Blocks.FERN),
+                        blockKey(Blocks.BUSH),
+                        blockKey(Blocks.DEAD_BUSH),
+                        blockKey(Blocks.GLOW_LICHEN),
+                        blockKey(Blocks.SUNFLOWER),
+                        blockKey(Blocks.LILAC),
+                        blockKey(Blocks.ROSE_BUSH),
+                        blockKey(Blocks.PEONY),
+                        blockKey(Blocks.TALL_GRASS),
+                        blockKey(Blocks.LARGE_FERN),
+                        blockKey(Blocks.HANGING_ROOTS),
+                        blockKey(Blocks.PITCHER_PLANT),
+                        blockKey(Blocks.PALE_MOSS_CARPET),
+                        blockKey(Blocks.FIREFLY_BUSH),
+                        blockKey(Blocks.WARPED_ROOTS),
+                        blockKey(Blocks.NETHER_SPROUTS),
+                        blockKey(Blocks.CRIMSON_ROOTS),
+                        blockKey(Blocks.LEAF_LITTER),
+                        blockKey(Blocks.SHORT_DRY_GRASS),
+                        blockKey(Blocks.TALL_DRY_GRASS)));
 
         builder(MAID_JUMP_FORBIDDEN_BLOCK)
                 .forceAddTag(BlockTags.DOORS)

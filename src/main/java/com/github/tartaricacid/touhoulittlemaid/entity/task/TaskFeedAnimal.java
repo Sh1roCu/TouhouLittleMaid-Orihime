@@ -1,6 +1,5 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.task;
 
-import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IAttackTask;
 import com.github.tartaricacid.touhoulittlemaid.config.subconfig.MaidConfig;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidFeedAnimalTask;
@@ -9,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.AbstractMaidContainer;
 import com.github.tartaricacid.touhoulittlemaid.inventory.container.task.DefaultMaidTaskConfigContainer;
+import com.github.tartaricacid.touhoulittlemaid.util.IdentifierUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.google.common.base.Predicates;
@@ -25,7 +25,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.*;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
+import net.minecraft.world.entity.ai.behavior.SetWalkTargetFromAttackTargetIfTargetOutOfReach;
+import net.minecraft.world.entity.ai.behavior.StartAttacking;
+import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.animal.Animal;
@@ -62,9 +65,13 @@ public class TaskFeedAnimal implements IAttackTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create((level, e) -> hasAssaultWeapon(e), (level, e) -> findFirstValidAttackTarget(e));
+        BehaviorControl<EntityMaid> supplementedTask = StartAttacking.create(
+                (_, e) -> hasAssaultWeapon(e),
+                (_, e) -> findFirstValidAttackTarget(e)
+        );
         BehaviorControl<EntityMaid> findTargetTask = StopAttackingIfTargetInvalid.create(
-                (level, target) -> !hasAssaultWeapon(maid) || farAway(target, maid));
+                (_, target) -> !hasAssaultWeapon(maid) || farAway(target, maid)
+        );
         BehaviorControl<Mob> moveToTargetTask = SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(0.6f);
         BehaviorControl<EntityMaid> attackTargetTask = MaidMeleeAttack.create(20);
 
@@ -143,12 +150,15 @@ public class TaskFeedAnimal implements IAttackTask {
     }
 
     private NearestVisibleLivingEntities getEntities(EntityMaid maid) {
-        return maid.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).orElse(NearestVisibleLivingEntities.empty());
+        return maid.getBrain()
+                .getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES)
+                .orElse(NearestVisibleLivingEntities.empty());
     }
 
     private boolean hasAssaultWeapon(EntityMaid maid) {
         ItemAttributeModifiers attributeModifiers = maid.getMainHandItem()/*.getAttributeModifiers()*/.get(DataComponents.ATTRIBUTE_MODIFIERS);
-        return attributeModifiers != null && attributeModifiers.modifiers()
+        return attributeModifiers != null && attributeModifiers
+                .modifiers()
                 .stream()
                 .anyMatch(modifier -> modifier.attribute().is(Attributes.ATTACK_DAMAGE));
     }

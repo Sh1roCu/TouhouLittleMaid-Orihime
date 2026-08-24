@@ -122,6 +122,11 @@ public class MaidCombatManager {
     boolean hurtServer(ServerLevel level, DamageSource source, float amount,
                        TriPredicate<ServerLevel, DamageSource, Float> superHurtServer
     ) {
+        if (source.getEntity() instanceof ServerPlayer player
+                && player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted()
+        ) {
+            return false;
+        }
         var event = new MaidAttackEvent(maid, source, amount);
         MaidAttackEvent.CALLBACK.invoker().post(event);
         if (event.isCanceled()) {
