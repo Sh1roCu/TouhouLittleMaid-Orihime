@@ -220,7 +220,7 @@ dependencies {
     modCompileOnly "maven.modrinth:emi:${emi_version}"
 
     modImplementation "maven.modrinth:jade:${jade_version}"
-    modImplementation "maven.modrinth:cyberanner-ironchest:${iron_chests_version}"
+    modImplementation "maven.modrinth:ironchest:${iron_chests_version}"
     modImplementation "maven.modrinth:carry-on:${carry_on_version}"
     modImplementation "maven.modrinth:patchouli:${patchouli_version}"
 
