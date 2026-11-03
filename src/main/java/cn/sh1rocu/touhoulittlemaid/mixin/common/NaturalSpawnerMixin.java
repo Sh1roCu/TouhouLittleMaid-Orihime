@@ -1,6 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.EventHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.EventHooks;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

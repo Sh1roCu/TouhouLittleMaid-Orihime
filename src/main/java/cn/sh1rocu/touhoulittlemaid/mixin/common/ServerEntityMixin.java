@@ -1,6 +1,6 @@
 package cn.sh1rocu.touhoulittlemaid.mixin.common;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.network.IEntityExtension;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.server.level.ServerEntity;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * this is needed for {@link cn.sh1rocu.touhoulittlemaid.util.forge.network.IEntityWithComplexSpawn} to work properly on dedicated servers, since it ends up nesting bundle packets.
+ * this is needed for {@link cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn} to work properly on dedicated servers, since it ends up nesting bundle packets.
  */
 
 // PortingLib

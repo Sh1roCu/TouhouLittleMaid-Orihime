@@ -202,7 +202,7 @@ dependencies {
     modImplementation "maven.modrinth:emi:${emi_version}"
 
     modImplementation "maven.modrinth:jade:${jade_version}"
-    modImplementation "maven.modrinth:cyberanner-ironchest:${iron_chests_version}"
+    modImplementation "maven.modrinth:ironchest:${iron_chests_version}"
     modImplementation "maven.modrinth:carry-on:${carry_on_version}"
     modImplementation "maven.modrinth:patchouli:${patchouli_version}"
 
@@ -232,7 +232,9 @@ dependencies {
     modImplementation "net.conczin:immersive_melodies:1.21.1-SNAPSHOT+fabric"
 
     // Ponder
-    modImplementation("net.createmod.ponder:Ponder-Fabric-${minecraft_version}:1.0.61")
+    // TODO: wait the maven repo to be available
+    // modImplementation("net.createmod.ponder:Ponder-Fabric-${minecraft_version}:1.0.61")
+    modCompileOnly("libs:ponder-fabric:1.0.87+mc1.21.1")
 
     // 精妙背包
     modCompileOnly("libs:sophisticatedbackpacks:1.21.1-3.23.4.3.106")
@@ -248,7 +250,14 @@ dependencies {
     modImplementation "maven.modrinth:tenshilib:1.21.1-2.1.1-fabric"
 
     // TACZ
-    modImplementation("libs:TACZ-Refabricated:1.21.1-0.0.7")
+    modImplementation "libs:tacz-refabricated:1.0.0-neo1.2.0+mc1.21.1"
+    modImplementation "maven.modrinth:accrelatedrendering-refabricated:pgm8CkON"
+    modImplementation "libs:simplebedrockmodel-fabric:2.6.1.2+mc1.21.1"
+    implementation("com.maydaymemory:mae:1.1.4") {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'it.unimi.dsi', module: 'fastutil'
+        exclude group: 'org.joml', module: 'joml'
+    }
     implementation(minecraftLibraries('org.apache.commons:commons-math3:3.6.1'))
     implementation('com.github.FiguraMC.luaj:luaj-core:3.0.8-figura') {
         exclude group: 'org.apache.commons', module: 'commons-lang3'
@@ -276,7 +285,9 @@ dependencies {
     modRuntimeOnly "maven.modrinth:xaeros-world-map:1.39.12_Fabric_1.21"
 
     // 拔刀剑
-    modImplementation "cn.sh1rocu:slashblade-refabricated:1.21.1-1.4.2-Resharped-1.9.65"
+    modImplementation ("cn.sh1rocu:slashblade-refabricated:1.21.1-1.4.2-Resharped-1.9.65"){
+        exclude(group: "maven.modrinth", module: "accrelatedrendering-refabricated")
+    }
 
     // 农夫乐事
     modImplementation("vectorwing:FarmersDelight:1.21.1-3.2.2+refabricated") {

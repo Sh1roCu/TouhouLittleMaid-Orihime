@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.CommonHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;

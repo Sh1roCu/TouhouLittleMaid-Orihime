@@ -44,10 +44,7 @@
     "common.ShulkerBulletMixin",
     "common.ThrowableProjectileMixin",
     "compat.improvedmobs.EventHandlerMixin",
-    "compat.tacz.AbstractGunItemMixin",
-    "compat.tacz.GunAnimationStateContextMixin",
-    "compat.tacz.LivingEntityShootMixin",
-    "compat.tacz.ModernKineticGunScriptAPIMixin"
+    "compat.tacz.EntityMaidMixin"
   ],
   "client": [
     "accessor.AbstractContainerScreenAccessor",

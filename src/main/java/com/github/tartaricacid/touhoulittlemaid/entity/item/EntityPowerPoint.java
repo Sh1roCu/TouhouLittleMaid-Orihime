@@ -1,7 +1,7 @@
 package com.github.tartaricacid.touhoulittlemaid.entity.item;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.network.IEntityExtension;
-import cn.sh1rocu.touhoulittlemaid.util.forge.network.IEntityWithComplexSpawn;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityExtension;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.IEntityWithComplexSpawn;
 import com.github.tartaricacid.touhoulittlemaid.advancements.maid.TriggerType;
 import com.github.tartaricacid.touhoulittlemaid.data.MaidNumAttachment;
 import com.github.tartaricacid.touhoulittlemaid.data.PowerAttachment;

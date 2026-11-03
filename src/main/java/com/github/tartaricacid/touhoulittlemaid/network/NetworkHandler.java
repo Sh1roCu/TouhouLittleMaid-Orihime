@@ -1,6 +1,6 @@
 package com.github.tartaricacid.touhoulittlemaid.network;
 
-import cn.sh1rocu.touhoulittlemaid.util.forge.network.AdvancedAddEntityPayload;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.network.AdvancedAddEntityPayload;
 import com.github.tartaricacid.touhoulittlemaid.network.message.*;
 import com.github.tartaricacid.touhoulittlemaid.network.message.ai.*;
 import net.fabricmc.api.EnvType;

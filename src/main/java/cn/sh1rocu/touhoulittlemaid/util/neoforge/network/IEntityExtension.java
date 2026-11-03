@@ -1,4 +1,4 @@
-package cn.sh1rocu.touhoulittlemaid.util.forge.network;
+package cn.sh1rocu.touhoulittlemaid.util.neoforge.network;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;

@@ -4,7 +4,7 @@ import cn.sh1rocu.touhoulittlemaid.api.extension.IEntity;
 import cn.sh1rocu.touhoulittlemaid.mixin.accessor.ExperienceOrbAccessor;
 import cn.sh1rocu.touhoulittlemaid.util.block.BlockUtil;
 import cn.sh1rocu.touhoulittlemaid.util.enchant.EnchantmentUtil;
-import cn.sh1rocu.touhoulittlemaid.util.forge.CommonHooks;
+import cn.sh1rocu.touhoulittlemaid.util.neoforge.CommonHooks;
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.*;
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.entity.EntityArmorInvWrapper;
 import cn.sh1rocu.touhoulittlemaid.util.itemhandler.entity.EntityHandsInvWrapper;
